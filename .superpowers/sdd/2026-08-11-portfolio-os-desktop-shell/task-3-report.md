@@ -42,3 +42,21 @@ Result: both passed. The focused unit test ran 2 passing tests; the shell E2E ra
 ## Concerns
 
 None. The selected-icon artwork treatment will be finalized with the icon DOM and interaction state in the desktop-controller task.
+
+## Fix Round 1
+
+Addressed the review findings by making glyph artwork inherit the icon `currentColor` and by adding a reusable `data-app-icon-template` with the five first-release button, glyph, and label structures. The template is inert until the desktop controller clones it, so it does not compete with that renderer.
+
+Added focused shell coverage that verifies the template glyph values and clones a selected Writing icon to assert a blue frame plus white computed glyph color, border, and document-line artwork.
+
+Commands and output:
+
+```sh
+node --test tests/unit/app-registry.test.js
+# 2 passing, 0 failing
+
+npm run test:e2e -- tests/e2e/shell.spec.js
+# 2 passing, 0 failing
+```
+
+No concerns remain for this fix round.

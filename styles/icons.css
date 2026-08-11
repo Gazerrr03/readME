@@ -1,9 +1,13 @@
+[data-app-icon] {
+  color: var(--blue);
+}
+
 [data-icon] {
   align-items: center;
   background: var(--white);
   border: var(--stroke);
   box-shadow: 4px 4px 0 var(--blue);
-  color: var(--blue);
+  color: inherit;
   display: inline-flex;
   height: 46px;
   justify-content: center;
@@ -19,7 +23,7 @@
 }
 
 [data-icon='folder']::before {
-  border: var(--stroke);
+  border: 1px solid currentColor;
   height: 23px;
   left: 8px;
   top: 15px;
@@ -27,8 +31,8 @@
 }
 
 [data-icon='folder']::after {
-  background: var(--white);
-  border: var(--stroke);
+  background: transparent;
+  border: 1px solid currentColor;
   border-bottom: 0;
   height: 7px;
   left: 11px;
@@ -37,7 +41,7 @@
 }
 
 [data-icon='document']::before {
-  border: var(--stroke);
+  border: 1px solid currentColor;
   height: 28px;
   left: 11px;
   top: 8px;
@@ -45,8 +49,8 @@
 }
 
 [data-icon='document']::after {
-  background: var(--blue);
-  box-shadow: 0 6px 0 var(--blue), 0 12px 0 var(--blue);
+  background: currentColor;
+  box-shadow: 0 6px 0 currentColor, 0 12px 0 currentColor;
   height: 1px;
   left: 15px;
   top: 16px;
@@ -54,7 +58,7 @@
 }
 
 [data-icon='identity']::before {
-  border: var(--stroke);
+  border: 1px solid currentColor;
   height: 28px;
   left: 9px;
   top: 9px;
@@ -62,9 +66,9 @@
 }
 
 [data-icon='identity']::after {
-  background: var(--white);
-  border: var(--stroke);
-  box-shadow: -4px 11px 0 2px var(--blue), 4px 11px 0 2px var(--blue);
+  background: transparent;
+  border: 1px solid currentColor;
+  box-shadow: -4px 11px 0 2px currentColor, 4px 11px 0 2px currentColor;
   height: 9px;
   left: 18px;
   top: 13px;
@@ -72,7 +76,7 @@
 }
 
 [data-icon='signal']::before {
-  border: var(--stroke);
+  border: 1px solid currentColor;
   font-family: var(--mono);
   font-size: 26px;
   font-weight: 700;
@@ -85,7 +89,7 @@
 }
 
 [data-icon='signal']::after {
-  color: var(--blue);
+  color: currentColor;
   content: '@';
   font-family: var(--mono);
   font-size: 26px;
@@ -98,8 +102,8 @@
 }
 
 [data-icon='controls']::before {
-  background: var(--blue);
-  box-shadow: 0 8px 0 var(--blue), 0 16px 0 var(--blue);
+  background: currentColor;
+  box-shadow: 0 8px 0 currentColor, 0 16px 0 currentColor;
   height: 1px;
   left: 9px;
   top: 14px;
@@ -107,9 +111,8 @@
 }
 
 [data-icon='controls']::after {
-  background: var(--white);
-  border: var(--stroke);
-  box-shadow: 10px 8px 0 -1px var(--white), 10px 8px 0 0 var(--blue), -5px 16px 0 -1px var(--white), -5px 16px 0 0 var(--blue);
+  background: currentColor;
+  box-shadow: 10px 8px 0 currentColor, -5px 16px 0 currentColor;
   height: 7px;
   left: 15px;
   top: 11px;
@@ -118,6 +121,9 @@
 
 [data-app-icon][aria-selected='true'] [data-icon] {
   background: var(--blue);
-  box-shadow: 4px 4px 0 var(--white);
+  box-shadow: 4px 4px 0 var(--blue);
+}
+
+[data-app-icon][aria-selected='true'] {
   color: var(--white);
 }
