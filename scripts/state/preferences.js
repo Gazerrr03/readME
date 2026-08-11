@@ -91,3 +91,24 @@ export function savePreferences(storage, preferences) {
   }
   return validated;
 }
+
+export function resolvePreferredLocale(storage, browserLanguages = []) {
+  try {
+    const targetStorage = storage === undefined ? globalThis.localStorage : storage;
+    const raw = targetStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.version === 1 && locales.has(parsed.locale)) return parsed.locale;
+    }
+  } catch {
+    // Browser language remains available when storage is blocked or corrupt.
+  }
+
+  for (const language of browserLanguages ?? []) {
+    const normalized = String(language).toLowerCase();
+    if (normalized === 'zh-cn' || normalized.startsWith('zh-')) return 'zh-CN';
+    if (normalized === 'ja' || normalized.startsWith('ja-')) return 'ja';
+    if (normalized === 'en' || normalized.startsWith('en-')) return 'en';
+  }
+  return 'en';
+}

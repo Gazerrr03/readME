@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_PREFERENCES, loadPreferences, savePreferences } from '../../scripts/state/preferences.js';
+import {
+  DEFAULT_PREFERENCES,
+  loadPreferences,
+  resolvePreferredLocale,
+  savePreferences,
+} from '../../scripts/state/preferences.js';
 
 const memoryStorage = (value = null) => ({
   value,
@@ -65,5 +70,21 @@ test('returns validated preferences when acquiring localStorage is blocked durin
       savePreferences(undefined, { ...DEFAULT_PREFERENCES, locale: 'ja' }),
       { ...DEFAULT_PREFERENCES, locale: 'ja' },
     );
+  });
+});
+
+test('content locale prefers saved locale, then browser language, then English', () => {
+  const saved = memoryStorage(JSON.stringify({ ...DEFAULT_PREFERENCES, locale: 'ja' }));
+  assert.equal(resolvePreferredLocale(saved, ['zh-CN']), 'ja');
+  assert.equal(resolvePreferredLocale(memoryStorage(), ['zh-HK', 'en-US']), 'zh-CN');
+  assert.equal(resolvePreferredLocale(memoryStorage(), ['ja-JP']), 'ja');
+  assert.equal(resolvePreferredLocale(memoryStorage(), ['en-US']), 'en');
+  assert.equal(resolvePreferredLocale(memoryStorage(), ['fr-FR']), 'en');
+});
+
+test('content locale tolerates corrupt or blocked storage', () => {
+  assert.equal(resolvePreferredLocale(memoryStorage('{broken'), ['ja-JP']), 'ja');
+  withBlockedLocalStorage(() => {
+    assert.equal(resolvePreferredLocale(undefined, ['zh-TW']), 'zh-CN');
   });
 });
