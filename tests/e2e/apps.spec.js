@@ -90,6 +90,17 @@ test('writing opens a fullscreen reader and returns to the archive', async ({ pa
   const windowed = await appWindow.boundingBox();
   await appWindow.locator('[data-writing-open]').first().click();
 
+  const cover = appWindow.locator('[data-writing-cover]');
+  const article = appWindow.locator('[data-writing-article]');
+
+  await expect(cover).toHaveAttribute('data-writing-cover-variant', /^0[1-4]$/);
+  await expect(cover).toHaveAttribute('data-writing-title-tier', /^(short|medium|long)$/);
+  await expect(cover.locator('[data-writing-cover-index]')).toHaveText('01');
+  await expect(cover.locator('h3')).toHaveText('When Information Starts Thinking for Me');
+  await expect(cover.locator('[data-writing-meta]')).toContainText('{设计}');
+  await expect(cover.locator('[data-writing-scroll-cue]')).toHaveAttribute('aria-hidden', 'true');
+  await expect(article.locator('[data-writing-lead]')).toContainText('August of last year');
+
   await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('When Information Starts Thinking for Me');
   await expect(appWindow.locator('[data-writing-lead]')).toContainText('August of last year');
   await expect(appWindow.locator('[data-writing-section]')).toHaveCount(13);
@@ -104,9 +115,11 @@ test('writing opens a fullscreen reader and returns to the archive', async ({ pa
   await appWindow.locator('[data-writing-goto]').last().click();
   await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('A Frequency That Does Not Exist');
   await expect(appWindow.locator('[data-writing-position]')).toHaveText('02 / 09');
+  await expect.poll(() => appWindow.locator('[data-window-content]').evaluate((element) => element.scrollTop)).toBe(0);
 
   await appWindow.locator('[data-writing-goto]').first().click();
   await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('When Information Starts Thinking for Me');
+  await expect.poll(() => appWindow.locator('[data-window-content]').evaluate((element) => element.scrollTop)).toBe(0);
 
   await appWindow.locator('[data-writing-back]').click();
   await expect(appWindow.locator('[data-writing-list] button')).toHaveCount(9);

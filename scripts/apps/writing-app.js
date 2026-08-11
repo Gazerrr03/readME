@@ -47,6 +47,7 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
   let openSlug = null;
 
   const renderList = (locale) => {
+    root.dataset.writingView = 'archive';
     const header = createElement(document, 'header', { 'data-writing-header': '' });
     header.append(
       createElement(document, 'p', { 'data-writing-kicker': '' }, i18n.t('writing.archive')),
@@ -72,9 +73,16 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
   };
 
   const renderReader = (article, index, locale) => {
+    root.dataset.writingView = 'reader';
     const reader = createElement(document, 'article', { 'data-writing-reader': '' });
-
-    const masthead = createElement(document, 'header', { 'data-writing-masthead': '' });
+    const title = pick(article.title, locale);
+    const variant = getWritingCoverVariant(article.slug, index);
+    const tier = getWritingTitleTier(title);
+    const cover = createElement(document, 'header', {
+      'data-writing-cover': '',
+      'data-writing-cover-variant': variant,
+      'data-writing-title-tier': tier,
+    });
     const toolbar = createElement(document, 'div', { 'data-writing-toolbar': '' });
     toolbar.append(
       createElement(document, 'button', { type: 'button', 'data-writing-back': '' },
@@ -84,11 +92,14 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
     );
     const body = pick(article.body, locale);
     const minutes = estimateMinutes(body);
-    masthead.append(
+    cover.append(
       toolbar,
-      createElement(document, 'h3', {}, pick(article.title, locale)),
+      createElement(document, 'span', { 'data-writing-cover-index': '', 'aria-hidden': 'true' },
+        padIndex(index + 1)),
+      createElement(document, 'h3', {}, title),
       createElement(document, 'p', { 'data-writing-meta': '' },
         `${article.date} / {${article.tag}} / ${i18n.t('writing.minutes').replace('{n}', String(minutes))}`),
+      createElement(document, 'span', { 'data-writing-scroll-cue': '', 'aria-hidden': 'true' }),
     );
 
     const bodyContainer = createElement(document, 'div', { 'data-writing-body': '' });
@@ -135,7 +146,14 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
       pagination.append(button);
     });
 
-    reader.append(masthead, readingBand(document, i18n), bodyContainer, readingBand(document, i18n), pagination);
+    const articleRegion = createElement(document, 'div', { 'data-writing-article': '' });
+    articleRegion.append(
+      readingBand(document, i18n),
+      bodyContainer,
+      readingBand(document, i18n),
+      pagination,
+    );
+    reader.append(cover, articleRegion);
     root.replaceChildren(reader);
   };
 
