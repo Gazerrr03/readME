@@ -1,0 +1,14 @@
+:root {
+  --blue: #26159a;
+  --white: #ffffff;
+  --grid-size: 32px;
+  --stroke: 1px solid var(--blue);
+  --hard-shadow: 12px 12px 0 var(--blue);
+  --serif: "Times New Roman", "Songti SC", "Yu Mincho", serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body { color: var(--blue); background: var(--white); font-family: var(--serif); }
+button, input { color: inherit; font: inherit; }
