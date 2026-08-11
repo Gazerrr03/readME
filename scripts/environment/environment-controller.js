@@ -63,6 +63,20 @@ export function createDesktopEnvironmentController({
     primary.setAttribute('aria-label', `${title.textContent}: ${value.textContent}, ${detail.textContent}`);
   };
 
+  const refreshCompactLabels = () => {
+    if (!mount) return;
+    const nowButton = mount.querySelector('[data-environment-open="projects"]');
+    const latestButton = mount.querySelector('[data-environment-open="writing"]');
+    if (nowButton) {
+      nowButton.querySelector('span').textContent = i18n.t('environment.now');
+      nowButton.setAttribute('aria-label', i18n.t('environment.openProjects'));
+    }
+    if (latestButton) {
+      latestButton.querySelector('span').textContent = i18n.t('environment.latest');
+      latestButton.setAttribute('aria-label', i18n.t('environment.openWriting'));
+    }
+  };
+
   const createWidgets = () => {
     const widgets = element(document, 'aside', { 'data-environment-widgets': '' });
     const primary = element(document, 'button', {
@@ -192,7 +206,11 @@ export function createDesktopEnvironmentController({
   root.addEventListener('pointermove', handlePointerMove);
   const observer = new MutationObserver(syncRenderer);
   observer.observe(root, { attributes: true, attributeFilter: ['data-has-visible-window'] });
-  const unsubscribeI18n = i18n.subscribe(() => { renderReading(); sync(); });
+  const unsubscribeI18n = i18n.subscribe(() => {
+    renderReading();
+    refreshCompactLabels();
+    sync();
+  });
   const handleEnvironmentChange = () => sync();
   view.addEventListener('resize', handleEnvironmentChange);
   document.addEventListener('visibilitychange', syncRenderer);

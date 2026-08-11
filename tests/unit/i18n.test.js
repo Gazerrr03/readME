@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { dictionaries } from '../../scripts/i18n/dictionaries.js';
 import { createI18n } from '../../scripts/i18n/i18n.js';
 
 test('defaults to English when no locale is provided', () => {
@@ -33,23 +34,53 @@ test('does not treat inherited dictionary properties as supported locales', () =
   assert.throws(() => createI18n().setLocale('constructor'), /Unsupported locale/);
 });
 
-const environmentKeys = [
-  'environment.localTime',
-  'environment.weather',
-  'environment.tideWind',
-  'environment.conditionEmpty',
-  'environment.locationEmpty',
-  'environment.windEmpty',
-  'environment.tideEmpty',
-  'environment.now',
-  'environment.latest',
-  'environment.openProjects',
-  'environment.openWriting',
-];
+const expectedEnvironmentLabels = {
+  en: {
+    'environment.localTime': 'LOCAL TIME',
+    'environment.weather': 'WEATHER SIGNAL',
+    'environment.tideWind': 'TIDE / WIND',
+    'environment.conditionEmpty': 'CONDITION / --',
+    'environment.locationEmpty': 'LOCATION / --',
+    'environment.windEmpty': 'WIND / --',
+    'environment.tideEmpty': 'TIDE / --',
+    'environment.now': 'NOW',
+    'environment.latest': 'LATEST',
+    'environment.openProjects': 'Open Projects',
+    'environment.openWriting': 'Open Writing',
+  },
+  'zh-CN': {
+    'environment.localTime': '本地时间',
+    'environment.weather': '天气信号',
+    'environment.tideWind': '潮汐 / 风场',
+    'environment.conditionEmpty': '天气 / --',
+    'environment.locationEmpty': '地点 / --',
+    'environment.windEmpty': '风速 / --',
+    'environment.tideEmpty': '潮汐 / --',
+    'environment.now': '当前',
+    'environment.latest': '最近',
+    'environment.openProjects': '打开项目',
+    'environment.openWriting': '打开文章',
+  },
+  ja: {
+    'environment.localTime': 'ローカル時刻',
+    'environment.weather': '気象信号',
+    'environment.tideWind': '潮汐 / 風',
+    'environment.conditionEmpty': '天気 / --',
+    'environment.locationEmpty': '場所 / --',
+    'environment.windEmpty': '風 / --',
+    'environment.tideEmpty': '潮汐 / --',
+    'environment.now': '現在',
+    'environment.latest': '最新',
+    'environment.openProjects': 'プロジェクトを開く',
+    'environment.openWriting': '文章を開く',
+  },
+};
 
-test('environment labels exist in every supported locale', () => {
-  ['en', 'zh-CN', 'ja'].forEach((locale) => {
-    const i18n = createI18n(locale);
-    environmentKeys.forEach((key) => assert.notEqual(i18n.t(key), key));
+test('every locale owns the exact environment labels', () => {
+  Object.entries(expectedEnvironmentLabels).forEach(([locale, expected]) => {
+    const actual = Object.fromEntries(
+      Object.keys(expected).map((key) => [key, dictionaries[locale][key]]),
+    );
+    assert.deepEqual(actual, expected);
   });
 });
