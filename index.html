@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>SYSTEM_CONFIG // BLUER FLIGHT</title>
+    <style>
+      :root {
+        --blue: #26159a;
+        --white: #ffffff;
+        --grid: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        cursor: crosshair;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: var(--blue);
+        background-color: var(--white);
+        background-image:
+          linear-gradient(90deg, var(--blue) 1px, transparent 1px),
+          linear-gradient(var(--blue) 1px, transparent 1px);
+        background-size: 32px 32px;
+        background-attachment: fixed;
+        font-family: "Times New Roman", Times, serif;
+      }
+
+      button,
+      input {
+        color: inherit;
+        font: inherit;
+      }
+
+      .panel {
+        position: relative;
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: 1fr 60px;
+        width: 900px;
+        height: 600px;
+        border: 1px solid var(--blue);
+        background: var(--white);
+        box-shadow: 20px 20px 0 var(--blue);
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: var(--grid);
+        border-right: 1px solid var(--blue);
+      }
+
+      .brand-zone {
+        position: relative;
+        height: 180px;
+        flex: 0 0 auto;
+        margin-bottom: var(--grid);
+        overflow: hidden;
+        border-bottom: 1px solid var(--blue);
+      }
+
+      .stamp {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120px;
+        height: 120px;
+        transform: translate(-50%, -50%);
+        animation: rotate 20s linear infinite;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      .nav-item {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 4px;
+        padding: 12px;
+        border: 1px solid transparent;
+        border-radius: 0;
+        background: transparent;
+        color: var(--blue);
+        font-family: monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-align: left;
+        text-transform: uppercase;
+        transition: background-color 0.1s, color 0.1s;
+      }
+
+      .nav-item:hover,
+      .nav-item:focus-visible,
+      .nav-item.active {
+        border-color: var(--blue);
+        outline: none;
+        background: var(--blue);
+        color: var(--white);
+      }
+
+      .build-meta {
+        margin-top: auto;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 9px;
+        line-height: 1.4;
+      }
+
+      .content {
+        position: relative;
+        min-width: 0;
+        padding: 40px;
+        overflow-y: auto;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      h1 {
+        margin-bottom: 30px;
+        font-size: 48px;
+        font-weight: normal;
+        letter-spacing: -1px;
+        line-height: 0.9;
+      }
+
+      .setting-group {
+        margin-bottom: 32px;
+        padding-top: 12px;
+        border-top: 1px solid var(--blue);
+      }
+
+      .setting-label {
+        display: block;
+        margin-bottom: 16px;
+        font-family: monospace;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+
+      .radio-wrap {
+        display: flex;
+        gap: 20px;
+      }
+
+      .radio-item,
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+      }
+
+      .radio-item {
+        gap: 8px;
+      }
+
+      .checkbox-item {
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .radio-item input,
+      .checkbox-item input {
+        appearance: none;
+        flex: 0 0 auto;
+        position: relative;
+        border: 1px solid var(--blue);
+      }
+
+      .radio-item input {
+        width: 14px;
+        height: 14px;
+      }
+
+      .radio-item input:checked::after {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        background: var(--blue);
+      }
+
+      .checkbox-item input {
+        width: 16px;
+        height: 16px;
+      }
+
+      .checkbox-item input:checked {
+        background-image:
+          linear-gradient(45deg, var(--blue) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--blue) 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, var(--blue) 75%),
+          linear-gradient(-45deg, transparent 75%, var(--blue) 75%);
+        background-size: 4px 4px;
+      }
+
+      .radio-item input:focus-visible,
+      .checkbox-item input:focus-visible,
+      input[type="range"]:focus-visible {
+        outline: 2px solid var(--blue);
+        outline-offset: 3px;
+      }
+
+      .slider-container,
+      input[type="range"] {
+        width: 100%;
+      }
+
+      input[type="range"] {
+        appearance: none;
+        height: 24px;
+        border: 1px solid var(--blue);
+        background: transparent;
+      }
+
+      input[type="range"]::-webkit-slider-runnable-track {
+        background-image: repeating-linear-gradient(
+          90deg,
+          var(--blue),
+          var(--blue) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 12px;
+        height: 24px;
+        margin-top: -1px;
+        border: 1px solid var(--white);
+        background: var(--blue);
+      }
+
+      input[type="range"]::-moz-range-track {
+        height: 22px;
+        background-image: repeating-linear-gradient(
+          90deg,
+          var(--blue),
+          var(--blue) 1px,
+          transparent 1px,
+          transparent 4px
+        );
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 12px;
+        height: 22px;
+        border: 1px solid var(--white);
+        border-radius: 0;
+        background: var(--blue);
+      }
+
+      .footer {
+        grid-column: 1 / span 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-width: 0;
+        padding: 0 20px;
+        border-top: 1px solid var(--blue);
+      }
+
+      .footer-logo {
+        flex: 0 0 auto;
+        font-size: 24px;
+        letter-spacing: 0.5px;
+      }
+
+      .footer-meta {
+        display: flex;
+        gap: 30px;
+        min-width: 0;
+        font-family: monospace;
+        font-size: 9px;
+        text-transform: uppercase;
+      }
+
+      .dither-block {
+        width: 100%;
+        height: 60px;
+        margin-top: 20px;
+        background-image:
+          linear-gradient(
+            45deg,
+            var(--blue) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--blue) 75%,
+            var(--blue)
+          ),
+          linear-gradient(
+            45deg,
+            var(--blue) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--blue) 75%,
+            var(--blue)
+          );
+        background-position: 0 0, 2px 2px;
+        background-size: 4px 4px;
+      }
+
+      .interference {
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 100%;
+        opacity: 0.1;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          0deg,
+          var(--blue),
+          var(--blue) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+      }
+
+      .tab-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .data-viz {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 40px;
+      }
+
+      .data-bar {
+        width: 4px;
+        background: var(--blue);
+        transition: height 0.2s steps(2, end);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .stamp {
+          animation: none;
+        }
+
+        .data-bar {
+          transition: none;
+        }
+      }
+
+      @media (max-width: 760px) {
+        body {
+          align-items: flex-start;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+
+        .panel {
+          display: block;
+          width: calc(100% - 32px);
+          height: auto;
+          min-height: calc(100vh - 64px);
+          margin: 24px 16px 40px;
+          box-shadow: 10px 10px 0 var(--blue);
+        }
+
+        .sidebar {
+          display: block;
+          border-right: 0;
+          border-bottom: 1px solid var(--blue);
+        }
+
+        .brand-zone {
+          height: 112px;
+        }
+
+        .stamp {
+          width: 96px;
+          height: 96px;
+        }
+
+        .sidebar nav {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 4px;
+        }
+
+        .nav-item {
+          justify-content: center;
+          min-height: 48px;
+          margin: 0;
+          padding: 8px 5px;
+          font-size: 9px;
+          letter-spacing: 0;
+          text-align: center;
+        }
+
+        .nav-item span:last-child {
+          display: none;
+        }
+
+        .build-meta {
+          display: none;
+        }
+
+        .content {
+          min-height: 500px;
+          padding: 32px 24px;
+          overflow: visible;
+        }
+
+        h1 {
+          font-size: 40px;
+          line-height: 0.95;
+        }
+
+        .radio-wrap {
+          flex-wrap: wrap;
+          row-gap: 12px;
+        }
+
+        .footer {
+          display: block;
+          padding: 16px 20px;
+          border-top: 1px solid var(--blue);
+        }
+
+        .footer-logo {
+          margin-bottom: 12px;
+        }
+
+        .footer-meta {
+          display: grid;
+          gap: 6px;
+          line-height: 1.4;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <aside class="sidebar">
+        <div class="brand-zone" aria-hidden="true">
+          <svg class="stamp" viewBox="0 0 100 100">
+            <path
+              id="circlePath"
+              d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
+              fill="none"
+            ></path>
+            <text font-family="monospace" font-size="8" fill="#26159A">
+              <textPath href="#circlePath">
+                SYSTEM CONFIG • ORE-OH! STUDIO • SYSTEM CONFIG • ORE-OH! STUDIO •
+              </textPath>
+            </text>
+          </svg>
+        </div>
+
+        <nav aria-label="System configuration">
+          <button class="nav-item active" type="button" data-tab="display" aria-controls="display" aria-selected="true">
+            <span>01 DISPLAY</span><span>[+]</span>
+          </button>
+          <button class="nav-item" type="button" data-tab="mouse" aria-controls="mouse" aria-selected="false">
+            <span>02 MOUSE</span><span>[-]</span>
+          </button>
+          <button class="nav-item" type="button" data-tab="network" aria-controls="network" aria-selected="false">
+            <span>03 NETWORK</span><span>[!]</span>
+          </button>
+        </nav>
+
+        <div class="build-meta">
+          REF: 2019.9.25<br />
+          HYOJA BEER ENGINE<br />
+          BUILD: 882.A
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="interference" aria-hidden="true"></div>
+
+        <section id="display" class="tab-content active" aria-labelledby="display-title">
+          <h1 id="display-title">Visual Output</h1>
+
+          <div class="setting-group">
+            <label class="setting-label" for="density">Resolution Grid Density</label>
+            <input id="density" type="range" min="0" max="100" value="72" />
+          </div>
+
+          <div class="setting-group" role="group" aria-labelledby="sync-frequency-label">
+            <span id="sync-frequency-label" class="setting-label">Sync Frequency</span>
+            <div class="radio-wrap">
+              <label class="radio-item"><input type="radio" name="freq" checked /> 60Hz</label>
+              <label class="radio-item"><input type="radio" name="freq" /> 75Hz</label>
+              <label class="radio-item"><input type="radio" name="freq" /> 120Hz</label>
+            </div>
+          </div>
+
+          <div class="setting-group" role="group" aria-labelledby="post-process-label">
+            <span id="post-process-label" class="setting-label">Post-Process Filter</span>
+            <label class="checkbox-item"><input type="checkbox" checked /> 1-Bit Dither Overlay</label>
+            <label class="checkbox-item"><input type="checkbox" /> Moiré Interference</label>
+            <label class="checkbox-item"><input type="checkbox" checked /> Aliased Edges</label>
+          </div>
+
+          <div class="dither-block" aria-hidden="true"></div>
+        </section>
+
+        <section id="mouse" class="tab-content" aria-labelledby="mouse-title" hidden>
+          <h1 id="mouse-title">Tactile Input</h1>
+
+          <div class="setting-group">
+            <label class="setting-label" for="sensitivity">Tracking Sensitivity</label>
+            <input id="sensitivity" type="range" min="0" max="100" value="45" />
+          </div>
+
+          <div class="setting-group">
+            <span class="setting-label">Double-Click Threshold</span>
+            <div class="data-viz" aria-hidden="true">
+              <div class="data-bar" style="height: 10%"></div>
+              <div class="data-bar" style="height: 40%"></div>
+              <div class="data-bar" style="height: 20%"></div>
+              <div class="data-bar" style="height: 80%"></div>
+              <div class="data-bar" style="height: 60%"></div>
+              <div class="data-bar" style="height: 90%"></div>
+              <div class="data-bar" style="height: 30%"></div>
+            </div>
+          </div>
+
+          <div class="setting-group" role="group" aria-labelledby="pointer-acceleration-label">
+            <span id="pointer-acceleration-label" class="setting-label">Pointer Acceleration</span>
+            <label class="checkbox-item"><input type="checkbox" checked /> Linear Decay</label>
+            <label class="checkbox-item"><input type="checkbox" /> Snap-to-Grid (8px)</label>
+          </div>
+        </section>
+
+        <section id="network" class="tab-content" aria-labelledby="network-title" hidden>
+          <h1 id="network-title">Signal Protocol</h1>
+
+          <div class="setting-group">
+            <label class="setting-label" for="packet-rate">Data Packet Dither Rate</label>
+            <input id="packet-rate" type="range" min="0" max="100" value="90" />
+          </div>
+
+          <div class="setting-group" role="group" aria-labelledby="protocol-architecture-label">
+            <span id="protocol-architecture-label" class="setting-label">Protocol Architecture</span>
+            <div class="radio-wrap">
+              <label class="radio-item"><input type="radio" name="proto" checked /> IPv4-Bit</label>
+              <label class="radio-item"><input type="radio" name="proto" /> IPv6-Dither</label>
+            </div>
+          </div>
+
+          <div class="setting-group" role="group" aria-labelledby="encryption-level-label">
+            <span id="encryption-level-label" class="setting-label">Encryption Level</span>
+            <label class="checkbox-item"><input type="checkbox" checked /> 128-Bit Mosaic</label>
+            <label class="checkbox-item"><input type="checkbox" checked /> Secure Cross-Hatch</label>
+          </div>
+
+          <div class="dither-block" style="background-size: 8px 1px" aria-hidden="true"></div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-logo">Bluer Flight</div>
+        <div class="footer-meta">
+          <span>NAMERCLOTHING 2ND ANNIV.</span>
+          <span>GRAPHIC FLIGHT EXHIBITION</span>
+          <span>11:00 — 23:00</span>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      const navItems = Array.from(document.querySelectorAll(".nav-item"));
+      const tabContents = Array.from(document.querySelectorAll(".tab-content"));
+
+      function switchTab(tabId) {
+        navItems.forEach((item) => {
+          const selected = item.dataset.tab === tabId;
+          item.classList.toggle("active", selected);
+          item.setAttribute("aria-selected", String(selected));
+        });
+
+        tabContents.forEach((content) => {
+          const selected = content.id === tabId;
+          content.classList.toggle("active", selected);
+          content.hidden = !selected;
+        });
+      }
+
+      navItems.forEach((item, index) => {
+        item.addEventListener("click", () => switchTab(item.dataset.tab));
+        item.addEventListener("keydown", (event) => {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          const direction = event.key === "ArrowRight" ? 1 : -1;
+          const next = navItems[(index + direction + navItems.length) % navItems.length];
+          next.focus();
+          switchTab(next.dataset.tab);
+        });
+      });
+
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        window.setInterval(() => {
+          document.querySelectorAll(".data-bar").forEach((bar) => {
+            bar.style.height = `${Math.random() * 100}%`;
+          });
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
