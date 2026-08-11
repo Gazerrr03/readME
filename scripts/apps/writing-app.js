@@ -9,6 +9,20 @@ function createElement(document, tagName, attributes = {}, text = '') {
 
 const padIndex = (value) => String(value).padStart(2, '0');
 
+export function getWritingCoverVariant(slug, index) {
+  const hash = Array.from(slug).reduce((total, character) => (
+    (total * 31 + character.codePointAt(0)) >>> 0
+  ), 0);
+  return padIndex((hash + index) % 4 + 1);
+}
+
+export function getWritingTitleTier(title) {
+  const length = Array.from(title.trim()).length;
+  if (length >= 48) return 'long';
+  if (length >= 22) return 'medium';
+  return 'short';
+}
+
 function estimateMinutes(body) {
   const text = body.filter((item) => typeof item === 'string').join(' ');
   const cjk = (text.match(/[\u3000-\u9fff\uff00-\uffef]/g) ?? []).length;
