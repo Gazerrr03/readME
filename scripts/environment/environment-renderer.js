@@ -52,7 +52,9 @@ export function createEnvironmentRenderer({
     context.textBaseline = 'top';
     const columns = Math.max(1, Math.ceil(width / CELL_WIDTH));
     const rows = Math.max(1, Math.ceil(height / CELL_HEIGHT));
-    const windOffset = (frame + Math.round((dampedPointer.x - 0.5) * 8)) % columns;
+    const windDirection = dampedPointer.x < 0.5 ? -1 : 1;
+    const windOffset = (frame * windDirection + Math.round((dampedPointer.x - 0.5) * 8)) % columns;
+    const density = 0.2 + dampedPointer.y * 0.8;
     for (let row = 0; row < rows; row += 1) {
       for (let column = 0; column < columns; column += 1) {
         const x = column * CELL_WIDTH;
@@ -62,6 +64,8 @@ export function createEnvironmentRenderer({
         const terrain = sampleTerrain(column, row, columns, rows);
         const wave = row > rows * 0.55 ? Math.sin((column + windOffset) * 0.25 + frame * 0.2) * 18 : 0;
         const wind = row < rows * 0.58 && (column + windOffset) % 17 === 0 ? 34 : 0;
+        const densitySample = ((column * 17 + row * 31 + frame * 7) % 100) / 100;
+        if (densitySample > density) continue;
         const level = Math.max(0, Math.min(255, terrain + wave + wind));
         const glyph = GLYPHS[Math.min(GLYPHS.length - 1, Math.floor(level / 256 * GLYPHS.length))];
         if (glyph === ' ') continue;
@@ -99,8 +103,11 @@ export function createEnvironmentRenderer({
       canvas.style.height = `${height}px`;
       draw();
     },
-    setPointer(next) { pointer = { x: next.x, y: next.y }; },
+    setPointer(next) {
+      if (!destroyed && motion !== 'focused') pointer = { x: next.x, y: next.y };
+    },
     setMotionState(next) {
+      if (destroyed) return;
       motion = next;
       stop();
       draw();
