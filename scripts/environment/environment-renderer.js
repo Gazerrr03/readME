@@ -2,10 +2,13 @@ import { getQuietZoneOpacity } from './environment-state.js';
 
 const BLUE = '#26159a';
 const WHITE = '#ffffff';
-const GLYPHS = ' .:-=+*#%@';
+// Paul Bourke's density-ordered ramp, darkest to lightest.
+const GLYPHS = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,"^`. ';
 const FRAME_INTERVAL = 100;
-const CELL_WIDTH = 11;
-const CELL_HEIGHT = 14;
+const CELL_WIDTH = 3.6;
+const CELL_HEIGHT = 6;
+const FONT_SIZE = 6;
+const INK_ALPHA = 0.3;
 
 export function createEnvironmentRenderer({
   canvas,
@@ -20,6 +23,7 @@ export function createEnvironmentRenderer({
   let geometry = { width: 1, height: 1, dpr: 1, quietZones: [] };
   let pointer = { x: 0.5, y: 0.5 };
   let dampedPointer = { ...pointer };
+  let pointerEnergy = 0;
   let motion = 'static';
   let frameId = null;
   let lastDraw = -FRAME_INTERVAL;
@@ -33,10 +37,7 @@ export function createEnvironmentRenderer({
   );
 
   const sampleTerrain = (column, row, columns, rows) => {
-    if (!hasTerrain) {
-      const horizon = rows * 0.55;
-      return row < horizon ? 8 : Math.min(220, 72 + (row - horizon) * 18);
-    }
+    if (!hasTerrain) return 128;
     const sourceX = Math.min(terrainMap.width - 1, Math.floor(column / columns * terrainMap.width));
     const sourceY = Math.min(terrainMap.height - 1, Math.floor(row / rows * terrainMap.height));
     return terrainMap.values[sourceY * terrainMap.width + sourceX];
@@ -45,16 +46,17 @@ export function createEnvironmentRenderer({
   const draw = () => {
     const { width, height, dpr, quietZones } = geometry;
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
-    context.fillStyle = BLUE;
-    context.fillRect(0, 0, width, height);
     context.fillStyle = WHITE;
-    context.font = `700 ${CELL_HEIGHT - 2}px ui-monospace, monospace`;
+    context.fillRect(0, 0, width, height);
+    context.fillStyle = BLUE;
+    context.font = `600 ${FONT_SIZE}px ui-monospace, monospace`;
     context.textBaseline = 'top';
     const columns = Math.max(1, Math.ceil(width / CELL_WIDTH));
     const rows = Math.max(1, Math.ceil(height / CELL_HEIGHT));
-    const windDirection = dampedPointer.x < 0.5 ? -1 : 1;
-    const windOffset = (frame * windDirection + Math.round((dampedPointer.x - 0.5) * 8)) % columns;
-    const density = 0.2 + dampedPointer.y * 0.8;
+    const pointerX = dampedPointer.x * width;
+    const pointerY = dampedPointer.y * height;
+    const drift = frame * 0.06;
+    const ripplePhase = frame * 0.18;
     for (let row = 0; row < rows; row += 1) {
       for (let column = 0; column < columns; column += 1) {
         const x = column * CELL_WIDTH;
@@ -62,14 +64,14 @@ export function createEnvironmentRenderer({
         const quietOpacity = getQuietZoneOpacity({ x, y }, quietZones);
         if (quietOpacity <= 0.04) continue;
         const terrain = sampleTerrain(column, row, columns, rows);
-        const wave = row > rows * 0.55 ? Math.sin((column + windOffset) * 0.25 + frame * 0.2) * 18 : 0;
-        const wind = row < rows * 0.58 && (column + windOffset) % 17 === 0 ? 34 : 0;
-        const densitySample = ((column * 17 + row * 31 + frame * 7) % 100) / 100;
-        if (densitySample > density) continue;
-        const level = Math.max(0, Math.min(255, terrain + wave + wind));
-        const glyph = GLYPHS[Math.min(GLYPHS.length - 1, Math.floor(level / 256 * GLYPHS.length))];
+        const driftWave = Math.sin(column * 0.2 + row * 0.11 + drift) * 7;
+        const distance = Math.hypot(x - pointerX, y - pointerY);
+        const ripple = Math.sin(distance * 0.045 - ripplePhase) * 30 * pointerEnergy
+          * Math.exp(-(distance * distance) / (2 * 70 * 70));
+        const level = Math.max(0, Math.min(255, terrain + driftWave + ripple));
+        const glyph = GLYPHS[Math.min(GLYPHS.length - 1, Math.floor((255 - level) / 256 * GLYPHS.length))];
         if (glyph === ' ') continue;
-        context.globalAlpha = quietOpacity;
+        context.globalAlpha = INK_ALPHA * quietOpacity;
         context.fillText(glyph, x, y);
       }
     }
@@ -82,6 +84,7 @@ export function createEnvironmentRenderer({
     if (time - lastDraw >= FRAME_INTERVAL) {
       dampedPointer.x += (pointer.x - dampedPointer.x) * 0.12;
       dampedPointer.y += (pointer.y - dampedPointer.y) * 0.12;
+      pointerEnergy *= 0.85;
       frame += 1;
       lastDraw = time;
       draw();
@@ -96,6 +99,7 @@ export function createEnvironmentRenderer({
 
   return {
     resize({ width, height, dpr = 1, quietZones = [] }) {
+      if (destroyed) return;
       geometry = { width, height, dpr: Math.min(2, Math.max(1, dpr || 1)), quietZones };
       canvas.width = Math.round(width * geometry.dpr);
       canvas.height = Math.round(height * geometry.dpr);
@@ -104,16 +108,26 @@ export function createEnvironmentRenderer({
       draw();
     },
     setPointer(next) {
-      if (!destroyed && motion !== 'focused') pointer = { x: next.x, y: next.y };
+      if (destroyed || motion === 'focused') return;
+      pointerEnergy = Math.min(1, pointerEnergy + Math.hypot(next.x - pointer.x, next.y - pointer.y) * 6);
+      pointer = { x: next.x, y: next.y };
     },
     setMotionState(next) {
       if (destroyed) return;
       motion = next;
       stop();
-      draw();
-      if (motion === 'running') frameId = scheduler.request(tick);
+      if (motion === 'running') {
+        lastDraw = -FRAME_INTERVAL;
+        frameId = scheduler.request(tick);
+      } else {
+        draw();
+      }
     },
-    renderStatic() { stop(); draw(); },
+    renderStatic() {
+      if (destroyed) return;
+      stop();
+      draw();
+    },
     getDebugState() { return { motion, destroyed, frame }; },
     destroy() { destroyed = true; stop(); },
   };

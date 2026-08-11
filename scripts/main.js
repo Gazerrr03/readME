@@ -1,8 +1,14 @@
 import { createBootController } from './boot.js';
 import { createAudioService } from './audio.js';
 import { getApps } from './apps/app-registry.js';
+import { renderAboutApp } from './apps/about-app.js';
+import { renderAlbumsApp, selectAlbum } from './apps/albums-app.js';
+import { renderContactApp } from './apps/contact-app.js';
+import { renderPhotosApp, selectPhoto } from './apps/photos-app.js';
 import { renderPlaceholderApp } from './apps/placeholder-app.js';
+import { renderProjectsApp } from './apps/projects-app.js';
 import { renderSettingsApp } from './apps/settings-app.js';
+import { renderWritingApp } from './apps/writing-app.js';
 import { createDesktopController } from './desktop.js';
 import { createDesktopEnvironmentController } from './environment/environment-controller.js';
 import { createI18n } from './i18n/i18n.js';
@@ -34,6 +40,11 @@ export const desktop = createDesktopController({
   i18n,
   preferences,
   onOpen: openApp,
+  onOpenFolderItem: (kind, slug) => {
+    if (kind === 'photos') selectPhoto(slug);
+    else if (kind === 'albums') selectAlbum(slug);
+    openApp(kind);
+  },
   onPreferenceChange: (patch) => updatePreferences(patch),
   onBotNotice: () => audio.play('notice'),
   onRender: ({ mode }) => environment.sync({ mode }),
@@ -43,8 +54,15 @@ windowManager = createWindowManager({
   taskSurface: desktopRoot,
   registry: apps,
   i18n,
+  preferences,
   renderers: {
     placeholder: renderPlaceholderApp,
+    projects: renderProjectsApp,
+    writing: renderWritingApp,
+    about: renderAboutApp,
+    contact: renderContactApp,
+    photos: renderPhotosApp,
+    albums: renderAlbumsApp,
     settings: (context) => renderSettingsApp({
       ...context,
       preferences,
@@ -59,13 +77,14 @@ updatePreferences = (patch) => {
   persistPreferences(preferences);
   if (patch.audioEnabled !== undefined) audio.setEnabled(preferences.audioEnabled);
   if (patch.locale !== undefined) i18n.setLocale(preferences.locale);
-  desktop.syncPreferences();
+  desktop.syncPreferences(patch);
   requestAnimationFrame(() => windowManager.reclamp());
 };
 const revealDesktop = () => {
   if (!desktopRoot.dataset.desktopMode) desktop.render();
   desktopRoot.hidden = false;
   desktopRoot.dataset.ready = 'true';
+  requestAnimationFrame(() => environment.sync({ mode: desktopRoot.dataset.desktopMode }));
 };
 
 document.documentElement.lang = i18n.locale;

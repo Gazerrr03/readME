@@ -125,3 +125,49 @@ export function moveWindow(state, appId, position, bounds) {
     )),
   });
 }
+
+export function boundsFillGeometry(bounds) {
+  return {
+    x: bounds.x,
+    y: bounds.y,
+    width: bounds.width,
+    height: bounds.height - bounds.y,
+  };
+}
+
+export function maximizeWindow(state, appId, bounds) {
+  const target = state.windows.find((window) => window.appId === appId);
+  if (!target || target.fullscreen) return copyState(state);
+
+  return copyState(state, {
+    windows: state.windows.map((window) => (
+      window.appId === appId
+        ? {
+            ...window,
+            fullscreen: true,
+            restoreGeometry: {
+              x: window.x, y: window.y, width: window.width, height: window.height,
+            },
+            ...boundsFillGeometry(bounds),
+          }
+        : window
+    )),
+  });
+}
+
+export function unmaximizeWindow(state, appId, bounds) {
+  const target = state.windows.find((window) => window.appId === appId);
+  if (!target || !target.fullscreen) return copyState(state);
+
+  return copyState(state, {
+    windows: state.windows.map((window) => {
+      if (window.appId !== appId) return window;
+      const next = { ...window, fullscreen: false };
+      delete next.restoreGeometry;
+      return {
+        ...next,
+        ...clampGeometry({ ...next, ...(window.restoreGeometry ?? {}) }, bounds),
+      };
+    }),
+  });
+}

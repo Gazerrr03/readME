@@ -1,12 +1,15 @@
 import {
+  boundsFillGeometry,
   clampGeometry,
   closeWindow,
   createWindowState,
   focusWindow,
+  maximizeWindow,
   minimizeWindow,
   moveWindow,
   openWindow,
   restoreWindow,
+  unmaximizeWindow,
 } from './state/window-state.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
@@ -33,10 +36,24 @@ function findSurfaces(taskSurface, selector) {
   return [...matches, ...taskSurface.querySelectorAll(selector)];
 }
 
-export function createWindowManager({ root, taskSurface = root, registry, i18n, renderers = {} }) {
+export function createWindowManager({
+  root,
+  taskSurface = root,
+  registry,
+  i18n,
+  preferences = {},
+  renderers = {},
+}) {
   let state = createWindowState();
   let drag = null;
+  let inertiaFrame = null;
   const windowElements = new Map();
+  const pointerPreferences = () => ({
+    trackingSensitivity: preferences.trackingSensitivity ?? 50,
+    pointerAcceleration: preferences.pointerAcceleration ?? true,
+    linearDecay: preferences.linearDecay ?? false,
+    snapToGrid: preferences.snapToGrid ?? true,
+  });
   const isNarrow = () => root.ownerDocument.defaultView
     .matchMedia('(max-width: 760px)').matches;
   const resetNarrowScroll = () => {
@@ -80,7 +97,11 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     const renderer = getRenderer(renderers, app.renderer);
     if (typeof renderer !== 'function') return;
 
-    const content = renderer({ app, i18n, mount });
+    const host = {
+      maximize: () => manager.maximize(app.id),
+      unmaximize: () => manager.unmaximize(app.id),
+    };
+    const content = renderer({ app, i18n, mount, host });
     if (content instanceof root.ownerDocument.defaultView.Node) mount.append(content);
     else if (typeof content === 'string') mount.textContent = content;
   };
@@ -105,28 +126,67 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
       minimizeButton,
       closeButton,
     );
-    titleBar.append(title, controls);
+    // macOS traffic-light cluster (close/minimize/maximize), left side.
+    // Distinct data attributes keep the Windows-only e2e selectors stable.
+    const controlsMac = createElement(document, 'div', { 'data-window-controls-mac': '' });
+    const macCloseButton = createElement(document, 'button', {
+      type: 'button',
+      'data-window-mac-close': '',
+      'data-tone': 'close',
+    });
+    const macMinimizeButton = createElement(document, 'button', {
+      type: 'button',
+      'data-window-mac-minimize': '',
+      'data-tone': 'minimize',
+    });
+    const macMaximizeButton = createElement(document, 'button', {
+      type: 'button',
+      'data-window-mac-maximize': '',
+      'data-tone': 'maximize',
+    });
+    controlsMac.append(macCloseButton, macMinimizeButton, macMaximizeButton);
+    titleBar.append(controlsMac, title, controls);
 
     const mount = createElement(document, 'div', { 'data-window-content': '' });
     renderContent(mount, app);
     article.append(titleBar, mount);
-    return { article, title, minimizeButton, closeButton };
+    return {
+      article,
+      title,
+      minimizeButton,
+      closeButton,
+      macCloseButton,
+      macMinimizeButton,
+      macMaximizeButton,
+    };
   };
 
   const updateWindowElement = (elements, window, app) => {
     const { article, title, minimizeButton, closeButton } = elements;
     const localizedTitle = i18n.t(app.titleKey);
     article.dataset.windowStatus = window.status;
+    article.dataset.windowActive = String(state.activeId === window.appId);
+    article.dataset.windowFullscreen = String(Boolean(window.fullscreen));
     article.setAttribute('aria-label', localizedTitle);
     article.hidden = window.status === 'minimized';
+    applyWindowPosition(elements, window);
+    title.textContent = localizedTitle;
+    minimizeButton.setAttribute('aria-label', i18n.t('windows.minimize'));
+    closeButton.setAttribute('aria-label', i18n.t('windows.close'));
+    elements.macMinimizeButton.setAttribute('aria-label', i18n.t('windows.minimize'));
+    elements.macCloseButton.setAttribute('aria-label', i18n.t('windows.close'));
+    elements.macMaximizeButton.setAttribute('aria-label', i18n.t('windows.maximize'));
+  };
+
+  // Position/size writes split out so dragging can update the element
+  // directly without a full render() (which rebuilds taskbar buttons).
+  const applyWindowPosition = (elements, window) => {
+    const { article } = elements;
     article.style.left = `${window.x}px`;
     article.style.top = `${window.y}px`;
     article.style.width = `${window.width}px`;
     article.style.height = `${window.height}px`;
     article.style.zIndex = String(window.z);
-    title.textContent = localizedTitle;
-    minimizeButton.setAttribute('aria-label', i18n.t('windows.minimize'));
-    closeButton.setAttribute('aria-label', i18n.t('windows.close'));
   };
 
   const renderRunningApps = () => {
@@ -216,15 +276,76 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     close(appId) {
       return update((current) => closeWindow(current, appId));
     },
+    maximize(appId) {
+      if (isNarrow()) return state;
+      return update((current) => maximizeWindow(current, appId, getBounds()));
+    },
+    unmaximize(appId) {
+      return update((current) => unmaximizeWindow(current, appId, getBounds()));
+    },
     reclamp() {
       const bounds = getBounds();
       return update((current) => current.windows.reduce((next, window) => (
-        moveWindow(next, window.appId, clampGeometry(window, bounds), bounds)
+        window.fullscreen
+          ? moveWindow(next, window.appId, boundsFillGeometry(bounds), bounds)
+          : moveWindow(next, window.appId, clampGeometry(window, bounds), bounds)
       ), current));
     },
     getState() {
       return state;
     },
+  };
+
+  const cancelInertia = () => {
+    if (inertiaFrame === null) return;
+    root.ownerDocument.defaultView.cancelAnimationFrame(inertiaFrame);
+    inertiaFrame = null;
+  };
+
+  const snapWindowToGrid = (appId) => {
+    if (!pointerPreferences().snapToGrid) return;
+    const window = state.windows.find((candidate) => candidate.appId === appId);
+    if (!window) return;
+    state = moveWindow(state, appId, {
+      x: Math.round(window.x / 8) * 8,
+      y: Math.round(window.y / 8) * 8,
+    }, getBounds());
+    render();
+  };
+
+  const startLinearDecay = ({ appId, velocityX, velocityY }) => {
+    let previousTime = performance.now();
+    let currentVelocityX = Math.max(-1.2, Math.min(1.2, velocityX));
+    let currentVelocityY = Math.max(-1.2, Math.min(1.2, velocityY));
+
+    const step = (time) => {
+      const elapsed = Math.min(32, time - previousTime);
+      previousTime = time;
+      const window = state.windows.find((candidate) => candidate.appId === appId);
+      if (!window) {
+        inertiaFrame = null;
+        return;
+      }
+      state = moveWindow(state, appId, {
+        x: window.x + currentVelocityX * elapsed,
+        y: window.y + currentVelocityY * elapsed,
+      }, getBounds());
+      const elements = windowElements.get(appId);
+      const moved = state.windows.find((candidate) => candidate.appId === appId);
+      if (elements && moved) applyWindowPosition(elements, moved);
+
+      const decay = elapsed * 0.003;
+      const decayVelocity = (velocity) => Math.sign(velocity) * Math.max(0, Math.abs(velocity) - decay);
+      currentVelocityX = decayVelocity(currentVelocityX);
+      currentVelocityY = decayVelocity(currentVelocityY);
+      if (Math.hypot(currentVelocityX, currentVelocityY) <= 0.03) {
+        inertiaFrame = null;
+        snapWindowToGrid(appId);
+        return;
+      }
+      inertiaFrame = root.ownerDocument.defaultView.requestAnimationFrame(step);
+    };
+    inertiaFrame = root.ownerDocument.defaultView.requestAnimationFrame(step);
   };
 
   const handledRunningClicks = new WeakSet();
@@ -248,7 +369,13 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     const appId = appWindow.dataset.appWindow;
     if (event.target.closest('[data-window-minimize]')) manager.minimize(appId);
     else if (event.target.closest('[data-window-close]')) manager.close(appId);
-    else manager.focus(appId);
+    else if (event.target.closest('[data-window-mac-minimize]')) manager.minimize(appId);
+    else if (event.target.closest('[data-window-mac-close]')) manager.close(appId);
+    else if (event.target.closest('[data-window-mac-maximize]')) {
+      const window = state.windows.find((candidate) => candidate.appId === appId);
+      if (window?.fullscreen) manager.unmaximize(appId);
+      else manager.maximize(appId);
+    } else manager.focus(appId);
   });
   if (taskSurface !== root && !root.contains(taskSurface)) {
     taskSurface.addEventListener('click', handleRunningAppClick);
@@ -256,29 +383,100 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
 
   root.addEventListener('pointerdown', (event) => {
     const titleBar = event.target.closest('[data-window-titlebar]');
-    if (!titleBar || event.target.closest('[data-window-controls]')) return;
+    if (!titleBar || event.target.closest('[data-window-controls], [data-window-controls-mac]')) return;
     if (isNarrow()) return;
 
+    cancelInertia();
     const appId = titleBar.closest('[data-app-window]').dataset.appWindow;
     manager.focus(appId);
     const window = state.windows.find((candidate) => candidate.appId === appId);
-    drag = { appId, pointerId: event.pointerId, x: window.x, y: window.y, clientX: event.clientX, clientY: event.clientY };
+    drag = {
+      appId,
+      pointerId: event.pointerId,
+      lastClientX: event.clientX,
+      lastClientY: event.clientY,
+      lastTime: performance.now(),
+      velocityX: 0,
+      velocityY: 0,
+      pendingX: 0,
+      pendingY: 0,
+      frame: null,
+    };
     root.setPointerCapture(event.pointerId);
   });
 
+  // Apply accumulated drag deltas: update state, then write the element's
+  // position directly — a full render() per pointermove rebuilds the
+  // taskbar/dock buttons and makes dragging stutter.
+  const applyDragMovement = () => {
+    if (!drag) return;
+    drag.frame = null;
+    const deltaX = drag.pendingX;
+    const deltaY = drag.pendingY;
+    drag.pendingX = 0;
+    drag.pendingY = 0;
+    if (deltaX === 0 && deltaY === 0) return;
+    const window = state.windows.find((candidate) => candidate.appId === drag.appId);
+    if (!window) return;
+    state = moveWindow(state, drag.appId, {
+      x: window.x + deltaX,
+      y: window.y + deltaY,
+    }, getBounds());
+    const elements = windowElements.get(drag.appId);
+    const moved = state.windows.find((candidate) => candidate.appId === drag.appId);
+    if (elements && moved) applyWindowPosition(elements, moved);
+  };
+
   root.addEventListener('pointermove', (event) => {
     if (!drag || drag.pointerId !== event.pointerId) return;
-    state = moveWindow(state, drag.appId, {
-      x: drag.x + event.clientX - drag.clientX,
-      y: drag.y + event.clientY - drag.clientY,
-    }, getBounds());
-    render();
+    const now = performance.now();
+    const elapsed = Math.max(1, now - drag.lastTime);
+    const rawX = event.clientX - drag.lastClientX;
+    const rawY = event.clientY - drag.lastClientY;
+    const { trackingSensitivity, pointerAcceleration } = pointerPreferences();
+    const sensitivity = trackingSensitivity / 50;
+    const rawVelocity = Math.hypot(rawX, rawY) / elapsed;
+    const acceleration = pointerAcceleration ? Math.min(1.6, 1 + rawVelocity * 0.25) : 1;
+    const deltaX = rawX * sensitivity * acceleration;
+    const deltaY = rawY * sensitivity * acceleration;
+    drag.pendingX += deltaX;
+    drag.pendingY += deltaY;
+    drag.lastClientX = event.clientX;
+    drag.lastClientY = event.clientY;
+    drag.lastTime = now;
+    drag.velocityX = deltaX / elapsed;
+    drag.velocityY = deltaY / elapsed;
+    // Coalesce all pointermove bursts into one update per animation frame.
+    if (drag.frame === null) {
+      drag.frame = root.ownerDocument.defaultView.requestAnimationFrame(applyDragMovement);
+    }
   });
 
   const finishDrag = (event) => {
     if (!drag || drag.pointerId !== event.pointerId) return;
     if (root.hasPointerCapture(event.pointerId)) root.releasePointerCapture(event.pointerId);
+    const completedDrag = drag;
     drag = null;
+    if (completedDrag.frame !== null) {
+      root.ownerDocument.defaultView.cancelAnimationFrame(completedDrag.frame);
+      completedDrag.frame = null;
+      drag = completedDrag; // applyDragMovement needs drag set; restore briefly
+      applyDragMovement();
+      drag = null;
+    } else if (completedDrag.pendingX !== 0 || completedDrag.pendingY !== 0) {
+      drag = completedDrag;
+      applyDragMovement();
+      drag = null;
+    }
+    if (
+      event.type === 'pointerup'
+      && pointerPreferences().linearDecay
+      && Math.hypot(completedDrag.velocityX, completedDrag.velocityY) > 0.05
+    ) {
+      startLinearDecay(completedDrag);
+    } else {
+      snapWindowToGrid(completedDrag.appId);
+    }
   };
   root.addEventListener('pointerup', finishDrag);
   root.addEventListener('pointercancel', finishDrag);

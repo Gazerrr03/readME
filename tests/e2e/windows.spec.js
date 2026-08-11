@@ -12,8 +12,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('opens one placeholder window and restores it from the taskbar', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').dblclick();
-  await page.locator('[data-app-icon="projects"]').dblclick();
+  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-app-icon="projects"]').click();
 
   const appWindow = page.locator('[data-app-window="projects"]');
   await expect(appWindow).toHaveCount(1);
@@ -29,8 +29,8 @@ test('opens one placeholder window and restores it from the taskbar', async ({ p
 });
 
 test('focuses an existing window and close removes its running entry', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').dblclick();
-  await page.locator('[data-app-icon="writing"]').dblclick();
+  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-app-icon="writing"]').click();
 
   const projects = page.locator('[data-app-window="projects"]');
   const writing = page.locator('[data-app-window="writing"]');
@@ -44,7 +44,7 @@ test('focuses an existing window and close removes its running entry', async ({ 
 });
 
 test('dragging the title bar moves the window and keeps it reachable', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').dblclick();
+  await page.locator('[data-app-icon="projects"]').click();
   const appWindow = page.locator('[data-app-window="projects"]');
   const titleBar = appWindow.locator('[data-window-titlebar]');
   const before = await appWindow.boundingBox();
@@ -78,7 +78,7 @@ test('renderer-owned DOM survives focus and pointer dragging', async ({ page }) 
       registry: getApps(),
       i18n: createI18n('en'),
       renderers: {
-        placeholder: () => {
+        projects: () => {
           rendererCalls += 1;
           const input = document.createElement('input');
           input.dataset.rendererInput = '';
@@ -109,7 +109,7 @@ test('renderer-owned DOM survives focus and pointer dragging', async ({ page }) 
 });
 
 test('switching from Windows to macOS re-clamps an open window below the menu', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').dblclick();
+  await page.locator('[data-app-icon="projects"]').click();
   const appWindow = page.locator('[data-app-window="projects"]');
   const titleBar = appWindow.locator('[data-window-titlebar]');
   const titleBox = await titleBar.boundingBox();
@@ -136,7 +136,7 @@ test('switching from Windows to macOS re-clamps an open window below the menu', 
 });
 
 test('a left-clamped window exposes a draggable recovery region beside its controls', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').dblclick();
+  await page.locator('[data-app-icon="projects"]').click();
   const appWindow = page.locator('[data-app-window="projects"]');
   const titleBar = appWindow.locator('[data-window-titlebar]');
   const titleBox = await titleBar.boundingBox();
@@ -145,7 +145,9 @@ test('a left-clamped window exposes a draggable recovery region beside its contr
   await page.mouse.down();
   await page.mouse.move(1, titleBox.y + 16);
   await page.mouse.up();
-  await expect.poll(() => appWindow.evaluate((element) => element.offsetLeft)).toBe(-424);
+  // The clamp keeps a 96px (LEFT_TITLE_BAR_REACH) draggable strip: x = 96 - width.
+  const windowWidth = await appWindow.evaluate((element) => element.offsetWidth);
+  await expect.poll(() => appWindow.evaluate((element) => element.offsetLeft)).toBe(96 - windowWidth);
 
   const clampedTitle = await titleBar.boundingBox();
   await page.mouse.move(16, clampedTitle.y + 16);
@@ -176,7 +178,7 @@ test('an external task surface restores a minimized window', async ({ page }) =>
       taskSurface,
       registry: getApps(),
       i18n: createI18n('en'),
-      renderers: { placeholder: () => document.createElement('p') },
+      renderers: { projects: () => document.createElement('p') },
     });
     manager.open('projects');
     manager.minimize('projects');

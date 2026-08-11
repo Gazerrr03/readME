@@ -5,10 +5,12 @@ import {
   closeWindow,
   createWindowState,
   focusWindow,
+  maximizeWindow,
   minimizeWindow,
   moveWindow,
   openWindow,
   restoreWindow,
+  unmaximizeWindow,
 } from '../../scripts/state/window-state.js';
 
 const app = { id: 'projects', defaultSize: { width: 520, height: 360 } };
@@ -83,6 +85,42 @@ test('clampGeometry keeps the size and clamps both axes to reachable limits', ()
   );
 });
 
+test('maximize fills the bounds and unmaximize restores the geometry', () => {
+  const opened = openWindow(createWindowState(), app, bounds);
+  const original = opened.windows[0];
+  const maximized = maximizeWindow(opened, 'projects', bounds);
+  const full = maximized.windows[0];
+
+  assert.equal(full.fullscreen, true);
+  assert.deepEqual(
+    { x: full.x, y: full.y, width: full.width, height: full.height },
+    { x: 0, y: 24, width: 1280, height: 632 },
+  );
+  assert.deepEqual(full.restoreGeometry, {
+    x: original.x, y: original.y, width: original.width, height: original.height,
+  });
+
+  const restored = unmaximizeWindow(maximized, 'projects', bounds);
+  const back = restored.windows[0];
+  assert.equal(back.fullscreen, false);
+  assert.deepEqual(
+    { x: back.x, y: back.y, width: back.width, height: back.height },
+    { x: original.x, y: original.y, width: original.width, height: original.height },
+  );
+  assert.equal(back.restoreGeometry, undefined);
+});
+
+test('maximize is idempotent and unmaximize is a no-op outside fullscreen', () => {
+  const opened = openWindow(createWindowState(), app, bounds);
+  const maximized = maximizeWindow(opened, 'projects', bounds);
+  const again = maximizeWindow(maximized, 'projects', bounds);
+  assert.deepEqual(again.windows[0].restoreGeometry, maximized.windows[0].restoreGeometry);
+
+  const untouched = unmaximizeWindow(opened, 'projects', bounds);
+  assert.equal(untouched.windows[0].fullscreen, undefined);
+  assert.equal(untouched.windows[0].width, 520);
+});
+
 test('every transition returns a new state and windows array without mutating input', () => {
   const opened = openWindow(createWindowState(), app, bounds);
   const snapshot = structuredClone(opened);
@@ -92,6 +130,8 @@ test('every transition returns a new state and windows array without mutating in
     restoreWindow(opened, 'missing'),
     closeWindow(opened, 'missing'),
     moveWindow(opened, 'missing', { x: 12, y: 34 }, bounds),
+    maximizeWindow(opened, 'missing', bounds),
+    unmaximizeWindow(opened, 'missing', bounds),
   ];
 
   transitions.forEach((next) => {

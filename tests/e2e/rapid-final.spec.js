@@ -19,9 +19,10 @@ test('Settings drives live layout, locale, audio, replay, and BOT status', async
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
 
-  await page.locator('[data-app-icon="projects"]').dblclick();
-  await expect(page.locator('[data-app-window="projects"]')).toContainText('COMING SOON');
-  await page.locator('[data-app-icon="settings"]').dblclick();
+  await page.locator('[data-app-icon="projects"]').click();
+  await expect(page.locator('[data-app-window="projects"] [data-projects-ring]')).toBeVisible();
+  await expect(page.locator('[data-app-window="projects"] [data-projects-position]')).toHaveText('01 / 05');
+  await page.locator('[data-app-icon="settings"]').click();
 
   const settings = page.locator('[data-app-window="settings"]');
   await settings.getByLabel('Desktop Layout').selectOption('macos');
@@ -30,8 +31,8 @@ test('Settings drives live layout, locale, audio, replay, and BOT status', async
 
   await settings.getByLabel('Language').selectOption('zh-CN');
   await expect(page).toHaveTitle('凌晨两点，不存在的频率');
-  await expect(page.locator('[data-app-icon="projects"]')).toContainText('项目');
-  await expect(page.locator('[data-app-window="projects"]')).toContainText('即将开放');
+  await expect(page.locator('[data-macos-dock] [data-app-icon="projects"]')).toContainText('项目');
+  await expect(page.locator('[data-app-window="projects"] [data-window-title]')).toHaveText('项目');
   await expect(settings.locator('[data-window-title]')).toHaveText('设置');
 
   await settings.getByLabel('语言').selectOption('ja');

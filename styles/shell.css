@@ -4,7 +4,55 @@
   overflow: hidden;
   background-color: var(--white);
   background-image:
-    linear-gradient(90deg, var(--blue) 1px, transparent 1px),
-    linear-gradient(var(--blue) 1px, transparent 1px);
+    linear-gradient(90deg, color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
+}
+
+[data-desktop-root]::before,
+[data-desktop-root]::after {
+  content: '';
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity var(--ui-duration) var(--ease-out);
+  z-index: 0;
+}
+
+[data-desktop-root]::before {
+  background-image: radial-gradient(circle, var(--blue) 0 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+[data-desktop-root]::after {
+  background-image: repeating-radial-gradient(
+    ellipse at center,
+    transparent 0 12px,
+    color-mix(in srgb, var(--blue) 32%, transparent) 13px 14px,
+    transparent 15px 24px
+  );
+}
+
+[data-desktop-root][data-dither-overlay='true']::before { opacity: 0.16; }
+[data-desktop-root][data-moire-interference='true']::after { opacity: 0.32; }
+
+[data-desktop-root][data-post-process='scanline'] {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 3px,
+      color-mix(in srgb, var(--blue) 12%, transparent) 3px 4px
+    ),
+    linear-gradient(90deg, color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px);
+}
+
+[data-desktop-root][data-post-process='contrast'] { filter: contrast(1.18); }
+
+[data-desktop-root][data-aliased-edges='true'] {
+  -webkit-font-smoothing: none;
+  font-smooth: never;
+  image-rendering: pixelated;
+  text-rendering: geometricPrecision;
 }

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./styles/shell.css" />
     <link rel="stylesheet" href="./styles/boot.css" />
     <link rel="stylesheet" href="./styles/icons.css" />
+    <link rel="stylesheet" href="./styles/folders.css" />
     <link rel="stylesheet" href="./styles/windows-mode.css" />
     <link rel="stylesheet" href="./styles/macos-mode.css" />
     <link rel="stylesheet" href="./styles/environment.css" />
@@ -24,23 +25,33 @@
     </div>
     <template data-app-icon-template>
       <button type="button" data-app-icon="projects" data-selected="false" aria-pressed="false">
-        <span data-icon="folder" aria-hidden="true"></span>
+        <span data-icon="folder" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" shape-rendering="crispEdges" focusable="false"><path d="M2 3h5v1H2zM2 4h1v1H2zM6 4h1v1H6zM2 5h1v1H2zM6 5h9v1H6zM2 6h1v1H2zM14 6h1v1h-1zM2 7h1v1H2zM14 7h1v1h-1zM2 8h1v1H2zM14 8h1v1h-1zM2 9h1v1H2zM14 9h1v1h-1zM2 10h1v1H2zM14 10h1v1h-1zM2 11h1v1H2zM14 11h1v1h-1zM2 12h13v1H2z"/></svg></span>
         <span data-app-label></span>
       </button>
       <button type="button" data-app-icon="writing" data-selected="false" aria-pressed="false">
-        <span data-icon="document" aria-hidden="true"></span>
+        <span data-icon="document" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" shape-rendering="crispEdges" focusable="false"><path d="M3 1h6v1H3zM3 2h1v1H3zM9 2h1v1H9zM3 3h1v1H3zM10 3h1v1h-1zM3 4h1v1H3zM11 4h2v1h-2zM3 5h1v1H3zM12 5h1v1h-1zM3 6h1v1H3zM5 6h6v1H5zM12 6h1v1h-1zM3 7h1v1H3zM12 7h1v1h-1zM3 8h1v1H3zM5 8h6v1H5zM12 8h1v1h-1zM3 9h1v1H3zM12 9h1v1h-1zM3 10h1v1H3zM5 10h6v1H5zM12 10h1v1h-1zM3 11h1v1H3zM12 11h1v1h-1zM3 12h1v1H3zM5 12h4v1H5zM12 12h1v1h-1zM3 13h1v1H3zM12 13h1v1h-1zM3 14h10v1H3z"/></svg></span>
         <span data-app-label></span>
       </button>
       <button type="button" data-app-icon="about" data-selected="false" aria-pressed="false">
-        <span data-icon="identity" aria-hidden="true"></span>
+        <span data-icon="identity" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" shape-rendering="crispEdges" focusable="false"><path d="M6 1h4v1H6zM5 2h1v1H5zM10 2h1v1h-1zM5 3h1v1H5zM10 3h1v1h-1zM5 4h1v1H5zM10 4h1v1h-1zM5 5h1v1H5zM10 5h1v1h-1zM6 6h4v1H6zM4 9h8v1H4zM3 10h1v1H3zM12 10h1v1h-1zM3 11h1v1H3zM12 11h1v1h-1zM3 12h1v1H3zM12 12h1v1h-1zM3 13h1v1H3zM12 13h1v1h-1zM3 14h10v1H3z"/></svg></span>
         <span data-app-label></span>
       </button>
       <button type="button" data-app-icon="contact" data-selected="false" aria-pressed="false">
-        <span data-icon="signal" aria-hidden="true"></span>
+        <span data-icon="signal" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" shape-rendering="crispEdges" focusable="false"><path d="M2 3h12v1H2zM2 4h2v1H2zM12 4h2v1h-2zM2 5h1v1H2zM4 5h1v1H4zM11 5h1v1h-1zM13 5h1v1h-1zM2 6h1v1H2zM5 6h1v1H5zM10 6h1v1h-1zM13 6h1v1h-1zM2 7h1v1H2zM6 7h1v1H6zM9 7h1v1H9zM13 7h1v1h-1zM2 8h1v1H2zM7 8h2v1H7zM13 8h1v1h-1zM2 9h1v1H2zM13 9h1v1h-1zM2 10h1v1H2zM13 10h1v1h-1zM2 11h1v1H2zM13 11h1v1h-1zM2 12h12v1H2z"/></svg></span>
         <span data-app-label></span>
       </button>
       <button type="button" data-app-icon="settings" data-selected="false" aria-pressed="false">
-        <span data-icon="controls" aria-hidden="true"></span>
+        <span data-icon="controls" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" shape-rendering="crispEdges" focusable="false"><path d="M4 3h3v1H4zM2 4h2v1H2zM4 4h1v1H4zM6 4h9v1H6zM4 5h3v1H4zM9 10h3v1H9zM2 11h8v1H2zM11 11h4v1h-4zM9 12h3v1H9z"/></svg></span>
+        <span data-app-label></span>
+      </button>
+    </template>
+    <template data-desktop-folder-template>
+      <button type="button" data-folder-toggle="photos" aria-expanded="false">
+        <span data-icon="stamp-folder-photos" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" shape-rendering="crispEdges" focusable="false"><path d="M7 0h1v1H7zM9 0h1v1H9zM11 0h1v1h-1zM13 0h1v1h-1zM7 1h1v1H7zM13 1h1v1h-1zM7 3h1v1H7zM13 3h1v1h-1zM7 5h1v1H7zM13 5h1v1h-1zM11 2h1v1h-1zM10 3h1v1h-1zM9 4h3v1H9zM2 4h4v1H2zM2 5h1v1H2zM5 5h1v1H5zM2 6h1v1H2zM5 6h10v1H5zM2 7h1v1H2zM14 7h1v1h-1zM2 8h1v1H2zM14 8h1v1h-1zM2 9h1v1H2zM14 9h1v1h-1zM2 10h1v1H2zM14 10h1v1h-1zM2 11h1v1H2zM14 11h1v1h-1zM2 12h13v1H2z"/></svg></span>
+        <span data-app-label></span>
+      </button>
+      <button type="button" data-folder-toggle="albums" aria-expanded="false">
+        <span data-icon="stamp-folder-albums" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor" shape-rendering="crispEdges" focusable="false"><path d="M7 0h1v1H7zM9 0h1v1H9zM11 0h1v1h-1zM13 0h1v1h-1zM7 1h1v1H7zM13 1h1v1h-1zM7 3h1v1H7zM13 3h1v1h-1zM7 5h1v1H7zM13 5h1v1h-1zM11 1h1v4h-1zM12 1h1v1h-1zM9 4h2v1H9zM2 4h4v1H2zM2 5h1v1H2zM5 5h1v1H5zM2 6h1v1H2zM5 6h10v1H5zM2 7h1v1H2zM14 7h1v1h-1zM2 8h1v1H2zM14 8h1v1h-1zM2 9h1v1H2zM14 9h1v1h-1zM2 10h1v1H2zM14 10h1v1h-1zM2 11h1v1H2zM14 11h1v1h-1zM2 12h13v1H2z"/></svg></span>
         <span data-app-label></span>
       </button>
     </template>

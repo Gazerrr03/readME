@@ -7,11 +7,13 @@ const createApp = (id, titleKey, icon, width, height, renderer) => Object.freeze
 });
 
 const apps = Object.freeze([
-  createApp('projects', 'apps.projects', 'folder', 520, 360, 'placeholder'),
-  createApp('writing', 'apps.writing', 'document', 520, 360, 'placeholder'),
-  createApp('about', 'apps.about', 'identity', 480, 340, 'placeholder'),
-  createApp('contact', 'apps.contact', 'signal', 480, 340, 'placeholder'),
+  createApp('projects', 'apps.projects', 'folder', 720, 440, 'projects'),
+  createApp('writing', 'apps.writing', 'document', 560, 420, 'writing'),
+  createApp('about', 'apps.about', 'identity', 520, 420, 'about'),
+  createApp('contact', 'apps.contact', 'signal', 480, 360, 'contact'),
   createApp('settings', 'apps.settings', 'controls', 900, 600, 'settings'),
+  createApp('photos', 'apps.photos', 'stamp-folder-photos', 480, 430, 'photos'),
+  createApp('albums', 'apps.albums', 'stamp-folder-albums', 380, 440, 'albums'),
 ]);
 
 export const APP_REGISTRY = apps;

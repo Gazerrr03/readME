@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { OPEN_HORIZON_MAP } from '../../scripts/environment/open-horizon-map.js';
+import { JACKET_MAP } from '../../scripts/environment/jacket-map.js';
 import { createEnvironmentRenderer } from '../../scripts/environment/environment-renderer.js';
 
 function createHarness() {
@@ -40,11 +40,19 @@ function createTerrainMap(value = 150) {
   return { width: 20, height: 5, values: Array(100).fill(value) };
 }
 
+function createGradientMap() {
+  return {
+    width: 20,
+    height: 5,
+    values: Array.from({ length: 100 }, (_, index) => 100 + index),
+  };
+}
+
 function renderPointer(pointer) {
   const harness = createHarness();
   const renderer = createEnvironmentRenderer({
     canvas: harness.canvas,
-    terrainMap: createTerrainMap(),
+    terrainMap: createGradientMap(),
     scheduler: harness.scheduler,
   });
   renderer.resize({ width: 220, height: 70, quietZones: [] });
@@ -55,20 +63,20 @@ function renderPointer(pointer) {
   return harness.draws.at(-1);
 }
 
-test('generated terrain map carries source attribution and normalized values', () => {
-  assert.equal(OPEN_HORIZON_MAP.sourcePage, 'https://unsplash.com/photos/KMn4VEeEPR8');
-  assert.equal(OPEN_HORIZON_MAP.attribution, 'Photo by Sean Oulashin on Unsplash');
-  assert.equal(OPEN_HORIZON_MAP.width, 120);
-  assert.equal(OPEN_HORIZON_MAP.height, 42);
-  assert.equal(OPEN_HORIZON_MAP.values.length, 5040);
-  assert.ok(OPEN_HORIZON_MAP.values.every((value) => value >= 0 && value <= 255));
+test('generated jacket map carries source attribution and normalized values', () => {
+  assert.equal(JACKET_MAP.sourcePage, 'https://music.apple.com/jp/album/%E3%81%A0%E3%81%8B%E3%82%89%E5%83%95%E3%81%AF%E9%9F%B3%E6%A5%BD%E3%82%92%E8%BE%9E%E3%82%81%E3%81%9F/1648876058');
+  assert.equal(JACKET_MAP.attribution, 'ヨルシカ『だから僕は音楽を辞めた』jacket artwork (© U&R records / Universal Music LLC)');
+  assert.equal(JACKET_MAP.width, 495);
+  assert.equal(JACKET_MAP.height, 300);
+  assert.equal(JACKET_MAP.values.length, 148500);
+  assert.ok(JACKET_MAP.values.every((value) => value >= 0 && value <= 255));
 });
 
 test('renderer caps DPR, draws text, pauses in focus, and tears down', () => {
   const harness = createHarness();
   const renderer = createEnvironmentRenderer({
     canvas: harness.canvas,
-    terrainMap: OPEN_HORIZON_MAP,
+    terrainMap: JACKET_MAP,
     scheduler: harness.scheduler,
   });
   renderer.resize({ width: 320, height: 180, dpr: 3, quietZones: [] });
@@ -83,14 +91,28 @@ test('renderer caps DPR, draws text, pauses in focus, and tears down', () => {
   assert.equal(renderer.getDebugState().destroyed, true);
 });
 
-test('pointer changes wind direction and character density', () => {
-  const leftWind = renderPointer({ x: 0, y: 1 });
-  const rightWind = renderPointer({ x: 1, y: 1 });
-  const sparse = renderPointer({ x: 0.5, y: 0 });
-  const dense = renderPointer({ x: 0.5, y: 1 });
+test('pointer ripples the artwork', () => {
+  const leftWind = renderPointer({ x: 0, y: 0.5 });
+  const rightWind = renderPointer({ x: 1, y: 0.5 });
 
   assert.notDeepEqual(leftWind, rightWind);
-  assert.ok(dense.length > sparse.length);
+});
+
+test('shimmer animation evolves between frames', () => {
+  const harness = createHarness();
+  const renderer = createEnvironmentRenderer({
+    canvas: harness.canvas,
+    terrainMap: createGradientMap(),
+    scheduler: harness.scheduler,
+  });
+  renderer.resize({ width: 220, height: 70, quietZones: [] });
+  renderer.setMotionState('running');
+  harness.scheduler.flush(100);
+  const early = harness.draws.at(-1);
+  for (let time = 200; time <= 1000; time += 100) harness.scheduler.flush(time);
+  const late = harness.draws.at(-1);
+
+  assert.notDeepEqual(early, late);
 });
 
 test('focused pointer input is discarded before animation resumes', () => {
@@ -136,7 +158,34 @@ test('destroy prevents subsequent drawing and scheduling', () => {
   const drawCount = harness.draws.length;
 
   renderer.setMotionState('running');
+  renderer.renderStatic();
+  renderer.resize({ width: 440, height: 140, quietZones: [] });
 
   assert.equal(harness.draws.length, drawCount);
   assert.equal(harness.scheduler.hasPending(), false);
+});
+
+test('running mode limits drawing to one frame per 100 milliseconds', () => {
+  const harness = createHarness();
+  const renderer = createEnvironmentRenderer({
+    canvas: harness.canvas,
+    terrainMap: createTerrainMap(),
+    scheduler: harness.scheduler,
+  });
+  renderer.resize({ width: 220, height: 70, quietZones: [] });
+  const beforeRunning = harness.draws.length;
+  renderer.setMotionState('running');
+  assert.equal(harness.draws.length, beforeRunning);
+  harness.scheduler.flush(0);
+  const initialDrawCount = harness.draws.length;
+
+  harness.scheduler.flush(50);
+  harness.scheduler.flush(99);
+  assert.equal(harness.draws.length, initialDrawCount);
+  harness.scheduler.flush(100);
+  assert.equal(harness.draws.length, initialDrawCount + 1);
+  harness.scheduler.flush(150);
+  assert.equal(harness.draws.length, initialDrawCount + 1);
+  harness.scheduler.flush(200);
+  assert.equal(harness.draws.length, initialDrawCount + 2);
 });

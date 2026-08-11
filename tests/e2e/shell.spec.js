@@ -26,15 +26,16 @@ test('provides reusable icon markup with selected white artwork', async ({ page 
     document.querySelector('[data-desktop-root]').append(clone);
 
     const glyph = clone.querySelector('[data-icon]');
+    const artworkSvg = glyph.querySelector('svg');
     return {
       iconValues,
       defaultState,
       hasSharedButton: clone.matches('button[data-app-icon]'),
       hasLabel: Boolean(clone.querySelector('[data-app-label]')),
       frame: getComputedStyle(glyph).backgroundColor,
-      artwork: getComputedStyle(glyph).color,
-      border: getComputedStyle(glyph, '::before').borderTopColor,
-      lines: getComputedStyle(glyph, '::after').backgroundColor,
+      artwork: getComputedStyle(artworkSvg).fill,
+      pixelGrid: artworkSvg.getAttribute('viewBox'),
+      crisp: getComputedStyle(artworkSvg).shapeRendering,
     };
   });
 
@@ -48,6 +49,6 @@ test('provides reusable icon markup with selected white artwork', async ({ page 
   expect(result.hasLabel).toBe(true);
   expect(result.frame).toBe('rgb(38, 21, 154)');
   expect(result.artwork).toBe('rgb(255, 255, 255)');
-  expect(result.border).toBe('rgb(255, 255, 255)');
-  expect(result.lines).toBe('rgb(255, 255, 255)');
+  expect(result.pixelGrid).toBe('0 0 16 16');
+  expect(result.crisp).toBe('crispedges');
 });

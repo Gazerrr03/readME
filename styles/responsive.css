@@ -7,26 +7,25 @@ html, body { overflow-x: hidden; }
     width: 100%;
   }
 
-  [data-desktop-icons] {
-    gap: 12px 4px;
-    grid-template-columns: repeat(3, minmax(0, 80px));
-    left: 12px;
-    right: 12px;
-    top: 64px;
-  }
-
-  [data-desktop-mode='macos'] [data-desktop-icons] {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 80px));
-    left: 12px;
-    position: absolute;
-    top: 82px;
+  [data-dock-icons] {
+    gap: 4px;
   }
 
   [data-app-icon],
   [data-desktop-mode='macos'] [data-app-icon] {
     min-height: 76px;
     width: 76px;
+  }
+
+  [data-desktop-mode='macos'] [data-app-icon] {
+    width: 68px;
+  }
+
+  [data-desktop-mode='macos'] [data-app-label] {
+    font-size: 9px;
+    overflow-wrap: normal;
+    padding-inline: 2px;
+    white-space: nowrap;
   }
 
   [data-bot-mount],
@@ -59,7 +58,7 @@ html, body { overflow-x: hidden; }
     top: 90px !important;
   }
 
-  [data-desktop-root][data-has-visible-window='true'] [data-desktop-icons],
+  [data-desktop-root][data-has-visible-window='true'] [data-desktop-folders],
   [data-desktop-root][data-has-visible-window='true'] [data-macos-dock] { visibility: hidden; }
 
   [data-window-titlebar] { cursor: default; }
@@ -68,6 +67,7 @@ html, body { overflow-x: hidden; }
   [data-running-apps] { max-width: 110px; }
   [data-running-app] { max-width: 100%; }
   [data-audio-status] { display: none; }
+  [data-network-status] { display: none; }
   [data-windows-taskbar] { gap: 6px; padding: 6px 8px; }
   [data-windows-start] { flex: 0 0 36px; width: 36px; }
   [data-system-status] { gap: 2px; }
@@ -96,11 +96,20 @@ html, body { overflow-x: hidden; }
   [data-settings-meter] output { text-align: left; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  [data-app-window],
+  [data-app-icon] [data-icon],
+  [data-bot-standby],
+  [data-running-app],
+  [data-desktop-root]::before,
+  [data-desktop-root]::after { transition-duration: 1ms; }
+
+  [data-packet-signal] { animation: none; }
+}
+
 @media (min-width: 601px) and (max-width: 760px) {
-  [data-desktop-mode='macos'] [data-desktop-icons] {
-    display: flex;
+  [data-dock-icons] {
     gap: 4px;
-    position: static;
   }
 
   [data-desktop-mode='macos'] [data-macos-dock] {

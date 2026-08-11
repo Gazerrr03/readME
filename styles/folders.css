@@ -1,0 +1,162 @@
+/* ── Desktop stamp folders ──────────────────────────────────
+   Two content folders (photos / albums) on the right edge of the
+   desktop in both modes. Clicking a folder slides its stamps out
+   to the left; clicking a stamp opens the matching window. */
+
+[data-desktop-folders] {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 88px;
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  z-index: 1;
+}
+
+[data-desktop-mode='macos'] [data-desktop-folders] {
+  top: 56px;
+}
+
+[data-desktop-folder] {
+  position: relative;
+}
+
+[data-folder-toggle],
+[data-stamp] {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--blue);
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 80px;
+  padding: 4px;
+  width: 88px;
+}
+
+[data-stamp-art] {
+  align-items: center;
+  background: var(--white);
+  border: var(--stroke);
+  box-shadow: 4px 4px 0 var(--blue);
+  color: inherit;
+  display: inline-flex;
+  height: 46px;
+  justify-content: center;
+  width: 62px;
+}
+
+[data-stamp-art] svg {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+[data-folder-toggle] [data-icon],
+[data-stamp-art] {
+  transition:
+    transform var(--ui-duration) var(--ease-out),
+    box-shadow var(--ui-duration) var(--ease-out),
+    background-color var(--ui-duration) ease,
+    color var(--ui-duration) ease;
+}
+
+/* Expanded folder reads as "open": same inversion as a selected icon. */
+[data-desktop-folder][data-expanded='true'] [data-folder-toggle] {
+  color: var(--white);
+}
+
+[data-desktop-folder][data-expanded='true'] [data-folder-toggle] [data-icon] {
+  background: var(--blue);
+}
+
+[data-desktop-folder][data-expanded='true'] [data-folder-toggle] [data-app-label] {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/* Stamps slide out from behind the folder, closest first. While collapsed
+   they sit exactly behind the toggle and the stack stays hidden + inert. */
+[data-folder-stamps] {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 16px;
+  position: absolute;
+  right: calc(100% + 16px);
+  top: 0;
+  transition: visibility 0s linear calc(var(--ui-duration) + 180ms);
+  visibility: hidden;
+}
+
+[data-desktop-folder][data-expanded='true'] [data-folder-stamps] {
+  transition-delay: 0s;
+  visibility: visible;
+}
+
+[data-stamp] {
+  transition: transform var(--ui-duration) var(--ease-out);
+  transition-delay: calc(var(--i) * 45ms);
+}
+
+[data-desktop-folder][data-expanded='false'] [data-stamp] {
+  transform: translateX(calc((var(--i) + 1) * 104px));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-folder-toggle]:hover [data-icon],
+  [data-stamp]:hover [data-stamp-art] {
+    box-shadow: 6px 6px 0 var(--blue);
+    transform: translateY(-3px);
+  }
+}
+
+[data-folder-toggle]:focus-visible,
+[data-stamp]:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-folder-stamps] { transition-delay: 1ms; }
+  [data-stamp] {
+    transition-delay: 0ms;
+    transition-duration: 1ms;
+  }
+  [data-folder-toggle] [data-icon],
+  [data-stamp-art] { transition-duration: 1ms; }
+}
+
+@media (max-width: 760px) {
+  [data-desktop-folders] {
+    display: flex;
+    gap: 12px;
+    left: 12px;
+    right: auto;
+    top: 12px;
+  }
+
+  [data-desktop-mode='macos'] [data-desktop-folders] {
+    top: 44px;
+  }
+
+  [data-folder-toggle],
+  [data-stamp] {
+    min-height: 76px;
+    width: 76px;
+  }
+
+  [data-folder-stamps] {
+    flex-direction: column;
+    gap: 12px;
+    left: 0;
+    right: auto;
+    top: calc(100% + 12px);
+  }
+
+  [data-desktop-folder][data-expanded='false'] [data-stamp] {
+    transform: translateY(calc((var(--i) + 1) * -100px));
+  }
+}

@@ -6,7 +6,10 @@ import {
   nextEnvironmentView,
 } from './environment-state.js';
 import { createEnvironmentRenderer } from './environment-renderer.js';
-import { OPEN_HORIZON_MAP } from './open-horizon-map.js';
+import { createMusicDeck } from './music-deck.js';
+import { tracks } from '../../media/catalog.js';
+import { projects } from '../data/content.js';
+import { JACKET_MAP } from './jacket-map.js';
 
 function element(document, tagName, attributes = {}, text = '') {
   const node = document.createElement(tagName);
@@ -36,6 +39,7 @@ export function createDesktopEnvironmentController({
   let reading = 'time';
   let mount = null;
   let renderer = null;
+  let deck = null;
   let minuteTimer = null;
 
   const getCapability = () => getEnvironmentCapability({
@@ -66,15 +70,16 @@ export function createDesktopEnvironmentController({
   const refreshCompactLabels = () => {
     if (!mount) return;
     const nowButton = mount.querySelector('[data-environment-open="projects"]');
-    const latestButton = mount.querySelector('[data-environment-open="writing"]');
     if (nowButton) {
       nowButton.querySelector('span').textContent = i18n.t('environment.now');
       nowButton.setAttribute('aria-label', i18n.t('environment.openProjects'));
     }
-    if (latestButton) {
-      latestButton.querySelector('span').textContent = i18n.t('environment.latest');
-      latestButton.setAttribute('aria-label', i18n.t('environment.openWriting'));
-    }
+    deck?.syncLocale();
+  };
+
+  const destroyDeck = () => {
+    deck?.destroy();
+    deck = null;
   };
 
   const createWidgets = () => {
@@ -90,12 +95,16 @@ export function createDesktopEnvironmentController({
     const nowButton = element(document, 'button', {
       type: 'button', 'data-environment-open': 'projects', 'aria-label': i18n.t('environment.openProjects'),
     });
-    nowButton.append(element(document, 'span', {}, i18n.t('environment.now')), element(document, 'strong', {}, '--'));
-    const latestButton = element(document, 'button', {
-      type: 'button', 'data-environment-open': 'writing', 'aria-label': i18n.t('environment.openWriting'),
+    const latestYear = String(Math.max(...projects.map((project) => project.year)));
+    nowButton.append(element(document, 'span', {}, i18n.t('environment.now')), element(document, 'strong', {}, latestYear));
+    destroyDeck();
+    deck = createMusicDeck({
+      document,
+      i18n,
+      tracks,
+      shouldAnimate: () => mount?.dataset.environmentMotion === 'running',
     });
-    latestButton.append(element(document, 'span', {}, i18n.t('environment.latest')), element(document, 'strong', {}, '--'));
-    widgets.append(primary, nowButton, latestButton);
+    widgets.append(primary, nowButton, deck.element);
     return widgets;
   };
 
@@ -135,6 +144,7 @@ export function createDesktopEnvironmentController({
   const unmount = () => {
     renderer?.destroy();
     renderer = null;
+    destroyDeck();
     mount?.remove();
     mount = null;
     if (minuteTimer !== null) view.clearInterval(minuteTimer);
@@ -152,7 +162,7 @@ export function createDesktopEnvironmentController({
     if (capability !== ENVIRONMENT_CAPABILITY.PHONE_STATIC) mount.append(createWidgets());
     root.prepend(mount);
     try {
-      const nextRenderer = rendererFactory({ canvas, terrainMap: OPEN_HORIZON_MAP });
+      const nextRenderer = rendererFactory({ canvas, terrainMap: JACKET_MAP });
       if (!isEnvironmentRenderer(nextRenderer)) throw new Error('Invalid environment renderer');
       renderer = nextRenderer;
     } catch {
@@ -174,6 +184,7 @@ export function createDesktopEnvironmentController({
     mountEnvironment();
     if (capability === ENVIRONMENT_CAPABILITY.PHONE_STATIC) {
       mount.querySelector('[data-environment-widgets]')?.remove();
+      destroyDeck();
     } else if (!mount.querySelector('[data-environment-widgets]')) {
       mount.append(createWidgets());
       renderReading();

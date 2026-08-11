@@ -9,8 +9,8 @@
 }
 
 [data-macos-environment] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--white);
+  color: var(--blue);
   inset: 32px 0 0;
   overflow: hidden;
   pointer-events: none;
@@ -39,7 +39,8 @@
   transition: opacity var(--ui-duration) var(--ease-out);
 }
 
-[data-environment-widgets] button {
+[data-environment-widgets] > button,
+[data-environment-deck] {
   background: var(--blue);
   border: 1px solid var(--white);
   border-radius: 0;
@@ -55,7 +56,8 @@
   text-align: left;
 }
 
-[data-environment-widgets] button:focus-visible {
+[data-environment-widgets] button:focus-visible,
+[data-environment-deck] button:focus-visible {
   outline: 2px solid var(--white);
   outline-offset: 3px;
 }
@@ -91,11 +93,107 @@
   line-height: 1.1;
 }
 
+[data-environment-deck] {
+  cursor: default;
+  gap: 0;
+  padding: 10px 12px;
+}
+
+[data-environment-deck] > * {
+  flex: none;
+}
+
+[data-environment-deck] button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+[data-deck-head] {
+  align-items: baseline;
+  display: flex;
+  font-size: 10px;
+  justify-content: space-between;
+  line-height: 1.2;
+}
+
+[data-deck-next] {
+  text-align: left;
+}
+
+[data-deck-toggle] {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  text-align: left;
+}
+
+[data-deck-ring] {
+  flex: none;
+  height: 32px;
+  position: relative;
+  width: 32px;
+}
+
+[data-deck-canvas] {
+  display: block;
+  height: 32px;
+  width: 32px;
+}
+
+[data-deck-glyph] {
+  display: grid;
+  font-size: 8px;
+  inset: 0;
+  line-height: 1;
+  place-items: center;
+  position: absolute;
+}
+
+[data-deck-meta] {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+[data-deck-title] {
+  display: block;
+  font-family: var(--serif);
+  font-size: 13px;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-deck-status-line] {
+  font-size: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+[data-deck-format] {
+  font-size: 10px;
+  line-height: 1.2;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
 [data-macos-environment][data-environment-motion='focused'] [data-environment-canvas] {
   opacity: 0.28;
 }
 
-[data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] button {
+[data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] > button,
+[data-macos-environment][data-environment-motion='focused'] [data-environment-deck] {
   box-shadow: 1px 1px 0 var(--white);
 }
 

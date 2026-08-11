@@ -64,6 +64,8 @@ test('macOS mode shows the menu bar and Dock', async ({ page }) => {
   await expect(page.locator('[data-desktop-mode="macos"]')).toBeVisible();
   await expect(page.locator('[data-macos-menu]')).toBeVisible();
   await expect(page.locator('[data-macos-dock]')).toBeVisible();
+  await expect(page.locator('[data-desktop-folders] [data-folder-toggle]')).toHaveCount(2);
+  await expect(page.locator('[data-macos-dock] [data-app-icon]')).toHaveCount(5);
 });
 
 test('desktop render hook reports the active layout after chrome is mounted', async ({ page }) => {
@@ -104,15 +106,12 @@ test('system chrome includes localized title, language, audio, and BOT status', 
   await expect(page.locator('[data-bot-mount]')).toContainText('BOT 服务：待机');
 });
 
-test('fine pointer selects with one click and opens once with a double-click', async ({ page }) => {
+test('fine pointer opens a taskbar pin with a single click', async ({ page }) => {
   const desktop = await mountDesktopController(page);
-  const projects = desktop.locator('[data-app-icon="projects"]');
+  const projects = desktop.locator('[data-taskbar-pins] [data-app-icon="projects"]');
 
   await projects.click();
   await expect(projects).toHaveAttribute('data-selected', 'true');
-  await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual([]);
-
-  await projects.dblclick();
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['projects']);
 });
 
@@ -140,22 +139,21 @@ test('Windows ArrowRight moves selection and Enter opens the focused app once', 
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['writing']);
 });
 
-test('Windows ArrowDown follows the two-column icon grid', async ({ page }) => {
+test('Windows ArrowDown keeps focus on the horizontal pin row', async ({ page }) => {
   const desktop = await mountDesktopController(page);
-  const projects = desktop.locator('[data-app-icon="projects"]');
-  const about = desktop.locator('[data-app-icon="about"]');
+  const projects = desktop.locator('[data-taskbar-pins] [data-app-icon="projects"]');
 
   await projects.focus();
   await projects.press('ArrowDown');
 
-  await expect(about).toBeFocused();
-  await expect(about).toHaveAttribute('data-selected', 'true');
+  await expect(projects).toBeFocused();
+  await expect(projects).toHaveAttribute('data-selected', 'true');
 });
 
 test('macOS arrows follow the horizontal Dock only', async ({ page }) => {
   const desktop = await mountDesktopController(page, { layout: 'macos' });
-  const projects = desktop.locator('[data-app-icon="projects"]');
-  const writing = desktop.locator('[data-app-icon="writing"]');
+  const projects = desktop.locator('[data-macos-dock] [data-app-icon="projects"]');
+  const writing = desktop.locator('[data-macos-dock] [data-app-icon="writing"]');
 
   await projects.focus();
   await projects.press('ArrowRight');
@@ -167,6 +165,24 @@ test('macOS arrows follow the horizontal Dock only', async ({ page }) => {
   await expect(writing).toHaveAttribute('data-selected', 'true');
 });
 
+test('macOS desktop shows a vertical folder column and the Dock opens apps', async ({ page }) => {
+  const desktop = await mountDesktopController(page, { layout: 'macos' });
+  const photos = desktop.locator('[data-folder-toggle="photos"]');
+  const albums = desktop.locator('[data-folder-toggle="albums"]');
+  const projects = desktop.locator('[data-macos-dock] [data-app-icon="projects"]');
+
+  await expect(desktop.locator('[data-folder-toggle]')).toHaveCount(2);
+
+  await photos.focus();
+  await photos.press('ArrowDown');
+  await expect(albums).toBeFocused();
+  await albums.press('ArrowRight');
+  await expect(albums).toBeFocused();
+
+  await projects.dblclick();
+  await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['projects']);
+});
+
 test('macOS Dock, icons, and BOT do not collide at 667x375', async ({ page }) => {
   await page.setViewportSize({ width: 667, height: 375 });
   await seedLayout(page, 'macos');
@@ -174,7 +190,7 @@ test('macOS Dock, icons, and BOT do not collide at 667x375', async ({ page }) =>
 
   const dock = page.locator('[data-macos-dock]');
   await expect(page.locator('[data-macos-menu] [data-system-title]')).toBeVisible();
-  await expect(dock.locator('[data-desktop-icons]')).toHaveCount(1);
+  await expect(dock.locator('[data-dock-icons]')).toHaveCount(1);
 
   const geometry = await page.evaluate(() => {
     const rect = (element) => {
@@ -189,7 +205,7 @@ test('macOS Dock, icons, and BOT do not collide at 667x375', async ({ page }) =>
     );
     const dockBox = rect(document.querySelector('[data-macos-dock]'));
     const botBox = rect(document.querySelector('[data-bot-mount]'));
-    const iconBoxes = [...document.querySelectorAll('[data-app-icon]')].map(rect);
+    const iconBoxes = [...document.querySelectorAll('[data-macos-dock] [data-app-icon]')].map(rect);
     return {
       oneRow: iconBoxes.every((box) => box.top === iconBoxes[0].top),
       iconsDoNotOverlap: iconBoxes.every((box, index) => (
