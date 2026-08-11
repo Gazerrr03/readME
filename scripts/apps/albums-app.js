@@ -1,13 +1,13 @@
-import { tracks } from '../../media/catalog.js';
+import { tracks as baseTracks } from '../../media/catalog.js';
 import { pick } from '../data/content.js';
 import { createPixelSvg } from './pixel-art.js';
 import { formatDeckTimecode } from '../environment/music-deck.js';
 
-let selectedSlug = tracks[0].slug;
+let selectedSlug = baseTracks[0].slug;
 const listeners = new Set();
 
 export function selectAlbum(slug) {
-  if (!tracks.some((track) => track.slug === slug) || slug === selectedSlug) return;
+  if (!baseTracks.some((track) => track.slug === slug) || slug === selectedSlug) return;
   selectedSlug = slug;
   listeners.forEach((listener) => listener());
 }
@@ -21,7 +21,7 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
-export function renderAlbumsApp({ i18n, mount }) {
+export function renderAlbumsApp({ i18n, content, mount }) {
   const document = mount.ownerDocument;
   const view = mount.ownerDocument.defaultView;
   const root = createElement(document, 'section', {
@@ -34,8 +34,9 @@ export function renderAlbumsApp({ i18n, mount }) {
   audio.preload = 'metadata';
   let status = 'idle'; // idle | playing | paused | unavailable
   let frameId = null;
+  const tracks = () => content().tracks;
 
-  const currentIndex = () => Math.max(0, tracks.findIndex((track) => track.slug === selectedSlug));
+  const currentIndex = () => Math.max(0, tracks().findIndex((track) => track.slug === selectedSlug));
 
   const stopTick = () => {
     if (frameId !== null) view.cancelAnimationFrame(frameId);
@@ -74,10 +75,11 @@ export function renderAlbumsApp({ i18n, mount }) {
 
   const loadTrack = ({ autoplay = false } = {}) => {
     const index = currentIndex();
-    const track = tracks[index];
-    root.querySelector('[data-player-track]').textContent = `TRK ${pad2(index + 1)}/${pad2(tracks.length)}`;
+    const items = tracks();
+    const track = items[index];
+    root.querySelector('[data-player-track]').textContent = `TRK ${pad2(index + 1)}/${pad2(items.length)}`;
     root.querySelector('[data-player-title]').textContent = pick(track.title, i18n.locale);
-    root.querySelector('[data-player-format]').textContent = `${track.format} · ${formatDeckTimecode(track.seconds)}`;
+    root.querySelector('[data-player-format]').textContent = `${pick(track.formatLabel, i18n.locale)} · ${formatDeckTimecode(track.seconds)}`;
     const cover = root.querySelector('[data-player-cover]');
     cover.replaceChildren(createPixelSvg(document, track.cover, { 'aria-hidden': 'true' }));
     if (!audio.src.endsWith(track.file)) {
@@ -106,15 +108,17 @@ export function renderAlbumsApp({ i18n, mount }) {
     const time = createElement(document, 'p', { 'data-player-time': '' }, formatDeckTimecode(0));
 
     previous.addEventListener('click', () => {
-      const nextIndex = (currentIndex() - 1 + tracks.length) % tracks.length;
+      const items = tracks();
+      const nextIndex = (currentIndex() - 1 + items.length) % items.length;
       const keepPlaying = status === 'playing';
-      selectAlbum(tracks[nextIndex].slug);
+      selectAlbum(items[nextIndex].slug);
       if (!keepPlaying) setStatus('idle');
     });
     next.addEventListener('click', () => {
-      const nextIndex = (currentIndex() + 1) % tracks.length;
+      const items = tracks();
+      const nextIndex = (currentIndex() + 1) % items.length;
       const keepPlaying = status === 'playing';
-      selectAlbum(tracks[nextIndex].slug);
+      selectAlbum(items[nextIndex].slug);
       if (!keepPlaying) setStatus('idle');
     });
     toggle.addEventListener('click', () => {

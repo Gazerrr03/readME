@@ -63,7 +63,9 @@ export function mergeContentDocuments(defaults, published) {
 
 export function serializeContentDocument(document) {
   const fields = Object.fromEntries(
-    Object.entries(document.fields).sort(([left], [right]) => left.localeCompare(right)),
+    Object.entries(document.fields).sort(([left], [right]) => (
+      left < right ? -1 : left > right ? 1 : 0
+    )),
   );
   return `${JSON.stringify({ ...document, fields }, null, 2)}\n`;
 }

@@ -21,6 +21,7 @@ const preferences = loadPreferences(localStorage);
 export const contentStore = createContentStore({ defaultDocument: defaultContentDocument });
 await contentStore.loadPublished('/content/content.json');
 export const i18n = createI18n(preferences.locale, undefined, contentStore);
+const content = () => contentStore.snapshot;
 const bootRoot = document.querySelector('[data-boot-root]');
 const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
@@ -36,12 +37,14 @@ const openApp = (appId) => {
 const environment = createDesktopEnvironmentController({
   root: desktopRoot,
   i18n,
+  content,
   onOpen: openApp,
 });
 export const desktop = createDesktopController({
   root: desktopRoot,
   apps,
   i18n,
+  content,
   preferences,
   onOpen: openApp,
   onOpenFolderItem: (kind, slug) => {
@@ -58,6 +61,7 @@ windowManager = createWindowManager({
   taskSurface: desktopRoot,
   registry: apps,
   i18n,
+  content,
   preferences,
   renderers: {
     placeholder: renderPlaceholderApp,

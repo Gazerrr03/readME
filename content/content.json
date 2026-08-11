@@ -6,7 +6,7 @@
       "label": "关于 · 自述",
       "kind": "longText",
       "group": "about",
-      "order": 292,
+      "order": 296,
       "preserveTokens": [],
       "values": {
         "en": "Builds interfaces after midnight: operating systems for one person, shelves that recycle themselves, radios that never sign on. Believes a tool should explain its state, a grid should stay visible, and two colours are usually enough.",
@@ -18,7 +18,7 @@
       "label": "关于 · 姓名",
       "kind": "shortText",
       "group": "about",
-      "order": 290,
+      "order": 294,
       "preserveTokens": [],
       "values": {
         "en": "QIZHI",
@@ -30,7 +30,7 @@
       "label": "当前 1 · 标签",
       "kind": "shortText",
       "group": "about",
-      "order": 309,
+      "order": 313,
       "preserveTokens": [],
       "values": {
         "en": "LOCATION",
@@ -42,7 +42,7 @@
       "label": "当前 1 · 内容",
       "kind": "shortText",
       "group": "about",
-      "order": 310,
+      "order": 314,
       "preserveTokens": [],
       "values": {
         "en": "UTC+8 / INDOORS",
@@ -54,7 +54,7 @@
       "label": "当前 2 · 标签",
       "kind": "shortText",
       "group": "about",
-      "order": 311,
+      "order": 315,
       "preserveTokens": [],
       "values": {
         "en": "FOCUS",
@@ -66,7 +66,7 @@
       "label": "当前 2 · 内容",
       "kind": "shortText",
       "group": "about",
-      "order": 312,
+      "order": 316,
       "preserveTokens": [],
       "values": {
         "en": "THIS DESKTOP",
@@ -78,7 +78,7 @@
       "label": "当前 3 · 标签",
       "kind": "shortText",
       "group": "about",
-      "order": 313,
+      "order": 317,
       "preserveTokens": [],
       "values": {
         "en": "READING",
@@ -90,7 +90,7 @@
       "label": "当前 3 · 内容",
       "kind": "shortText",
       "group": "about",
-      "order": 314,
+      "order": 318,
       "preserveTokens": [],
       "values": {
         "en": "RADIO OPERATOR MANUALS",
@@ -102,7 +102,7 @@
       "label": "当前 4 · 标签",
       "kind": "shortText",
       "group": "about",
-      "order": 315,
+      "order": 319,
       "preserveTokens": [],
       "values": {
         "en": "LISTENING",
@@ -114,7 +114,7 @@
       "label": "当前 4 · 内容",
       "kind": "shortText",
       "group": "about",
-      "order": 316,
+      "order": 320,
       "preserveTokens": [],
       "values": {
         "en": "STATIC / 60HZ HUM",
@@ -126,7 +126,7 @@
       "label": "关于 · 身份",
       "kind": "shortText",
       "group": "about",
-      "order": 291,
+      "order": 295,
       "preserveTokens": [],
       "values": {
         "en": "DESIGN ENGINEER / 02:00 LOCAL",
@@ -138,7 +138,7 @@
       "label": "技能栈 1",
       "kind": "shortText",
       "group": "about",
-      "order": 303,
+      "order": 307,
       "preserveTokens": [],
       "values": {
         "en": "LANG: JS / TS",
@@ -150,7 +150,7 @@
       "label": "技能栈 2",
       "kind": "shortText",
       "group": "about",
-      "order": 304,
+      "order": 308,
       "preserveTokens": [],
       "values": {
         "en": "GFX: THREE / CANVAS",
@@ -162,7 +162,7 @@
       "label": "技能栈 3",
       "kind": "shortText",
       "group": "about",
-      "order": 305,
+      "order": 309,
       "preserveTokens": [],
       "values": {
         "en": "FRAME: ASTRO / VANILLA",
@@ -174,7 +174,7 @@
       "label": "技能栈 4",
       "kind": "shortText",
       "group": "about",
-      "order": 306,
+      "order": 310,
       "preserveTokens": [],
       "values": {
         "en": "TEST: PLAYWRIGHT / NODE",
@@ -186,7 +186,7 @@
       "label": "技能栈 5",
       "kind": "shortText",
       "group": "about",
-      "order": 307,
+      "order": 311,
       "preserveTokens": [],
       "values": {
         "en": "GRID: 8PX / 32PX",
@@ -198,7 +198,7 @@
       "label": "技能栈 6",
       "kind": "shortText",
       "group": "about",
-      "order": 308,
+      "order": 312,
       "preserveTokens": [],
       "values": {
         "en": "PALETTE: BLUE / WHITE",
@@ -210,7 +210,7 @@
       "label": "时间线 1 · 事件",
       "kind": "shortText",
       "group": "about",
-      "order": 294,
+      "order": 298,
       "preserveTokens": [],
       "values": {
         "en": "PORTFOLIO OS GOES ON AIR",
@@ -222,7 +222,7 @@
       "label": "时间线 1 · 年份",
       "kind": "shortText",
       "group": "about",
-      "order": 293,
+      "order": 297,
       "preserveTokens": [],
       "values": {
         "en": "2026",
@@ -234,7 +234,7 @@
       "label": "时间线 2 · 事件",
       "kind": "shortText",
       "group": "about",
-      "order": 296,
+      "order": 300,
       "preserveTokens": [],
       "values": {
         "en": "FLOVVAS: FINITE SHELF PROJECT",
@@ -246,7 +246,7 @@
       "label": "时间线 2 · 年份",
       "kind": "shortText",
       "group": "about",
-      "order": 295,
+      "order": 299,
       "preserveTokens": [],
       "values": {
         "en": "2025",
@@ -258,7 +258,7 @@
       "label": "时间线 3 · 事件",
       "kind": "shortText",
       "group": "about",
-      "order": 298,
+      "order": 302,
       "preserveTokens": [],
       "values": {
         "en": "FIRST 1-BIT INTERFACE SHIPPED",
@@ -270,7 +270,7 @@
       "label": "时间线 3 · 年份",
       "kind": "shortText",
       "group": "about",
-      "order": 297,
+      "order": 301,
       "preserveTokens": [],
       "values": {
         "en": "2024",
@@ -282,7 +282,7 @@
       "label": "时间线 4 · 事件",
       "kind": "shortText",
       "group": "about",
-      "order": 300,
+      "order": 304,
       "preserveTokens": [],
       "values": {
         "en": "SWITCHED TO MIDNIGHT SHIFT",
@@ -294,7 +294,7 @@
       "label": "时间线 4 · 年份",
       "kind": "shortText",
       "group": "about",
-      "order": 299,
+      "order": 303,
       "preserveTokens": [],
       "values": {
         "en": "2023",
@@ -306,7 +306,7 @@
       "label": "时间线 5 · 事件",
       "kind": "shortText",
       "group": "about",
-      "order": 302,
+      "order": 306,
       "preserveTokens": [],
       "values": {
         "en": "WROTE FIRST LINE OF UI CODE",
@@ -318,7 +318,7 @@
       "label": "时间线 5 · 年份",
       "kind": "shortText",
       "group": "about",
-      "order": 301,
+      "order": 305,
       "preserveTokens": [],
       "values": {
         "en": "2021",
@@ -330,7 +330,7 @@
       "label": "a-frequency-that-does-not-exist · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 245,
+      "order": 249,
       "preserveTokens": [],
       "values": {
         "en": "Every radio has a gap between the stations, a stretch of the dial that no broadcaster claims. This site lives there. It is a frequency that does not exist, transmitting to an audience of one, at the hour when the city stops making requests.",
@@ -342,7 +342,7 @@
       "label": "a-frequency-that-does-not-exist · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 246,
+      "order": 250,
       "preserveTokens": [],
       "values": {
         "en": "I used to think a portfolio was a shelf of proof: look, I made these. Now I think it is closer to a test pattern. A steady signal you broadcast so that when the right receiver wanders past, they know the channel is alive.",
@@ -354,7 +354,7 @@
       "label": "a-frequency-that-does-not-exist · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 247,
+      "order": 251,
       "preserveTokens": [],
       "values": {
         "en": "So the desktop stays on. The cursor blinks. Somewhere between the last project and the first sentence of the next one, the frequency holds.",
@@ -366,7 +366,7 @@
       "label": "a-frequency-that-does-not-exist · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 243,
+      "order": 247,
       "preserveTokens": [],
       "values": {
         "en": "2026-08-02",
@@ -378,7 +378,7 @@
       "label": "a-frequency-that-does-not-exist · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 244,
+      "order": 248,
       "preserveTokens": [],
       "values": {
         "en": "SIGNAL",
@@ -390,7 +390,7 @@
       "label": "a-frequency-that-does-not-exist · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 242,
+      "order": 246,
       "preserveTokens": [],
       "values": {
         "en": "A Frequency That Does Not Exist",
@@ -402,7 +402,7 @@
       "label": "a-window-is-a-promise · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 275,
+      "order": 279,
       "preserveTokens": [],
       "values": {
         "en": "A window promises that what is inside it can be moved, closed, and brought back without loss. That promise is harder to keep than it looks. Every drag is a small contract: the content will survive the journey.",
@@ -414,7 +414,7 @@
       "label": "a-window-is-a-promise · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 276,
+      "order": 280,
       "preserveTokens": [],
       "values": {
         "en": "Most software breaks the promise quietly. Scroll positions evaporate, half-typed sentences dissolve, the thing you were reading returns to the top as if you had never been there. The frame stays; the state leaks out.",
@@ -426,7 +426,7 @@
       "label": "a-window-is-a-promise · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 277,
+      "order": 281,
       "preserveTokens": [],
       "values": {
         "en": "So this desktop keeps the contract small. One instance per application. A title bar that tells the truth. A close button that means closed. If a system cannot keep its promises, it should at least stop making new ones.",
@@ -438,7 +438,7 @@
       "label": "a-window-is-a-promise · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 273,
+      "order": 277,
       "preserveTokens": [],
       "values": {
         "en": "2024-09-21",
@@ -450,7 +450,7 @@
       "label": "a-window-is-a-promise · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 274,
+      "order": 278,
       "preserveTokens": [],
       "values": {
         "en": "ESSAY",
@@ -462,7 +462,7 @@
       "label": "a-window-is-a-promise · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 272,
+      "order": 276,
       "preserveTokens": [],
       "values": {
         "en": "A Window Is a Promise",
@@ -474,7 +474,7 @@
       "label": "blue-and-white-are-enough · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 263,
+      "order": 267,
       "preserveTokens": [],
       "values": {
         "en": "A palette of two colours is not a limitation; it is a compression algorithm. Every state the interface can be in has to survive being described as ink or paper, so nothing vague makes it to the screen.",
@@ -486,7 +486,7 @@
       "label": "blue-and-white-are-enough · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 264,
+      "order": 268,
       "preserveTokens": [],
       "values": {
         "en": "Selected is paper on ink. Disabled is ink at half confidence. Danger is not red; danger is a clearer sentence. The constraint removes decoration and leaves decisions.",
@@ -498,7 +498,7 @@
       "label": "blue-and-white-are-enough · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 265,
+      "order": 269,
       "preserveTokens": [],
       "values": {
         "en": "Two colours are enough. Most interfaces would also be fine with one font, one grid, and one honest shadow.",
@@ -510,7 +510,7 @@
       "label": "blue-and-white-are-enough · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 261,
+      "order": 265,
       "preserveTokens": [],
       "values": {
         "en": "2025-07-12",
@@ -522,7 +522,7 @@
       "label": "blue-and-white-are-enough · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 262,
+      "order": 266,
       "preserveTokens": [],
       "values": {
         "en": "ESSAY",
@@ -534,7 +534,7 @@
       "label": "blue-and-white-are-enough · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 260,
+      "order": 264,
       "preserveTokens": [],
       "values": {
         "en": "Blue and White Are Enough",
@@ -546,7 +546,7 @@
       "label": "flow-canvas-information-overload · 正文 1",
       "kind": "shortText",
       "group": "articles",
-      "order": 134,
+      "order": 138,
       "preserveTokens": [],
       "values": {
         "en": "Prologue",
@@ -558,7 +558,7 @@
       "label": "flow-canvas-information-overload · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 135,
+      "order": 139,
       "preserveTokens": [],
       "values": {
         "en": "If I remember correctly, it was around August of last year — and I may never forget those days of learning while relying on ChatGPT, because that was when a thought took shape: a multi-branch conversation on a canvas, something that could replace the linear dialogue of the traditional LUI.",
@@ -570,7 +570,7 @@
       "label": "flow-canvas-information-overload · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 136,
+      "order": 140,
       "preserveTokens": [],
       "values": {
         "en": "So I started building a Flow canvas product.",
@@ -582,7 +582,7 @@
       "label": "flow-canvas-information-overload · 正文 4",
       "kind": "longText",
       "group": "articles",
-      "order": 137,
+      "order": 141,
       "preserveTokens": [],
       "values": {
         "en": "Along the way I watched AI workflows rise and fade, watched Skills appear, watched multi-agent slowly become the industry's technical orthodoxy. New things kept surfacing one after another, iterating fast enough to make you panicky — and looking back, our thing, just pure LLM API calling, felt increasingly unattractive and increasingly uncool.",
@@ -594,7 +594,7 @@
       "label": "flow-canvas-information-overload · 正文 5",
       "kind": "longText",
       "group": "articles",
-      "order": 138,
+      "order": 142,
       "preserveTokens": [],
       "values": {
         "en": "Gradually Flow canvas grew less cool in our eyes. Yet I have to admit, I still held a soft spot for that immature idea.",
@@ -606,7 +606,7 @@
       "label": "flow-canvas-information-overload · 正文 6",
       "kind": "longText",
       "group": "articles",
-      "order": 139,
+      "order": 143,
       "preserveTokens": [],
       "values": {
         "en": "I agonized over it for a long time — a kind of pain I couldn't name. Physiologically and psychologically it never really hurt, and yet it hurt.",
@@ -618,7 +618,7 @@
       "label": "flow-canvas-information-overload · 正文 7",
       "kind": "longText",
       "group": "articles",
-      "order": 140,
+      "order": 144,
       "preserveTokens": [],
       "values": {
         "en": "I actively sent resumes to big companies, was rejected by Tencent three times, and then let go of my own opportunity by hand — a quiet civil war between my two brains.",
@@ -630,7 +630,7 @@
       "label": "flow-canvas-information-overload · 正文 8",
       "kind": "longText",
       "group": "articles",
-      "order": 141,
+      "order": 145,
       "preserveTokens": [],
       "values": {
         "en": "I wholesale negated the three years of my undergraduate study, and idealistically believed that as long as I still had creative passion, even dropping out would be fine. To that end I even found myself an excuse to give up the postgraduate recommendation, and called it \"being picky\".",
@@ -642,7 +642,7 @@
       "label": "flow-canvas-information-overload · 正文 9",
       "kind": "longText",
       "group": "articles",
-      "order": 142,
+      "order": 146,
       "preserveTokens": [],
       "values": {
         "en": "I swung between believing in myself and doubting myself.",
@@ -654,7 +654,7 @@
       "label": "flow-canvas-information-overload · 正文 10",
       "kind": "longText",
       "group": "articles",
-      "order": 143,
+      "order": 147,
       "preserveTokens": [],
       "values": {
         "en": "It wasn't until I joined the AdventureX hackathon that I discovered the first layer of \"information overload\". Coding Agents gave everyone — even those who don't understand coding — the chance to realize an idea, and everyone was talking about making something cool. So what exactly is \"cool\"? I'd been understanding it in a binary, all-or-nothing way.",
@@ -666,7 +666,7 @@
       "label": "flow-canvas-information-overload · 正文 11",
       "kind": "longText",
       "group": "articles",
-      "order": 144,
+      "order": 148,
       "preserveTokens": [],
       "values": {
         "en": "But AdventureX didn't give me anxiety; quite the opposite, it re-energized me.",
@@ -678,7 +678,7 @@
       "label": "flow-canvas-information-overload · 正文 12",
       "kind": "longText",
       "group": "articles",
-      "order": 145,
+      "order": 149,
       "preserveTokens": [],
       "values": {
         "en": "Before that, I wanted too badly to make something cool without understanding what cool really was. I used \"looks impressive\" as the yardstick, agonized in circles, and kept dressing my behavior in excuses that sounded cool.",
@@ -690,7 +690,7 @@
       "label": "flow-canvas-information-overload · 正文 13",
       "kind": "longText",
       "group": "articles",
-      "order": 146,
+      "order": 150,
       "preserveTokens": [],
       "values": {
         "en": "Only after the hackathon did I see that making cool things can itself be rock and roll — it doesn't need to be packaged into something grand first.",
@@ -702,7 +702,7 @@
       "label": "flow-canvas-information-overload · 正文 14",
       "kind": "longText",
       "group": "articles",
-      "order": 147,
+      "order": 151,
       "preserveTokens": [],
       "values": {
         "en": "I talked with many young participants. Some were actively pushing the boundary of what a single person can do with AI. Others weren't treating AI as a showcase of technology at all, but genuinely using it to solve problems in their own lives. Those problems might be tiny — not even worth packaging into a grand product story — but they made some part of someone's life a little smoother.",
@@ -714,7 +714,7 @@
       "label": "flow-canvas-information-overload · 正文 15",
       "kind": "longText",
       "group": "articles",
-      "order": 148,
+      "order": 152,
       "preserveTokens": [],
       "values": {
         "en": "That made me realize again: \"cool\" doesn't have to mean piling on more buzzwords, more models, more architectures.",
@@ -726,7 +726,7 @@
       "label": "flow-canvas-information-overload · 正文 16",
       "kind": "longText",
       "group": "articles",
-      "order": 149,
+      "order": 153,
       "preserveTokens": [],
       "values": {
         "en": "The geeks I admire are the ones willing to contribute cool things to the world: they rethink something everyone takes for granted, sense that it could take another shape, and then personally build the answer and hand it over for others to use. Cool isn't just self-expression; it's an act of giving an idea away.",
@@ -738,7 +738,7 @@
       "label": "flow-canvas-information-overload · 正文 17",
       "kind": "longText",
       "group": "articles",
-      "order": 150,
+      "order": 154,
       "preserveTokens": [],
       "values": {
         "en": "Flow canvas is exactly such an attempt: a rethinking of the shape of the thinking canvas, and a re-examination of the LUI (Linear User Interface) we've grown used to. It doesn't rush to classify itself as any particular tool; instead it proposes an interaction form first and waits to see what people actually want to do with it.",
@@ -750,7 +750,7 @@
       "label": "flow-canvas-information-overload · 正文 18",
       "kind": "longText",
       "group": "articles",
-      "order": 151,
+      "order": 155,
       "preserveTokens": [],
       "values": {
         "en": "Of course, there may be no standard answer to this question. At least if you asked me now, I'd say: a product comfortable enough for everyone to interact with, whatever their level of knowledge — one that lets all people use it on equal footing and makes their lives a little more convenient. That, I would say, is what fits my intuition of cool.",
@@ -762,7 +762,7 @@
       "label": "flow-canvas-information-overload · 正文 19",
       "kind": "shortText",
       "group": "articles",
-      "order": 152,
+      "order": 156,
       "preserveTokens": [],
       "values": {
         "en": "Fishing the discarded paper ball out of the trash",
@@ -774,7 +774,7 @@
       "label": "flow-canvas-information-overload · 正文 20",
       "kind": "longText",
       "group": "articles",
-      "order": 153,
+      "order": 157,
       "preserveTokens": [],
       "values": {
         "en": "So I picked Flow canvas back up — or rather, I started committing to building it in earnest.",
@@ -786,7 +786,7 @@
       "label": "flow-canvas-information-overload · 正文 21",
       "kind": "longText",
       "group": "articles",
-      "order": 154,
+      "order": 158,
       "preserveTokens": [],
       "values": {
         "en": "It was while picking up this shelved idea that I realized I was trapped in information overload.",
@@ -798,7 +798,7 @@
       "label": "flow-canvas-information-overload · 正文 22",
       "kind": "longText",
       "group": "articles",
-      "order": 155,
+      "order": 159,
       "preserveTokens": [],
       "values": {
         "en": "I was excited to take this exam again as my year-younger self; our team joked that it was a \"Renaissance\".",
@@ -810,7 +810,7 @@
       "label": "flow-canvas-information-overload · 正文 23",
       "kind": "longText",
       "group": "articles",
-      "order": 156,
+      "order": 160,
       "preserveTokens": [],
       "values": {
         "en": "And as an examinee, I was of course serious. During that period I browsed a lot of products praised on Product Hunt, and looked at many canvas, note-taking, AI workspace, and design tools. Every product had something worth borrowing: this one's navigation felt good, that one's cards were beautiful, another one's layout looked suited to work. I noted them down one by one, brought them back to Flow canvas, and tried to fit them into my own product.",
@@ -822,7 +822,7 @@
       "label": "flow-canvas-information-overload · 正文 24",
       "kind": "shortText",
       "group": "articles",
-      "order": 157,
+      "order": 161,
       "preserveTokens": [],
       "values": {
         "en": "Trash doesn't have to stay in the trash can; the trash can doesn't have to hold trash",
@@ -834,7 +834,7 @@
       "label": "flow-canvas-information-overload · 正文 25",
       "kind": "longText",
       "group": "articles",
-      "order": 158,
+      "order": 162,
       "preserveTokens": [],
       "values": {
         "en": "During those days of drafting the new prototype, Flow canvas did look increasingly complete. It had gained a lot of plausible UI and quite a few layouts that seemed to improve the experience.",
@@ -846,7 +846,7 @@
       "label": "flow-canvas-information-overload · 正文 26",
       "kind": "longText",
       "group": "articles",
-      "order": 159,
+      "order": 163,
       "preserveTokens": [],
       "values": {
         "en": "But I soon noticed it was turning into a very ordinary canvas product rather than the thing I originally wanted to make — like a fledgling, with a magpie's borrow-it-all mindset, pasting the feathers of every prettier bird in the woods onto itself.",
@@ -858,7 +858,7 @@
       "label": "flow-canvas-information-overload · 正文 27",
       "kind": "longText",
       "group": "articles",
-      "order": 160,
+      "order": 164,
       "preserveTokens": [],
       "values": {
         "en": "I had hoped that when people saw Flow canvas, they wouldn't immediately file it under any category: it's not only for mind maps, and not only for loosely arranging images. It defines just one interaction form: users can connect and create cards. Planning a trip with it is fine, working through a complex architecture is fine, even running a tabletop RPG with friends on it is fine.",
@@ -870,7 +870,7 @@
       "label": "flow-canvas-information-overload · 正文 28",
       "kind": "longText",
       "group": "articles",
-      "order": 161,
+      "order": 165,
       "preserveTokens": [],
       "values": {
         "en": "But the more cases I dragged in, the more I decided on its behalf what it should look like. That ran against my early idea — back then I'd wondered whether we could introduce GenUI, letting each user grow an interface mode that best fits their own working environment. Each card in a canvas is like a car, and we let users modify it however the road demands.",
@@ -882,7 +882,7 @@
       "label": "flow-canvas-information-overload · 正文 29",
       "kind": "longText",
       "group": "articles",
-      "order": 162,
+      "order": 166,
       "preserveTokens": [],
       "values": {
         "en": "I thought I was looking for a better answer. It turned out I was just looking for answers others had already given.",
@@ -894,7 +894,7 @@
       "label": "flow-canvas-information-overload · 正文 30",
       "kind": "shortText",
       "group": "articles",
-      "order": 163,
+      "order": 167,
       "preserveTokens": [],
       "values": {
         "en": "When a \"plagiarist\" audaciously calls their plagiarism creation",
@@ -906,7 +906,7 @@
       "label": "flow-canvas-information-overload · 正文 31",
       "kind": "longText",
       "group": "articles",
-      "order": 164,
+      "order": 168,
       "preserveTokens": [],
       "values": {
         "en": "This wasn't the first time I'd run into a problem like this.",
@@ -918,7 +918,7 @@
       "label": "flow-canvas-information-overload · 正文 32",
       "kind": "longText",
       "group": "articles",
-      "order": 165,
+      "order": 169,
       "preserveTokens": [],
       "values": {
         "en": "I remember the first high-scoring assignment of my college years happened precisely when I didn't yet know how to look at cases. I hadn't assembled a proper research phase, hadn't seriously studied any design master — I stayed at the level of memorizing and imitating their symbols. I also just settled down, started from a vague problem, built a lot of boxes in Rhino, and then kept pushing, pulling, and moving them — really, I outsourced a large part of the responsibility for creation to the tool.",
@@ -930,7 +930,7 @@
       "label": "flow-canvas-information-overload · 正文 33",
       "kind": "longText",
       "group": "articles",
-      "order": 166,
+      "order": 170,
       "preserveTokens": [],
       "values": {
         "en": "Fortunately I was lucky (I define \"luck\" as being able to produce beautiful garbage without logic — because even today's Agents have a chance of drawing a good card from even the worst prompt, which means even a garbage prompt can yield a pretty result). The generation process went smoothly and the details kept progressing.",
@@ -942,7 +942,7 @@
       "label": "flow-canvas-information-overload · 正文 34",
       "kind": "longText",
       "group": "articles",
-      "order": 167,
+      "order": 171,
       "preserveTokens": [],
       "values": {
         "en": "The teacher gave me a high score, and I came to believe I had some kind of design talent.",
@@ -954,7 +954,7 @@
       "label": "flow-canvas-information-overload · 正文 35",
       "kind": "longText",
       "group": "articles",
-      "order": 168,
+      "order": 172,
       "preserveTokens": [],
       "values": {
         "en": "Looking back, that design certainly doesn't deserve to be romanticized: it was built in a vacuum, and never truly practiced the design principles I only came to understand later. It was more like a lucky exercise with a smooth generation process. But I never made such smooth a design again — that stuck with me.",
@@ -966,7 +966,7 @@
       "label": "flow-canvas-information-overload · 正文 36",
       "kind": "longText",
       "group": "articles",
-      "order": 169,
+      "order": 173,
       "preserveTokens": [],
       "values": {
         "en": "Because later I learned to do research.",
@@ -978,7 +978,7 @@
       "label": "flow-canvas-information-overload · 正文 37",
       "kind": "longText",
       "group": "articles",
-      "order": 170,
+      "order": 174,
       "preserveTokens": [],
       "values": {
         "en": "In my observation, design education often places research on a very lofty pedestal: a student is asked to collect cases, organize materials, and analyze conditions before they've even qualitatively framed the problem. Active research is of course a good thing, but it should be built on thinking about a problem from the origin. Otherwise research easily becomes a kind of formalism — we don't look at material to verify our judgment; we treat the material as the judgment itself.",
@@ -990,7 +990,7 @@
       "label": "flow-canvas-information-overload · 正文 38",
       "kind": "longText",
       "group": "articles",
-      "order": 171,
+      "order": 175,
       "preserveTokens": [],
       "values": {
         "en": "And in behavior, students research because the teacher demands it, produce material whose meaning even they aren't sure of, then feel the work is done and plunge into design.",
@@ -1002,7 +1002,7 @@
       "label": "flow-canvas-information-overload · 正文 39",
       "kind": "longText",
       "group": "articles",
-      "order": 172,
+      "order": 176,
       "preserveTokens": [],
       "values": {
         "en": "The same happened to me.",
@@ -1014,7 +1014,7 @@
       "label": "flow-canvas-information-overload · 正文 40",
       "kind": "longText",
       "group": "articles",
-      "order": 173,
+      "order": 177,
       "preserveTokens": [],
       "values": {
         "en": "Once I thought I had mastered more design theory, more cases, and a wider search ability, design actually began to hurt. Because I knew too many \"possible directions\", every direction looked inadequate. I'd keep making options, keep comparing, keep negating in the early phase.",
@@ -1026,7 +1026,7 @@
       "label": "flow-canvas-information-overload · 正文 41",
       "kind": "longText",
       "group": "articles",
-      "order": 174,
+      "order": 178,
       "preserveTokens": [],
       "values": {
         "en": "By the time everyone around me had almost finished, I'd force myself late at night, squeezing a few meager — even still mediocre — sparks of creativity out of an exhausted body. In essence that behavior is no different from a prostitute's.",
@@ -1038,7 +1038,7 @@
       "label": "flow-canvas-information-overload · 正文 42",
       "kind": "longText",
       "group": "articles",
-      "order": 175,
+      "order": 179,
       "preserveTokens": [],
       "values": {
         "en": "It wasn't that I had no ideas; it was that I let too many other people's ideas into the room before my own had taken shape.",
@@ -1050,7 +1050,7 @@
       "label": "flow-canvas-information-overload · 正文 43",
       "kind": "longText",
       "group": "articles",
-      "order": 176,
+      "order": 180,
       "preserveTokens": [],
       "values": {
         "en": "And I'd never truly learned how to express myself: my thinking is divergent and leaping, able to spout many abstract notions like some radio wave from another dimension, yet unable to describe them. This showed in my work — I leaned heavily on plan mode, but most of the time it was only a partial distillation of my thoughts. When pair-programming with AI, I believed the AI only took the slice of context it most needed; but the process was often a black box to me: I couldn't tell whether it had really grasped all my ideas.",
@@ -1062,7 +1062,7 @@
       "label": "flow-canvas-information-overload · 正文 44",
       "kind": "shortText",
       "group": "articles",
-      "order": 177,
+      "order": 181,
       "preserveTokens": [],
       "values": {
         "en": "What exactly should fit in that overflowing context pocket",
@@ -1074,7 +1074,7 @@
       "label": "flow-canvas-information-overload · 正文 45",
       "kind": "longText",
       "group": "articles",
-      "order": 178,
+      "order": 182,
       "preserveTokens": [],
       "values": {
         "en": "Information overload is not just too much information.",
@@ -1086,7 +1086,7 @@
       "label": "flow-canvas-information-overload · 正文 46",
       "kind": "longText",
       "group": "articles",
-      "order": 179,
+      "order": 183,
       "preserveTokens": [],
       "values": {
         "en": "More precisely, it strips away a person's power to decide when information enters, and in what relationship to the current thinking.",
@@ -1098,7 +1098,7 @@
       "label": "flow-canvas-information-overload · 正文 47",
       "kind": "longText",
       "group": "articles",
-      "order": 180,
+      "order": 184,
       "preserveTokens": [],
       "values": {
         "en": "A friend recently shared his blog post \"Why Obelisk\" with me, and much of it resonated deeply — especially the passage on retrieval: retrieval itself is a judgment about timing, scope, and authority; a slightly off-target memory, or one that simply belongs to another moment, doesn't enter the context neutrally — it competes with current evidence, snatches your attention, and quietly turns an old conclusion into a present constraint.",
@@ -1110,7 +1110,7 @@
       "label": "flow-canvas-information-overload · 正文 48",
       "kind": "longText",
       "group": "articles",
-      "order": 181,
+      "order": 185,
       "preserveTokens": [],
       "values": {
         "en": "In a product team, solving information overload sometimes doesn't mean building a more complete knowledge base, nor does it mean everyone participates in every decision.",
@@ -1122,7 +1122,7 @@
       "label": "flow-canvas-information-overload · 正文 49",
       "kind": "longText",
       "group": "articles",
-      "order": 182,
+      "order": 186,
       "preserveTokens": [],
       "values": {
         "en": "A person with taste, who has formed a sufficiently clear judgment on something and is willing to deliver a confident result, frees everyone else from spending information bandwidth on it. You can see this in some big Chinese companies too — the future internet industry might converge into two kinds of people: value engineers and optimization engineers.",
@@ -1134,7 +1134,7 @@
       "label": "flow-canvas-information-overload · 正文 50",
       "kind": "longText",
       "group": "articles",
-      "order": 183,
+      "order": 187,
       "preserveTokens": [],
       "values": {
         "en": "This is not just reducing entropy in information transfer; it is also delivering trust.",
@@ -1146,7 +1146,7 @@
       "label": "flow-canvas-information-overload · 正文 51",
       "kind": "longText",
       "group": "articles",
-      "order": 184,
+      "order": 188,
       "preserveTokens": [],
       "values": {
         "en": "The Almanack of Naval Ravikant also mentions that daring to take risks and owning success or failure in your own name is the only road to outsized returns and autonomy.",
@@ -1158,7 +1158,7 @@
       "label": "flow-canvas-information-overload · 正文 52",
       "kind": "longText",
       "group": "articles",
-      "order": 185,
+      "order": 189,
       "preserveTokens": [],
       "values": {
         "en": "\"I've already looked at it — this result is good to continue with.\" The value of that sentence isn't how much information it contains; it's that it carries part of the judgment for others. Without such trust, a team keeps redoing research, re-explaining, re-discussing, and finally traps in information the very things that could have moved forward.",
@@ -1170,7 +1170,7 @@
       "label": "flow-canvas-information-overload · 正文 53",
       "kind": "longText",
       "group": "articles",
-      "order": 186,
+      "order": 190,
       "preserveTokens": [],
       "values": {
         "en": "So what truly matters isn't making everyone know more, but letting everyone know: what is already certain enough, and what is still worth doubting.",
@@ -1182,7 +1182,7 @@
       "label": "flow-canvas-information-overload · 正文 54",
       "kind": "shortText",
       "group": "articles",
-      "order": 187,
+      "order": 191,
       "preserveTokens": [],
       "values": {
         "en": "Reasoning and analysis, abstract distillation, practical verification",
@@ -1194,7 +1194,7 @@
       "label": "flow-canvas-information-overload · 正文 55",
       "kind": "longText",
       "group": "articles",
-      "order": 188,
+      "order": 192,
       "preserveTokens": [],
       "values": {
         "en": "I'm not against research. I'm against letting research think on my behalf before I've formed any problem of my own.",
@@ -1206,7 +1206,7 @@
       "label": "flow-canvas-information-overload · 正文 56",
       "kind": "longText",
       "group": "articles",
-      "order": 189,
+      "order": 193,
       "preserveTokens": [],
       "values": {
         "en": "Good research should be an attack on a preliminary judgment. It can help us find blind spots, find counterexamples, calibrate direction, converge an abstract thought into a rational yes/no matrix, and also show us that our problem was never clearly defined. But it shouldn't prescribe what the problem is from the start.",
@@ -1218,7 +1218,7 @@
       "label": "flow-canvas-information-overload · 正文 57",
       "kind": "longText",
       "group": "articles",
-      "order": 190,
+      "order": 194,
       "preserveTokens": [],
       "values": {
         "en": "Otherwise a very common design process appears: because someone else has a feature, I must have this feature first; because some style is liked by many, my product should use it too; because a case proved successful, it becomes the starting point of my thinking.",
@@ -1230,7 +1230,7 @@
       "label": "flow-canvas-information-overload · 正文 58",
       "kind": "longText",
       "group": "articles",
-      "order": 191,
+      "order": 195,
       "preserveTokens": [],
       "values": {
         "en": "Creation becomes plagiarism.",
@@ -1242,7 +1242,7 @@
       "label": "flow-canvas-information-overload · 正文 59",
       "kind": "longText",
       "group": "articles",
-      "order": 192,
+      "order": 196,
       "preserveTokens": [],
       "values": {
         "en": "Plagiarism can indeed let a beginner improve quickly. It offers a path already walked, granting a temporary sense of completion. But it's hard to move someone with a foundation toward excellence. Because what you see is only the symbols of a thing cut into pieces; reassembling the symbols usually leaves you below the height of the source.",
@@ -1254,7 +1254,7 @@
       "label": "flow-canvas-information-overload · 正文 60",
       "kind": "longText",
       "group": "articles",
-      "order": 193,
+      "order": 197,
       "preserveTokens": [],
       "values": {
         "en": "A fountain can never rise higher than its source. Let alone the fact that we often don't understand why the source flows the way it does.",
@@ -1266,7 +1266,7 @@
       "label": "flow-canvas-information-overload · 正文 61",
       "kind": "longText",
       "group": "articles",
-      "order": 194,
+      "order": 198,
       "preserveTokens": [],
       "values": {
         "en": "\"Write Prompts Like Code, or Play Them Like Jazz\" quoted a study that felt like being seen through: \"individuals get stronger, the collective gets narrower. Everyone writes at their personal best, but their bests look more and more alike.\" It was about collective convergence in AI-assisted writing, but the more I pondered, the more I felt that people who patch others' cases into their own products are stepping into the same trap.",
@@ -1278,7 +1278,7 @@
       "label": "flow-canvas-information-overload · 正文 62",
       "kind": "longText",
       "group": "articles",
-      "order": 195,
+      "order": 199,
       "preserveTokens": [],
       "values": {
         "en": "Still, this isn't a dogma; such things are common among big companies: the market already has Trae, yet there's still room for Codebuddy — backed by rich resources, brute force will do.",
@@ -1290,7 +1290,7 @@
       "label": "flow-canvas-information-overload · 正文 63",
       "kind": "longText",
       "group": "articles",
-      "order": 196,
+      "order": 200,
       "preserveTokens": [],
       "values": {
         "en": "But I still want to redefine \"learning\", because creation and learning are, at some level, the same thing — fundamentally I/O, or in plain words, \"the unity of knowing and doing\".",
@@ -1302,7 +1302,7 @@
       "label": "flow-canvas-information-overload · 正文 64",
       "kind": "longText",
       "group": "articles",
-      "order": 197,
+      "order": 201,
       "preserveTokens": [],
       "values": {
         "en": "Imitating a pattern is only \"distillation\"; being able to summarize regularities from multiple patterns and apply them is what I'd call \"learning\".",
@@ -1314,7 +1314,7 @@
       "label": "flow-canvas-information-overload · 正文 65",
       "kind": "shortText",
       "group": "articles",
-      "order": 198,
+      "order": 202,
       "preserveTokens": [],
       "values": {
         "en": "A high-dimensional point projects many lines and planes below, but projection is reversible too",
@@ -1326,7 +1326,7 @@
       "label": "flow-canvas-information-overload · 正文 66",
       "kind": "longText",
       "group": "articles",
-      "order": 199,
+      "order": 203,
       "preserveTokens": [],
       "values": {
         "en": "I'm increasingly convinced that borrowing itself isn't the problem. The problem is what we borrow.",
@@ -1338,7 +1338,7 @@
       "label": "flow-canvas-information-overload · 正文 67",
       "kind": "longText",
       "group": "articles",
-      "order": 200,
+      "order": 204,
       "preserveTokens": [],
       "values": {
         "en": "Many things in the world that look completely different may share the same structure at a more macroscopic level. State machines in game design can help us understand an Agent's task states; signal propagation in mechanical systems can help us think about collaboration between complex tools; the control groups of StarCraft can serve as an analogy for quickly organizing space in a large canvas.",
@@ -1350,7 +1350,7 @@
       "label": "flow-canvas-information-overload · 正文 68",
       "kind": "longText",
       "group": "articles",
-      "order": 201,
+      "order": 205,
       "preserveTokens": [],
       "values": {
         "en": "This kind of borrowing isn't moving appearances over; it's discovering relations: what gets organized, what can be called up quickly, how states change, how feedback travels, how a user keeps a sense of direction in a complex system.",
@@ -1362,7 +1362,7 @@
       "label": "flow-canvas-information-overload · 正文 69",
       "kind": "longText",
       "group": "articles",
-      "order": 202,
+      "order": 206,
       "preserveTokens": [],
       "values": {
         "en": "Large language models are sometimes very valuable here. They excel at natural language, can cluster many viewpoints, compress long complex texts into clearer structures, and help people find commonalities across domains. But where they truly help isn't in choosing a ready-made style for you — it's in helping you see the similar relationships behind various phenomena.",
@@ -1374,7 +1374,7 @@
       "label": "flow-canvas-information-overload · 正文 70",
       "kind": "shortText",
       "group": "articles",
-      "order": 203,
+      "order": 207,
       "preserveTokens": [],
       "values": {
         "en": "When an \"ism\" becomes something that can be burned onto a disc",
@@ -1386,7 +1386,7 @@
       "label": "flow-canvas-information-overload · 正文 71",
       "kind": "longText",
       "group": "articles",
-      "order": 204,
+      "order": 208,
       "preserveTokens": [],
       "values": {
         "en": "In the design circle, we're used to compressing complex phenomena into a few words: minimalism, functionalism, postmodernism. This has great communication value. One word lets people in the same field align context instantly.",
@@ -1398,7 +1398,7 @@
       "label": "flow-canvas-information-overload · 正文 72",
       "kind": "longText",
       "group": "articles",
-      "order": 205,
+      "order": 209,
       "preserveTokens": [],
       "values": {
         "en": "But compression always causes loss, and it also builds a wall of understanding — because even someone who doesn't know an ism can touch what lies behind it in a moment of drifting thought, and can even coin a new word to describe it.",
@@ -1410,7 +1410,7 @@
       "label": "flow-canvas-information-overload · 正文 73",
       "kind": "longText",
       "group": "articles",
-      "order": 206,
+      "order": 210,
       "preserveTokens": [],
       "values": {
         "en": "At the same time, as we rely on these nouns more and more without tracing their history, problem consciousness, and process of generation, the \"ism\" begins to become packaging. It stops being a response to reality and becomes a visual label you can call up on demand.",
@@ -1422,7 +1422,7 @@
       "label": "flow-canvas-information-overload · 正文 74",
       "kind": "longText",
       "group": "articles",
-      "order": 207,
+      "order": 211,
       "preserveTokens": [],
       "values": {
         "en": "Agents and various Design Skills make this even more obvious. Now we can simply say: \"give me an Apple-style website.\" The system quickly assembles rounded corners, whitespace, typography, frosted glass, and motion, and hands back a design rationale that sounds complete.",
@@ -1434,7 +1434,7 @@
       "label": "flow-canvas-information-overload · 正文 75",
       "kind": "longText",
       "group": "articles",
-      "order": 208,
+      "order": 212,
       "preserveTokens": [],
       "values": {
         "en": "This does give many people the ability to make good-looking interfaces. But behind a good-looking interface there's another question: does it truly understand the user? Those who hype front-end Skills in the community, claiming they can make some design in a day, may never ask: why is Apple's design imitable by everyone, and worthy of everyone's recognition?",
@@ -1446,7 +1446,7 @@
       "label": "flow-canvas-information-overload · 正文 76",
       "kind": "longText",
       "group": "articles",
-      "order": 209,
+      "order": 213,
       "preserveTokens": [],
       "values": {
         "en": "Even the finest style template usually captures only the form. It can't answer why an error message should appear a few seconds late, why some information should be hidden at this moment, why one action needs to be interrupted while another should stay continuous.",
@@ -1458,7 +1458,7 @@
       "label": "flow-canvas-information-overload · 正文 77",
       "kind": "longText",
       "group": "articles",
-      "order": 210,
+      "order": 214,
       "preserveTokens": [],
       "values": {
         "en": "These aren't dogmatic UX rules; they're comprehensive judgments about human attention, cognitive load, emotional change, and bodily habit. They come from experiments, interviews, failures, and repeated correction — they cannot be fully packaged in a Markdown document.",
@@ -1470,7 +1470,7 @@
       "label": "flow-canvas-information-overload · 正文 78",
       "kind": "longText",
       "group": "articles",
-      "order": 211,
+      "order": 215,
       "preserveTokens": [],
       "values": {
         "en": "So Skill lowers the cost of execution, not the cost of judgment.",
@@ -1482,7 +1482,7 @@
       "label": "flow-canvas-information-overload · 正文 79",
       "kind": "longText",
       "group": "articles",
-      "order": 212,
+      "order": 216,
       "preserveTokens": [],
       "values": {
         "en": "As execution gets cheaper, taste shows more clearly as: where you put your effort, when you stop, what's not worth continuing.",
@@ -1494,7 +1494,7 @@
       "label": "flow-canvas-information-overload · 正文 80",
       "kind": "shortText",
       "group": "articles",
-      "order": 213,
+      "order": 217,
       "preserveTokens": [],
       "values": {
         "en": "AI Native advocates going all out, yet also advises against going all out",
@@ -1506,7 +1506,7 @@
       "label": "flow-canvas-information-overload · 正文 81",
       "kind": "longText",
       "group": "articles",
-      "order": 214,
+      "order": 218,
       "preserveTokens": [],
       "values": {
         "en": "I later found the same problem in how Agents work.",
@@ -1518,7 +1518,7 @@
       "label": "flow-canvas-information-overload · 正文 82",
       "kind": "longText",
       "group": "articles",
-      "order": 215,
+      "order": 219,
       "preserveTokens": [],
       "values": {
         "en": "At the early stage of a project, it's easy to preemptively worry about a lot of things: crank the model's thinking effort to maximum, open plan mode, prepare the context as completely as possible in advance. It's as if we only need to think enough up front, and we'll avoid detours later.",
@@ -1530,7 +1530,7 @@
       "label": "flow-canvas-information-overload · 正文 83",
       "kind": "longText",
       "group": "articles",
-      "order": 216,
+      "order": 220,
       "preserveTokens": [],
       "values": {
         "en": "But often, real resistance hasn't appeared, and we've already prepared a lot of information for imagined resistance. The longer the context, the more complex the plan, the more hesitant the action becomes.",
@@ -1542,7 +1542,7 @@
       "label": "flow-canvas-information-overload · 正文 84",
       "kind": "longText",
       "group": "articles",
-      "order": 217,
+      "order": 221,
       "preserveTokens": [],
       "values": {
         "en": "Of course, AI-native work isn't low effort. It's more like using the smallest total amount of effort and putting it on the real cutting edge: first form a hypothesis that can move, first verify the most critical part; then, when real resistance appears, upgrade search, planning, models, or tools in a targeted way.",
@@ -1554,7 +1554,7 @@
       "label": "flow-canvas-information-overload · 正文 85",
       "kind": "longText",
       "group": "articles",
-      "order": 218,
+      "order": 222,
       "preserveTokens": [],
       "values": {
         "en": "People still need to decide the goal, the value, and the stopping conditions. AI can help us find macroscopic structures, compress information, and offer a few possible directions, but it shouldn't decide for us which direction is worth continuing.",
@@ -1566,7 +1566,7 @@
       "label": "flow-canvas-information-overload · 正文 86",
       "kind": "shortText",
       "group": "articles",
-      "order": 219,
+      "order": 223,
       "preserveTokens": [],
       "values": {
         "en": "Taking back the right to decide",
@@ -1578,7 +1578,7 @@
       "label": "flow-canvas-information-overload · 正文 87",
       "kind": "longText",
       "group": "articles",
-      "order": 220,
+      "order": 224,
       "preserveTokens": [],
       "values": {
         "en": "Looking back now, I don't think that research-less college design proved any talent of mine. It just showed me that before a person learns to search, they're at least still forced to start from the problem itself.",
@@ -1590,7 +1590,7 @@
       "label": "flow-canvas-information-overload · 正文 88",
       "kind": "longText",
       "group": "articles",
-      "order": 221,
+      "order": 225,
       "preserveTokens": [],
       "values": {
         "en": "What really needs to change isn't refusing research from now on, nor refusing borrowing, nor refusing Skill and AI.",
@@ -1602,7 +1602,7 @@
       "label": "flow-canvas-information-overload · 正文 89",
       "kind": "longText",
       "group": "articles",
-      "order": 222,
+      "order": 226,
       "preserveTokens": [],
       "values": {
         "en": "It's not letting them start thinking for us before we've formed a problem of our own.",
@@ -1614,7 +1614,7 @@
       "label": "flow-canvas-information-overload · 正文 90",
       "kind": "longText",
       "group": "articles",
-      "order": 223,
+      "order": 227,
       "preserveTokens": [],
       "values": {
         "en": "Form a judgment at the origin first, then let the world in; find a direction worth continuing first, then pour in the effort.",
@@ -1626,7 +1626,7 @@
       "label": "flow-canvas-information-overload · 正文 91",
       "kind": "longText",
       "group": "articles",
-      "order": 224,
+      "order": 228,
       "preserveTokens": [],
       "values": {
         "en": "What we need may not be more information, but to reclaim the power to decide how information enters us.",
@@ -1638,7 +1638,7 @@
       "label": "flow-canvas-information-overload · 正文 92",
       "kind": "shortText",
       "group": "articles",
-      "order": 225,
+      "order": 229,
       "preserveTokens": [],
       "values": {
         "en": "References and further reading",
@@ -1650,7 +1650,7 @@
       "label": "flow-canvas-information-overload · 正文 93",
       "kind": "shortText",
       "group": "articles",
-      "order": 226,
+      "order": 230,
       "preserveTokens": [],
       "values": {
         "en": "Inspirations",
@@ -1662,7 +1662,7 @@
       "label": "flow-canvas-information-overload · 链接后文本 94",
       "kind": "longText",
       "group": "articles",
-      "order": 228,
+      "order": 232,
       "preserveTokens": [],
       "values": {
         "en": " — kinomotomio. The value of memory lies not in remembering more, but in whether it can change future decisions; forgetting well matters more than remembering more. The section \"What exactly should fit in that overflowing context pocket\" was largely triggered by it.",
@@ -1674,7 +1674,7 @@
       "label": "flow-canvas-information-overload · 正文 94",
       "kind": "longText",
       "group": "articles",
-      "order": 227,
+      "order": 231,
       "preserveTokens": [],
       "values": {
         "en": "Sediment and Seed: The Memory Paradox in Agent Engineering",
@@ -1686,7 +1686,7 @@
       "label": "flow-canvas-information-overload · 链接后文本 95",
       "kind": "longText",
       "group": "articles",
-      "order": 230,
+      "order": 234,
       "preserveTokens": [],
       "values": {
         "en": " — kinomotomio. About taste, context vibe, and \"good Skills are excavated from collaborations that already succeeded, not invented in advance\" — it helped me distinguish execution cost from judgment cost.",
@@ -1698,7 +1698,7 @@
       "label": "flow-canvas-information-overload · 正文 95",
       "kind": "longText",
       "group": "articles",
-      "order": 229,
+      "order": 233,
       "preserveTokens": [],
       "values": {
         "en": "Why Obelisk",
@@ -1710,7 +1710,7 @@
       "label": "flow-canvas-information-overload · 链接后文本 96",
       "kind": "longText",
       "group": "articles",
-      "order": 232,
+      "order": 236,
       "preserveTokens": [],
       "values": {
         "en": " — WeChat official account. Two styles of human-machine collaboration, PromptOps and PromptJazz: what's truly scarce isn't how to write prompts, but how to pick the right one out of ten candidates.",
@@ -1722,7 +1722,7 @@
       "label": "flow-canvas-information-overload · 正文 96",
       "kind": "longText",
       "group": "articles",
-      "order": 231,
+      "order": 235,
       "preserveTokens": [],
       "values": {
         "en": "Write Prompts Like Code, or Play Them Like Jazz",
@@ -1734,7 +1734,7 @@
       "label": "flow-canvas-information-overload · 正文 97",
       "kind": "shortText",
       "group": "articles",
-      "order": 233,
+      "order": 237,
       "preserveTokens": [],
       "values": {
         "en": "Mem0「In Context」series",
@@ -1746,7 +1746,7 @@
       "label": "flow-canvas-information-overload · 链接后文本 98",
       "kind": "longText",
       "group": "articles",
-      "order": 235,
+      "order": 239,
       "preserveTokens": [],
       "values": {
         "en": " (In Context #2) — A 1M-token context window doesn't mean remembering better; the real bottleneck is how information is stored, updated, and used.",
@@ -1758,7 +1758,7 @@
       "label": "flow-canvas-information-overload · 正文 98",
       "kind": "longText",
       "group": "articles",
-      "order": 234,
+      "order": 238,
       "preserveTokens": [],
       "values": {
         "en": "Beam Memory Benchmark: Key Findings on 1M Context",
@@ -1770,7 +1770,7 @@
       "label": "flow-canvas-information-overload · 链接后文本 99",
       "kind": "longText",
       "group": "articles",
-      "order": 237,
+      "order": 241,
       "preserveTokens": [],
       "values": {
         "en": " (In Context #4) — A breakdown of Claude Code's memory mechanism: the 200-line index, silent truncation, background extraction; also explains that AGENTS.md is only suited to carrying conventions that rarely change.",
@@ -1782,7 +1782,7 @@
       "label": "flow-canvas-information-overload · 正文 99",
       "kind": "longText",
       "group": "articles",
-      "order": 236,
+      "order": 240,
       "preserveTokens": [],
       "values": {
         "en": "How Memory Works in Claude Code",
@@ -1794,7 +1794,7 @@
       "label": "flow-canvas-information-overload · 链接后文本 100",
       "kind": "longText",
       "group": "articles",
-      "order": 239,
+      "order": 243,
       "preserveTokens": [],
       "values": {
         "en": " — Mem0's \"sleep\" for Agents: merge duplicates, mark stale items, distill scattered facts into higher-level memories, and delete nothing directly.",
@@ -1806,7 +1806,7 @@
       "label": "flow-canvas-information-overload · 正文 100",
       "kind": "longText",
       "group": "articles",
-      "order": 238,
+      "order": 242,
       "preserveTokens": [],
       "values": {
         "en": "Dream: Background memory consolidation for AI agents",
@@ -1818,7 +1818,7 @@
       "label": "flow-canvas-information-overload · 链接后文本 101",
       "kind": "longText",
       "group": "articles",
-      "order": 241,
+      "order": 245,
       "preserveTokens": [],
       "values": {
         "en": " — AGENTS.md answers \"what are the rules here\"; shared memory answers \"what has changed since the last person looked\".",
@@ -1830,7 +1830,7 @@
       "label": "flow-canvas-information-overload · 正文 101",
       "kind": "longText",
       "group": "articles",
-      "order": 240,
+      "order": 244,
       "preserveTokens": [],
       "values": {
         "en": "Beyond AGENTS.md: Shared Memory for Coding Agents Across Services and Repos",
@@ -1842,7 +1842,7 @@
       "label": "flow-canvas-information-overload · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 132,
+      "order": 136,
       "preserveTokens": [],
       "values": {
         "en": "2026-08-09",
@@ -1854,7 +1854,7 @@
       "label": "flow-canvas-information-overload · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 133,
+      "order": 137,
       "preserveTokens": [],
       "values": {
         "en": "设计",
@@ -1866,7 +1866,7 @@
       "label": "flow-canvas-information-overload · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 131,
+      "order": 135,
       "preserveTokens": [],
       "values": {
         "en": "When Information Starts Thinking for Me",
@@ -1878,7 +1878,7 @@
       "label": "notes-on-information-overload · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 251,
+      "order": 255,
       "preserveTokens": [],
       "values": {
         "en": "The feed does not end; only attention does. That asymmetry is the whole problem. Any tool that pretends the stream can be finished is lying on the first screen.",
@@ -1890,7 +1890,7 @@
       "label": "notes-on-information-overload · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 252,
+      "order": 256,
       "preserveTokens": [],
       "values": {
         "en": "Flovvas started from a different admission: the shelf is finite. A reader can hold perhaps nine open threads before the threads start reading the reader. So the tool recycles slots, fixes the camera, and lets the fog swallow whatever scrolls past the edge.",
@@ -1902,7 +1902,7 @@
       "label": "notes-on-information-overload · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 253,
+      "order": 257,
       "preserveTokens": [],
       "values": {
         "en": "Finite assets, infinite perception. The game engines knew this decades ago. The reading tools are still catching up.",
@@ -1914,7 +1914,7 @@
       "label": "notes-on-information-overload · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 249,
+      "order": 253,
       "preserveTokens": [],
       "values": {
         "en": "2026-05-18",
@@ -1926,7 +1926,7 @@
       "label": "notes-on-information-overload · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 250,
+      "order": 254,
       "preserveTokens": [],
       "values": {
         "en": "NOTES",
@@ -1938,7 +1938,7 @@
       "label": "notes-on-information-overload · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 248,
+      "order": 252,
       "preserveTokens": [],
       "values": {
         "en": "Notes on Information Overload",
@@ -1950,7 +1950,7 @@
       "label": "signal-to-noise-to-signal · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 281,
+      "order": 285,
       "preserveTokens": [],
       "values": {
         "en": "Noise has a bad reputation it never earned. Static is just a signal from a source too large to name: the whole sky, transmitting at once, on every frequency you can afford to hear.",
@@ -1962,7 +1962,7 @@
       "label": "signal-to-noise-to-signal · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 282,
+      "order": 286,
       "preserveTokens": [],
       "values": {
         "en": "The broadcasters of two in the morning know this. Between the last ident and the test tone there is a stretch of carrier that carries nothing, and that nothing is the most honest thing on the dial. No agenda, no caller, no request.",
@@ -1974,7 +1974,7 @@
       "label": "signal-to-noise-to-signal · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 283,
+      "order": 287,
       "preserveTokens": [],
       "values": {
         "en": "A portfolio could aspire to that much honesty. Not the pitch, not the reel — the carrier. Proof that someone is at the station, keeping the transmitter warm, whether or not anyone is tuned in.",
@@ -1986,7 +1986,7 @@
       "label": "signal-to-noise-to-signal · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 279,
+      "order": 283,
       "preserveTokens": [],
       "values": {
         "en": "2024-03-16",
@@ -1998,7 +1998,7 @@
       "label": "signal-to-noise-to-signal · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 280,
+      "order": 284,
       "preserveTokens": [],
       "values": {
         "en": "NOTES",
@@ -2010,7 +2010,7 @@
       "label": "signal-to-noise-to-signal · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 278,
+      "order": 282,
       "preserveTokens": [],
       "values": {
         "en": "Signal to Noise to Signal",
@@ -2022,7 +2022,7 @@
       "label": "the-cursor-blinks-first · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 287,
+      "order": 291,
       "preserveTokens": [],
       "values": {
         "en": "Before any window opens, before the grid fades in, the cursor is already there: one block of light, pulsing at a frequency nobody configured. It is the only element on this machine that breathes before it is asked to.",
@@ -2034,7 +2034,7 @@
       "label": "the-cursor-blinks-first · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 288,
+      "order": 292,
       "preserveTokens": [],
       "values": {
         "en": "The blink is a clock with nothing to count. It divides the night into identical halves — on, off, on, off — and waits for someone to give the rhythm a meaning. Typing does that. Every character lands on the beat and pushes it one step forward.",
@@ -2046,7 +2046,7 @@
       "label": "the-cursor-blinks-first · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 289,
+      "order": 293,
       "preserveTokens": [],
       "values": {
         "en": "That is the whole exchange, really. The machine offers a pulse; the operator offers a reason. Everything else on this desktop is decoration around that handshake.",
@@ -2058,7 +2058,7 @@
       "label": "the-cursor-blinks-first · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 285,
+      "order": 289,
       "preserveTokens": [],
       "values": {
         "en": "2023-12-02",
@@ -2070,7 +2070,7 @@
       "label": "the-cursor-blinks-first · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 286,
+      "order": 290,
       "preserveTokens": [],
       "values": {
         "en": "LOG",
@@ -2082,7 +2082,7 @@
       "label": "the-cursor-blinks-first · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 284,
+      "order": 288,
       "preserveTokens": [],
       "values": {
         "en": "The Cursor Blinks First",
@@ -2094,7 +2094,7 @@
       "label": "the-dither-decides · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 269,
+      "order": 273,
       "preserveTokens": [],
       "values": {
         "en": "Between two colours there is no third. When a gradient has to survive on this screen it is handed to the dither, and the dither does not blend; it votes. Every pixel stands up and declares itself ink or paper.",
@@ -2106,7 +2106,7 @@
       "label": "the-dither-decides · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 270,
+      "order": 274,
       "preserveTokens": [],
       "values": {
         "en": "This is why the dithered image feels more honest than the smooth one. The smooth gradient hides a thousand tiny rounding errors and calls them taste. The dither shows its arithmetic. Zoom in and the pattern confesses: here I ran out of resolution, here I chose.",
@@ -2118,7 +2118,7 @@
       "label": "the-dither-decides · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 271,
+      "order": 275,
       "preserveTokens": [],
       "values": {
         "en": "Interfaces could learn from that. A state that cannot afford to be vague should not be allowed to blur. Quantize the decision, show the dots, let the pattern be the proof.",
@@ -2130,7 +2130,7 @@
       "label": "the-dither-decides · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 267,
+      "order": 271,
       "preserveTokens": [],
       "values": {
         "en": "2025-03-09",
@@ -2142,7 +2142,7 @@
       "label": "the-dither-decides · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 268,
+      "order": 272,
       "preserveTokens": [],
       "values": {
         "en": "LOG",
@@ -2154,7 +2154,7 @@
       "label": "the-dither-decides · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 266,
+      "order": 270,
       "preserveTokens": [],
       "values": {
         "en": "The Dither Decides",
@@ -2166,7 +2166,7 @@
       "label": "the-shelf-is-a-camera · 正文 1",
       "kind": "longText",
       "group": "articles",
-      "order": 257,
+      "order": 261,
       "preserveTokens": [],
       "values": {
         "en": "An isometric shelf never moves; only the camera does. Once you accept that, a lot of interface problems quietly rename themselves as cinematography problems.",
@@ -2178,7 +2178,7 @@
       "label": "the-shelf-is-a-camera · 正文 2",
       "kind": "longText",
       "group": "articles",
-      "order": 258,
+      "order": 262,
       "preserveTokens": [],
       "values": {
         "en": "Occlusion is not a bug to eliminate but a blocking decision. Which box hides which box is a question about where you put the lens, and the lens is a point of view, and a point of view is an opinion.",
@@ -2190,7 +2190,7 @@
       "label": "the-shelf-is-a-camera · 正文 3",
       "kind": "longText",
       "group": "articles",
-      "order": 259,
+      "order": 263,
       "preserveTokens": [],
       "values": {
         "en": "The same is true of a portfolio. The work does not change when you rearrange the room around it. The visitor changes.",
@@ -2202,7 +2202,7 @@
       "label": "the-shelf-is-a-camera · 日期",
       "kind": "shortText",
       "group": "articles",
-      "order": 255,
+      "order": 259,
       "preserveTokens": [],
       "values": {
         "en": "2025-11-30",
@@ -2214,7 +2214,7 @@
       "label": "the-shelf-is-a-camera · 标签",
       "kind": "shortText",
       "group": "articles",
-      "order": 256,
+      "order": 260,
       "preserveTokens": [],
       "values": {
         "en": "ESSAY",
@@ -2226,7 +2226,7 @@
       "label": "the-shelf-is-a-camera · 标题",
       "kind": "shortText",
       "group": "articles",
-      "order": 254,
+      "order": 258,
       "preserveTokens": [],
       "values": {
         "en": "The Shelf Is a Camera",
@@ -2238,7 +2238,7 @@
       "label": "email · address",
       "kind": "shortText",
       "group": "contact",
-      "order": 318,
+      "order": 322,
       "preserveTokens": [],
       "values": {
         "en": "hello@two-am.example.net",
@@ -2250,7 +2250,7 @@
       "label": "email · channel",
       "kind": "shortText",
       "group": "contact",
-      "order": 317,
+      "order": 321,
       "preserveTokens": [],
       "values": {
         "en": "EMAIL",
@@ -2262,7 +2262,7 @@
       "label": "email · status",
       "kind": "shortText",
       "group": "contact",
-      "order": 319,
+      "order": 323,
       "preserveTokens": [],
       "values": {
         "en": "[OK]",
@@ -2274,7 +2274,7 @@
       "label": "github · address",
       "kind": "shortText",
       "group": "contact",
-      "order": 321,
+      "order": 325,
       "preserveTokens": [],
       "values": {
         "en": "@two-am-qz",
@@ -2286,7 +2286,7 @@
       "label": "github · channel",
       "kind": "shortText",
       "group": "contact",
-      "order": 320,
+      "order": 324,
       "preserveTokens": [],
       "values": {
         "en": "GITHUB",
@@ -2298,7 +2298,7 @@
       "label": "github · status",
       "kind": "shortText",
       "group": "contact",
-      "order": 322,
+      "order": 326,
       "preserveTokens": [],
       "values": {
         "en": "[OK]",
@@ -2310,7 +2310,7 @@
       "label": "rss · address",
       "kind": "shortText",
       "group": "contact",
-      "order": 327,
+      "order": 331,
       "preserveTokens": [],
       "values": {
         "en": "/feed.xml",
@@ -2322,7 +2322,7 @@
       "label": "rss · channel",
       "kind": "shortText",
       "group": "contact",
-      "order": 326,
+      "order": 330,
       "preserveTokens": [],
       "values": {
         "en": "RSS",
@@ -2334,7 +2334,7 @@
       "label": "rss · status",
       "kind": "shortText",
       "group": "contact",
-      "order": 328,
+      "order": 332,
       "preserveTokens": [],
       "values": {
         "en": "[OK]",
@@ -2346,7 +2346,7 @@
       "label": "x · address",
       "kind": "shortText",
       "group": "contact",
-      "order": 324,
+      "order": 328,
       "preserveTokens": [],
       "values": {
         "en": "@two_am_qz",
@@ -2358,7 +2358,7 @@
       "label": "x · channel",
       "kind": "shortText",
       "group": "contact",
-      "order": 323,
+      "order": 327,
       "preserveTokens": [],
       "values": {
         "en": "X",
@@ -2370,7 +2370,7 @@
       "label": "x · status",
       "kind": "shortText",
       "group": "contact",
-      "order": 325,
+      "order": 329,
       "preserveTokens": [],
       "values": {
         "en": "[--]",
@@ -2382,7 +2382,7 @@
       "label": "block-lights · 照片日期",
       "kind": "shortText",
       "group": "photos",
-      "order": 334,
+      "order": 338,
       "preserveTokens": [],
       "values": {
         "en": "2025-12-05",
@@ -2394,7 +2394,7 @@
       "label": "block-lights · 照片标题",
       "kind": "shortText",
       "group": "photos",
-      "order": 333,
+      "order": 337,
       "preserveTokens": [],
       "values": {
         "en": "BLOCK LIGHTS",
@@ -2406,7 +2406,7 @@
       "label": "coast · 照片日期",
       "kind": "shortText",
       "group": "photos",
-      "order": 330,
+      "order": 334,
       "preserveTokens": [],
       "values": {
         "en": "2026-06-30",
@@ -2418,7 +2418,7 @@
       "label": "coast · 照片标题",
       "kind": "shortText",
       "group": "photos",
-      "order": 329,
+      "order": 333,
       "preserveTokens": [],
       "values": {
         "en": "COAST 02:14",
@@ -2430,7 +2430,7 @@
       "label": "moonrise · 照片日期",
       "kind": "shortText",
       "group": "photos",
-      "order": 332,
+      "order": 336,
       "preserveTokens": [],
       "values": {
         "en": "2026-04-18",
@@ -2442,7 +2442,7 @@
       "label": "moonrise · 照片标题",
       "kind": "shortText",
       "group": "photos",
-      "order": 331,
+      "order": 335,
       "preserveTokens": [],
       "values": {
         "en": "MOONRISE",
@@ -2454,7 +2454,7 @@
       "label": "night-shift · 照片日期",
       "kind": "shortText",
       "group": "photos",
-      "order": 336,
+      "order": 340,
       "preserveTokens": [],
       "values": {
         "en": "2025-09-27",
@@ -2466,7 +2466,7 @@
       "label": "night-shift · 照片标题",
       "kind": "shortText",
       "group": "photos",
-      "order": 335,
+      "order": 339,
       "preserveTokens": [],
       "values": {
         "en": "NIGHT SHIFT",
@@ -2478,7 +2478,7 @@
       "label": "open-horizon · 音频格式",
       "kind": "shortText",
       "group": "albums",
-      "order": 342,
+      "order": 346,
       "preserveTokens": [],
       "values": {
         "en": "22.05K",
@@ -2490,7 +2490,7 @@
       "label": "open-horizon · 唱片标题",
       "kind": "shortText",
       "group": "albums",
-      "order": 341,
+      "order": 345,
       "preserveTokens": [],
       "values": {
         "en": "OPEN HORIZON",
@@ -2502,7 +2502,7 @@
       "label": "paper-channels · 音频格式",
       "kind": "shortText",
       "group": "albums",
-      "order": 340,
+      "order": 344,
       "preserveTokens": [],
       "values": {
         "en": "22.05K",
@@ -2514,7 +2514,7 @@
       "label": "paper-channels · 唱片标题",
       "kind": "shortText",
       "group": "albums",
-      "order": 339,
+      "order": 343,
       "preserveTokens": [],
       "values": {
         "en": "PAPER CHANNELS",
@@ -2526,7 +2526,7 @@
       "label": "tide-study-0200 · 音频格式",
       "kind": "shortText",
       "group": "albums",
-      "order": 338,
+      "order": 342,
       "preserveTokens": [],
       "values": {
         "en": "22.05K",
@@ -2538,7 +2538,7 @@
       "label": "tide-study-0200 · 唱片标题",
       "kind": "shortText",
       "group": "albums",
-      "order": 337,
+      "order": 341,
       "preserveTokens": [],
       "values": {
         "en": "TIDE STUDY 0200",
@@ -2550,7 +2550,7 @@
       "label": "drift-protocol · 描述",
       "kind": "longText",
       "group": "projects",
-      "order": 108,
+      "order": 112,
       "preserveTokens": [],
       "values": {
         "en": "A message queue with no persistence and no retry. Whatever is sent at two in the morning is allowed to drift away.",
@@ -2562,7 +2562,7 @@
       "label": "drift-protocol · kind",
       "kind": "shortText",
       "group": "projects",
-      "order": 109,
+      "order": 113,
       "preserveTokens": [],
       "values": {
         "en": "SYSTEM",
@@ -2574,7 +2574,7 @@
       "label": "drift-protocol · stack",
       "kind": "shortText",
       "group": "projects",
-      "order": 112,
+      "order": 116,
       "preserveTokens": [],
       "values": {
         "en": "JS / WEBSOCKET",
@@ -2586,7 +2586,7 @@
       "label": "drift-protocol · status",
       "kind": "shortText",
       "group": "projects",
-      "order": 111,
+      "order": 115,
       "preserveTokens": [],
       "values": {
         "en": "[--]",
@@ -2598,7 +2598,7 @@
       "label": "drift-protocol · 标题",
       "kind": "shortText",
       "group": "projects",
-      "order": 107,
+      "order": 111,
       "preserveTokens": [],
       "values": {
         "en": "DRIFT PROTOCOL",
@@ -2610,7 +2610,7 @@
       "label": "drift-protocol · year",
       "kind": "shortText",
       "group": "projects",
-      "order": 110,
+      "order": 114,
       "preserveTokens": [],
       "values": {
         "en": "2024",
@@ -2622,7 +2622,7 @@
       "label": "flovvas · 描述",
       "kind": "longText",
       "group": "projects",
-      "order": 126,
+      "order": 130,
       "preserveTokens": [],
       "values": {
         "en": "A reading tool that files information overload into a finite shelf. The shelf ends; the feeling of a library does not.",
@@ -2634,7 +2634,7 @@
       "label": "flovvas · kind",
       "kind": "shortText",
       "group": "projects",
-      "order": 127,
+      "order": 131,
       "preserveTokens": [],
       "values": {
         "en": "TOOL",
@@ -2646,7 +2646,7 @@
       "label": "flovvas · stack",
       "kind": "shortText",
       "group": "projects",
-      "order": 130,
+      "order": 134,
       "preserveTokens": [],
       "values": {
         "en": "JS / ASTRO",
@@ -2658,7 +2658,7 @@
       "label": "flovvas · status",
       "kind": "shortText",
       "group": "projects",
-      "order": 129,
+      "order": 133,
       "preserveTokens": [],
       "values": {
         "en": "[OK]",
@@ -2670,7 +2670,7 @@
       "label": "flovvas · 标题",
       "kind": "shortText",
       "group": "projects",
-      "order": 125,
+      "order": 129,
       "preserveTokens": [],
       "values": {
         "en": "FLOVVAS",
@@ -2682,7 +2682,7 @@
       "label": "flovvas · year",
       "kind": "shortText",
       "group": "projects",
-      "order": 128,
+      "order": 132,
       "preserveTokens": [],
       "values": {
         "en": "2025",
@@ -2694,7 +2694,7 @@
       "label": "midnight-static · 描述",
       "kind": "longText",
       "group": "projects",
-      "order": 120,
+      "order": 124,
       "preserveTokens": [],
       "values": {
         "en": "A broadcast page for a station that never goes on air. The interference pattern is the programme.",
@@ -2706,7 +2706,7 @@
       "label": "midnight-static · kind",
       "kind": "shortText",
       "group": "projects",
-      "order": 121,
+      "order": 125,
       "preserveTokens": [],
       "values": {
         "en": "WEB",
@@ -2718,7 +2718,7 @@
       "label": "midnight-static · stack",
       "kind": "shortText",
       "group": "projects",
-      "order": 124,
+      "order": 128,
       "preserveTokens": [],
       "values": {
         "en": "JS / WEBGL",
@@ -2730,7 +2730,7 @@
       "label": "midnight-static · status",
       "kind": "shortText",
       "group": "projects",
-      "order": 123,
+      "order": 127,
       "preserveTokens": [],
       "values": {
         "en": "[OK]",
@@ -2742,7 +2742,7 @@
       "label": "midnight-static · 标题",
       "kind": "shortText",
       "group": "projects",
-      "order": 119,
+      "order": 123,
       "preserveTokens": [],
       "values": {
         "en": "MIDNIGHT STATIC",
@@ -2754,7 +2754,7 @@
       "label": "midnight-static · year",
       "kind": "shortText",
       "group": "projects",
-      "order": 122,
+      "order": 126,
       "preserveTokens": [],
       "values": {
         "en": "2024",
@@ -2766,7 +2766,7 @@
       "label": "paper-pixels · 描述",
       "kind": "longText",
       "group": "projects",
-      "order": 114,
+      "order": 118,
       "preserveTokens": [],
       "values": {
         "en": "A print-shop interface where every layout is dithered down to one bit before it is allowed to become a page.",
@@ -2778,7 +2778,7 @@
       "label": "paper-pixels · kind",
       "kind": "shortText",
       "group": "projects",
-      "order": 115,
+      "order": 119,
       "preserveTokens": [],
       "values": {
         "en": "WEB",
@@ -2790,7 +2790,7 @@
       "label": "paper-pixels · stack",
       "kind": "shortText",
       "group": "projects",
-      "order": 118,
+      "order": 122,
       "preserveTokens": [],
       "values": {
         "en": "JS / CANVAS",
@@ -2802,7 +2802,7 @@
       "label": "paper-pixels · status",
       "kind": "shortText",
       "group": "projects",
-      "order": 117,
+      "order": 121,
       "preserveTokens": [],
       "values": {
         "en": "[OK]",
@@ -2814,7 +2814,7 @@
       "label": "paper-pixels · 标题",
       "kind": "shortText",
       "group": "projects",
-      "order": 113,
+      "order": 117,
       "preserveTokens": [],
       "values": {
         "en": "PAPER PIXELS",
@@ -2826,7 +2826,7 @@
       "label": "paper-pixels · year",
       "kind": "shortText",
       "group": "projects",
-      "order": 116,
+      "order": 120,
       "preserveTokens": [],
       "values": {
         "en": "2025",
@@ -2838,7 +2838,7 @@
       "label": "signal-garden · 描述",
       "kind": "longText",
       "group": "projects",
-      "order": 102,
+      "order": 106,
       "preserveTokens": [],
       "values": {
         "en": "A fictional operating system for one person. Blue and white, square corners, and a desktop that treats every project as a mounted module.",
@@ -2850,7 +2850,7 @@
       "label": "signal-garden · kind",
       "kind": "shortText",
       "group": "projects",
-      "order": 103,
+      "order": 107,
       "preserveTokens": [],
       "values": {
         "en": "SYSTEM",
@@ -2862,7 +2862,7 @@
       "label": "signal-garden · stack",
       "kind": "shortText",
       "group": "projects",
-      "order": 106,
+      "order": 110,
       "preserveTokens": [],
       "values": {
         "en": "JS / THREE / CSS",
@@ -2874,7 +2874,7 @@
       "label": "signal-garden · status",
       "kind": "shortText",
       "group": "projects",
-      "order": 105,
+      "order": 109,
       "preserveTokens": [],
       "values": {
         "en": "[OK]",
@@ -2886,7 +2886,7 @@
       "label": "signal-garden · 标题",
       "kind": "shortText",
       "group": "projects",
-      "order": 101,
+      "order": 105,
       "preserveTokens": [],
       "values": {
         "en": "SIGNAL GARDEN",
@@ -2898,7 +2898,7 @@
       "label": "signal-garden · year",
       "kind": "shortText",
       "group": "projects",
-      "order": 104,
+      "order": 108,
       "preserveTokens": [],
       "values": {
         "en": "2026",
@@ -2910,7 +2910,7 @@
       "label": "自述 · about.bio",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 92,
+      "order": 96,
       "preserveTokens": [],
       "values": {
         "en": "BIO",
@@ -2922,7 +2922,7 @@
       "label": "当前 · about.now",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 95,
+      "order": 99,
       "preserveTokens": [],
       "values": {
         "en": "NOW",
@@ -2934,7 +2934,7 @@
       "label": "技能栈 · about.stack",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 94,
+      "order": 98,
       "preserveTokens": [],
       "values": {
         "en": "STACK",
@@ -2946,7 +2946,7 @@
       "label": "时间线 · about.timeline",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 93,
+      "order": 97,
       "preserveTokens": [],
       "values": {
         "en": "TIMELINE",
@@ -3074,11 +3074,23 @@
         "ja": "起動をスキップ"
       }
     },
+    "ui.bot.label": {
+      "label": "BOT · bot.label",
+      "kind": "shortText",
+      "group": "advanced.interface",
+      "order": 61,
+      "preserveTokens": [],
+      "values": {
+        "en": "BOT",
+        "zh-CN": "BOT",
+        "ja": "BOT"
+      }
+    },
     "ui.bot.standby": {
       "label": "BOT 服务：待机 · bot.standby",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 58,
+      "order": 62,
       "preserveTokens": [],
       "values": {
         "en": "BOT SERVICE: STANDBY",
@@ -3090,7 +3102,7 @@
       "label": "地址 · contact.address",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 98,
+      "order": 102,
       "preserveTokens": [],
       "values": {
         "en": "ADDRESS",
@@ -3102,7 +3114,7 @@
       "label": "频道 · contact.channel",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 97,
+      "order": 101,
       "preserveTokens": [],
       "values": {
         "en": "CHANNEL",
@@ -3114,7 +3126,7 @@
       "label": "频道目录 · contact.directory",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 96,
+      "order": 100,
       "preserveTokens": [],
       "values": {
         "en": "CHANNEL DIRECTORY",
@@ -3126,7 +3138,7 @@
       "label": "接收中 · contact.receiving",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 100,
+      "order": 104,
       "preserveTokens": [],
       "values": {
         "en": "RECEIVING",
@@ -3138,7 +3150,7 @@
       "label": "状态 · contact.status",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 99,
+      "order": 103,
       "preserveTokens": [],
       "values": {
         "en": "STATUS",
@@ -3150,7 +3162,7 @@
       "label": "唱机 · deck.label",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 72,
+      "order": 76,
       "preserveTokens": [],
       "values": {
         "en": "DECK",
@@ -3162,7 +3174,7 @@
       "label": "下一曲 · deck.next",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 75,
+      "order": 79,
       "preserveTokens": [],
       "values": {
         "en": "Next track",
@@ -3174,7 +3186,7 @@
       "label": "暂停 · deck.pause",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 74,
+      "order": 78,
       "preserveTokens": [],
       "values": {
         "en": "Pause",
@@ -3186,7 +3198,7 @@
       "label": "播放 · deck.play",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 73,
+      "order": 77,
       "preserveTokens": [],
       "values": {
         "en": "Play",
@@ -3198,7 +3210,7 @@
       "label": "信号丢失 · deck.unavailable",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 76,
+      "order": 80,
       "preserveTokens": [],
       "values": {
         "en": "SIGNAL LOST",
@@ -3210,7 +3222,7 @@
       "label": "声音关闭 · desktop.audioOff",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 55,
+      "order": 57,
       "preserveTokens": [],
       "values": {
         "en": "AUDIO OFF",
@@ -3222,7 +3234,7 @@
       "label": "声音开启 · desktop.audioOn",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 54,
+      "order": 56,
       "preserveTokens": [],
       "values": {
         "en": "AUDIO ON",
@@ -3230,11 +3242,23 @@
         "ja": "音声オン"
       }
     },
+    "ui.desktop.dock": {
+      "label": "程序坞 · desktop.dock",
+      "kind": "shortText",
+      "group": "advanced.interface",
+      "order": 60,
+      "preserveTokens": [],
+      "values": {
+        "en": "Dock",
+        "zh-CN": "程序坞",
+        "ja": "Dock"
+      }
+    },
     "ui.desktop.language": {
       "label": "语言 · desktop.language",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 53,
+      "order": 55,
       "preserveTokens": [],
       "values": {
         "en": "Language",
@@ -3246,7 +3270,7 @@
       "label": "开放 · desktop.open",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 57,
+      "order": 59,
       "preserveTokens": [],
       "values": {
         "en": "OPEN",
@@ -3258,7 +3282,7 @@
       "label": "系统就绪 · desktop.ready",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 52,
+      "order": 54,
       "preserveTokens": [],
       "values": {
         "en": "SYSTEM READY",
@@ -3270,7 +3294,7 @@
       "label": "加密 · desktop.secure",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 56,
+      "order": 58,
       "preserveTokens": [],
       "values": {
         "en": "SECURE",
@@ -3282,7 +3306,7 @@
       "label": "天气 / -- · environment.conditionEmpty",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 66,
+      "order": 70,
       "preserveTokens": [],
       "values": {
         "en": "CONDITION / --",
@@ -3294,7 +3318,7 @@
       "label": "本地时间 · environment.localTime",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 63,
+      "order": 67,
       "preserveTokens": [],
       "values": {
         "en": "LOCAL TIME",
@@ -3306,7 +3330,7 @@
       "label": "地点 / -- · environment.locationEmpty",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 67,
+      "order": 71,
       "preserveTokens": [],
       "values": {
         "en": "LOCATION / --",
@@ -3318,7 +3342,7 @@
       "label": "当前 · environment.now",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 70,
+      "order": 74,
       "preserveTokens": [],
       "values": {
         "en": "NOW",
@@ -3330,7 +3354,7 @@
       "label": "打开项目 · environment.openProjects",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 71,
+      "order": 75,
       "preserveTokens": [],
       "values": {
         "en": "Open Projects",
@@ -3342,7 +3366,7 @@
       "label": "潮汐 / -- · environment.tideEmpty",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 69,
+      "order": 73,
       "preserveTokens": [],
       "values": {
         "en": "TIDE / --",
@@ -3354,7 +3378,7 @@
       "label": "潮汐 / 风场 · environment.tideWind",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 65,
+      "order": 69,
       "preserveTokens": [],
       "values": {
         "en": "TIDE / WIND",
@@ -3366,7 +3390,7 @@
       "label": "天气信号 · environment.weather",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 64,
+      "order": 68,
       "preserveTokens": [],
       "values": {
         "en": "WEATHER SIGNAL",
@@ -3378,7 +3402,7 @@
       "label": "风速 / -- · environment.windEmpty",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 68,
+      "order": 72,
       "preserveTokens": [],
       "values": {
         "en": "WIND / --",
@@ -3390,7 +3414,7 @@
       "label": "EN · language.en",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 60,
+      "order": 64,
       "preserveTokens": [],
       "values": {
         "en": "EN",
@@ -3402,7 +3426,7 @@
       "label": "日本語 · language.ja",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 62,
+      "order": 66,
       "preserveTokens": [],
       "values": {
         "en": "日本語",
@@ -3414,7 +3438,7 @@
       "label": "中文 · language.zh",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 61,
+      "order": 65,
       "preserveTokens": [],
       "values": {
         "en": "中文",
@@ -3426,7 +3450,7 @@
       "label": "返回 · nav.back",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 77,
+      "order": 81,
       "preserveTokens": [],
       "values": {
         "en": "Back",
@@ -3446,6 +3470,30 @@
         "ja": "次の写真"
       }
     },
+    "ui.photos.nextLabel": {
+      "label": "下一张 · photos.nextLabel",
+      "kind": "shortText",
+      "group": "advanced.accessibility",
+      "order": 14,
+      "preserveTokens": [],
+      "values": {
+        "en": "NEXT",
+        "zh-CN": "下一张",
+        "ja": "次へ"
+      }
+    },
+    "ui.photos.prevLabel": {
+      "label": "上一张 · photos.prevLabel",
+      "kind": "shortText",
+      "group": "advanced.accessibility",
+      "order": 13,
+      "preserveTokens": [],
+      "values": {
+        "en": "PREV",
+        "zh-CN": "上一张",
+        "ja": "前へ"
+      }
+    },
     "ui.photos.previous": {
       "label": "上一张 · photos.previous",
       "kind": "shortText",
@@ -3462,7 +3510,7 @@
       "label": "上一曲 · player.previous",
       "kind": "shortText",
       "group": "advanced.accessibility",
-      "order": 13,
+      "order": 15,
       "preserveTokens": [],
       "values": {
         "en": "Previous track",
@@ -3474,7 +3522,7 @@
       "label": "{n} 个项目 · projects.count",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 84,
+      "order": 88,
       "preserveTokens": [
         "{n}"
       ],
@@ -3488,7 +3536,7 @@
       "label": "拖拽 · 点击卡片旋转 · projects.hint",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 85,
+      "order": 89,
       "preserveTokens": [],
       "values": {
         "en": "DRAG · CLICK TO ROTATE",
@@ -3500,7 +3548,7 @@
       "label": "模型预览 · projects.modelPreview",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 83,
+      "order": 87,
       "preserveTokens": [],
       "values": {
         "en": "Model preview",
@@ -3512,7 +3560,7 @@
       "label": "打开 · projects.open",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 81,
+      "order": 85,
       "preserveTokens": [],
       "values": {
         "en": "OPEN",
@@ -3524,7 +3572,7 @@
       "label": "源码 · projects.source",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 82,
+      "order": 86,
       "preserveTokens": [],
       "values": {
         "en": "SOURCE",
@@ -3536,7 +3584,7 @@
       "label": "技术栈 · projects.stack",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 79,
+      "order": 83,
       "preserveTokens": [],
       "values": {
         "en": "STACK",
@@ -3548,7 +3596,7 @@
       "label": "状态 · projects.status",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 80,
+      "order": 84,
       "preserveTokens": [],
       "values": {
         "en": "STATUS",
@@ -3560,7 +3608,7 @@
       "label": "年份 · projects.year",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 78,
+      "order": 82,
       "preserveTokens": [],
       "values": {
         "en": "YEAR",
@@ -3572,7 +3620,7 @@
       "label": "BUILD: 882.A · protocol.build",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 59,
+      "order": 63,
       "preserveTokens": [],
       "values": {
         "en": "BUILD: 882.A",
@@ -3584,7 +3632,7 @@
       "label": "锯齿边缘 · settings.aliasedEdges",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 36,
+      "order": 38,
       "preserveTokens": [],
       "values": {
         "en": "Aliased Edges",
@@ -3596,7 +3644,7 @@
       "label": "自动 · settings.auto",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 19,
+      "order": 21,
       "preserveTokens": [],
       "values": {
         "en": "Auto",
@@ -3608,7 +3656,7 @@
       "label": "桌面布局 · settings.desktopLayout",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 18,
+      "order": 20,
       "preserveTokens": [],
       "values": {
         "en": "Desktop Layout",
@@ -3620,7 +3668,7 @@
       "label": "显示 · settings.display",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 15,
+      "order": 17,
       "preserveTokens": [],
       "values": {
         "en": "Display",
@@ -3632,7 +3680,7 @@
       "label": "1-Bit 抖动叠加 · settings.ditherOverlay",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 31,
+      "order": 33,
       "preserveTokens": [],
       "values": {
         "en": "1-Bit Dither Overlay",
@@ -3644,7 +3692,7 @@
       "label": "双击阈值 · settings.doubleClickThreshold",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 39,
+      "order": 41,
       "preserveTokens": [],
       "values": {
         "en": "Double-Click Threshold",
@@ -3656,7 +3704,7 @@
       "label": "加密等级 · settings.encryptionLevel",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 46,
+      "order": 48,
       "preserveTokens": [],
       "values": {
         "en": "Encryption Level",
@@ -3668,7 +3716,7 @@
       "label": "高对比度 · settings.filterContrast",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 34,
+      "order": 36,
       "preserveTokens": [],
       "values": {
         "en": "High Contrast",
@@ -3680,7 +3728,7 @@
       "label": "无 · settings.filterNone",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 32,
+      "order": 34,
       "preserveTokens": [],
       "values": {
         "en": "None",
@@ -3692,7 +3740,7 @@
       "label": "扫描线 · settings.filterScanline",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 33,
+      "order": 35,
       "preserveTokens": [],
       "values": {
         "en": "Scanline",
@@ -3704,7 +3752,7 @@
       "label": "语言 · settings.language",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 22,
+      "order": 24,
       "preserveTokens": [],
       "values": {
         "en": "Language",
@@ -3716,7 +3764,7 @@
       "label": "线性衰减 · settings.linearDecay",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 41,
+      "order": 43,
       "preserveTokens": [],
       "values": {
         "en": "Linear Decay",
@@ -3728,7 +3776,7 @@
       "label": "macOS · settings.macos",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 21,
+      "order": 23,
       "preserveTokens": [],
       "values": {
         "en": "macOS",
@@ -3740,7 +3788,7 @@
       "label": "摩尔纹干扰 · settings.moireInterference",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 35,
+      "order": 37,
       "preserveTokens": [],
       "values": {
         "en": "Moire Interference",
@@ -3752,7 +3800,7 @@
       "label": "鼠标 · settings.mouse",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 16,
+      "order": 18,
       "preserveTokens": [],
       "values": {
         "en": "Mouse",
@@ -3764,7 +3812,7 @@
       "label": "网络 · settings.network",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 17,
+      "order": 19,
       "preserveTokens": [],
       "values": {
         "en": "Network",
@@ -3776,7 +3824,7 @@
       "label": "关闭 · settings.off",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 25,
+      "order": 27,
       "preserveTokens": [],
       "values": {
         "en": "Off",
@@ -3788,7 +3836,7 @@
       "label": "开启 · settings.on",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 24,
+      "order": 26,
       "preserveTokens": [],
       "values": {
         "en": "On",
@@ -3800,7 +3848,7 @@
       "label": "数据包抖动率 · settings.packetDitherRate",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 44,
+      "order": 46,
       "preserveTokens": [],
       "values": {
         "en": "Data Packet Dither Rate",
@@ -3812,7 +3860,7 @@
       "label": "指针加速度 · settings.pointerAcceleration",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 40,
+      "order": 42,
       "preserveTokens": [],
       "values": {
         "en": "Pointer Acceleration",
@@ -3824,7 +3872,7 @@
       "label": "后期处理滤镜 · settings.postProcessFilter",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 30,
+      "order": 32,
       "preserveTokens": [],
       "values": {
         "en": "Post-Process Filter",
@@ -3836,7 +3884,7 @@
       "label": "协议架构 · settings.protocolArchitecture",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 45,
+      "order": 47,
       "preserveTokens": [],
       "values": {
         "en": "Protocol Architecture",
@@ -3848,7 +3896,7 @@
       "label": "重播启动动画 · settings.replayBoot",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 26,
+      "order": 28,
       "preserveTokens": [],
       "values": {
         "en": "Replay Boot Sequence",
@@ -3860,7 +3908,7 @@
       "label": "网格密度 · settings.resolutionGridDensity",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 28,
+      "order": 30,
       "preserveTokens": [],
       "values": {
         "en": "Resolution Grid Density",
@@ -3872,7 +3920,7 @@
       "label": "信号协议 · settings.signalProtocol",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 43,
+      "order": 45,
       "preserveTokens": [],
       "values": {
         "en": "Signal Protocol",
@@ -3884,7 +3932,7 @@
       "label": "吸附到网格（8px） · settings.snapToGrid",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 42,
+      "order": 44,
       "preserveTokens": [],
       "values": {
         "en": "Snap-to-Grid (8px)",
@@ -3896,7 +3944,7 @@
       "label": "同步频率 · settings.syncFrequency",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 29,
+      "order": 31,
       "preserveTokens": [],
       "values": {
         "en": "Sync Frequency",
@@ -3908,7 +3956,7 @@
       "label": "系统 · settings.system",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 14,
+      "order": 16,
       "preserveTokens": [],
       "values": {
         "en": "System",
@@ -3920,7 +3968,7 @@
       "label": "系统声音 · settings.systemAudio",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 23,
+      "order": 25,
       "preserveTokens": [],
       "values": {
         "en": "System Audio",
@@ -3932,7 +3980,7 @@
       "label": "触觉输入 · settings.tactileInput",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 37,
+      "order": 39,
       "preserveTokens": [],
       "values": {
         "en": "Tactile Input",
@@ -3944,7 +3992,7 @@
       "label": "追踪灵敏度 · settings.trackingSensitivity",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 38,
+      "order": 40,
       "preserveTokens": [],
       "values": {
         "en": "Tracking Sensitivity",
@@ -3956,7 +4004,7 @@
       "label": "视觉输出 · settings.visualOutput",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 27,
+      "order": 29,
       "preserveTokens": [],
       "values": {
         "en": "Visual Output",
@@ -3968,7 +4016,7 @@
       "label": "Windows · settings.windows",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 20,
+      "order": 22,
       "preserveTokens": [],
       "values": {
         "en": "Windows",
@@ -3992,7 +4040,7 @@
       "label": "关闭 · windows.close",
       "kind": "shortText",
       "group": "advanced.accessibility",
-      "order": 48,
+      "order": 50,
       "preserveTokens": [],
       "values": {
         "en": "Close",
@@ -4004,7 +4052,7 @@
       "label": "即将开放 · windows.comingSoon",
       "kind": "shortText",
       "group": "advanced.accessibility",
-      "order": 50,
+      "order": 52,
       "preserveTokens": [],
       "values": {
         "en": "COMING SOON",
@@ -4016,7 +4064,7 @@
       "label": "放大 · windows.maximize",
       "kind": "shortText",
       "group": "advanced.accessibility",
-      "order": 49,
+      "order": 51,
       "preserveTokens": [],
       "values": {
         "en": "Maximize",
@@ -4028,7 +4076,7 @@
       "label": "最小化 · windows.minimize",
       "kind": "shortText",
       "group": "advanced.accessibility",
-      "order": 47,
+      "order": 49,
       "preserveTokens": [],
       "values": {
         "en": "Minimize",
@@ -4040,7 +4088,7 @@
       "label": "模块尚未挂载 · windows.moduleNotMounted",
       "kind": "shortText",
       "group": "advanced.accessibility",
-      "order": 51,
+      "order": 53,
       "preserveTokens": [],
       "values": {
         "en": "MODULE NOT MOUNTED",
@@ -4052,7 +4100,7 @@
       "label": "归档 · writing.archive",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 86,
+      "order": 90,
       "preserveTokens": [],
       "values": {
         "en": "ARCHIVE",
@@ -4064,7 +4112,7 @@
       "label": "阅读 · writing.band",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 88,
+      "order": 92,
       "preserveTokens": [],
       "values": {
         "en": "READING",
@@ -4076,7 +4124,7 @@
       "label": "{n} 篇 · writing.entries",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 87,
+      "order": 91,
       "preserveTokens": [
         "{n}"
       ],
@@ -4090,7 +4138,7 @@
       "label": "{n} 分钟 · writing.minutes",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 89,
+      "order": 93,
       "preserveTokens": [
         "{n}"
       ],
@@ -4104,7 +4152,7 @@
       "label": "下一篇 · writing.next",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 91,
+      "order": 95,
       "preserveTokens": [],
       "values": {
         "en": "NEXT",
@@ -4116,7 +4164,7 @@
       "label": "上一篇 · writing.prev",
       "kind": "shortText",
       "group": "advanced.interface",
-      "order": 90,
+      "order": 94,
       "preserveTokens": [],
       "values": {
         "en": "PREV",

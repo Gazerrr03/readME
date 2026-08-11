@@ -1,4 +1,3 @@
-import { photos, tracks } from '../../media/catalog.js';
 import { pick } from '../data/content.js';
 import { createPixelSvg } from './pixel-art.js';
 
@@ -8,11 +7,6 @@ function createElement(document, tagName, attributes = {}, text = '') {
   element.textContent = text;
   return element;
 }
-
-const FOLDERS = [
-  { id: 'photos', icon: 'stamp-folder-photos', items: photos },
-  { id: 'albums', icon: 'stamp-folder-albums', items: tracks },
-];
 
 function createStamp(document, i18n, folderId, item, index) {
   const stamp = createElement(document, 'button', {
@@ -34,8 +28,13 @@ function createStamp(document, i18n, folderId, item, index) {
 /* Desktop folders: a folder toggle with a stack of "stamps" (content items)
    that slide out to the left when the folder is expanded. Markup only —
    expand/collapse and open behaviour live in desktop.js. */
-export function renderDesktopFolders({ document, i18n, expandedFolder = null }) {
+export function renderDesktopFolders({ document, i18n, content, expandedFolder = null }) {
   const documentRef = document;
+  const snapshot = content();
+  const folders = [
+    { id: 'photos', items: snapshot.photos },
+    { id: 'albums', items: snapshot.tracks },
+  ];
   const container = createElement(documentRef, 'div', {
     'data-desktop-folders': '',
     role: 'group',
@@ -45,7 +44,7 @@ export function renderDesktopFolders({ document, i18n, expandedFolder = null }) 
   const template = documentRef.querySelector('[data-desktop-folder-template]');
   if (!template) throw new Error('Missing desktop folder template');
 
-  FOLDERS.forEach(({ id, icon, items }) => {
+  folders.forEach(({ id, items }) => {
     const folder = createElement(documentRef, 'div', {
       'data-desktop-folder': id,
       'data-expanded': String(expandedFolder === id),

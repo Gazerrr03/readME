@@ -83,6 +83,7 @@ export function createDesktopController({
   root,
   apps,
   i18n,
+  content = () => ({ photos: [], tracks: [] }),
   preferences,
   onOpen = () => {},
   onOpenFolderItem = () => {},
@@ -290,13 +291,13 @@ export function createDesktopController({
       createSystemStatus(document, i18n, preferences),
     );
 
-    const foldersElement = renderDesktopFolders({ document, i18n, expandedFolder });
+    const foldersElement = renderDesktopFolders({ document, i18n, content, expandedFolder });
 
     const bot = createElement(document, 'aside', { 'data-bot-mount': '' });
     bot.append(
       createElement(document, 'button', {
         type: 'button', 'data-bot-standby': '', 'aria-label': i18n.t('bot.standby'),
-      }, 'BOT'),
+      }, i18n.t('bot.label')),
       createElement(document, 'span', { 'data-bot-label': '' }, i18n.t('bot.standby')),
       createElement(document, 'span', {
         'data-bot-status': '', role: 'status', 'aria-live': 'polite',
@@ -305,13 +306,13 @@ export function createDesktopController({
 
     const macosDock = createElement(document, 'footer', {
       'data-macos-dock': '',
-      'aria-label': 'Dock',
+      'aria-label': i18n.t('desktop.dock'),
     });
     if (mode === 'macos') {
       const dockIcons = createElement(document, 'div', {
         'data-dock-icons': '',
         role: 'group',
-        'aria-label': 'Dock',
+        'aria-label': i18n.t('desktop.dock'),
       });
       dockIcons.append(stampIcons('[data-app-icon-template]'));
       macosDock.append(dockIcons);

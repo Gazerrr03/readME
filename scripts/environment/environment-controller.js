@@ -7,8 +7,8 @@ import {
 } from './environment-state.js';
 import { createEnvironmentRenderer } from './environment-renderer.js';
 import { createMusicDeck } from './music-deck.js';
-import { tracks } from '../../media/catalog.js';
-import { projects } from '../data/content.js';
+import { tracks as baseTracks } from '../../media/catalog.js';
+import { projects as baseProjects } from '../data/content.js';
 import { JACKET_MAP } from './jacket-map.js';
 
 function element(document, tagName, attributes = {}, text = '') {
@@ -26,6 +26,7 @@ function isEnvironmentRenderer(value) {
 export function createDesktopEnvironmentController({
   root,
   i18n,
+  content = () => ({ projects: baseProjects, tracks: baseTracks }),
   onOpen = () => {},
   now = () => new Date(),
   rendererFactory = createEnvironmentRenderer,
@@ -95,13 +96,13 @@ export function createDesktopEnvironmentController({
     const nowButton = element(document, 'button', {
       type: 'button', 'data-environment-open': 'projects', 'aria-label': i18n.t('environment.openProjects'),
     });
-    const latestYear = String(Math.max(...projects.map((project) => project.year)));
+    const latestYear = String(Math.max(...content().projects.map((project) => project.year)));
     nowButton.append(element(document, 'span', {}, i18n.t('environment.now')), element(document, 'strong', {}, latestYear));
     destroyDeck();
     deck = createMusicDeck({
       document,
       i18n,
-      tracks,
+      tracks: () => content().tracks,
       shouldAnimate: () => mount?.dataset.environmentMotion === 'running',
     });
     widgets.append(primary, nowButton, deck.element);

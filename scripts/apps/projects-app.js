@@ -1,8 +1,6 @@
-import { pick, projects } from '../data/content.js';
+import { pick } from '../data/content.js';
 import { createWireframePreview } from './wireframe-preview.js';
 
-const SLOT_COUNT = projects.length * 2; // ring shows each project twice so the loop closes seamlessly
-const STEP_DEG = 360 / SLOT_COUNT;
 const DRAG_DEG_PER_PX = 0.25;
 const FLING_FRAMES = 12;
 const AUTO_ADVANCE_MS = 4200;
@@ -17,19 +15,22 @@ function createElement(document, tagName, attributes = {}, text = '') {
 }
 
 const mod = (value, base) => ((value % base) + base) % base;
-const snap = (degrees) => Math.round(degrees / STEP_DEG) * STEP_DEG;
 const shortestDelta = (degrees) => mod(degrees + 180, 360) - 180;
 const pad = (value) => String(value).padStart(2, '0');
 
-export function renderProjectsApp({ i18n, mount }) {
+export function renderProjectsApp({ i18n, content, mount }) {
   const document = mount.ownerDocument;
   const view = document.defaultView;
   const reducedMotion = view.matchMedia('(prefers-reduced-motion: reduce)');
   const root = createElement(document, 'section', { 'data-projects-app': '' });
+  let projects = content().projects;
+  const slotCount = projects.length * 2;
+  const stepDeg = 360 / slotCount;
+  const snap = (degrees) => Math.round(degrees / stepDeg) * stepDeg;
 
   let mode = 'ring'; // 'ring' | 'detail'
   let openSlug = null;
-  let current = 0; // ring rotation, degrees; card i sits at current + i * STEP_DEG
+  let current = 0; // ring rotation, degrees; card i sits at current + i * stepDeg
   let target = 0;
   let dragging = false;
   let hovering = false;
@@ -40,12 +41,12 @@ export function renderProjectsApp({ i18n, mount }) {
   let radius = 460;
 
   // u: front position in slot units (fractional while easing)
-  const slotUnits = () => -current / STEP_DEG;
-  const frontSlot = () => mod(Math.round(slotUnits()), SLOT_COUNT);
+  const slotUnits = () => -current / stepDeg;
+  const frontSlot = () => mod(Math.round(slotUnits()), slotCount);
   const frontIndex = () => mod(frontSlot(), projects.length);
   // wrapped slot offset in [-N/2, N/2): 0 = front, ±1 = immediate neighbours
-  const slotOffset = (slot) => mod(slot - slotUnits() + SLOT_COUNT / 2, SLOT_COUNT) - SLOT_COUNT / 2;
-  const angleFor = (slot) => slotOffset(slot) * STEP_DEG;
+  const slotOffset = (slot) => mod(slot - slotUnits() + slotCount / 2, slotCount) - slotCount / 2;
+  const angleFor = (slot) => slotOffset(slot) * stepDeg;
 
   const disposePreviews = () => {
     previews.forEach((preview) => preview.dispose());
@@ -70,11 +71,11 @@ export function renderProjectsApp({ i18n, mount }) {
       left.textContent = `${pad(frontIndex() + 1)} / ${pad(projects.length)}`;
     } else {
       const openProject = projects.find((project) => project.slug === openSlug);
-      left.textContent = openProject ? `${openProject.year} · ${openProject.kind} · ${openProject.status}` : '';
+      left.textContent = openProject ? `${pick(openProject.yearLabel, locale)} · ${pick(openProject.kindLabel, locale)} · ${pick(openProject.statusLabel, locale)}` : '';
     }
     const openProject = projects.find((project) => project.slug === openSlug);
     const right = createElement(document, 'span', { 'data-projects-hint': '' },
-      mode === 'ring' ? i18n.t('projects.hint') : (openProject?.stack ?? ''));
+      mode === 'ring' ? i18n.t('projects.hint') : (openProject ? pick(openProject.stackLabel, locale) : ''));
     bar.append(left, right);
     return bar;
   };
@@ -108,7 +109,7 @@ export function renderProjectsApp({ i18n, mount }) {
     viewport.append(strip);
 
     cards = [];
-    for (let slot = 0; slot < SLOT_COUNT; slot += 1) {
+    for (let slot = 0; slot < slotCount; slot += 1) {
       const project = projects[slot % projects.length];
       const card = createElement(document, 'button', {
         type: 'button',
@@ -127,7 +128,7 @@ export function renderProjectsApp({ i18n, mount }) {
       card.append(
         frame,
         createElement(document, 'span', { 'data-projects-card-label': '' }, pick(project.title, locale)),
-        createElement(document, 'span', { 'data-projects-card-meta': '' }, `${project.year} · ${project.kind}`),
+        createElement(document, 'span', { 'data-projects-card-meta': '' }, `${pick(project.yearLabel, locale)} · ${pick(project.kindLabel, locale)}`),
       );
       strip.append(card);
       cards.push({ card, canvas, slot, project });
@@ -167,7 +168,7 @@ export function renderProjectsApp({ i18n, mount }) {
     viewport.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         event.preventDefault();
-        target = snap(target) + (event.key === 'ArrowLeft' ? STEP_DEG : -STEP_DEG);
+        target = snap(target) + (event.key === 'ArrowLeft' ? stepDeg : -stepDeg);
       }
     });
 
@@ -194,9 +195,9 @@ export function renderProjectsApp({ i18n, mount }) {
 
     const meta = createElement(document, 'dl', { 'data-projects-meta': '' });
     [
-      [i18n.t('projects.year'), String(project.year)],
-      [i18n.t('projects.stack'), project.stack],
-      [i18n.t('projects.status'), project.status],
+      [i18n.t('projects.year'), pick(project.yearLabel, locale)],
+      [i18n.t('projects.stack'), pick(project.stackLabel, locale)],
+      [i18n.t('projects.status'), pick(project.statusLabel, locale)],
     ].forEach(([term, value]) => {
       meta.append(createElement(document, 'dt', {}, term), createElement(document, 'dd', {}, value));
     });
@@ -222,6 +223,7 @@ export function renderProjectsApp({ i18n, mount }) {
   };
 
   const render = () => {
+    projects = content().projects;
     disposePreviews();
     const locale = i18n.locale;
     const project = openSlug ? projects.find((candidate) => candidate.slug === openSlug) : null;
@@ -241,7 +243,7 @@ export function renderProjectsApp({ i18n, mount }) {
 
     fragment.append(ringView(locale), statusbar(locale));
     root.replaceChildren(fragment);
-    radius = Math.max(220, ((cards[0]?.card.offsetWidth || 190) * 1.05) / (2 * Math.sin((STEP_DEG / 2) * (Math.PI / 180))));
+    radius = Math.max(220, ((cards[0]?.card.offsetWidth || 190) * 1.05) / (2 * Math.sin((stepDeg / 2) * (Math.PI / 180))));
     cards.forEach(({ canvas, slot, project: cardProject }) => {
       previews.push(createWireframePreview(canvas, cardProject.geometry, {
         isActive: () => mode === 'ring' && Math.cos((angleFor(slot) * Math.PI) / 180) > ACTIVE_COS,
@@ -283,14 +285,14 @@ export function renderProjectsApp({ i18n, mount }) {
       render();
       return;
     }
-    target = current + shortestDelta(-slot * STEP_DEG - current);
+    target = current + shortestDelta(-slot * stepDeg - current);
   });
 
   const autoAdvance = view.setInterval(() => {
     if (!root.isConnected) { view.clearInterval(autoAdvance); return; }
     if (mode !== 'ring' || dragging || hovering || reducedMotion.matches) return;
     if (document.hasFocus && !document.hasFocus()) return;
-    target = snap(target) - STEP_DEG;
+    target = snap(target) - stepDeg;
   }, AUTO_ADVANCE_MS);
 
   render();

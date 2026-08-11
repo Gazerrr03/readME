@@ -1,4 +1,4 @@
-import { about, pick } from '../data/content.js';
+import { pick } from '../data/content.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -11,16 +11,17 @@ function sectionKicker(document, label) {
   return createElement(document, 'p', { 'data-about-kicker': '' }, label);
 }
 
-export function renderAboutApp({ i18n, mount }) {
+export function renderAboutApp({ i18n, content, mount }) {
   const document = mount.ownerDocument;
   const root = createElement(document, 'section', { 'data-about-app': '' });
 
   const render = () => {
     const locale = i18n.locale;
+    const { about } = content();
 
     const masthead = createElement(document, 'header', { 'data-about-masthead': '' });
     masthead.append(
-      createElement(document, 'h3', {}, about.name),
+      createElement(document, 'h3', {}, pick(about.nameLabel, locale)),
       createElement(document, 'p', { 'data-about-role': '' }, pick(about.role, locale)),
     );
 
@@ -36,7 +37,7 @@ export function renderAboutApp({ i18n, mount }) {
     about.timeline.forEach((entry) => {
       const row = createElement(document, 'li', {});
       row.append(
-        createElement(document, 'span', { 'data-about-year': '' }, entry.year),
+        createElement(document, 'span', { 'data-about-year': '' }, pick(entry.yearLabel, locale)),
         createElement(document, 'span', {}, pick(entry.event, locale)),
       );
       timelineList.append(row);
@@ -47,7 +48,7 @@ export function renderAboutApp({ i18n, mount }) {
     stack.append(sectionKicker(document, i18n.t('about.stack')));
     const stackList = createElement(document, 'ul', { 'data-about-stack': '' });
     about.stack.forEach((line) => {
-      stackList.append(createElement(document, 'li', {}, line));
+      stackList.append(createElement(document, 'li', {}, pick(line, locale)));
     });
     stack.append(stackList);
 
@@ -56,7 +57,7 @@ export function renderAboutApp({ i18n, mount }) {
     const nowList = createElement(document, 'dl', { 'data-about-now': '' });
     about.now.forEach((entry) => {
       nowList.append(
-        createElement(document, 'dt', {}, entry.key),
+        createElement(document, 'dt', {}, pick(entry.keyLabel, locale)),
         createElement(document, 'dd', {}, pick(entry.value, locale)),
       );
     });

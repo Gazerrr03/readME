@@ -1,4 +1,4 @@
-import { articles, pick } from '../data/content.js';
+import { pick } from '../data/content.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -27,12 +27,13 @@ function readingBand(document, i18n) {
   }, Array.from({ length: 24 }, () => word).join(' — '));
 }
 
-export function renderWritingApp({ i18n, mount, host = {} }) {
+export function renderWritingApp({ i18n, content, mount, host = {} }) {
   const document = mount.ownerDocument;
   const root = createElement(document, 'section', { 'data-writing-app': '' });
   let openSlug = null;
 
   const renderList = (locale) => {
+    const { articles } = content();
     const header = createElement(document, 'header', { 'data-writing-header': '' });
     header.append(
       createElement(document, 'p', { 'data-writing-kicker': '' }, i18n.t('writing.archive')),
@@ -47,9 +48,9 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
       });
       button.append(
         createElement(document, 'span', { 'data-writing-index': '' }, `${padIndex(index + 1)}.`),
-        createElement(document, 'span', { 'data-writing-date': '' }, entry.date),
+        createElement(document, 'span', { 'data-writing-date': '' }, pick(entry.dateLabel, locale)),
         createElement(document, 'span', { 'data-writing-title': '' }, pick(entry.title, locale)),
-        createElement(document, 'span', { 'data-writing-tag': '' }, `{${entry.tag}}`),
+        createElement(document, 'span', { 'data-writing-tag': '' }, `{${pick(entry.tagLabel, locale)}}`),
       );
       row.append(button);
       list.append(row);
@@ -58,6 +59,7 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
   };
 
   const renderReader = (article, index, locale) => {
+    const { articles } = content();
     const reader = createElement(document, 'article', { 'data-writing-reader': '' });
 
     const masthead = createElement(document, 'header', { 'data-writing-masthead': '' });
@@ -74,7 +76,7 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
       toolbar,
       createElement(document, 'h3', {}, pick(article.title, locale)),
       createElement(document, 'p', { 'data-writing-meta': '' },
-        `${article.date} / {${article.tag}} / ${i18n.t('writing.minutes').replace('{n}', String(minutes))}`),
+        `${pick(article.dateLabel, locale)} / {${pick(article.tagLabel, locale)}} / ${i18n.t('writing.minutes').replace('{n}', String(minutes))}`),
     );
 
     const bodyContainer = createElement(document, 'div', { 'data-writing-body': '' });
@@ -127,6 +129,7 @@ export function renderWritingApp({ i18n, mount, host = {} }) {
 
   const render = () => {
     const locale = i18n.locale;
+    const { articles } = content();
     const index = openSlug ? articles.findIndex(({ slug }) => slug === openSlug) : -1;
     if (index < 0) openSlug = null;
 

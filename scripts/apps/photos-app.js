@@ -1,12 +1,12 @@
-import { photos } from '../../media/catalog.js';
+import { photos as basePhotos } from '../../media/catalog.js';
 import { pick } from '../data/content.js';
 import { createPixelSvg } from './pixel-art.js';
 
-let selectedSlug = photos[0].slug;
+let selectedSlug = basePhotos[0].slug;
 const listeners = new Set();
 
 export function selectPhoto(slug) {
-  if (!photos.some((photo) => photo.slug === slug) || slug === selectedSlug) return;
+  if (!basePhotos.some((photo) => photo.slug === slug) || slug === selectedSlug) return;
   selectedSlug = slug;
   listeners.forEach((listener) => listener());
 }
@@ -20,22 +20,25 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
-export function renderPhotosApp({ i18n, mount }) {
+export function renderPhotosApp({ i18n, content, mount }) {
   const document = mount.ownerDocument;
   const root = createElement(document, 'section', { 'data-photos-app': '' });
+  const photos = () => content().photos;
 
   const step = (direction) => {
-    const index = photos.findIndex((photo) => photo.slug === selectedSlug);
-    const next = (index + direction + photos.length) % photos.length;
-    selectPhoto(photos[next].slug);
+    const items = photos();
+    const index = items.findIndex((photo) => photo.slug === selectedSlug);
+    const next = (index + direction + items.length) % items.length;
+    selectPhoto(items[next].slug);
   };
 
   const render = () => {
-    const index = Math.max(0, photos.findIndex((photo) => photo.slug === selectedSlug));
-    const photo = photos[index];
+    const items = photos();
+    const index = Math.max(0, items.findIndex((photo) => photo.slug === selectedSlug));
+    const photo = items[index];
 
     const counter = createElement(document, 'p', { 'data-photos-count': '' },
-      `${pad2(index + 1)} / ${pad2(photos.length)}`);
+      `${pad2(index + 1)} / ${pad2(items.length)}`);
 
     const frame = createElement(document, 'div', { 'data-photos-frame': '' });
     frame.append(createPixelSvg(document, photo.pixels, { 'aria-hidden': 'true' }));
@@ -43,16 +46,16 @@ export function renderPhotosApp({ i18n, mount }) {
     const caption = createElement(document, 'div', { 'data-photos-caption': '' });
     caption.append(
       createElement(document, 'h3', { 'data-photos-title': '' }, pick(photo.title, i18n.locale)),
-      createElement(document, 'span', { 'data-photos-date': '' }, photo.date),
+      createElement(document, 'span', { 'data-photos-date': '' }, pick(photo.dateLabel, i18n.locale)),
     );
 
     const nav = createElement(document, 'div', { 'data-photos-nav': '' });
     const previous = createElement(document, 'button', {
       type: 'button', 'data-photos-prev': '', 'aria-label': i18n.t('photos.previous'),
-    }, '‹ PREV');
+    }, `‹ ${i18n.t('photos.prevLabel')}`);
     const next = createElement(document, 'button', {
       type: 'button', 'data-photos-next': '', 'aria-label': i18n.t('photos.next'),
-    }, 'NEXT ›');
+    }, `${i18n.t('photos.nextLabel')} ›`);
     previous.addEventListener('click', () => step(-1));
     next.addEventListener('click', () => step(1));
     nav.append(previous, next);
