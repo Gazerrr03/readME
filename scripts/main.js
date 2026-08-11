@@ -12,13 +12,16 @@ const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
 const apps = getApps();
 let windowManager;
-const desktop = createDesktopController({
+export const desktop = createDesktopController({
   root: desktopRoot,
   apps,
   i18n,
   preferences,
   onOpen: (appId) => windowManager.open(appId),
-  onPreferenceChange: persistPreferences,
+  onPreferenceChange: (next) => {
+    persistPreferences(next);
+    requestAnimationFrame(() => windowManager.reclamp());
+  },
 });
 const renderPendingApp = ({ i18n: appI18n }) => {
   const placeholder = document.createElement('p');

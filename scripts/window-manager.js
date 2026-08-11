@@ -36,6 +36,7 @@ function findSurfaces(taskSurface, selector) {
 export function createWindowManager({ root, taskSurface = root, registry, i18n, renderers = {} }) {
   let state = createWindowState();
   let drag = null;
+  const windowElements = new Map();
 
   const getBounds = () => {
     const isMacos = root.dataset.desktopMode === 'macos';
@@ -72,42 +73,48 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     else if (typeof content === 'string') mount.textContent = content;
   };
 
-  const renderWindow = (window) => {
+  const createWindowElement = (app) => {
     const document = root.ownerDocument;
-    const app = getRegistryApp(registry, window.appId);
     const article = createElement(document, 'article', {
-      'data-app-window': window.appId,
-      'data-window-status': window.status,
-      'aria-label': i18n.t(app.titleKey),
+      'data-app-window': app.id,
     });
-    article.hidden = window.status === 'minimized';
-    article.style.left = `${window.x}px`;
-    article.style.top = `${window.y}px`;
-    article.style.width = `${window.width}px`;
-    article.style.height = `${window.height}px`;
-    article.style.zIndex = String(window.z);
-
     const titleBar = createElement(document, 'header', { 'data-window-titlebar': '' });
-    const title = createElement(document, 'h2', { 'data-window-title': '' }, i18n.t(app.titleKey));
+    const title = createElement(document, 'h2', { 'data-window-title': '' });
     const controls = createElement(document, 'div', { 'data-window-controls': '' });
+    const minimizeButton = createElement(document, 'button', {
+      type: 'button',
+      'data-window-minimize': '',
+    }, '_');
+    const closeButton = createElement(document, 'button', {
+      type: 'button',
+      'data-window-close': '',
+    }, 'X');
     controls.append(
-      createElement(document, 'button', {
-        type: 'button',
-        'data-window-minimize': '',
-        'aria-label': i18n.t('windows.minimize'),
-      }, '_'),
-      createElement(document, 'button', {
-        type: 'button',
-        'data-window-close': '',
-        'aria-label': i18n.t('windows.close'),
-      }, 'X'),
+      minimizeButton,
+      closeButton,
     );
     titleBar.append(title, controls);
 
     const mount = createElement(document, 'div', { 'data-window-content': '' });
     renderContent(mount, app);
     article.append(titleBar, mount);
-    return article;
+    return { article, title, minimizeButton, closeButton };
+  };
+
+  const updateWindowElement = (elements, window, app) => {
+    const { article, title, minimizeButton, closeButton } = elements;
+    const localizedTitle = i18n.t(app.titleKey);
+    article.dataset.windowStatus = window.status;
+    article.setAttribute('aria-label', localizedTitle);
+    article.hidden = window.status === 'minimized';
+    article.style.left = `${window.x}px`;
+    article.style.top = `${window.y}px`;
+    article.style.width = `${window.width}px`;
+    article.style.height = `${window.height}px`;
+    article.style.zIndex = String(window.z);
+    title.textContent = localizedTitle;
+    minimizeButton.setAttribute('aria-label', i18n.t('windows.minimize'));
+    closeButton.setAttribute('aria-label', i18n.t('windows.close'));
   };
 
   const renderRunningApps = () => {
@@ -136,7 +143,23 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
 
   const render = () => {
     const layer = ensureWindowLayer();
-    layer.replaceChildren(...state.windows.map(renderWindow));
+    layer.setAttribute('aria-label', i18n.t('site.title'));
+    const openIds = new Set(state.windows.map(({ appId }) => appId));
+    windowElements.forEach((elements, appId) => {
+      if (openIds.has(appId)) return;
+      elements.article.remove();
+      windowElements.delete(appId);
+    });
+    state.windows.forEach((window) => {
+      const app = getRegistryApp(registry, window.appId);
+      let elements = windowElements.get(window.appId);
+      if (!elements) {
+        elements = createWindowElement(app);
+        windowElements.set(window.appId, elements);
+      }
+      updateWindowElement(elements, window, app);
+      layer.append(elements.article);
+    });
     renderRunningApps();
   };
 
@@ -175,14 +198,21 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     },
   };
 
-  root.addEventListener('click', (event) => {
+  const handledRunningClicks = new WeakSet();
+  const handleRunningAppClick = (event) => {
+    if (handledRunningClicks.has(event)) return true;
     const runningApp = event.target.closest('[data-running-app]');
-    if (runningApp && taskSurface.contains(runningApp)) {
-      const window = state.windows.find(({ appId }) => appId === runningApp.dataset.runningApp);
-      if (window?.status === 'minimized') manager.restore(window.appId);
-      else if (window) manager.focus(window.appId);
-      return;
-    }
+    if (!runningApp || !taskSurface.contains(runningApp)) return false;
+
+    handledRunningClicks.add(event);
+    const window = state.windows.find(({ appId }) => appId === runningApp.dataset.runningApp);
+    if (window?.status === 'minimized') manager.restore(window.appId);
+    else if (window) manager.focus(window.appId);
+    return true;
+  };
+
+  root.addEventListener('click', (event) => {
+    if (handleRunningAppClick(event)) return;
 
     const appWindow = event.target.closest('[data-app-window]');
     if (!appWindow || !root.contains(appWindow)) return;
@@ -191,6 +221,9 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     else if (event.target.closest('[data-window-close]')) manager.close(appId);
     else manager.focus(appId);
   });
+  if (taskSurface !== root && !root.contains(taskSurface)) {
+    taskSurface.addEventListener('click', handleRunningAppClick);
+  }
 
   root.addEventListener('pointerdown', (event) => {
     const titleBar = event.target.closest('[data-window-titlebar]');

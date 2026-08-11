@@ -1,5 +1,6 @@
 const TITLE_BAR_REACH = 32;
-const TITLE_BAR_GRAB_WIDTH = TITLE_BAR_REACH * 2;
+const LEFT_TITLE_BAR_REACH = TITLE_BAR_REACH * 3;
+const RIGHT_TITLE_BAR_REACH = TITLE_BAR_REACH * 2;
 const CASCADE_STEP = 24;
 
 export function createWindowState() {
@@ -21,8 +22,8 @@ function topVisibleId(windows) {
 }
 
 export function clampGeometry(geometry, bounds) {
-  const minimumX = bounds.x - geometry.width + TITLE_BAR_GRAB_WIDTH;
-  const maximumX = bounds.width - TITLE_BAR_GRAB_WIDTH;
+  const minimumX = bounds.x - geometry.width + LEFT_TITLE_BAR_REACH;
+  const maximumX = bounds.width - RIGHT_TITLE_BAR_REACH;
   const minimumY = bounds.y;
   const maximumY = bounds.height - TITLE_BAR_REACH;
 

@@ -65,8 +65,15 @@ test('moving clamps a reachable title bar inside bounds', () => {
   const opened = openWindow(createWindowState(), app, bounds);
   const moved = moveWindow(opened, 'projects', { x: -900, y: 900 }, bounds);
 
-  assert.ok(moved.windows[0].x >= -456);
+  assert.ok(moved.windows[0].x >= -424);
   assert.ok(moved.windows[0].y <= 656 - 32);
+});
+
+test('left clamping preserves controls and a draggable title-bar region', () => {
+  assert.deepEqual(
+    clampGeometry({ x: -900, y: 100, width: 520, height: 360 }, bounds),
+    { x: -424, y: 100, width: 520, height: 360 },
+  );
 });
 
 test('clampGeometry keeps the size and clamps both axes to reachable limits', () => {
