@@ -66,3 +66,18 @@ test('natural completion shows the exit phase before revealing and persisting', 
     JSON.parse(localStorage.getItem('portfolio-os:preferences')).bootComplete
   ))).toBe(true);
 });
+
+test('open query restores the requested desktop app and survives refresh', async ({ page }) => {
+  await page.goto('/?skipBoot=1&open=writing');
+  await expect(page.locator('[data-app-window="writing"]')).toBeVisible();
+  await expect(page).toHaveURL(/open=writing/);
+
+  await page.reload();
+  await expect(page.locator('[data-app-window="writing"]')).toBeVisible();
+  await expect(page).toHaveURL(/open=writing/);
+});
+
+test('unsupported open query does not launch an app', async ({ page }) => {
+  await page.goto('/?skipBoot=1&open=settings');
+  await expect(page.locator('[data-app-window]')).toHaveCount(0);
+});

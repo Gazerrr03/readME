@@ -12,6 +12,7 @@ import { renderWritingApp } from './apps/writing-app.js';
 import { createDesktopController } from './desktop.js';
 import { createDesktopEnvironmentController } from './environment/environment-controller.js';
 import { createI18n } from './i18n/i18n.js';
+import { readDesktopTarget } from './routing/content-routes.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
 import { createWindowManager } from './window-manager.js';
 
@@ -25,6 +26,7 @@ const audio = createAudioService(preferences.audioEnabled);
 let windowManager;
 let boot;
 let updatePreferences;
+let pendingOpen = readDesktopTarget(location.search);
 const openApp = (appId) => {
   audio.play('window');
   windowManager.open(appId);
@@ -85,6 +87,9 @@ const revealDesktop = () => {
   desktopRoot.hidden = false;
   desktopRoot.dataset.ready = 'true';
   requestAnimationFrame(() => environment.sync({ mode: desktopRoot.dataset.desktopMode }));
+  const target = pendingOpen;
+  pendingOpen = null;
+  if (target) requestAnimationFrame(() => openApp(target));
 };
 
 document.documentElement.lang = i18n.locale;

@@ -4,10 +4,6 @@ import { articles, projects } from '../../scripts/data/content.js';
 const firstArticle = articles[0];
 const firstProject = projects[0];
 
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => localStorage.clear());
-});
-
 test('article URL loads and reloads as an independent document', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -68,4 +64,25 @@ test('project URL loads a standalone detail with its live preview and actions', 
   await expect(page.locator('[data-content-return]')).toHaveAttribute('href', '?open=projects');
   await expect(page.locator('[data-desktop-root]')).toHaveCount(0);
   expect(errors).toEqual([]);
+});
+
+test('explicit returns open the corresponding desktop app', async ({ page }) => {
+  await page.goto(`/writing/${firstArticle.slug}/`);
+  await page.evaluate(() => {
+    localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+      version: 1,
+      bootComplete: true,
+      layout: 'windows',
+      locale: 'en',
+      audioEnabled: false,
+    }));
+  });
+  await page.locator('[data-content-return]').click();
+  await expect(page).toHaveURL(/\?open=writing$/);
+  await expect(page.locator('[data-app-window="writing"]')).toBeVisible();
+
+  await page.goto(`/projects/${firstProject.slug}/`);
+  await page.locator('[data-content-return]').click();
+  await expect(page).toHaveURL(/\?open=projects$/);
+  await expect(page.locator('[data-app-window="projects"]')).toBeVisible();
 });

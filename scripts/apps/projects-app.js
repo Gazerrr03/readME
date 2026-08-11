@@ -1,4 +1,5 @@
 import { pick, projects } from '../data/content.js';
+import { contentPath } from '../routing/content-routes.js';
 import { createWireframePreview } from './wireframe-preview.js';
 
 const SLOT_COUNT = projects.length * 2; // ring shows each project twice so the loop closes seamlessly
@@ -27,8 +28,6 @@ export function renderProjectsApp({ i18n, mount }) {
   const reducedMotion = view.matchMedia('(prefers-reduced-motion: reduce)');
   const root = createElement(document, 'section', { 'data-projects-app': '' });
 
-  let mode = 'ring'; // 'ring' | 'detail'
-  let openSlug = null;
   let current = 0; // ring rotation, degrees; card i sits at current + i * STEP_DEG
   let target = 0;
   let dragging = false;
@@ -54,27 +53,19 @@ export function renderProjectsApp({ i18n, mount }) {
 
   const toolbar = (locale) => {
     const bar = createElement(document, 'header', { 'data-projects-toolbar': '' });
-    const openProject = openSlug ? projects.find((project) => project.slug === openSlug) : null;
     const crumb = createElement(document, 'span', { 'data-projects-crumb': '' },
-      openProject ? `${i18n.t('apps.projects')} / ${pick(openProject.title, locale)}` : `${i18n.t('apps.projects')} /`);
+      `${i18n.t('apps.projects')} /`);
     const count = createElement(document, 'span', { 'data-projects-count': '' },
       i18n.t('projects.count').replace('{n}', pad(projects.length)));
     bar.append(crumb, count);
     return bar;
   };
 
-  const statusbar = (locale) => {
+  const statusbar = () => {
     const bar = createElement(document, 'footer', { 'data-projects-statusbar': '' });
-    const left = createElement(document, 'span', { 'data-projects-position': '' });
-    if (mode === 'ring') {
-      left.textContent = `${pad(frontIndex() + 1)} / ${pad(projects.length)}`;
-    } else {
-      const openProject = projects.find((project) => project.slug === openSlug);
-      left.textContent = openProject ? `${openProject.year} · ${openProject.kind} · ${openProject.status}` : '';
-    }
-    const openProject = projects.find((project) => project.slug === openSlug);
-    const right = createElement(document, 'span', { 'data-projects-hint': '' },
-      mode === 'ring' ? i18n.t('projects.hint') : (openProject?.stack ?? ''));
+    const left = createElement(document, 'span', { 'data-projects-position': '' },
+      `${pad(frontIndex() + 1)} / ${pad(projects.length)}`);
+    const right = createElement(document, 'span', { 'data-projects-hint': '' }, i18n.t('projects.hint'));
     bar.append(left, right);
     return bar;
   };
@@ -110,8 +101,8 @@ export function renderProjectsApp({ i18n, mount }) {
     cards = [];
     for (let slot = 0; slot < SLOT_COUNT; slot += 1) {
       const project = projects[slot % projects.length];
-      const card = createElement(document, 'button', {
-        type: 'button',
+      const card = createElement(document, 'a', {
+        href: contentPath('projects', project.slug),
         'data-projects-card': '',
         'data-slot': String(slot),
         'data-slug': project.slug,
@@ -174,77 +165,18 @@ export function renderProjectsApp({ i18n, mount }) {
     return viewport;
   };
 
-  const detailView = (locale, project) => {
-    const wrapper = createElement(document, 'div', { 'data-projects-single': '' });
-    wrapper.append(createElement(document, 'button', {
-      type: 'button', 'data-projects-back': '',
-    }, `← ${i18n.t('nav.back')}`));
-
-    const detail = createElement(document, 'section', {
-      'data-projects-detail': '',
-      'aria-label': pick(project.title, locale),
-    });
-    const canvasMount = createElement(document, 'div', { 'data-projects-canvas-mount': '' });
-    const canvas = createElement(document, 'canvas', {
-      'data-projects-canvas': project.geometry,
-      role: 'img',
-      'aria-label': i18n.t('projects.modelPreview'),
-    });
-    canvasMount.append(canvas);
-
-    const meta = createElement(document, 'dl', { 'data-projects-meta': '' });
-    [
-      [i18n.t('projects.year'), String(project.year)],
-      [i18n.t('projects.stack'), project.stack],
-      [i18n.t('projects.status'), project.status],
-    ].forEach(([term, value]) => {
-      meta.append(createElement(document, 'dt', {}, term), createElement(document, 'dd', {}, value));
-    });
-
-    const actions = createElement(document, 'div', { 'data-projects-actions': '' });
-    [
-      [i18n.t('projects.open'), project.url],
-      [i18n.t('projects.source'), project.source],
-    ].forEach(([label, href]) => {
-      actions.append(createElement(document, 'a', { href, target: '_blank', rel: 'noreferrer' }, label));
-    });
-
-    const body = createElement(document, 'div', { 'data-projects-detail-body': '' });
-    body.append(
-      createElement(document, 'h3', {}, pick(project.title, locale)),
-      meta,
-      createElement(document, 'p', { 'data-projects-desc': '' }, pick(project.description, locale)),
-      actions,
-    );
-    detail.append(canvasMount, body);
-    wrapper.append(detail);
-    return { wrapper, canvas };
-  };
-
   const render = () => {
     disposePreviews();
     const locale = i18n.locale;
-    const project = openSlug ? projects.find((candidate) => candidate.slug === openSlug) : null;
-    if (mode === 'detail' && !project) mode = 'ring';
-    root.dataset.projectsMode = mode;
 
     const fragment = document.createDocumentFragment();
     fragment.append(toolbar(locale));
-
-    if (mode === 'detail') {
-      const { wrapper, canvas } = detailView(locale, project);
-      fragment.append(wrapper, statusbar(locale));
-      root.replaceChildren(fragment);
-      previews.push(createWireframePreview(canvas, project.geometry));
-      return;
-    }
-
-    fragment.append(ringView(locale), statusbar(locale));
+    fragment.append(ringView(locale), statusbar());
     root.replaceChildren(fragment);
     radius = Math.max(220, ((cards[0]?.card.offsetWidth || 190) * 1.05) / (2 * Math.sin((STEP_DEG / 2) * (Math.PI / 180))));
     cards.forEach(({ canvas, slot, project: cardProject }) => {
       previews.push(createWireframePreview(canvas, cardProject.geometry, {
-        isActive: () => mode === 'ring' && Math.cos((angleFor(slot) * Math.PI) / 180) > ACTIVE_COS,
+        isActive: () => Math.cos((angleFor(slot) * Math.PI) / 180) > ACTIVE_COS,
       }));
     });
     layoutRing();
@@ -253,7 +185,6 @@ export function renderProjectsApp({ i18n, mount }) {
       const tick = () => {
         if (!root.isConnected) { rafId = null; return; }
         rafId = view.requestAnimationFrame(tick);
-        if (mode !== 'ring') return;
         if (!dragging) {
           const delta = target - current;
           current = reducedMotion.matches || Math.abs(delta) < 0.01 ? target : current + delta * EASE;
@@ -265,30 +196,23 @@ export function renderProjectsApp({ i18n, mount }) {
   };
 
   root.addEventListener('click', (event) => {
-    const back = event.target.closest('[data-projects-back]');
-    if (back) {
-      mode = 'ring';
-      openSlug = null;
-      render();
-      return;
-    }
     const card = event.target.closest('[data-projects-card]');
     if (!card) return;
-    if (suppressClick) { suppressClick = false; return; }
-    const slot = cards.find((candidate) => candidate.card === card)?.slot;
-    if (slot === undefined) return;
-    if (slot === frontSlot()) {
-      mode = 'detail';
-      openSlug = card.dataset.slug;
-      render();
+    if (suppressClick) {
+      event.preventDefault();
+      suppressClick = false;
       return;
     }
+    const slot = cards.find((candidate) => candidate.card === card)?.slot;
+    if (slot === undefined) return;
+    if (slot === frontSlot()) return;
+    event.preventDefault();
     target = current + shortestDelta(-slot * STEP_DEG - current);
   });
 
   const autoAdvance = view.setInterval(() => {
     if (!root.isConnected) { view.clearInterval(autoAdvance); return; }
-    if (mode !== 'ring' || dragging || hovering || reducedMotion.matches) return;
+    if (dragging || hovering || reducedMotion.matches) return;
     if (document.hasFocus && !document.hasFocus()) return;
     target = snap(target) - STEP_DEG;
   }, AUTO_ADVANCE_MS);
