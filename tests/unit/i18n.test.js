@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { dictionaries } from '../../scripts/i18n/dictionaries.js';
 import { createI18n } from '../../scripts/i18n/i18n.js';
+import { createContentStore } from '../../scripts/content/content-store.js';
+import { createDefaultContentDocument } from '../../scripts/content/default-document.js';
 
 test('defaults to English when no locale is provided', () => {
   const i18n = createI18n();
@@ -32,6 +34,19 @@ test('rejects unsupported locales', () => {
 test('does not treat inherited dictionary properties as supported locales', () => {
   assert.equal(createI18n('toString').locale, 'en');
   assert.throws(() => createI18n().setLocale('constructor'), /Unsupported locale/);
+});
+
+test('content changes notify subscribers without changing locale', () => {
+  const store = createContentStore({ defaultDocument: createDefaultContentDocument() });
+  const i18n = createI18n('zh-CN', dictionaries, store);
+  let notifications = 0;
+  i18n.subscribe(() => { notifications += 1; });
+  const next = store.document;
+  next.fields['ui.site.title'].values['zh-CN'] = '审校标题';
+  store.replace(next);
+  assert.equal(i18n.locale, 'zh-CN');
+  assert.equal(i18n.t('site.title'), '审校标题');
+  assert.equal(notifications, 1);
 });
 
 const expectedEnvironmentLabels = {

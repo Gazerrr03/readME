@@ -10,13 +10,17 @@ import { renderProjectsApp } from './apps/projects-app.js';
 import { renderSettingsApp } from './apps/settings-app.js';
 import { renderWritingApp } from './apps/writing-app.js';
 import { createDesktopController } from './desktop.js';
+import { createContentStore } from './content/content-store.js';
+import { defaultContentDocument } from './content/default-document.js';
 import { createDesktopEnvironmentController } from './environment/environment-controller.js';
 import { createI18n } from './i18n/i18n.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
 import { createWindowManager } from './window-manager.js';
 
 const preferences = loadPreferences(localStorage);
-export const i18n = createI18n(preferences.locale);
+export const contentStore = createContentStore({ defaultDocument: defaultContentDocument });
+await contentStore.loadPublished('/content/content.json');
+export const i18n = createI18n(preferences.locale, undefined, contentStore);
 const bootRoot = document.querySelector('[data-boot-root]');
 const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
