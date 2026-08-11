@@ -112,14 +112,24 @@ test('writing opens a fullscreen reader and returns to the archive', async ({ pa
   const maximized = await appWindow.boundingBox();
   expect(maximized.width).toBeGreaterThan(windowed.width + 400);
 
+  const writingContent = appWindow.locator('[data-window-content]');
+  await writingContent.evaluate((element) => {
+    const spacer = element.ownerDocument.createElement('div');
+    spacer.style.height = '1000px';
+    element.append(spacer);
+    element.scrollTop = 400;
+  });
+  await expect.poll(() => writingContent.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
   await appWindow.locator('[data-writing-goto]').last().click();
   await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('A Frequency That Does Not Exist');
   await expect(appWindow.locator('[data-writing-position]')).toHaveText('02 / 09');
-  await expect.poll(() => appWindow.locator('[data-window-content]').evaluate((element) => element.scrollTop)).toBe(0);
+  await expect.poll(() => writingContent.evaluate((element) => element.scrollTop)).toBe(0);
 
+  await writingContent.evaluate((element) => { element.scrollTop = 400; });
+  await expect.poll(() => writingContent.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
   await appWindow.locator('[data-writing-goto]').first().click();
   await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('When Information Starts Thinking for Me');
-  await expect.poll(() => appWindow.locator('[data-window-content]').evaluate((element) => element.scrollTop)).toBe(0);
+  await expect.poll(() => writingContent.evaluate((element) => element.scrollTop)).toBe(0);
 
   await appWindow.locator('[data-writing-back]').click();
   await expect(appWindow.locator('[data-writing-list] button')).toHaveCount(9);
