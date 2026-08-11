@@ -63,6 +63,7 @@ export function createWritingReviewApp({
   storage,
   queue,
   channel = { publish() {} },
+  previewUrl = '/?skipBoot=1',
   confirmAction = (message) => root.ownerDocument.defaultView.confirm(message),
   download = (filename, text) => downloadText(root.ownerDocument, filename, text),
 }) {
@@ -129,8 +130,9 @@ export function createWritingReviewApp({
     }, '↻'),
   );
   const preview = element(document, 'iframe', {
-    src: '/?skipBoot=1', title: '站点交互预览', 'data-review-preview': '',
+    src: previewUrl, title: '站点交互预览', 'data-review-preview': '',
   });
+  preview.addEventListener('load', () => channel.publish(contentStore.document));
   previewPanel.append(previewHeader, preview);
   workspace.append(sidebar, editorPanel, previewPanel);
   root.dataset.activePane = 'editor';
@@ -140,8 +142,9 @@ export function createWritingReviewApp({
   const filteredFields = () => {
     const query = search.value.trim().toLocaleLowerCase('zh-CN');
     return Object.entries(fields())
-      .filter(([, field]) => query ? (
-        field.label.toLocaleLowerCase('zh-CN').includes(query)
+      .filter(([id, field]) => query ? (
+        id.toLocaleLowerCase('zh-CN').includes(query)
+        || field.label.toLocaleLowerCase('zh-CN').includes(query)
         || Object.values(field.values).some((value) => value.toLocaleLowerCase('zh-CN').includes(query))
       ) : field.group === currentGroup)
       .sort(([, left], [, right]) => left.order - right.order);
@@ -349,6 +352,7 @@ export function createWritingReviewApp({
     if (!confirmAction('清除本地草稿和翻译任务？已发布 JSON 不会改变。')) return;
     await storage.clear();
     contentStore.replace(defaults);
+    channel.publish(defaults);
     jobs = [];
     saveStatus.textContent = '已重置本地草稿';
     renderGroups();
@@ -359,6 +363,8 @@ export function createWritingReviewApp({
 
   queue.subscribe((nextJobs) => {
     jobs = nextJobs;
+    void storage.saveDraft(contentStore.document);
+    channel.publish(contentStore.document);
     renderTasks();
     updateCurrentFieldState();
   });
