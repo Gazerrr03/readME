@@ -3,6 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "generate:pages": "node scripts/generate-content-pages.mjs",
+    "check:pages": "node scripts/generate-content-pages.mjs --check",
     "test:unit": "node --test tests/unit/*.test.js",
     "test:e2e": "playwright test",
     "test": "npm run test:unit && npm run test:e2e"
