@@ -82,7 +82,19 @@
   justify-content: center;
   margin: 0;
   text-align: center;
+  flex-direction: column;
+  gap: 16px;
 }
+
+[data-window-placeholder] h3 {
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 400;
+}
+
+[data-placeholder-code],
+[data-placeholder-status] { font-size: 10px; }
+[data-placeholder-primary] { border: var(--stroke); padding: 10px 16px; }
 
 [data-running-apps] {
   align-items: center;
@@ -120,7 +132,7 @@
   display: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 760px) {
   [data-app-window] {
     cursor: default;
   }

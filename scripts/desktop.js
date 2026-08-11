@@ -62,6 +62,7 @@ export function createDesktopController({
   preferences,
   onOpen = () => {},
   onPreferenceChange = () => {},
+  onBotNotice = () => {},
 }) {
   const environment = root.ownerDocument.defaultView.navigator;
   let mode = detectDesktopMode(environment, preferences.layout);
@@ -82,17 +83,37 @@ export function createDesktopController({
   };
 
   root.addEventListener('click', (event) => {
+    const localeButton = event.target.closest('[data-locale]');
+    if (localeButton && root.contains(localeButton)) {
+      onPreferenceChange({ locale: localeButton.dataset.locale });
+      return;
+    }
+
+    const botButton = event.target.closest('[data-bot-standby]');
+    if (botButton && root.contains(botButton)) {
+      const status = root.querySelector('[data-bot-status]');
+      if (status) status.textContent = i18n.t('bot.standby');
+      onBotNotice();
+      return;
+    }
+
     const icon = getEventIcon(event);
     if (!icon) return;
     setSelectedApp(icon.dataset.appIcon);
-    if (root.ownerDocument.defaultView.matchMedia('(pointer: coarse)').matches) {
+    if (
+      root.ownerDocument.defaultView.matchMedia('(pointer: coarse)').matches
+      || root.ownerDocument.defaultView.matchMedia('(max-width: 760px)').matches
+    ) {
       onOpen(icon.dataset.appIcon);
     }
   });
 
   root.addEventListener('dblclick', (event) => {
     const icon = getEventIcon(event);
-    if (!icon || root.ownerDocument.defaultView.matchMedia('(pointer: coarse)').matches) return;
+    if (!icon || (
+      root.ownerDocument.defaultView.matchMedia('(pointer: coarse)').matches
+      || root.ownerDocument.defaultView.matchMedia('(max-width: 760px)').matches
+    )) return;
     onOpen(icon.dataset.appIcon);
   });
 
@@ -123,6 +144,7 @@ export function createDesktopController({
     const document = root.ownerDocument;
     const template = document.querySelector('[data-app-icon-template]');
     if (!template) throw new Error('Missing app icon template');
+    const windowLayer = root.querySelector(':scope > [data-window-layer]');
 
     const windowsTaskbar = createElement(document, 'footer', { 'data-windows-taskbar': '' });
     windowsTaskbar.append(
@@ -160,8 +182,13 @@ export function createDesktopController({
 
     const bot = createElement(document, 'aside', { 'data-bot-mount': '' });
     bot.append(
-      createElement(document, 'span', { 'data-bot-signal': '', 'aria-hidden': 'true' }, 'BOT'),
-      createElement(document, 'span', {}, i18n.t('bot.standby')),
+      createElement(document, 'button', {
+        type: 'button', 'data-bot-standby': '', 'aria-label': i18n.t('bot.standby'),
+      }, 'BOT'),
+      createElement(document, 'span', { 'data-bot-label': '' }, i18n.t('bot.standby')),
+      createElement(document, 'span', {
+        'data-bot-status': '', role: 'status', 'aria-live': 'polite',
+      }),
     );
 
     const macosDock = createElement(document, 'footer', {
@@ -171,18 +198,26 @@ export function createDesktopController({
     macosDock.append(iconList);
 
     root.replaceChildren(macosMenu, bot, windowsTaskbar, macosDock);
+    if (windowLayer) root.append(windowLayer);
     root.dataset.desktopMode = mode;
     return root;
   };
+
+  i18n.subscribe(() => {
+    queueMicrotask(() => {
+      if (!root.hidden) render();
+    });
+  });
 
   return {
     render,
     setMode(nextMode) {
       if (!MODES.has(nextMode)) throw new Error(`Unsupported desktop mode: ${nextMode}`);
-      mode = nextMode;
-      preferences.layout = nextMode;
-      root.dataset.desktopMode = mode;
-      onPreferenceChange(preferences);
+      onPreferenceChange({ layout: nextMode });
+    },
+    syncPreferences() {
+      mode = detectDesktopMode(environment, preferences.layout);
+      render();
     },
     setSelectedApp,
   };

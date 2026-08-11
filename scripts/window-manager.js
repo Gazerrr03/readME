@@ -142,6 +142,7 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
   };
 
   const render = () => {
+    root.dataset.hasVisibleWindow = String(state.windows.some(({ status }) => status === 'normal'));
     const layer = ensureWindowLayer();
     layer.setAttribute('aria-label', i18n.t('site.title'));
     const openIds = new Set(state.windows.map(({ appId }) => appId));
@@ -173,7 +174,21 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     open(appId) {
       const app = getRegistryApp(registry, appId);
       if (!app) return state;
-      return update((current) => openWindow(current, app, getBounds()));
+      const isNarrow = root.ownerDocument.defaultView.matchMedia('(max-width: 760px)').matches;
+      const wasOpen = state.windows.some((window) => window.appId === appId);
+      const next = update((current) => {
+        if (!isNarrow) return openWindow(current, app, getBounds());
+        const retained = current.windows.filter((window) => window.appId === appId);
+        return openWindow({
+          ...current,
+          windows: retained,
+          activeId: retained.length ? appId : null,
+        }, app, getBounds());
+      });
+      if (!wasOpen) {
+        windowElements.get(appId)?.closeButton.focus({ preventScroll: true });
+      }
+      return next;
     },
     focus(appId) {
       return update((current) => focusWindow(current, appId));
@@ -228,7 +243,7 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
   root.addEventListener('pointerdown', (event) => {
     const titleBar = event.target.closest('[data-window-titlebar]');
     if (!titleBar || event.target.closest('[data-window-controls]')) return;
-    if (root.ownerDocument.defaultView.matchMedia('(max-width: 600px)').matches) return;
+    if (root.ownerDocument.defaultView.matchMedia('(max-width: 760px)').matches) return;
 
     const appId = titleBar.closest('[data-app-window]').dataset.appWindow;
     manager.focus(appId);
