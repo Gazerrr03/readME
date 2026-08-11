@@ -1,0 +1,126 @@
+[data-desktop-mode='macos'][data-desktop-root] {
+  background-color: var(--blue);
+  background-image: none;
+}
+
+[data-desktop-mode='macos'][data-desktop-root]::before,
+[data-desktop-mode='macos'][data-desktop-root]::after {
+  opacity: 0;
+}
+
+[data-macos-environment] {
+  background: var(--blue);
+  color: var(--white);
+  inset: 32px 0 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+[data-environment-canvas] {
+  display: block;
+  inset: 0;
+  max-height: 100%;
+  max-width: 100%;
+  position: absolute;
+  transition: opacity var(--ui-duration) var(--ease-out);
+}
+
+[data-environment-widgets] {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 176px 128px;
+  grid-template-rows: repeat(2, 80px);
+  left: 24px;
+  pointer-events: auto;
+  position: absolute;
+  top: 24px;
+  transition: opacity var(--ui-duration) var(--ease-out);
+}
+
+[data-environment-widgets] button {
+  background: var(--blue);
+  border: 1px solid var(--white);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--white);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--mono);
+  justify-content: space-between;
+  letter-spacing: 0;
+  min-width: 0;
+  padding: 12px;
+  text-align: left;
+}
+
+[data-environment-widgets] button:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+[data-environment-widgets] span {
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+[data-environment-widgets] strong {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+[data-environment-primary] {
+  grid-row: 1 / 3;
+}
+
+[data-environment-primary] [data-environment-reading-value] {
+  font-family: var(--serif);
+  font-weight: 400;
+}
+
+[data-environment-primary][data-environment-view='time'] [data-environment-reading-value] {
+  font-size: 48px;
+}
+
+[data-environment-primary][data-environment-view='weather'] [data-environment-reading-value],
+[data-environment-primary][data-environment-view='tide-wind'] [data-environment-reading-value] {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+[data-macos-environment][data-environment-motion='focused'] [data-environment-canvas] {
+  opacity: 0.28;
+}
+
+[data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] button {
+  box-shadow: 1px 1px 0 var(--white);
+}
+
+[data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] span {
+  opacity: 0.7;
+}
+
+@media (max-width: 1023px) {
+  [data-environment-widgets] {
+    grid-template-columns: 160px 120px;
+    left: 16px;
+    top: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  [data-environment-widgets] {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-environment-canvas],
+  [data-environment-widgets],
+  [data-environment-widgets] button {
+    transition-duration: 1ms;
+  }
+}

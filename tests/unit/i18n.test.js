@@ -32,3 +32,24 @@ test('does not treat inherited dictionary properties as supported locales', () =
   assert.equal(createI18n('toString').locale, 'en');
   assert.throws(() => createI18n().setLocale('constructor'), /Unsupported locale/);
 });
+
+const environmentKeys = [
+  'environment.localTime',
+  'environment.weather',
+  'environment.tideWind',
+  'environment.conditionEmpty',
+  'environment.locationEmpty',
+  'environment.windEmpty',
+  'environment.tideEmpty',
+  'environment.now',
+  'environment.latest',
+  'environment.openProjects',
+  'environment.openWriting',
+];
+
+test('environment labels exist in every supported locale', () => {
+  ['en', 'zh-CN', 'ja'].forEach((locale) => {
+    const i18n = createI18n(locale);
+    environmentKeys.forEach((key) => assert.notEqual(i18n.t(key), key));
+  });
+});
