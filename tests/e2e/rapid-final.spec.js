@@ -62,6 +62,8 @@ test('390x844 opens one usable Settings surface without horizontal overflow', as
   const settings = page.locator('[data-app-window="settings"]');
   await expect(settings).toBeVisible();
   await expect(settings.getByLabel('Desktop Layout')).toBeVisible();
+  await expect.poll(() => page.locator('[data-desktop-root]').evaluate((root) => root.scrollTop)).toBe(0);
+  expect((await settings.locator('[data-window-titlebar]').boundingBox()).y).toBeGreaterThanOrEqual(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   expect(errors).toEqual([]);
 });

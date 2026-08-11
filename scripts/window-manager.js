@@ -37,6 +37,18 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
   let state = createWindowState();
   let drag = null;
   const windowElements = new Map();
+  const isNarrow = () => root.ownerDocument.defaultView
+    .matchMedia('(max-width: 760px)').matches;
+  const resetNarrowScroll = () => {
+    if (!isNarrow()) return;
+    root.scrollTop = 0;
+    root.scrollLeft = 0;
+    root.ownerDocument.defaultView.requestAnimationFrame(() => {
+      if (!isNarrow()) return;
+      root.scrollTop = 0;
+      root.scrollLeft = 0;
+    });
+  };
 
   const getBounds = () => {
     const isMacos = root.dataset.desktopMode === 'macos';
@@ -167,6 +179,7 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
   const update = (transition) => {
     state = transition(state);
     render();
+    resetNarrowScroll();
     return state;
   };
 
@@ -174,10 +187,10 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
     open(appId) {
       const app = getRegistryApp(registry, appId);
       if (!app) return state;
-      const isNarrow = root.ownerDocument.defaultView.matchMedia('(max-width: 760px)').matches;
+      const narrow = isNarrow();
       const wasOpen = state.windows.some((window) => window.appId === appId);
       const next = update((current) => {
-        if (!isNarrow) return openWindow(current, app, getBounds());
+        if (!narrow) return openWindow(current, app, getBounds());
         const retained = current.windows.filter((window) => window.appId === appId);
         return openWindow({
           ...current,
@@ -187,6 +200,7 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
       });
       if (!wasOpen) {
         windowElements.get(appId)?.closeButton.focus({ preventScroll: true });
+        resetNarrowScroll();
       }
       return next;
     },
@@ -243,7 +257,7 @@ export function createWindowManager({ root, taskSurface = root, registry, i18n, 
   root.addEventListener('pointerdown', (event) => {
     const titleBar = event.target.closest('[data-window-titlebar]');
     if (!titleBar || event.target.closest('[data-window-controls]')) return;
-    if (root.ownerDocument.defaultView.matchMedia('(max-width: 760px)').matches) return;
+    if (isNarrow()) return;
 
     const appId = titleBar.closest('[data-app-window]').dataset.appWindow;
     manager.focus(appId);

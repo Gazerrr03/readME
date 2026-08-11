@@ -9,11 +9,13 @@
 - Added opt-in generated Web Audio cues with silent failure handling.
 - Added a bottom-right 1-bit BOT standby button with a localized polite status announcement.
 - Added a <=760px single-app fallback with compact icons, disabled dragging, near-full-screen windows, and no horizontal overflow at 390x844.
+- Reset narrow desktop scroll after focus and reclamp so focused window controls cannot shift the window layer above the viewport.
 
 ## Smoke Results
 
 - `npm run test:unit`: 21 passed.
 - `npm run test:e2e -- tests/e2e/rapid-final.spec.js`: 2 passed.
+- Mobile smoke now asserts `scrollTop === 0` and a non-negative Settings title-bar position after focus.
 - `npm run test:e2e -- tests/e2e/boot.spec.js tests/e2e/rapid-final.spec.js --grep "replay resets|Settings drives|390x844"`: 3 passed.
 - Existing focused Windows/Desktop run: 16 passed initially; two breakpoint/pointer compatibility failures were fixed and their focused rerun passed 2/2.
 - Manual Playwright inspection: Settings was usable at 1440x900 and 390x844; the narrow viewport had no horizontal overflow or incoherent overlap; final console inspection reported 0 errors and 0 warnings.
