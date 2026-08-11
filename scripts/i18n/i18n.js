@@ -1,7 +1,7 @@
 import { dictionaries } from './dictionaries.js';
 
-export function createI18n(initialLocale = 'en') {
-  let locale = initialLocale in dictionaries ? initialLocale : 'en';
+export function createI18n(initialLocale = 'en', dictionarySource = dictionaries) {
+  let locale = Object.hasOwn(dictionarySource, initialLocale) ? initialLocale : 'en';
   const listeners = new Set();
 
   return {
@@ -9,10 +9,10 @@ export function createI18n(initialLocale = 'en') {
       return locale;
     },
     t(key) {
-      return dictionaries[locale][key] ?? dictionaries.en[key] ?? key;
+      return dictionarySource[locale][key] ?? dictionarySource.en[key] ?? key;
     },
     setLocale(next) {
-      if (!(next in dictionaries)) throw new Error(`Unsupported locale: ${next}`);
+      if (!Object.hasOwn(dictionarySource, next)) throw new Error(`Unsupported locale: ${next}`);
       if (locale === next) return;
       locale = next;
       listeners.forEach((listener) => listener(locale));

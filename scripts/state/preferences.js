@@ -11,9 +11,10 @@ export const DEFAULT_PREFERENCES = Object.freeze({
 const layouts = new Set(['auto', 'windows', 'macos']);
 const locales = new Set(['en', 'zh-CN', 'ja']);
 
-export function loadPreferences(storage = localStorage) {
+export function loadPreferences(storage) {
   try {
-    const raw = storage.getItem(STORAGE_KEY);
+    const targetStorage = storage === undefined ? globalThis.localStorage : storage;
+    const raw = targetStorage.getItem(STORAGE_KEY);
     if (!raw) return { ...DEFAULT_PREFERENCES };
     const parsed = JSON.parse(raw);
     if (parsed.version !== 1) return { ...DEFAULT_PREFERENCES };
@@ -29,10 +30,11 @@ export function loadPreferences(storage = localStorage) {
   }
 }
 
-export function savePreferences(storage = localStorage, preferences) {
+export function savePreferences(storage, preferences) {
   const validated = loadPreferences({ getItem: () => JSON.stringify(preferences) });
   try {
-    storage.setItem(STORAGE_KEY, JSON.stringify(validated));
+    const targetStorage = storage === undefined ? globalThis.localStorage : storage;
+    targetStorage.setItem(STORAGE_KEY, JSON.stringify(validated));
   } catch {
     // In-memory session continues.
   }

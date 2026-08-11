@@ -8,6 +8,22 @@ const memoryStorage = (value = null) => ({
   setItem(_key, next) { this.value = next; },
 });
 
+const withBlockedLocalStorage = (callback) => {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    get() {
+      throw new DOMException('Storage access is blocked', 'SecurityError');
+    },
+  });
+  try {
+    return callback();
+  } finally {
+    if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor);
+    else delete globalThis.localStorage;
+  }
+};
+
 test('uses defaults without saved preferences', () => {
   assert.deepEqual(loadPreferences(memoryStorage()), DEFAULT_PREFERENCES);
 });
@@ -35,4 +51,19 @@ test('save serializes the validated shape', () => {
   const storage = memoryStorage();
   savePreferences(storage, { ...DEFAULT_PREFERENCES, layout: 'macos' });
   assert.equal(JSON.parse(storage.value).layout, 'macos');
+});
+
+test('uses defaults when acquiring localStorage is blocked', () => {
+  withBlockedLocalStorage(() => {
+    assert.deepEqual(loadPreferences(), DEFAULT_PREFERENCES);
+  });
+});
+
+test('returns validated preferences when acquiring localStorage is blocked during save', () => {
+  withBlockedLocalStorage(() => {
+    assert.deepEqual(
+      savePreferences(undefined, { ...DEFAULT_PREFERENCES, locale: 'ja' }),
+      { ...DEFAULT_PREFERENCES, locale: 'ja' },
+    );
+  });
 });
