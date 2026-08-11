@@ -119,11 +119,11 @@
   width: 7px;
 }
 
-[data-app-icon][aria-selected='true'] [data-icon] {
+[data-app-icon][data-selected='true'] [data-icon] {
   background: var(--blue);
   box-shadow: 4px 4px 0 var(--blue);
 }
 
-[data-app-icon][aria-selected='true'] {
+[data-app-icon][data-selected='true'] {
   color: var(--white);
 }

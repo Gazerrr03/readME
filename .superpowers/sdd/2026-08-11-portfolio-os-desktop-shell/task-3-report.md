@@ -60,3 +60,21 @@ npm run test:e2e -- tests/e2e/shell.spec.js
 ```
 
 No concerns remain for this fix round.
+
+## Fix Round 2
+
+Replaced the unsupported `aria-selected` state on native icon buttons with valid toggle-button semantics: `aria-pressed="false"` plus the styling hook `data-selected="false"`. Selected-state CSS now consistently uses `data-selected="true"`.
+
+The focused E2E was updated first and failed with the old template values (`aria-pressed: null`, `data-selected: undefined`, and `aria-selected` present). It then passed after the markup and CSS update, including the selected white-artwork checks.
+
+Commands and output:
+
+```sh
+node --test tests/unit/app-registry.test.js
+# tests 2; pass 2; fail 0
+
+npm run test:e2e -- tests/e2e/shell.spec.js
+# 2 passed (538ms)
+```
+
+No concerns remain for this fix round.

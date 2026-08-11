@@ -15,13 +15,20 @@ test('provides reusable icon markup with selected white artwork', async ({ page 
     const iconValues = [...template.content.querySelectorAll('[data-icon]')]
       .map((icon) => icon.dataset.icon);
     const icon = template.content.querySelector('[data-app-icon="writing"]');
+    const defaultState = {
+      pressed: icon.getAttribute('aria-pressed'),
+      selected: icon.dataset.selected,
+      hasAriaSelected: icon.hasAttribute('aria-selected'),
+    };
     const clone = icon.cloneNode(true);
-    clone.setAttribute('aria-selected', 'true');
+    clone.setAttribute('aria-pressed', 'true');
+    clone.dataset.selected = 'true';
     document.querySelector('[data-desktop-root]').append(clone);
 
     const glyph = clone.querySelector('[data-icon]');
     return {
       iconValues,
+      defaultState,
       hasSharedButton: clone.matches('button[data-app-icon]'),
       hasLabel: Boolean(clone.querySelector('[data-app-label]')),
       frame: getComputedStyle(glyph).backgroundColor,
@@ -32,6 +39,11 @@ test('provides reusable icon markup with selected white artwork', async ({ page 
   });
 
   expect(result.iconValues).toEqual(['folder', 'document', 'identity', 'signal', 'controls']);
+  expect(result.defaultState).toEqual({
+    pressed: 'false',
+    selected: 'false',
+    hasAriaSelected: false,
+  });
   expect(result.hasSharedButton).toBe(true);
   expect(result.hasLabel).toBe(true);
   expect(result.frame).toBe('rgb(38, 21, 154)');
