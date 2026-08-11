@@ -3,19 +3,38 @@ import { getApps } from './apps/app-registry.js';
 import { createDesktopController } from './desktop.js';
 import { createI18n } from './i18n/i18n.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
+import { createWindowManager } from './window-manager.js';
 
 const preferences = loadPreferences(localStorage);
 export const i18n = createI18n(preferences.locale);
 const bootRoot = document.querySelector('[data-boot-root]');
 const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
+const apps = getApps();
+let windowManager;
 const desktop = createDesktopController({
   root: desktopRoot,
-  apps: getApps(),
+  apps,
   i18n,
   preferences,
-  onOpen: () => {},
+  onOpen: (appId) => windowManager.open(appId),
   onPreferenceChange: persistPreferences,
+});
+const renderPendingApp = ({ i18n: appI18n }) => {
+  const placeholder = document.createElement('p');
+  placeholder.dataset.windowPlaceholder = '';
+  placeholder.textContent = appI18n.t('windows.comingSoon');
+  return placeholder;
+};
+windowManager = createWindowManager({
+  root: desktopRoot,
+  taskSurface: desktopRoot,
+  registry: apps,
+  i18n,
+  renderers: {
+    placeholder: renderPendingApp,
+    settings: renderPendingApp,
+  },
 });
 const revealDesktop = () => {
   if (!desktopRoot.dataset.desktopMode) desktop.render();

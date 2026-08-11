@@ -1,0 +1,131 @@
+[data-window-layer] {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+[data-app-window] {
+  background: var(--white);
+  border: 1px solid var(--blue);
+  box-shadow: 6px 6px 0 var(--blue);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  pointer-events: auto;
+  position: absolute;
+}
+
+[data-app-window][hidden] {
+  display: none;
+}
+
+[data-window-titlebar] {
+  align-items: center;
+  background: var(--blue);
+  color: var(--white);
+  cursor: move;
+  display: flex;
+  flex: 0 0 32px;
+  justify-content: space-between;
+  padding-left: 10px;
+  touch-action: none;
+  user-select: none;
+}
+
+[data-window-title] {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-window-controls] {
+  align-self: stretch;
+  display: flex;
+}
+
+[data-window-controls] button {
+  background: var(--white);
+  border: 0;
+  border-left: 1px solid var(--blue);
+  border-radius: 0;
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 13px;
+  min-width: 32px;
+  padding: 0;
+}
+
+[data-window-controls] button:focus-visible,
+[data-running-app]:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+[data-window-content] {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px;
+}
+
+[data-window-placeholder] {
+  align-items: center;
+  display: flex;
+  font-family: var(--mono);
+  height: 100%;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+}
+
+[data-running-apps] {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+}
+
+[data-running-app] {
+  background: var(--white);
+  border: 1px solid var(--blue);
+  border-radius: 0;
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 10px;
+  height: 30px;
+  max-width: 144px;
+  overflow: hidden;
+  padding: 3px 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-running-app][aria-pressed='true'] {
+  background: var(--blue);
+  color: var(--white);
+}
+
+[data-running-app][data-minimized='true'] {
+  border-style: dashed;
+}
+
+[data-desktop-mode='windows'] [data-macos-dock] > [data-running-apps] {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  [data-app-window] {
+    cursor: default;
+  }
+
+  [data-window-titlebar] {
+    cursor: default;
+  }
+}
