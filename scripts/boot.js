@@ -7,6 +7,9 @@ export const BOOT_STEPS = Object.freeze([
   { id: 'bot', at: 3150 },
 ]);
 
+const BOOT_EXIT_AT = 4400;
+const BOOT_COMPLETE_AT = 5000;
+
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
   Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
@@ -68,15 +71,17 @@ function renderBoot(root, i18n) {
     { type: 'button', 'data-boot-skip': '' },
     i18n.t('boot.skip'),
   );
+  const dither = createElement(document, 'div', { 'data-boot-dither': '', 'aria-hidden': 'true' });
+  for (let cell = 0; cell < 77; cell += 1) {
+    dither.append(createElement(document, 'span'));
+  }
   panel.append(header, title, status, progress, skipButton);
-  root.replaceChildren(panel);
+  root.replaceChildren(panel, dither);
 }
 
 export function createBootController({ root, i18n, preferences, persistPreferences, onComplete }) {
   let timers = [];
   let completed = false;
-
-  renderBoot(root, i18n);
 
   const clearTimers = () => {
     timers.forEach(clearTimeout);
@@ -101,6 +106,9 @@ export function createBootController({ root, i18n, preferences, persistPreferenc
     root.querySelector(`[data-boot-progress-step="${id}"]`).dataset.status = 'ok';
     root.querySelector('[data-boot-progress]').setAttribute('aria-valuenow', String(index + 1));
   };
+  const beginExit = () => {
+    root.dataset.phase = 'exiting';
+  };
   const finish = () => {
     if (completed) return;
     completed = true;
@@ -110,6 +118,11 @@ export function createBootController({ root, i18n, preferences, persistPreferenc
     root.dataset.phase = 'complete';
     root.hidden = true;
     onComplete();
+  };
+
+  const renderAndBind = () => {
+    renderBoot(root, i18n);
+    root.querySelector('[data-boot-skip]').addEventListener('click', finish);
   };
 
   const controller = {
@@ -129,15 +142,19 @@ export function createBootController({ root, i18n, preferences, persistPreferenc
         if (reduced) apply();
         else timers.push(setTimeout(apply, at));
       });
-      if (!reduced) timers.push(setTimeout(finish, 5000));
+      if (!reduced) {
+        timers.push(setTimeout(beginExit, BOOT_EXIT_AT));
+        timers.push(setTimeout(finish, BOOT_COMPLETE_AT));
+      }
     },
     skip: finish,
     replay() {
       preferences.bootComplete = false;
+      renderAndBind();
       this.start({ force: true });
     },
   };
 
-  root.querySelector('[data-boot-skip]').addEventListener('click', controller.skip);
+  renderAndBind();
   return controller;
 }

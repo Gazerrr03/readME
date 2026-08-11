@@ -3,7 +3,7 @@ import { createI18n } from './i18n/i18n.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
 
 const preferences = loadPreferences(localStorage);
-const i18n = createI18n(preferences.locale);
+export const i18n = createI18n(preferences.locale);
 const bootRoot = document.querySelector('[data-boot-root]');
 const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
@@ -22,6 +22,11 @@ const boot = createBootController({
   persistPreferences,
   onComplete: revealDesktop,
 });
+
+export function replayBoot() {
+  desktopRoot.hidden = true;
+  boot.replay();
+}
 
 const skipBootForTests = new URLSearchParams(location.search).get('skipBoot') === '1';
 if (skipBootForTests) {
