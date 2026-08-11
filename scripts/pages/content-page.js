@@ -1,4 +1,4 @@
-import { articles, pick } from '../data/content.js';
+import { articles, pick, projects } from '../data/content.js';
 import { createI18n } from '../i18n/i18n.js';
 import { desktopPath } from '../routing/content-routes.js';
 import {
@@ -7,6 +7,7 @@ import {
   savePreferences,
 } from '../state/preferences.js';
 import { renderArticlePage } from './article-page.js';
+import { renderProjectPage } from './project-page.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -22,6 +23,7 @@ const mount = documentRef.querySelector('[data-content-page]');
 const locale = resolvePreferredLocale(localStorage, navigator.languages);
 const i18n = createI18n(locale);
 let focused = false;
+let disposePresentation = () => {};
 
 function supportedKind() {
   return kind === 'projects' ? 'projects' : 'writing';
@@ -79,18 +81,32 @@ function renderUnavailable() {
 }
 
 function render() {
+  disposePresentation();
   const article = kind === 'writing'
     ? articles.find((entry) => entry.slug === slug)
     : null;
+  const project = kind === 'projects'
+    ? projects.find((entry) => entry.slug === slug)
+    : null;
   const main = createElement(documentRef, 'main', { 'data-content-main': '' });
-  const presentation = article
-    ? renderArticlePage({ document: documentRef, i18n, article, articles })
-    : renderUnavailable();
-  main.append(presentation);
+  let presentation;
+  if (article) {
+    presentation = {
+      element: renderArticlePage({ document: documentRef, i18n, article, articles }),
+      dispose() {},
+    };
+  } else if (project) {
+    presentation = renderProjectPage({ document: documentRef, i18n, project });
+  } else {
+    presentation = { element: renderUnavailable(), dispose() {} };
+  }
+  disposePresentation = presentation.dispose;
+  main.append(presentation.element);
   mount.replaceChildren(renderHeader(), main);
   documentRef.documentElement.lang = i18n.locale;
-  documentRef.title = article
-    ? `${pick(article.title, i18n.locale)} - QIZHI`
+  const item = article ?? project;
+  documentRef.title = item
+    ? `${pick(item.title, i18n.locale)} - QIZHI`
     : i18n.t('content.unavailable');
   if (!focused) {
     main.querySelector('h1')?.focus({ preventScroll: true });
@@ -99,4 +115,5 @@ function render() {
 }
 
 i18n.subscribe(render);
+window.addEventListener('pagehide', () => disposePresentation(), { once: true });
 render();
