@@ -21,21 +21,29 @@ async function mountDesktopController(page, { coarse = false, layout = 'windows'
         ? { matches: useCoarsePointer }
         : nativeMatchMedia(query)
     );
-    const [{ createDesktopController }, { getApps }, { createI18n }] = await Promise.all([
+    const [{ createDesktopController }, { getApps }, { createI18n }, { DEFAULT_PREFERENCES }] = await Promise.all([
       import('/scripts/desktop.js'),
       import('/scripts/apps/app-registry.js'),
       import('/scripts/i18n/i18n.js'),
+      import('/scripts/state/preferences.js'),
     ]);
     const root = document.createElement('section');
     root.dataset.testDesktop = '';
     document.body.append(root);
     window.testOpenCalls = [];
+    window.testRenderModes = [];
     window.testDesktop = createDesktopController({
       root,
       apps: getApps(),
       i18n: createI18n('en'),
-      preferences: { layout: selectedLayout, locale: 'en', audioEnabled: false },
+      preferences: {
+        ...DEFAULT_PREFERENCES,
+        layout: selectedLayout,
+        locale: 'en',
+        audioEnabled: false,
+      },
       onOpen: (appId) => window.testOpenCalls.push(appId),
+      onRender: ({ mode }) => window.testRenderModes.push(mode),
     });
     window.testDesktop.render();
   }, { useCoarsePointer: coarse, selectedLayout: layout });
@@ -56,6 +64,11 @@ test('macOS mode shows the menu bar and Dock', async ({ page }) => {
   await expect(page.locator('[data-desktop-mode="macos"]')).toBeVisible();
   await expect(page.locator('[data-macos-menu]')).toBeVisible();
   await expect(page.locator('[data-macos-dock]')).toBeVisible();
+});
+
+test('desktop render hook reports the active layout after chrome is mounted', async ({ page }) => {
+  await mountDesktopController(page, { layout: 'macos' });
+  await expect.poll(() => page.evaluate(() => window.testRenderModes)).toEqual(['macos']);
 });
 
 test('explicit layout wins and auto layout follows the platform', async ({ page }) => {

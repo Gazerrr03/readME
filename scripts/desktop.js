@@ -63,6 +63,7 @@ export function createDesktopController({
   onOpen = () => {},
   onPreferenceChange = () => {},
   onBotNotice = () => {},
+  onRender = () => {},
 }) {
   const environment = root.ownerDocument.defaultView.navigator;
   let mode = detectDesktopMode(environment, preferences.layout);
@@ -200,6 +201,7 @@ export function createDesktopController({
     root.replaceChildren(macosMenu, bot, windowsTaskbar, macosDock);
     if (windowLayer) root.append(windowLayer);
     root.dataset.desktopMode = mode;
+    onRender({ root, mode });
     return root;
   };
 

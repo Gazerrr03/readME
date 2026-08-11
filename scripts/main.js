@@ -4,6 +4,7 @@ import { getApps } from './apps/app-registry.js';
 import { renderPlaceholderApp } from './apps/placeholder-app.js';
 import { renderSettingsApp } from './apps/settings-app.js';
 import { createDesktopController } from './desktop.js';
+import { createDesktopEnvironmentController } from './environment/environment-controller.js';
 import { createI18n } from './i18n/i18n.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
 import { createWindowManager } from './window-manager.js';
@@ -18,17 +19,24 @@ const audio = createAudioService(preferences.audioEnabled);
 let windowManager;
 let boot;
 let updatePreferences;
+const openApp = (appId) => {
+  audio.play('window');
+  windowManager.open(appId);
+};
+const environment = createDesktopEnvironmentController({
+  root: desktopRoot,
+  i18n,
+  onOpen: openApp,
+});
 export const desktop = createDesktopController({
   root: desktopRoot,
   apps,
   i18n,
   preferences,
-  onOpen: (appId) => {
-    audio.play('window');
-    windowManager.open(appId);
-  },
+  onOpen: openApp,
   onPreferenceChange: (patch) => updatePreferences(patch),
   onBotNotice: () => audio.play('notice'),
+  onRender: ({ mode }) => environment.sync({ mode }),
 });
 windowManager = createWindowManager({
   root: desktopRoot,
