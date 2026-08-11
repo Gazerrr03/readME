@@ -79,6 +79,7 @@
 
 [data-system-title] {
   flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -125,9 +126,12 @@
   padding: 6px;
 }
 
-[data-desktop-mode='windows'] [data-macos-menu],
-[data-desktop-mode='windows'] [data-macos-dock] {
+[data-desktop-mode='windows'] [data-macos-menu] {
   display: none;
+}
+
+[data-desktop-mode='windows'] [data-macos-dock] {
+  display: contents;
 }
 
 @media (max-width: 600px) {
@@ -136,10 +140,6 @@
     grid-template-columns: repeat(2, 80px);
     left: 12px;
     top: 16px;
-  }
-
-  [data-system-title] {
-    display: none;
   }
 
   [data-bot-mount] {

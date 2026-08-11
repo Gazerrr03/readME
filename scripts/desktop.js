@@ -36,6 +36,25 @@ function createSystemStatus(document, i18n, preferences) {
   return status;
 }
 
+function getWindowsGridIndex(index, key, length) {
+  if (key === 'ArrowLeft') return index % 2 === 1 ? index - 1 : index;
+  if (key === 'ArrowRight') return index % 2 === 0 && index + 1 < length ? index + 1 : index;
+
+  const step = key === 'ArrowUp' ? -2 : 2;
+  const target = index + step;
+  if (target >= 0 && target < length) return target;
+  const column = index % 2;
+  const columnIndexes = Array.from({ length }, (_, appIndex) => appIndex)
+    .filter((appIndex) => appIndex % 2 === column);
+  return key === 'ArrowUp' ? columnIndexes.at(-1) : columnIndexes[0];
+}
+
+function getMacosDockIndex(index, key, length) {
+  if (key === 'ArrowUp' || key === 'ArrowDown') return index;
+  const direction = key === 'ArrowLeft' ? -1 : 1;
+  return (index + direction + length) % length;
+}
+
 export function createDesktopController({
   root,
   apps,
@@ -87,16 +106,14 @@ export function createDesktopController({
       return;
     }
 
-    const direction = {
-      ArrowLeft: -1,
-      ArrowUp: -1,
-      ArrowRight: 1,
-      ArrowDown: 1,
-    }[event.key];
-    if (!direction) return;
+    const arrowKeys = new Set(['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown']);
+    if (!arrowKeys.has(event.key)) return;
     event.preventDefault();
     const icons = [...root.querySelectorAll('[data-app-icon]')];
-    const nextIndex = (icons.indexOf(icon) + direction + icons.length) % icons.length;
+    const currentIndex = icons.indexOf(icon);
+    const nextIndex = mode === 'windows'
+      ? getWindowsGridIndex(currentIndex, event.key, icons.length)
+      : getMacosDockIndex(currentIndex, event.key, icons.length);
     const nextIcon = icons[nextIndex];
     setSelectedApp(nextIcon.dataset.appIcon);
     nextIcon.focus();
@@ -151,14 +168,9 @@ export function createDesktopController({
       'data-macos-dock': '',
       'aria-label': 'Dock',
     });
-    apps.forEach((app) => {
-      macosDock.append(createElement(document, 'span', {
-        'data-dock-app': app.id,
-        'aria-hidden': 'true',
-      }));
-    });
+    macosDock.append(iconList);
 
-    root.replaceChildren(macosMenu, iconList, bot, windowsTaskbar, macosDock);
+    root.replaceChildren(macosMenu, bot, windowsTaskbar, macosDock);
     root.dataset.desktopMode = mode;
     return root;
   };

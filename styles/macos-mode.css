@@ -16,34 +16,22 @@
 [data-macos-dock] {
   border-width: 1px;
   bottom: 16px;
-  gap: 8px;
-  height: 60px;
+  height: auto;
   justify-content: center;
   left: 50%;
+  min-height: 98px;
   padding: 8px 12px;
   transform: translateX(-50%);
 }
 
-[data-dock-app] {
-  background: var(--white);
-  border: var(--stroke);
-  box-shadow: 3px 3px 0 var(--blue);
-  display: block;
-  height: 32px;
-  width: 32px;
-}
-
 [data-desktop-mode='macos'] [data-desktop-icons] {
-  grid-auto-flow: column;
-  grid-template-columns: none;
-  grid-template-rows: repeat(2, 88px);
-  left: auto;
-  right: 24px;
-  top: 56px;
+  display: flex;
+  gap: 8px;
+  position: static;
 }
 
 [data-desktop-mode='macos'] [data-bot-mount] {
-  bottom: 96px;
+  bottom: 130px;
 }
 
 [data-desktop-mode='macos'] [data-windows-taskbar] {
@@ -55,14 +43,22 @@
     padding: 3px 8px;
   }
 
-  [data-desktop-mode='macos'] [data-desktop-icons] {
-    right: 12px;
-    top: 48px;
-  }
-
   [data-macos-dock] {
     bottom: 8px;
-    gap: 6px;
-    padding: 8px;
+    min-height: 90px;
+    padding: 6px;
+  }
+
+  [data-desktop-mode='macos'] [data-desktop-icons] {
+    gap: 4px;
+  }
+
+  [data-desktop-mode='macos'] [data-app-icon] {
+    min-height: 76px;
+    width: 64px;
+  }
+
+  [data-desktop-mode='macos'] [data-bot-mount] {
+    bottom: 110px;
   }
 }

@@ -12,9 +12,9 @@ async function seedLayout(page, layout) {
   }, layout);
 }
 
-async function mountDesktopController(page, { coarse = false } = {}) {
+async function mountDesktopController(page, { coarse = false, layout = 'windows' } = {}) {
   await page.goto('/?skipBoot=1');
-  await page.evaluate(async (useCoarsePointer) => {
+  await page.evaluate(async ({ useCoarsePointer, selectedLayout }) => {
     const nativeMatchMedia = window.matchMedia.bind(window);
     window.matchMedia = (query) => (
       query === '(pointer: coarse)'
@@ -34,11 +34,11 @@ async function mountDesktopController(page, { coarse = false } = {}) {
       root,
       apps: getApps(),
       i18n: createI18n('en'),
-      preferences: { layout: 'windows', locale: 'en', audioEnabled: false },
+      preferences: { layout: selectedLayout, locale: 'en', audioEnabled: false },
       onOpen: (appId) => window.testOpenCalls.push(appId),
     });
     window.testDesktop.render();
-  }, coarse);
+  }, { useCoarsePointer: coarse, selectedLayout: layout });
   return page.locator('[data-test-desktop]');
 }
 
@@ -113,7 +113,7 @@ test('coarse pointer opens once with a single tap', async ({ page }) => {
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['writing']);
 });
 
-test('arrow keys move selection and Enter opens the focused app once', async ({ page }) => {
+test('Windows ArrowRight moves selection and Enter opens the focused app once', async ({ page }) => {
   const desktop = await mountDesktopController(page);
   const projects = desktop.locator('[data-app-icon="projects"]');
   const writing = desktop.locator('[data-app-icon="writing"]');
@@ -125,4 +125,87 @@ test('arrow keys move selection and Enter opens the focused app once', async ({ 
   await expect(writing).toHaveAttribute('data-selected', 'true');
   await writing.press('Enter');
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['writing']);
+});
+
+test('Windows ArrowDown follows the two-column icon grid', async ({ page }) => {
+  const desktop = await mountDesktopController(page);
+  const projects = desktop.locator('[data-app-icon="projects"]');
+  const about = desktop.locator('[data-app-icon="about"]');
+
+  await projects.focus();
+  await projects.press('ArrowDown');
+
+  await expect(about).toBeFocused();
+  await expect(about).toHaveAttribute('data-selected', 'true');
+});
+
+test('macOS arrows follow the horizontal Dock only', async ({ page }) => {
+  const desktop = await mountDesktopController(page, { layout: 'macos' });
+  const projects = desktop.locator('[data-app-icon="projects"]');
+  const writing = desktop.locator('[data-app-icon="writing"]');
+
+  await projects.focus();
+  await projects.press('ArrowRight');
+  await expect(writing).toBeFocused();
+  await expect(writing).toHaveAttribute('data-selected', 'true');
+
+  await writing.press('ArrowDown');
+  await expect(writing).toBeFocused();
+  await expect(writing).toHaveAttribute('data-selected', 'true');
+});
+
+test('macOS Dock, icons, and BOT do not collide at 667x375', async ({ page }) => {
+  await page.setViewportSize({ width: 667, height: 375 });
+  await seedLayout(page, 'macos');
+  await page.goto('/');
+
+  const dock = page.locator('[data-macos-dock]');
+  await expect(page.locator('[data-macos-menu] [data-system-title]')).toBeVisible();
+  await expect(dock.locator('[data-desktop-icons]')).toHaveCount(1);
+
+  const geometry = await page.evaluate(() => {
+    const rect = (element) => {
+      const box = element.getBoundingClientRect();
+      return { top: box.top, right: box.right, bottom: box.bottom, left: box.left };
+    };
+    const overlaps = (first, second) => !(
+      first.right <= second.left
+      || first.left >= second.right
+      || first.bottom <= second.top
+      || first.top >= second.bottom
+    );
+    const dockBox = rect(document.querySelector('[data-macos-dock]'));
+    const botBox = rect(document.querySelector('[data-bot-mount]'));
+    const iconBoxes = [...document.querySelectorAll('[data-app-icon]')].map(rect);
+    return {
+      oneRow: iconBoxes.every((box) => box.top === iconBoxes[0].top),
+      iconsDoNotOverlap: iconBoxes.every((box, index) => (
+        iconBoxes.slice(index + 1).every((other) => !overlaps(box, other))
+      )),
+      iconsInsideDock: iconBoxes.every((box) => (
+        box.left >= dockBox.left
+        && box.right <= dockBox.right
+        && box.top >= dockBox.top
+        && box.bottom <= dockBox.bottom
+      )),
+      botClearsDock: !overlaps(botBox, dockBox),
+      botClearsIcons: iconBoxes.every((box) => !overlaps(botBox, box)),
+    };
+  });
+
+  expect(geometry).toEqual({
+    oneRow: true,
+    iconsDoNotOverlap: true,
+    iconsInsideDock: true,
+    botClearsDock: true,
+    botClearsIcons: true,
+  });
+});
+
+test('Windows system chrome keeps its title visible at 390x844', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await seedLayout(page, 'windows');
+  await page.goto('/');
+
+  await expect(page.locator('[data-windows-taskbar] [data-system-title]')).toBeVisible();
 });
