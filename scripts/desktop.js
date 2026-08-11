@@ -1,0 +1,177 @@
+const MODES = new Set(['windows', 'macos']);
+
+export function detectDesktopMode(environment = {}, preference = 'auto') {
+  if (MODES.has(preference)) return preference;
+  const source = `${environment.platform ?? ''} ${environment.userAgent ?? ''}`.toLowerCase();
+  return source.includes('mac') ? 'macos' : 'windows';
+}
+
+function createElement(document, tagName, attributes = {}, text = '') {
+  const element = document.createElement(tagName);
+  Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
+  element.textContent = text;
+  return element;
+}
+
+function createSystemStatus(document, i18n, preferences) {
+  const status = createElement(document, 'div', { 'data-system-status': '' });
+  const language = createElement(document, 'div', {
+    'data-language-controls': '',
+    'aria-label': i18n.t('desktop.language'),
+    role: 'group',
+  });
+  [['en', 'language.en'], ['zh-CN', 'language.zh'], ['ja', 'language.ja']].forEach(([locale, key]) => {
+    language.append(createElement(document, 'button', {
+      type: 'button',
+      'data-locale': locale,
+      'aria-pressed': String(i18n.locale === locale),
+    }, i18n.t(key)));
+  });
+  status.append(
+    language,
+    createElement(document, 'span', { 'data-audio-status': '' }, (
+      i18n.t(preferences.audioEnabled ? 'desktop.audioOn' : 'desktop.audioOff')
+    )),
+  );
+  return status;
+}
+
+export function createDesktopController({
+  root,
+  apps,
+  i18n,
+  preferences,
+  onOpen = () => {},
+  onPreferenceChange = () => {},
+}) {
+  const environment = root.ownerDocument.defaultView.navigator;
+  let mode = detectDesktopMode(environment, preferences.layout);
+  let selectedAppId = null;
+
+  const setSelectedApp = (appId) => {
+    selectedAppId = apps.some((app) => app.id === appId) ? appId : null;
+    root.querySelectorAll('[data-app-icon]').forEach((icon) => {
+      const selected = icon.dataset.appIcon === selectedAppId;
+      icon.dataset.selected = String(selected);
+      icon.setAttribute('aria-pressed', String(selected));
+    });
+  };
+
+  const getEventIcon = (event) => {
+    const icon = event.target.closest('[data-app-icon]');
+    return icon && root.contains(icon) ? icon : null;
+  };
+
+  root.addEventListener('click', (event) => {
+    const icon = getEventIcon(event);
+    if (!icon) return;
+    setSelectedApp(icon.dataset.appIcon);
+    if (root.ownerDocument.defaultView.matchMedia('(pointer: coarse)').matches) {
+      onOpen(icon.dataset.appIcon);
+    }
+  });
+
+  root.addEventListener('dblclick', (event) => {
+    const icon = getEventIcon(event);
+    if (!icon || root.ownerDocument.defaultView.matchMedia('(pointer: coarse)').matches) return;
+    onOpen(icon.dataset.appIcon);
+  });
+
+  root.addEventListener('keydown', (event) => {
+    const icon = getEventIcon(event);
+    if (!icon) return;
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      setSelectedApp(icon.dataset.appIcon);
+      onOpen(icon.dataset.appIcon);
+      return;
+    }
+
+    const direction = {
+      ArrowLeft: -1,
+      ArrowUp: -1,
+      ArrowRight: 1,
+      ArrowDown: 1,
+    }[event.key];
+    if (!direction) return;
+    event.preventDefault();
+    const icons = [...root.querySelectorAll('[data-app-icon]')];
+    const nextIndex = (icons.indexOf(icon) + direction + icons.length) % icons.length;
+    const nextIcon = icons[nextIndex];
+    setSelectedApp(nextIcon.dataset.appIcon);
+    nextIcon.focus();
+  });
+
+  const render = () => {
+    const document = root.ownerDocument;
+    const template = document.querySelector('[data-app-icon-template]');
+    if (!template) throw new Error('Missing app icon template');
+
+    const windowsTaskbar = createElement(document, 'footer', { 'data-windows-taskbar': '' });
+    windowsTaskbar.append(
+      createElement(document, 'button', { type: 'button', 'data-windows-start': '' }, '[OS]'),
+      createElement(document, 'p', { 'data-system-title': '' }, i18n.t('site.title')),
+      createSystemStatus(document, i18n, preferences),
+    );
+
+    const macosMenu = createElement(document, 'header', { 'data-macos-menu': '' });
+    macosMenu.append(
+      createElement(document, 'span', { 'data-macos-mark': '', 'aria-hidden': 'true' }, '*'),
+      createElement(document, 'p', { 'data-system-title': '' }, i18n.t('site.title')),
+      createSystemStatus(document, i18n, preferences),
+    );
+
+    const iconList = createElement(document, 'div', {
+      'data-desktop-icons': '',
+      role: 'group',
+      'aria-label': i18n.t('site.title'),
+    });
+    const icons = template.content.cloneNode(true);
+    const appIds = new Set(apps.map(({ id }) => id));
+    icons.querySelectorAll('[data-app-icon]').forEach((icon) => {
+      if (!appIds.has(icon.dataset.appIcon)) {
+        icon.remove();
+        return;
+      }
+      const app = apps.find(({ id }) => id === icon.dataset.appIcon);
+      icon.querySelector('[data-app-label]').textContent = i18n.t(app.titleKey);
+      icon.setAttribute('aria-label', i18n.t(app.titleKey));
+      icon.dataset.selected = String(app.id === selectedAppId);
+      icon.setAttribute('aria-pressed', String(app.id === selectedAppId));
+    });
+    iconList.append(icons);
+
+    const bot = createElement(document, 'aside', { 'data-bot-mount': '' });
+    bot.append(
+      createElement(document, 'span', { 'data-bot-signal': '', 'aria-hidden': 'true' }, 'BOT'),
+      createElement(document, 'span', {}, i18n.t('bot.standby')),
+    );
+
+    const macosDock = createElement(document, 'footer', {
+      'data-macos-dock': '',
+      'aria-label': 'Dock',
+    });
+    apps.forEach((app) => {
+      macosDock.append(createElement(document, 'span', {
+        'data-dock-app': app.id,
+        'aria-hidden': 'true',
+      }));
+    });
+
+    root.replaceChildren(macosMenu, iconList, bot, windowsTaskbar, macosDock);
+    root.dataset.desktopMode = mode;
+    return root;
+  };
+
+  return {
+    render,
+    setMode(nextMode) {
+      if (!MODES.has(nextMode)) throw new Error(`Unsupported desktop mode: ${nextMode}`);
+      mode = nextMode;
+      preferences.layout = nextMode;
+      root.dataset.desktopMode = mode;
+      onPreferenceChange(preferences);
+    },
+    setSelectedApp,
+  };
+}

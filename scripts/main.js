@@ -1,4 +1,6 @@
 import { createBootController } from './boot.js';
+import { getApps } from './apps/app-registry.js';
+import { createDesktopController } from './desktop.js';
 import { createI18n } from './i18n/i18n.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
 
@@ -7,7 +9,16 @@ export const i18n = createI18n(preferences.locale);
 const bootRoot = document.querySelector('[data-boot-root]');
 const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
+const desktop = createDesktopController({
+  root: desktopRoot,
+  apps: getApps(),
+  i18n,
+  preferences,
+  onOpen: () => {},
+  onPreferenceChange: persistPreferences,
+});
 const revealDesktop = () => {
+  if (!desktopRoot.dataset.desktopMode) desktop.render();
   desktopRoot.hidden = false;
   desktopRoot.dataset.ready = 'true';
 };

@@ -1,0 +1,68 @@
+[data-macos-menu] {
+  border-width: 0 0 1px;
+  gap: 12px;
+  height: 32px;
+  justify-content: space-between;
+  left: 0;
+  padding: 3px 16px;
+  right: 0;
+  top: 0;
+}
+
+[data-macos-mark] {
+  font-size: 14px;
+}
+
+[data-macos-dock] {
+  border-width: 1px;
+  bottom: 16px;
+  gap: 8px;
+  height: 60px;
+  justify-content: center;
+  left: 50%;
+  padding: 8px 12px;
+  transform: translateX(-50%);
+}
+
+[data-dock-app] {
+  background: var(--white);
+  border: var(--stroke);
+  box-shadow: 3px 3px 0 var(--blue);
+  display: block;
+  height: 32px;
+  width: 32px;
+}
+
+[data-desktop-mode='macos'] [data-desktop-icons] {
+  grid-auto-flow: column;
+  grid-template-columns: none;
+  grid-template-rows: repeat(2, 88px);
+  left: auto;
+  right: 24px;
+  top: 56px;
+}
+
+[data-desktop-mode='macos'] [data-bot-mount] {
+  bottom: 96px;
+}
+
+[data-desktop-mode='macos'] [data-windows-taskbar] {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  [data-macos-menu] {
+    padding: 3px 8px;
+  }
+
+  [data-desktop-mode='macos'] [data-desktop-icons] {
+    right: 12px;
+    top: 48px;
+  }
+
+  [data-macos-dock] {
+    bottom: 8px;
+    gap: 6px;
+    padding: 8px;
+  }
+}
