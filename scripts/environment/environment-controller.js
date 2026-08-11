@@ -15,6 +15,11 @@ function element(document, tagName, attributes = {}, text = '') {
   return node;
 }
 
+function isEnvironmentRenderer(value) {
+  return value && ['resize', 'setMotionState', 'setPointer', 'destroy']
+    .every((method) => typeof value[method] === 'function');
+}
+
 export function createDesktopEnvironmentController({
   root,
   i18n,
@@ -133,7 +138,9 @@ export function createDesktopEnvironmentController({
     if (capability !== ENVIRONMENT_CAPABILITY.PHONE_STATIC) mount.append(createWidgets());
     root.prepend(mount);
     try {
-      renderer = rendererFactory({ canvas, terrainMap: OPEN_HORIZON_MAP });
+      const nextRenderer = rendererFactory({ canvas, terrainMap: OPEN_HORIZON_MAP });
+      if (!isEnvironmentRenderer(nextRenderer)) throw new Error('Invalid environment renderer');
+      renderer = nextRenderer;
     } catch {
       renderer = null;
       mount.dataset.environmentFallback = 'canvas-unavailable';
