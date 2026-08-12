@@ -86,3 +86,84 @@ test('explicit returns open the corresponding desktop app', async ({ page }) => 
   await expect(page).toHaveURL(/\?open=projects$/);
   await expect(page.locator('[data-app-window="projects"]')).toBeVisible();
 });
+
+test('article landmarks, locale control, and sibling navigation remain stable', async ({ page }) => {
+  await page.goto(`/writing/${firstArticle.slug}/`);
+
+  await expect(page.locator('main')).toHaveCount(1);
+  await expect(page.locator('h1')).toHaveCount(1);
+  await expect(page.locator('[data-content-language]')).toHaveAccessibleName('Language');
+
+  const originalUrl = page.url();
+  await page.locator('[data-content-language]').selectOption('zh-CN');
+  await expect(page).toHaveURL(originalUrl);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
+
+  await page.locator('[data-content-next]').click();
+  await expect(page).toHaveURL(new RegExp(`/writing/${articles[1].slug}/$`));
+  await expect(page.locator('h1')).toHaveText(articles[1].title['zh-CN']);
+});
+
+test('browser Back returns from an article to the open desktop app', async ({ page }) => {
+  await page.goto('/?skipBoot=1&open=writing');
+  await expect(page.locator('[data-app-window="writing"]')).toBeVisible();
+  await page.locator('[data-writing-open]').first().click();
+  await expect(page).toHaveURL(new RegExp(`/writing/${firstArticle.slug}/$`));
+
+  await page.goBack();
+  await expect(page).toHaveURL(/\?skipBoot=1&open=writing$/);
+  await expect(page.locator('[data-app-window="writing"]')).toBeVisible();
+});
+
+test('content layouts remain contained on mobile and at 200 percent zoom', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(`/projects/${firstProject.slug}/`);
+  await expect(page.locator('[data-content-project]')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`/writing/${firstArticle.slug}/`);
+  await page.locator('body').evaluate((body) => { body.style.zoom = '2'; });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await expect(page.locator('[data-content-header]')).toBeVisible();
+  await expect(page.locator('[data-content-pagination]')).toBeVisible();
+});
+
+test('reduced motion keeps the project preview static', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(`/projects/${firstProject.slug}/`);
+  const canvas = page.locator('[data-content-project-canvas]');
+  await expect(canvas).toBeVisible();
+
+  const firstFrame = await canvas.screenshot();
+  await page.waitForTimeout(500);
+  const secondFrame = await canvas.screenshot();
+  expect(secondFrame.equals(firstFrame)).toBe(true);
+});
+
+test('GitHub Pages project base resolves content, modules, and sibling links', async ({ page }) => {
+  const failed = [];
+  page.on('response', (response) => {
+    if (response.status() >= 400) failed.push(`${response.status()} ${response.url()}`);
+  });
+
+  await page.goto(`/readME/writing/${firstArticle.slug}/`);
+  await expect(page.locator('[data-content-article]')).toBeVisible();
+  await page.reload();
+  await expect(page.locator('[data-content-article]')).toBeVisible();
+  await page.locator('[data-content-next]').click();
+  await expect(page).toHaveURL(new RegExp(`/readME/writing/${articles[1].slug}/$`));
+  expect(failed).toEqual([]);
+});
+
+test('generated pages and critical assets return successful responses', async ({ request }) => {
+  for (const path of [
+    `/writing/${firstArticle.slug}/`,
+    '/styles/content-page.css',
+    '/scripts/pages/content-page.js',
+    '/media/music/tide-study-0200.wav',
+  ]) {
+    const response = await request.get(path);
+    expect(response.status(), path).toBe(200);
+  }
+});
