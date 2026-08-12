@@ -41,6 +41,10 @@
   outline-offset: 2px;
 }
 
+[data-windows-icons] [data-app-icon]:focus-visible {
+  outline-color: var(--amber);
+}
+
 [data-windows-taskbar],
 [data-macos-menu],
 [data-macos-dock] {
@@ -75,10 +79,18 @@
   width: 40px;
 }
 
-/* Pinned apps: single-click launch buttons inside the Windows taskbar. */
+[data-system-title] {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pinned apps: shown only on narrow screens where desktop icons are hidden. */
 [data-taskbar-pins] {
   align-items: center;
-  display: flex;
+  display: none;
   gap: 4px;
 }
 
@@ -111,12 +123,10 @@
   }
 }
 
-[data-system-title] {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+@media (max-width: 760px) {
+  [data-taskbar-pins] {
+    display: flex;
+  }
 }
 
 [data-system-status],
@@ -166,37 +176,77 @@
 }
 
 [data-bot-mount] {
-  align-items: center;
-  border: var(--stroke);
   bottom: 72px;
   display: flex;
   font-family: var(--mono);
-  font-size: 10px;
-  gap: 10px;
-  padding: 8px;
   position: absolute;
   right: 24px;
   z-index: 20;
 }
 
 [data-bot-standby] {
-  background: var(--amber);
-  border: 1px solid var(--amber);
+  align-items: center;
+  background: transparent;
+  border: 0;
   border-radius: 0;
-  box-shadow: 3px 3px 0 var(--amber);
-  color: var(--night);
-  font-family: var(--mono);
-  min-height: 32px;
-  padding: 6px;
-  transition:
-    transform var(--press-duration) var(--ease-out),
-    box-shadow var(--ui-duration) var(--ease-out);
+  display: flex;
+  justify-content: center;
+  min-height: 76px;
+  min-width: 76px;
+  padding: 0;
+  transition: transform var(--ui-duration) var(--ease-out);
 }
 
-[data-bot-standby]:active { box-shadow: 1px 1px 0 var(--amber); }
+[data-bot-sprite] { display: block; }
 
-[data-bot-status]:empty { display: none; }
-[data-bot-status] { border-left: 1px solid var(--amber); padding-left: 8px; }
+[data-bot-bubble] {
+  background: var(--amber);
+  border: var(--stroke);
+  bottom: calc(100% - 6px);
+  color: var(--night);
+  font-size: 10px;
+  left: 50%;
+  letter-spacing: 0;
+  line-height: 1;
+  padding: 3px 5px;
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+[data-bot-steam] {
+  bottom: calc(100% - 6px);
+  color: var(--amber);
+  font-size: 10px;
+  left: 50%;
+  letter-spacing: 2px;
+  line-height: 1;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+[data-bot-mount][data-bot-active='true'] [data-bot-steam] { display: none; }
+
+[data-bot-paper] {
+  bottom: 4px;
+  display: none;
+  margin-right: 8px;
+  position: absolute;
+  right: 100%;
+}
+
+[data-desktop-root]:has([data-app-window='writing']:not([hidden])) [data-bot-paper] {
+  display: block;
+}
+
+[data-bot-status] {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
 
 @media (hover: hover) and (pointer: fine) {
   [data-app-icon]:hover [data-icon] {
@@ -205,6 +255,9 @@
   }
 
   [data-bot-standby]:hover { transform: translateY(-2px); }
+  [data-bot-standby]:hover [data-bot-sprite] {
+    filter: drop-shadow(3px 3px 0 var(--amber));
+  }
 }
 
 [data-desktop-mode='windows'] [data-macos-menu] {
@@ -217,7 +270,6 @@
 
 @media (max-width: 760px) {
   [data-bot-mount] {
-    bottom: 64px;
     right: 12px;
   }
 }
@@ -225,4 +277,57 @@
 /* Windows mode hides the macOS traffic-light cluster */
 [data-desktop-mode='windows'] [data-window-controls-mac] {
   display: none;
+}
+
+/* ── Windows desktop app icons ───────────────────────────────
+   Five base apps arranged in a 2-column grid (3 + 2) below
+   the environment instrument cluster in the upper-left. Icons
+   mirror the macOS dock visuals — same 46px tiles, label chips,
+   and hover lift — with amber shadows/outlines so they stay
+   legible on the night environment backdrop. */
+
+[data-windows-icons] {
+  display: grid;
+  gap: 8px;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(3, auto);
+  left: 24px;
+  pointer-events: auto;
+  position: absolute;
+  top: 220px;
+  z-index: 1;
+}
+
+[data-windows-icons] [data-icon] {
+  box-shadow: 4px 4px 0 var(--amber);
+}
+
+[data-windows-icons] [data-app-icon][data-selected='true'] [data-icon] {
+  box-shadow: 4px 4px 0 var(--amber);
+}
+
+/* The selected label chip inverts to amber like the macOS dock;
+ * a night border keeps it readable against the amber chip. */
+[data-windows-icons] [data-app-icon][data-selected='true'] [data-app-label] {
+  border: 1px solid var(--amber);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-windows-icons] [data-app-icon]:hover [data-icon] {
+    box-shadow: 6px 6px 0 var(--amber);
+    transform: translateY(-6px) scale(1.04);
+  }
+}
+
+@media (max-width: 1023px) {
+  [data-windows-icons] {
+    left: 16px;
+    top: 200px;
+  }
+}
+
+@media (max-width: 760px) {
+  [data-windows-icons] {
+    display: none;
+  }
 }

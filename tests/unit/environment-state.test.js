@@ -11,11 +11,13 @@ import {
 } from '../../scripts/environment/environment-state.js';
 
 test('capability follows active mode, width, pointer, and reduced motion', () => {
-  assert.equal(getEnvironmentCapability({ mode: 'windows', width: 1440 }), ENVIRONMENT_CAPABILITY.OFF);
+  assert.equal(getEnvironmentCapability({ mode: 'windows', width: 390 }), ENVIRONMENT_CAPABILITY.PHONE_STATIC);
+  assert.equal(getEnvironmentCapability({ mode: 'windows', width: 834 }), ENVIRONMENT_CAPABILITY.STATIC);
   assert.equal(getEnvironmentCapability({ mode: 'macos', width: 390 }), ENVIRONMENT_CAPABILITY.PHONE_STATIC);
   assert.equal(getEnvironmentCapability({ mode: 'macos', width: 834 }), ENVIRONMENT_CAPABILITY.STATIC);
   assert.equal(getEnvironmentCapability({ mode: 'macos', width: 1440, coarsePointer: true }), ENVIRONMENT_CAPABILITY.STATIC);
   assert.equal(getEnvironmentCapability({ mode: 'macos', width: 1440, reducedMotion: true }), ENVIRONMENT_CAPABILITY.STATIC);
+  assert.equal(getEnvironmentCapability({ mode: 'windows', width: 1440 }), ENVIRONMENT_CAPABILITY.ANIMATED);
   assert.equal(getEnvironmentCapability({ mode: 'macos', width: 1440 }), ENVIRONMENT_CAPABILITY.ANIMATED);
 });
 

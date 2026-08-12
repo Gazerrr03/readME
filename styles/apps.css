@@ -94,6 +94,12 @@
   min-width: 0;
   padding: 4px 8px;
   width: 100%;
+}
+
+/* Native <select> dropdowns on Windows Chromium can flicker or immediately
+ * collapse if the element has CSS transitions. Keep transitions only on the
+ * range input, not on the select. */
+[data-settings-meter] input[type='range'] {
   transition:
     border-color var(--ui-duration) ease,
     background-color var(--ui-duration) ease,

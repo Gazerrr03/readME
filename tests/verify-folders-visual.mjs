@@ -101,14 +101,14 @@ const check = (name, ok, detail = '') => {
   await context.close();
 }
 
-// 5. Windows mode: folders right column + taskbar pins present
+// 5. Windows mode: folders right column + desktop icons present
 {
   const { context, page } = await session('windows');
   const box = await page.locator('[data-desktop-folders]').boundingBox();
   check('windows folder column at right:24 / top:24',
     Math.round(box.x + box.width) === 1440 - 24 && Math.round(box.y) === 24,
     `right=${Math.round(box.x + box.width)} top=${Math.round(box.y)}`);
-  check('windows taskbar pins present', await page.locator('[data-taskbar-pins] [data-app-icon]').count() === 5);
+  check('windows desktop icons present', await page.locator('[data-windows-icons] [data-app-icon]').count() === 5);
   await context.close();
 }
 

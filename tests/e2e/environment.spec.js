@@ -12,7 +12,7 @@ async function seedLayout(page, layout, locale = 'en') {
   }, { layout, locale });
 }
 
-test('macOS mounts the environment while Windows mounts neither environment element', async ({ page }) => {
+test('both macOS and Windows mount the environment', async ({ page }) => {
   await seedLayout(page, 'macos');
   await page.goto('/');
   await expect(page.locator('[data-macos-environment]')).toHaveCount(1);
@@ -20,8 +20,8 @@ test('macOS mounts the environment while Windows mounts neither environment elem
 
   await seedLayout(page, 'windows');
   await page.reload();
-  await expect(page.locator('[data-macos-environment]')).toHaveCount(0);
-  await expect(page.locator('[data-environment-widgets]')).toHaveCount(0);
+  await expect(page.locator('[data-macos-environment]')).toHaveCount(1);
+  await expect(page.locator('[data-environment-widgets]')).toHaveCount(1);
 });
 
 test('invalid renderer results mark the canvas unavailable while retaining semantic widgets', async ({ page }) => {
@@ -145,7 +145,7 @@ test('desktop instrument geometry exactly fills its two-column grid', async ({ p
   expect({ width: deckBox.width, height: deckBox.height }).toEqual({ width: 128, height: 80 });
   expect(nowBox.x - (primaryBox.x + primaryBox.width)).toBe(8);
   expect(deckBox.y - (nowBox.y + nowBox.height)).toBe(8);
-  await expect(page.locator('[data-bot-mount]')).toHaveCSS('background-color', 'rgb(10, 25, 47)');
+  await expect(page.locator('[data-bot-mount]')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 });
 
 test('longest non-time reading fits the fixed tablet primary geometry', async ({ page }) => {

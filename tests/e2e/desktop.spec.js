@@ -50,11 +50,11 @@ async function mountDesktopController(page, { coarse = false, layout = 'windows'
   return page.locator('[data-test-desktop]');
 }
 
-test('Windows mode shows five icons and the taskbar', async ({ page }) => {
+test('Windows mode shows five desktop icons and the taskbar', async ({ page }) => {
   await seedLayout(page, 'windows');
   await page.goto('/');
   await expect(page.locator('[data-desktop-mode="windows"]')).toBeVisible();
-  await expect(page.locator('[data-app-icon]')).toHaveCount(5);
+  await expect(page.locator('[data-windows-icons] [data-app-icon]')).toHaveCount(5);
   await expect(page.locator('[data-windows-taskbar]')).toBeVisible();
 });
 
@@ -103,15 +103,18 @@ test('system chrome includes localized title, language, audio, and BOT status', 
   await expect(taskbar.locator('[data-system-title]')).toHaveText('凌晨两点，不存在的频率');
   await expect(taskbar.locator('[data-language-controls]')).toBeVisible();
   await expect(taskbar.locator('[data-audio-status]')).toHaveText('声音开启');
-  await expect(page.locator('[data-bot-mount]')).toContainText('BOT 服务：待机');
+  await expect(page.locator('[data-bot-standby]')).toHaveAccessibleName('BOT 服务：待机');
 });
 
-test('fine pointer opens a taskbar pin with a single click', async ({ page }) => {
+test('fine pointer selects an icon with a click and opens it with a double click', async ({ page }) => {
   const desktop = await mountDesktopController(page);
-  const projects = desktop.locator('[data-taskbar-pins] [data-app-icon="projects"]');
+  const projects = desktop.locator('[data-windows-icons] [data-app-icon="projects"]');
 
   await projects.click();
   await expect(projects).toHaveAttribute('data-selected', 'true');
+  await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual([]);
+
+  await projects.dblclick();
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['projects']);
 });
 
@@ -139,15 +142,16 @@ test('Windows ArrowRight moves selection and Enter opens the focused app once', 
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['writing']);
 });
 
-test('Windows ArrowDown keeps focus on the horizontal pin row', async ({ page }) => {
+test('Windows ArrowDown moves focus down the first icon column', async ({ page }) => {
   const desktop = await mountDesktopController(page);
-  const projects = desktop.locator('[data-taskbar-pins] [data-app-icon="projects"]');
+  const projects = desktop.locator('[data-windows-icons] [data-app-icon="projects"]');
+  const writing = desktop.locator('[data-windows-icons] [data-app-icon="writing"]');
 
   await projects.focus();
   await projects.press('ArrowDown');
 
-  await expect(projects).toBeFocused();
-  await expect(projects).toHaveAttribute('data-selected', 'true');
+  await expect(writing).toBeFocused();
+  await expect(writing).toHaveAttribute('data-selected', 'true');
 });
 
 test('macOS arrows follow the horizontal Dock only', async ({ page }) => {
@@ -237,4 +241,88 @@ test('Windows system chrome keeps its title visible at 390x844', async ({ page }
   await page.goto('/');
 
   await expect(page.locator('[data-windows-taskbar] [data-system-title]')).toBeVisible();
+});
+
+test('penguin sprite replaces the BOT tile and answers with one protocol token', async ({ page }) => {
+  await seedLayout(page, 'windows');
+  await page.goto('/');
+  const mount = page.locator('[data-bot-mount]');
+
+  await expect(mount.locator('[data-bot-sprite]')).toHaveCount(1);
+  await expect(mount).not.toContainText('BOT');
+  await expect(mount.locator('[data-bot-bubble]')).toBeHidden();
+
+  const before = await mount.boundingBox();
+  await page.locator('[data-bot-standby]').click();
+  await expect(mount.locator('[data-bot-bubble]')).toBeVisible();
+  await expect(mount.locator('[data-bot-bubble]')).toHaveText('SPLASH');
+  await expect(page.getByRole('status')).toHaveText('BOT SERVICE: STANDBY');
+  expect(await mount.boundingBox()).toEqual(before);
+
+  await expect(mount.locator('[data-bot-bubble]')).toBeHidden({ timeout: 4000 });
+
+  await page.locator('[data-bot-standby]').focus();
+  await page.keyboard.press('Enter');
+  await expect(mount.locator('[data-bot-bubble]')).toHaveText('SPLASH');
+  await expect(mount.locator('[data-bot-bubble]')).toHaveCount(1);
+});
+
+test('penguin keeps its localized accessible name in all three locales', async ({ page }) => {
+  const names = {
+    en: 'BOT SERVICE: STANDBY',
+    'zh-CN': 'BOT 服务：待机',
+    ja: 'BOTサービス：待機中',
+  };
+  for (const [locale, name] of Object.entries(names)) {
+    await page.addInitScript((selectedLocale) => {
+      localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+        version: 1,
+        bootComplete: true,
+        layout: 'windows',
+        locale: selectedLocale,
+        audioEnabled: false,
+      }));
+    }, locale);
+    await page.goto('/');
+    await expect(page.locator('[data-bot-standby]')).toHaveAccessibleName(name);
+  }
+});
+
+test('hot spring hour shows steam and swaps the protocol token', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+      version: 1,
+      bootComplete: true,
+      layout: 'windows',
+      locale: 'en',
+      audioEnabled: false,
+    }));
+    const RealDate = Date;
+    const pinned = new RealDate('2026-08-12T02:05:00').getTime();
+    class PinnedDate extends RealDate {
+      constructor(...args) { super(...(args.length ? args : [pinned])); }
+      static now() { return pinned; }
+    }
+    globalThis.Date = PinnedDate;
+  });
+  await page.goto('/');
+
+  await expect(page.locator('[data-bot-steam]')).toBeVisible();
+  await page.locator('[data-bot-standby]').click();
+  await expect(page.locator('[data-bot-bubble]')).toHaveText('HOT SPRING: OPEN');
+  await expect(page.locator('[data-bot-steam]')).toBeHidden();
+});
+
+test('writing app summons and releases the reading companion paper', async ({ page }) => {
+  await seedLayout(page, 'windows');
+  await page.goto('/');
+  const paper = page.locator('[data-bot-paper]');
+
+  await expect(paper).toBeHidden();
+  await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
+  await expect(page.locator('[data-app-window="writing"]')).toBeVisible();
+  await expect(paper).toBeVisible();
+
+  await page.locator('[data-app-window="writing"] [data-window-close]').click();
+  await expect(paper).toBeHidden();
 });
