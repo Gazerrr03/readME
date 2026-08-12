@@ -1,0 +1,18 @@
+{
+  "files": [
+    "projects/drift-protocol/index.html",
+    "projects/flovvas/index.html",
+    "projects/midnight-static/index.html",
+    "projects/paper-pixels/index.html",
+    "projects/signal-garden/index.html",
+    "writing/a-frequency-that-does-not-exist/index.html",
+    "writing/a-window-is-a-promise/index.html",
+    "writing/blue-and-white-are-enough/index.html",
+    "writing/flow-canvas-information-overload/index.html",
+    "writing/notes-on-information-overload/index.html",
+    "writing/signal-to-noise-to-signal/index.html",
+    "writing/the-cursor-blinks-first/index.html",
+    "writing/the-dither-decides/index.html",
+    "writing/the-shelf-is-a-camera/index.html"
+  ]
+}

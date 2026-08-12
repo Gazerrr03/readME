@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('projects ring rotates on card click and opens a detail view', async ({ page }) => {
+test('projects ring rotates on card click and navigates the front project', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   // Reduced motion disables the ring's auto-advance so the front card is deterministic.
@@ -43,21 +43,10 @@ test('projects ring rotates on card click and opens a detail view', async ({ pag
   await appWindow.locator('[data-projects-card][data-slot="0"]').click();
   await expect(front).toContainText('SIGNAL GARDEN');
 
-  // clicking the front card opens its detail view
+  // clicking the front card navigates to its independent detail page
   await front.click();
-  const detail = appWindow.locator('[data-projects-detail]');
-  await expect(detail.locator('h3')).toHaveText('SIGNAL GARDEN');
-  await expect(detail).toContainText('YEAR');
-  await expect(detail).toContainText('2026');
-  await expect(detail).toContainText('[OK]');
-  await expect(detail.locator('canvas[data-projects-canvas]')).toBeAttached();
-  await expect(detail.locator('a', { hasText: 'OPEN' })).toHaveAttribute('target', '_blank');
-  await expect(appWindow.locator('[data-projects-crumb]')).toHaveText('Projects / SIGNAL GARDEN');
-
-  // back returns to the ring with the same card in front
-  await appWindow.locator('[data-projects-back]').click();
-  await expect(appWindow.locator('[data-projects-card]')).toHaveCount(10);
-  await expect(appWindow.locator('[data-projects-card][aria-current="true"]')).toContainText('SIGNAL GARDEN');
+  await expect(page).toHaveURL(/\/projects\/signal-garden\/$/);
+  await expect(page.locator('[data-content-project] h1')).toHaveText('SIGNAL GARDEN');
   expect(errors).toEqual([]);
 });
 
@@ -79,38 +68,16 @@ test('projects ring rotates by dragging with snap', async ({ page }) => {
   expect(after).not.toEqual(before);
 });
 
-test('writing opens a fullscreen reader and returns to the archive', async ({ page }) => {
+test('writing archive uses real links to independent article pages', async ({ page }) => {
   await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
   const appWindow = page.locator('[data-app-window="writing"]');
 
   await expect(appWindow.locator('[data-writing-kicker]')).toHaveText('ARCHIVE');
-  await expect(appWindow.locator('[data-writing-list] button')).toHaveCount(9);
+  await expect(appWindow.locator('[data-writing-list] a')).toHaveCount(9);
   await expect(appWindow.locator('[data-writing-tag]').first()).toHaveText('{设计}');
-
-  const windowed = await appWindow.boundingBox();
   await appWindow.locator('[data-writing-open]').first().click();
-
-  await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('When Information Starts Thinking for Me');
-  await expect(appWindow.locator('[data-writing-lead]')).toContainText('August of last year');
-  await expect(appWindow.locator('[data-writing-section]')).toHaveCount(13);
-  await expect(appWindow.locator('[data-writing-body] a')).toHaveCount(7);
-  await expect(appWindow.locator('[data-writing-position]')).toHaveText('01 / 09');
-  await expect(appWindow.locator('[data-writing-meta]')).toContainText('{设计}');
-  await expect(appWindow).toHaveAttribute('data-window-fullscreen', 'true');
-
-  const maximized = await appWindow.boundingBox();
-  expect(maximized.width).toBeGreaterThan(windowed.width + 400);
-
-  await appWindow.locator('[data-writing-goto]').last().click();
-  await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('A Frequency That Does Not Exist');
-  await expect(appWindow.locator('[data-writing-position]')).toHaveText('02 / 09');
-
-  await appWindow.locator('[data-writing-goto]').first().click();
-  await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('When Information Starts Thinking for Me');
-
-  await appWindow.locator('[data-writing-back]').click();
-  await expect(appWindow.locator('[data-writing-list] button')).toHaveCount(9);
-  await expect(appWindow).toHaveAttribute('data-window-fullscreen', 'false');
+  await expect(page).toHaveURL(/\/writing\/flow-canvas-information-overload\/$/);
+  await expect(page.locator('[data-content-article] h1')).toHaveText('When Information Starts Thinking for Me');
 });
 
 test('about renders bio, timeline, stack, and now sections', async ({ page }) => {
@@ -132,7 +99,7 @@ test('contact lists four channels with working links', async ({ page }) => {
   await expect(appWindow.locator('[data-contact-footer]')).toContainText('RECEIVING [OK]');
 });
 
-test('narrow screens show the ring and open details with back navigation', async ({ page }) => {
+test('narrow screens navigate the front project to its independent page', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
@@ -145,11 +112,8 @@ test('narrow screens show the ring and open details with back navigation', async
   await expect(front).toContainText('SIGNAL GARDEN');
 
   await front.click();
-  await expect(appWindow.locator('[data-projects-detail] h3')).toHaveText('SIGNAL GARDEN');
-  await expect(appWindow.locator('[data-projects-back]')).toBeVisible();
-
-  await appWindow.locator('[data-projects-back]').click();
-  await expect(appWindow.locator('[data-projects-card]')).toHaveCount(10);
+  await expect(page).toHaveURL(/\/projects\/signal-garden\/$/);
+  await expect(page.locator('[data-content-project] h1')).toHaveText('SIGNAL GARDEN');
 });
 
 test('apps re-render localized content when the locale changes', async ({ page }) => {
