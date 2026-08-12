@@ -1,6 +1,6 @@
 # readME
 
-Qizhi Dong's interactive portfolio and writing site, presented as a bilingual desktop interface.
+Gazerrr's interactive portfolio and writing site, presented as a bilingual desktop interface.
 
 ## Run locally
 
