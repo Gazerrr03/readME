@@ -31,16 +31,21 @@ html, body { overflow-x: hidden; }
   [data-bot-mount],
   [data-desktop-mode='macos'] [data-bot-mount] {
     bottom: auto;
-    gap: 6px;
     left: auto;
-    max-width: calc(100% - 24px);
-    padding: 5px;
     right: 12px;
     top: 8px;
   }
 
   [data-desktop-mode='macos'] [data-bot-mount] { top: 38px; }
-  [data-bot-label] { display: none; }
+  [data-bot-sprite] { height: 74px; width: 54px; }
+
+  /* Narrow mounts sit near the top edge, so the transient token and steam
+     drop below the sprite instead of being clipped above it. */
+  [data-bot-bubble],
+  [data-bot-steam] {
+    bottom: auto;
+    top: 100%;
+  }
 
   [data-window-layer] { z-index: 5; }
   [data-app-window] {
@@ -103,6 +108,8 @@ html, body { overflow-x: hidden; }
   [data-running-app],
   [data-desktop-root]::before,
   [data-desktop-root]::after { transition-duration: 1ms; }
+
+  [data-bot-standby]:hover { transform: none; }
 
   [data-packet-signal] { animation: none; }
 }

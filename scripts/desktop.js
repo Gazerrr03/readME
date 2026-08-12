@@ -18,6 +18,110 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
+export function isHotSpringHour(date = new Date()) {
+  const hour = date.getHours();
+  return hour === 1 || hour === 2;
+}
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function svgElement(document, tagName, attributes = {}) {
+  const element = document.createElementNS(SVG_NS, tagName);
+  Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
+  return element;
+}
+
+function ellipsePath(cx, cy, rx, ry) {
+  return `M ${cx + rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx - rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx + rx} ${cy} Z`;
+}
+
+// The running desktop surface is solid var(--blue), so the sprite inverts the
+// ink roles: white is the drawn ink and the blue desktop reads through as the
+// negative space (belly, face patch, eye socket). Dither dots are blue marks
+// set into the white regions, like a 1-bit silkscreen print.
+function createPenguinSprite(document) {
+  const svg = svgElement(document, 'svg', {
+    viewBox: '0 0 68 92',
+    width: '68',
+    height: '92',
+    'aria-hidden': 'true',
+    focusable: 'false',
+    'data-bot-sprite': '',
+  });
+
+  const ink = svgElement(document, 'g', { fill: 'var(--white)' });
+  ink.append(
+    // Flippers reach out from the silhouette.
+    svgElement(document, 'ellipse', {
+      cx: '11.5', cy: '52', rx: '5', ry: '14', transform: 'rotate(12 11.5 52)',
+    }),
+    svgElement(document, 'ellipse', {
+      cx: '56.5', cy: '52', rx: '5', ry: '14', transform: 'rotate(-12 56.5 52)',
+    }),
+    // Body with the belly carved out (desktop blue shows through).
+    svgElement(document, 'path', {
+      d: `${ellipsePath(34, 54, 21, 30)} ${ellipsePath(34, 58, 12, 21)}`,
+      'fill-rule': 'evenodd',
+    }),
+    // Head, very slightly off-centre, with the face patch carved out.
+    svgElement(document, 'path', {
+      d: `${ellipsePath(31, 16, 13, 13)} ${ellipsePath(27, 18, 8, 7)}`,
+      'fill-rule': 'evenodd',
+    }),
+    // Beak and the single eye point inside the face patch.
+    svgElement(document, 'polygon', { points: '18,17 7,21 18,25' }),
+    svgElement(document, 'circle', { cx: '26', cy: '17', r: '1.8' }),
+    // Feet planted under the body.
+    svgElement(document, 'polygon', { points: '22,84 31,84 33,90 19,90' }),
+    svgElement(document, 'polygon', { points: '37,84 46,84 49,90 35,90' }),
+  );
+
+  const dither = svgElement(document, 'g', { fill: 'var(--blue)' });
+  const addDot = (x, y) => dither.append(svgElement(document, 'rect', {
+    x: String(x - 0.8), y: String(y - 0.8), width: '1.6', height: '1.6',
+  }));
+  // Back-edge shading: sparse dots between the belly and the body contour.
+  for (let y = 28; y <= 82; y += 3) {
+    for (let x = 16; x <= 54; x += 3) {
+      const body = ((x - 34) / 21) ** 2 + ((y - 54) / 30) ** 2;
+      const belly = ((x - 34) / 12) ** 2 + ((y - 58) / 21) ** 2;
+      if (body > 1 || body < 0.55 || belly <= 1.25) continue;
+      if (((x + y * 2) / 3) % 4 !== 0) continue;
+      addDot(x, y);
+    }
+  }
+  // Head-cap shading: sparse dots on the back of the head.
+  for (let y = 6; y <= 26; y += 3) {
+    for (let x = 26; x <= 42; x += 3) {
+      const head = ((x - 31) / 13) ** 2 + ((y - 16) / 13) ** 2;
+      const face = ((x - 27) / 8) ** 2 + ((y - 18) / 7) ** 2;
+      if (head > 1 || face <= 1.2) continue;
+      if (((x + y) / 3) % 3 !== 0) continue;
+      addDot(x, y);
+    }
+  }
+
+  svg.append(ink, dither);
+  return svg;
+}
+
+function createBotPaper(document) {
+  const svg = svgElement(document, 'svg', {
+    viewBox: '0 0 18 14',
+    width: '18',
+    height: '14',
+    'aria-hidden': 'true',
+    focusable: 'false',
+  });
+  svg.append(
+    svgElement(document, 'rect', { width: '18', height: '14', fill: 'var(--white)' }),
+    svgElement(document, 'rect', { x: '3', y: '3', width: '12', height: '1.5', fill: 'var(--blue)' }),
+    svgElement(document, 'rect', { x: '3', y: '6.5', width: '12', height: '1.5', fill: 'var(--blue)' }),
+    svgElement(document, 'rect', { x: '3', y: '10', width: '8', height: '1.5', fill: 'var(--blue)' }),
+  );
+  return svg;
+}
+
 function applyDesktopPreferences(root, preferences) {
   const frequency = Number.parseInt(preferences.syncFrequency, 10) || 60;
   const packetRate = preferences.packetDitherRate / 100;
@@ -112,6 +216,26 @@ export function createDesktopController({
   let selectedAppId = null;
   let lastIconClick = null;
   let expandedFolder = null;
+  let botTimer = null;
+
+  const activateBot = () => {
+    const mount = root.querySelector('[data-bot-mount]');
+    const bubble = mount?.querySelector('[data-bot-bubble]');
+    const status = root.querySelector('[data-bot-status]');
+    if (!mount || !bubble) return;
+    if (botTimer !== null) clearTimeout(botTimer);
+    bubble.textContent = isHotSpringHour() ? 'HOT SPRING: OPEN' : 'SPLASH';
+    bubble.hidden = false;
+    mount.dataset.botActive = 'true';
+    if (status) status.textContent = i18n.t('bot.standby');
+    onBotNotice();
+    botTimer = setTimeout(() => {
+      botTimer = null;
+      if (!root.contains(bubble)) return;
+      bubble.hidden = true;
+      mount.dataset.botActive = 'false';
+    }, 1200);
+  };
 
   const setSelectedApp = (appId) => {
     selectedAppId = apps.some((app) => app.id === appId) ? appId : null;
@@ -148,9 +272,7 @@ export function createDesktopController({
 
     const botButton = event.target.closest('[data-bot-standby]');
     if (botButton && root.contains(botButton)) {
-      const status = root.querySelector('[data-bot-status]');
-      if (status) status.textContent = i18n.t('bot.standby');
-      onBotNotice();
+      activateBot();
       return;
     }
 
@@ -267,6 +389,10 @@ export function createDesktopController({
 
   const render = () => {
     const document = root.ownerDocument;
+    if (botTimer !== null) {
+      clearTimeout(botTimer);
+      botTimer = null;
+    }
     applyDesktopPreferences(root, preferences);
     const appIds = new Set(apps.map(({ id }) => id));
     const stampIcons = (templateSelector) => {
@@ -316,11 +442,23 @@ export function createDesktopController({
     const foldersElement = renderDesktopFolders({ document, i18n, expandedFolder });
 
     const bot = createElement(document, 'aside', { 'data-bot-mount': '' });
+    const botBubble = createElement(document, 'span', {
+      'data-bot-bubble': '', 'aria-hidden': 'true',
+    });
+    botBubble.hidden = true;
+    const botButton = createElement(document, 'button', {
+      type: 'button', 'data-bot-standby': '', 'aria-label': i18n.t('bot.standby'),
+    });
+    botButton.append(createPenguinSprite(document));
+    const botPaper = createElement(document, 'span', { 'data-bot-paper': '', 'aria-hidden': 'true' });
+    botPaper.append(createBotPaper(document));
     bot.append(
-      createElement(document, 'button', {
-        type: 'button', 'data-bot-standby': '', 'aria-label': i18n.t('bot.standby'),
-      }, 'BOT'),
-      createElement(document, 'span', { 'data-bot-label': '' }, i18n.t('bot.standby')),
+      botBubble,
+      ...(isHotSpringHour()
+        ? [createElement(document, 'span', { 'data-bot-steam': '', 'aria-hidden': 'true' }, '~ ~')]
+        : []),
+      botButton,
+      botPaper,
       createElement(document, 'span', {
         'data-bot-status': '', role: 'status', 'aria-live': 'polite',
       }),

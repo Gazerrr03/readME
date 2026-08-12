@@ -36,7 +36,6 @@
 }
 
 [data-desktop-mode='macos'] [data-bot-mount] {
-  background: var(--white);
   bottom: 130px;
 }
 

@@ -1,7 +1,7 @@
 # Kaomoji Desktop BOT Design
 
 Date: 2026-08-11  
-Status: Approved visual direction, pending implementation plan
+Status: Superseded by `2026-08-12-penguin-desktop-bot-design.md`. Kept for record only.
 
 ## 1. Purpose
 

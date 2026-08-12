@@ -144,9 +144,14 @@
 
 [data-settings-app] button:focus-visible,
 [data-settings-app] select:focus-visible,
-[data-settings-app] input:focus-visible,
-[data-bot-standby]:focus-visible {
+[data-settings-app] input:focus-visible {
   outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* The desktop surface is solid blue, so the resident's focus ring uses white. */
+[data-bot-standby]:focus-visible {
+  outline: 2px solid var(--white);
   outline-offset: 2px;
 }
 

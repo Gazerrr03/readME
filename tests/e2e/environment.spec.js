@@ -145,7 +145,7 @@ test('desktop instrument geometry exactly fills its two-column grid', async ({ p
   expect({ width: deckBox.width, height: deckBox.height }).toEqual({ width: 128, height: 80 });
   expect(nowBox.x - (primaryBox.x + primaryBox.width)).toBe(8);
   expect(deckBox.y - (nowBox.y + nowBox.height)).toBe(8);
-  await expect(page.locator('[data-bot-mount]')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('[data-bot-mount]')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 });
 
 test('longest non-time reading fits the fixed tablet primary geometry', async ({ page }) => {
