@@ -112,8 +112,10 @@ export function createDesktopEnvironmentController({
     const environmentBounds = mount?.getBoundingClientRect();
     const widgets = mount?.querySelector('[data-environment-widgets]')?.getBoundingClientRect();
     const dock = root.querySelector('[data-macos-dock]')?.getBoundingClientRect();
+    const taskbar = root.querySelector('[data-windows-taskbar]')?.getBoundingClientRect();
+    const windowsIcons = root.querySelector('[data-windows-icons]')?.getBoundingClientRect();
     if (!environmentBounds) return [];
-    return [widgets, dock].filter(Boolean).map((rect) => ({
+    return [widgets, dock, taskbar, windowsIcons].filter(Boolean).map((rect) => ({
       left: rect.left - environmentBounds.left - 24,
       top: rect.top - environmentBounds.top - 24,
       right: rect.right - environmentBounds.left + 24,

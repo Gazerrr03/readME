@@ -79,6 +79,23 @@ function getVerticalColumnIndex(index, key, length) {
   return (index + direction + length) % length;
 }
 
+function getGridNextIndex(index, key, icons, columns) {
+  const rows = Math.ceil(icons.length / columns);
+  const row = index % rows;
+  const col = Math.floor(index / rows);
+  let nextRow = row;
+  let nextCol = col;
+
+  if (key === 'ArrowUp') nextRow = Math.max(0, row - 1);
+  if (key === 'ArrowDown') nextRow = Math.min(rows - 1, row + 1);
+  if (key === 'ArrowLeft') nextCol = Math.max(0, col - 1);
+  if (key === 'ArrowRight') nextCol = Math.min(columns - 1, col + 1);
+
+  const nextIndex = nextCol * rows + nextRow;
+  if (nextIndex >= icons.length || nextIndex === index) return index;
+  return nextIndex;
+}
+
 export function createDesktopController({
   root,
   apps,
@@ -236,7 +253,13 @@ export function createDesktopController({
     if (!arrowKeys.has(event.key)) return;
     event.preventDefault();
     const icons = [...icon.parentElement.querySelectorAll('[data-app-icon]')];
-    const nextIndex = getHorizontalRowIndex(icons.indexOf(icon), event.key, icons.length);
+    const currentIndex = icons.indexOf(icon);
+    let nextIndex;
+    if (icon.closest('[data-windows-icons]')) {
+      nextIndex = getGridNextIndex(currentIndex, event.key, icons, 2);
+    } else {
+      nextIndex = getHorizontalRowIndex(currentIndex, event.key, icons.length);
+    }
     const nextIcon = icons[nextIndex];
     setSelectedApp(nextIcon.dataset.appIcon);
     nextIcon.focus();
@@ -317,7 +340,21 @@ export function createDesktopController({
       macosDock.append(dockIcons);
     }
 
-    root.replaceChildren(macosMenu, foldersElement, bot, windowsTaskbar, macosDock);
+    let windowsIcons = null;
+    if (mode === 'windows') {
+      windowsIcons = createElement(document, 'div', {
+        'data-windows-icons': '',
+        role: 'group',
+        'aria-label': i18n.t('site.title'),
+      });
+      const iconOrder = ['settings', 'projects', 'writing', 'about', 'contact'];
+      const fragment = stampIcons('[data-app-icon-template]');
+      const icons = [...fragment.querySelectorAll('[data-app-icon]')];
+      icons.sort((a, b) => iconOrder.indexOf(a.dataset.appIcon) - iconOrder.indexOf(b.dataset.appIcon));
+      windowsIcons.append(...icons);
+    }
+
+    root.replaceChildren(macosMenu, foldersElement, windowsIcons, bot, windowsTaskbar, macosDock);
     if (windowLayer) root.append(windowLayer);
     root.dataset.desktopMode = mode;
     onRender({ root, mode });

@@ -1,21 +1,28 @@
-[data-desktop-mode='macos'][data-desktop-root] {
+[data-desktop-mode='macos'][data-desktop-root],
+[data-desktop-mode='windows'][data-desktop-root] {
   background-color: var(--blue);
   background-image: none;
 }
 
 [data-desktop-mode='macos'][data-desktop-root]::before,
-[data-desktop-mode='macos'][data-desktop-root]::after {
+[data-desktop-mode='macos'][data-desktop-root]::after,
+[data-desktop-mode='windows'][data-desktop-root]::before,
+[data-desktop-mode='windows'][data-desktop-root]::after {
   opacity: 0;
 }
 
 [data-macos-environment] {
   background: var(--white);
   color: var(--blue);
-  inset: 32px 0 0;
+  inset: 0;
   overflow: hidden;
   pointer-events: none;
   position: absolute;
   z-index: 0;
+}
+
+[data-desktop-mode='macos'] [data-macos-environment] {
+  inset: 32px 0 0;
 }
 
 [data-environment-canvas] {

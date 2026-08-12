@@ -41,6 +41,10 @@
   outline-offset: 2px;
 }
 
+[data-windows-icons] [data-app-icon]:focus-visible {
+  outline-color: var(--white);
+}
+
 [data-windows-taskbar],
 [data-macos-menu],
 [data-macos-dock] {
@@ -75,10 +79,18 @@
   width: 40px;
 }
 
-/* Pinned apps: single-click launch buttons inside the Windows taskbar. */
+[data-system-title] {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Pinned apps: shown only on narrow screens where desktop icons are hidden. */
 [data-taskbar-pins] {
   align-items: center;
-  display: flex;
+  display: none;
   gap: 4px;
 }
 
@@ -111,12 +123,10 @@
   }
 }
 
-[data-system-title] {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+@media (max-width: 760px) {
+  [data-taskbar-pins] {
+    display: flex;
+  }
 }
 
 [data-system-status],
@@ -225,4 +235,69 @@
 /* Windows mode hides the macOS traffic-light cluster */
 [data-desktop-mode='windows'] [data-window-controls-mac] {
   display: none;
+}
+
+/* ── Windows desktop app icons ───────────────────────────────
+   Five base apps arranged in a 2-column grid (3 + 2) below
+   the environment instrument cluster in the upper-left. */
+
+[data-windows-icons] {
+  display: grid;
+  gap: 8px;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(3, auto);
+  left: 24px;
+  pointer-events: auto;
+  position: absolute;
+  top: 220px;
+  z-index: 1;
+}
+
+[data-windows-icons] [data-app-icon] {
+  min-height: 76px;
+  width: 76px;
+}
+
+[data-windows-icons] [data-icon] {
+  box-shadow: 2px 2px 0 var(--white);
+  height: 40px;
+  width: 40px;
+}
+
+[data-windows-icons] [data-icon] svg {
+  height: 28px;
+  width: 28px;
+}
+
+[data-windows-icons] [data-app-label] {
+  background: transparent;
+  color: var(--white);
+  font-size: 10px;
+  padding: 2px 0;
+  text-align: center;
+}
+
+[data-windows-icons] [data-app-icon][data-selected='true'] [data-app-label] {
+  background: transparent;
+  color: var(--white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-windows-icons] [data-app-icon]:hover [data-icon] {
+    box-shadow: 6px 6px 0 var(--white);
+    transform: translateY(-3px);
+  }
+}
+
+@media (max-width: 1023px) {
+  [data-windows-icons] {
+    left: 16px;
+    top: 196px;
+  }
+}
+
+@media (max-width: 760px) {
+  [data-windows-icons] {
+    display: none;
+  }
 }

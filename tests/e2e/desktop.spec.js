@@ -50,11 +50,11 @@ async function mountDesktopController(page, { coarse = false, layout = 'windows'
   return page.locator('[data-test-desktop]');
 }
 
-test('Windows mode shows five icons and the taskbar', async ({ page }) => {
+test('Windows mode shows five desktop icons and the taskbar', async ({ page }) => {
   await seedLayout(page, 'windows');
   await page.goto('/');
   await expect(page.locator('[data-desktop-mode="windows"]')).toBeVisible();
-  await expect(page.locator('[data-app-icon]')).toHaveCount(5);
+  await expect(page.locator('[data-windows-icons] [data-app-icon]')).toHaveCount(5);
   await expect(page.locator('[data-windows-taskbar]')).toBeVisible();
 });
 
@@ -106,12 +106,15 @@ test('system chrome includes localized title, language, audio, and BOT status', 
   await expect(page.locator('[data-bot-mount]')).toContainText('BOT 服务：待机');
 });
 
-test('fine pointer opens a taskbar pin with a single click', async ({ page }) => {
+test('fine pointer selects an icon with a click and opens it with a double click', async ({ page }) => {
   const desktop = await mountDesktopController(page);
-  const projects = desktop.locator('[data-taskbar-pins] [data-app-icon="projects"]');
+  const projects = desktop.locator('[data-windows-icons] [data-app-icon="projects"]');
 
   await projects.click();
   await expect(projects).toHaveAttribute('data-selected', 'true');
+  await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual([]);
+
+  await projects.dblclick();
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['projects']);
 });
 
@@ -139,15 +142,16 @@ test('Windows ArrowRight moves selection and Enter opens the focused app once', 
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['writing']);
 });
 
-test('Windows ArrowDown keeps focus on the horizontal pin row', async ({ page }) => {
+test('Windows ArrowDown moves focus down the first icon column', async ({ page }) => {
   const desktop = await mountDesktopController(page);
-  const projects = desktop.locator('[data-taskbar-pins] [data-app-icon="projects"]');
+  const projects = desktop.locator('[data-windows-icons] [data-app-icon="projects"]');
+  const writing = desktop.locator('[data-windows-icons] [data-app-icon="writing"]');
 
   await projects.focus();
   await projects.press('ArrowDown');
 
-  await expect(projects).toBeFocused();
-  await expect(projects).toHaveAttribute('data-selected', 'true');
+  await expect(writing).toBeFocused();
+  await expect(writing).toHaveAttribute('data-selected', 'true');
 });
 
 test('macOS arrows follow the horizontal Dock only', async ({ page }) => {

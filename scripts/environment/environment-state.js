@@ -19,7 +19,6 @@ export function getEnvironmentCapability({
   coarsePointer = false,
   reducedMotion = false,
 }) {
-  if (mode !== 'macos') return ENVIRONMENT_CAPABILITY.OFF;
   if (width <= 760) return ENVIRONMENT_CAPABILITY.PHONE_STATIC;
   if (width < 1024 || coarsePointer || reducedMotion) return ENVIRONMENT_CAPABILITY.STATIC;
   return ENVIRONMENT_CAPABILITY.ANIMATED;
