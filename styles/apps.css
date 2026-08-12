@@ -149,7 +149,8 @@
   outline-offset: 2px;
 }
 
-/* The desktop surface is solid blue, so the resident's focus ring uses white. */
+/* The desktop surface is the dark environment layer, so the resident's
+   focus ring uses white. */
 [data-bot-standby]:focus-visible {
   outline: 2px solid var(--white);
   outline-offset: 2px;

@@ -8,7 +8,7 @@ const FRAME_INTERVAL = 100;
 const CELL_WIDTH = 3.6;
 const CELL_HEIGHT = 6;
 const FONT_SIZE = 6;
-const INK_ALPHA = 0.3;
+const INK_ALPHA = 0.45;
 
 export function createEnvironmentRenderer({
   canvas,
@@ -46,9 +46,9 @@ export function createEnvironmentRenderer({
   const draw = () => {
     const { width, height, dpr, quietZones } = geometry;
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
-    context.fillStyle = WHITE;
-    context.fillRect(0, 0, width, height);
     context.fillStyle = BLUE;
+    context.fillRect(0, 0, width, height);
+    context.fillStyle = WHITE;
     context.font = `600 ${FONT_SIZE}px ui-monospace, monospace`;
     context.textBaseline = 'top';
     const columns = Math.max(1, Math.ceil(width / CELL_WIDTH));

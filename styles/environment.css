@@ -12,8 +12,8 @@
 }
 
 [data-macos-environment] {
-  background: var(--white);
-  color: var(--blue);
+  background: var(--blue);
+  color: var(--white);
   inset: 0;
   overflow: hidden;
   pointer-events: none;
@@ -48,11 +48,11 @@
 
 [data-environment-widgets] > button,
 [data-environment-deck] {
-  background: var(--blue);
-  border: 1px solid var(--white);
+  background: var(--white);
+  border: 1px solid var(--blue);
   border-radius: 0;
-  box-shadow: 4px 4px 0 var(--white);
-  color: var(--white);
+  box-shadow: 4px 4px 0 var(--blue);
+  color: var(--blue);
   display: flex;
   flex-direction: column;
   font-family: var(--mono);
@@ -65,7 +65,7 @@
 
 [data-environment-widgets] button:focus-visible,
 [data-environment-deck] button:focus-visible {
-  outline: 2px solid var(--white);
+  outline: 2px solid var(--blue);
   outline-offset: 3px;
 }
 
@@ -201,7 +201,7 @@
 
 [data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] > button,
 [data-macos-environment][data-environment-motion='focused'] [data-environment-deck] {
-  box-shadow: 1px 1px 0 var(--white);
+  box-shadow: 1px 1px 0 var(--blue);
 }
 
 [data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] span {
