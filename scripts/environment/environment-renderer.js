@@ -1,7 +1,9 @@
 import { getQuietZoneOpacity } from './environment-state.js';
 
-const BLUE = '#26159a';
-const WHITE = '#ffffff';
+// Deep album-blue surface with white ASCII ink; surface must match
+// --environment-blue in tokens.css.
+const SURFACE = '#1E40AF';
+const INK = '#ffffff';
 // Paul Bourke's density-ordered ramp, darkest to lightest.
 const GLYPHS = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,"^`. ';
 const FRAME_INTERVAL = 100;
@@ -46,9 +48,9 @@ export function createEnvironmentRenderer({
   const draw = () => {
     const { width, height, dpr, quietZones } = geometry;
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
-    context.fillStyle = WHITE;
+    context.fillStyle = SURFACE;
     context.fillRect(0, 0, width, height);
-    context.fillStyle = BLUE;
+    context.fillStyle = INK;
     context.font = `600 ${FONT_SIZE}px ui-monospace, monospace`;
     context.textBaseline = 'top';
     const columns = Math.max(1, Math.ceil(width / CELL_WIDTH));

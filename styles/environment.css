@@ -1,6 +1,6 @@
 [data-desktop-mode='macos'][data-desktop-root],
 [data-desktop-mode='windows'][data-desktop-root] {
-  background-color: var(--blue);
+  background-color: var(--environment-blue);
   background-image: none;
 }
 
@@ -12,8 +12,8 @@
 }
 
 [data-macos-environment] {
-  background: var(--white);
-  color: var(--blue);
+  background: var(--environment-blue);
+  color: var(--white);
   inset: 0;
   overflow: hidden;
   pointer-events: none;

@@ -1,6 +1,8 @@
 :root {
   --blue: #26159a;
   --white: #ffffff;
+  /* Deep album-blue backdrop for the desktop environment; white ASCII ink sits on top. */
+  --environment-blue: #1E40AF;
   --grid-size: 32px;
   --stroke: 1px solid var(--blue);
   --hard-shadow: 12px 12px 0 var(--blue);

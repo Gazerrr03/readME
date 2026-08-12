@@ -314,7 +314,7 @@ test('animated canvas is nonblank, advances while idle, and freezes in focus mod
   const sample = () => canvas.evaluate((node) => {
     const pixels = node.getContext('2d').getImageData(0, 0, node.width, node.height).data;
     let digest = 2166136261;
-    let white = 0;
+    let surface = 0;
     let ink = 0;
     for (let index = 0; index < pixels.length; index += 16) {
       const red = pixels[index];
@@ -323,16 +323,17 @@ test('animated canvas is nonblank, advances while idle, and freezes in focus mod
       digest = Math.imul(digest ^ red, 16777619);
       digest = Math.imul(digest ^ green, 16777619);
       digest = Math.imul(digest ^ blueChannel, 16777619);
-      if (red > 245 && green > 245 && blueChannel > 245) white += 1;
-      if (red < 252 || green < 252 || blueChannel < 252) ink += 1;
+      // Deep album-blue surface (#1E40AF) with white glyphs blended on top.
+      if (blueChannel > 120 && red < 90 && green < 110) surface += 1;
+      if (red > 70 && green > 90) ink += 1;
     }
-    return { white, ink, digest: digest >>> 0 };
+    return { surface, ink, digest: digest >>> 0 };
   });
 
   const first = await sample();
   await page.waitForTimeout(350);
   const running = await sample();
-  expect(first.white).toBeGreaterThan(100);
+  expect(first.surface).toBeGreaterThan(100);
   expect(first.ink).toBeGreaterThan(10);
   expect(running.digest).not.toBe(first.digest);
 
