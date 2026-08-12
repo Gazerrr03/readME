@@ -6,9 +6,9 @@
 }
 
 [data-app-window] {
-  background: var(--night);
-  border: 1px solid var(--amber);
-  box-shadow: 6px 6px 0 var(--amber);
+  background: var(--white);
+  border: 1px solid var(--blue);
+  box-shadow: 6px 6px 0 var(--blue);
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -25,7 +25,7 @@
   }
 }
 
-[data-app-window][data-window-active='true'] { box-shadow: 9px 9px 0 var(--amber); }
+[data-app-window][data-window-active='true'] { box-shadow: 9px 9px 0 var(--blue); }
 
 [data-app-window][data-window-fullscreen='true'],
 [data-app-window][data-window-fullscreen='true'][data-window-active='true'] { box-shadow: none; }
@@ -36,8 +36,8 @@
 
 [data-window-titlebar] {
   align-items: center;
-  background: var(--amber);
-  color: var(--night);
+  background: var(--blue);
+  color: var(--white);
   cursor: move;
   display: flex;
   flex: 0 0 32px;
@@ -64,11 +64,11 @@
 }
 
 [data-window-controls] button {
-  background: var(--night);
+  background: var(--white);
   border: 0;
-  border-left: 1px solid var(--amber);
+  border-left: 1px solid var(--blue);
   border-radius: 0;
-  color: var(--amber);
+  color: var(--blue);
   font-family: var(--mono);
   font-size: 13px;
   min-width: 32px;
@@ -81,14 +81,14 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-window-controls] button:hover {
-    background: var(--amber);
-    color: var(--night);
+    background: var(--blue);
+    color: var(--white);
   }
 }
 
 [data-window-controls] button:focus-visible,
 [data-running-app]:focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 
@@ -130,10 +130,10 @@
 }
 
 [data-running-app] {
-  background: var(--night);
-  border: 1px solid var(--amber);
+  background: var(--white);
+  border: 1px solid var(--blue);
   border-radius: 0;
-  color: var(--amber);
+  color: var(--blue);
   font-family: var(--mono);
   font-size: 10px;
   height: 30px;
@@ -149,8 +149,8 @@
 }
 
 [data-running-app][aria-pressed='true'] {
-  background: var(--amber);
-  color: var(--night);
+  background: var(--blue);
+  color: var(--white);
 }
 
 [data-running-app][data-minimized='true'] {

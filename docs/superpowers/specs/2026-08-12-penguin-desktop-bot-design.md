@@ -22,11 +22,11 @@ The kaomoji cat specification (`2026-08-11-kaomoji-desktop-bot-design.md`) is su
 ### Silhouette And Pose
 
 - One penguin, standing naturally, weight even, head very slightly tilted — a calm resident, not a mascot waving.
-- The visible desktop surface is the dark environment layer in both modes: the `[data-macos-environment]` layer (`styles/environment.css`) paints the desaturated dark navy `var(--environment-surface)` full-bleed above the desktop root, with white ASCII glyphs rendered over it, even in Windows layout. So the sprite inverts the house ink language: `var(--white)` is the drawn ink, `var(--blue)` is the plate color. (Do not base ink decisions on computed styles alone — verify with a screenshot or pixel sample.)
-- Classic penguin color blocking, translated into that ink language:
-  - Back, head cap, flippers, beak, and feet: a SOLID `var(--white)` silhouette. The body and head must be filled white shapes, not outline rings — a hollow silhouette dissolves into the dark surface at pet size.
-  - Belly and face patch: blue plates laid on top of the solid body, each closed by a hairline `1px` white contour so the plate separates from both the white body and the dark surface.
-- The eye is a single small white point inside the blue face plate, with no outline ring.
+- The running desktop surface is solid `var(--blue)` (see `styles/environment.css`), so the ink roles are inverted relative to the reference photograph: `var(--white)` is the drawn ink, and the blue desktop reads through as the negative space.
+- Classic penguin color blocking, translated into that inversion:
+  - Back, head cap, flippers, beak, and feet: solid `var(--white)` silhouette.
+  - Belly and face patch: transparent cutouts (even-odd paths); the blue desktop shows through. The sprite never paints its own backdrop.
+- The eye is a single small white point inside the transparent face patch, with no outline ring.
 - No orange anywhere. The penguin must read as native to the blue/white system.
 - Proportions follow the realistic reference (roughly 3:4 width to height), not the squashed proportions of pixel-art mascots.
 
@@ -35,7 +35,7 @@ The kaomoji cat specification (`2026-08-11-kaomoji-desktop-bot-design.md`) is su
 - Production sprite is an original inline SVG generated in `scripts/desktop.js`, white ink on transparent background.
 - Feather shading is simulated with dithering only: small square blue dots set into the white regions, density varying by area, like a 1-bit silkscreen print. No gradients, no opacity fades, no filters, no rounded glow.
 - Contour edges are hard. The existing aliased-edge preference applies to the sprite along with the rest of the desktop.
-- The SVG uses fixed intrinsic dimensions; fills carry the drawing. The only allowed stroke is the hairline `1px` white contour that closes the blue belly and face plates (readability rule: every detail must be large and contrasted enough to read at pet size). No other strokes.
+- The SVG uses fixed intrinsic dimensions; stroke-free fills only, so glyph alignment never drifts between browsers.
 - Do not reuse, trace, or rework any official penguin character artwork from any franchise. The drawing is made for this site.
 
 ### Size
@@ -49,7 +49,7 @@ The kaomoji cat specification (`2026-08-11-kaomoji-desktop-bot-design.md`) is su
 
 - Remove the always-visible bordered `BOT` tile and the persistent standby label, same as the superseded spec.
 - The penguin stands directly on the desktop grid, unframed, background transparent, no border in its default state.
-- Use the standard `2px` white focus outline with `2px` offset for keyboard focus, since the surface under the resident is dark; other desktop controls keep their blue rings.
+- Use a `2px` white focus outline with `2px` offset for keyboard focus; the desktop surface is blue, so a blue ring would be invisible.
 - A small `3px` hard white drop shadow may appear on hover to separate the sprite from dense grid settings; it must not turn the penguin into a framed card.
 
 ## 4. Easter Egg Layers
@@ -64,7 +64,7 @@ Three quiet layers. None of them animate continuously, none of them speak withou
 
 ### Layer 2 — Reading Companion
 
-- While the Writing application window is open, a small paper (roughly `18px × 14px`) appears beside the penguin: white fill, a `1px` blue border, and three blue horizontal bars, like a folded page.
+- While the Writing application window is open, a small blue rectangle (roughly `18px × 14px`) containing three white horizontal bars appears beside the penguin, like a folded paper.
 - The paper is positioned by the mount layout; it must never overlap the penguin sprite or any system chrome.
 - When the Writing window closes, the paper disappears without animation.
 
@@ -153,5 +153,5 @@ Capture fresh desktop and narrow-screen screenshots. Confirm the dither reads as
 - No roaming, waddling, cursor chasing, autonomous speech, or idle loop.
 - No chat window, model call, knowledge base, or recommendation engine.
 - No new BOT settings or persisted relationship state.
-- No orange pixels, gradients, or antialiased soft shading. On the dark desktop surface the sprite is drawn in white ink with blue negative space; the environment layer covers the desktop root, so ink decisions must follow what a screenshot shows, not computed styles.
+- No orange pixels, gradients, or antialiased soft shading. On the solid blue desktop the sprite is drawn in white ink with blue negative space; do not "correct" it back to a blue body.
 - No attempt to combine the penguin with the discarded kaomoji cat, terminal, hexagon, or Babel Cat concepts.

@@ -21,8 +21,8 @@
 }
 
 [data-app-label] {
-  background: var(--night);
-  color: var(--amber);
+  background: var(--white);
+  color: var(--blue);
   font-family: var(--mono);
   font-size: 11px;
   line-height: 1.2;
@@ -32,25 +32,25 @@
 }
 
 [data-app-icon][data-selected='true'] [data-app-label] {
-  background: var(--amber);
-  color: var(--night);
+  background: var(--blue);
+  color: var(--white);
 }
 
 [data-app-icon]:focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--blue);
   outline-offset: 2px;
 }
 
 [data-windows-icons] [data-app-icon]:focus-visible {
-  outline-color: var(--amber);
+  outline-color: var(--white);
 }
 
 [data-windows-taskbar],
 [data-macos-menu],
 [data-macos-dock] {
   align-items: center;
-  background: var(--night);
-  border-color: var(--amber);
+  background: var(--white);
+  border-color: var(--blue);
   border-style: solid;
   display: flex;
   font-family: var(--mono);
@@ -71,10 +71,10 @@
 }
 
 [data-windows-start] {
-  background: var(--amber);
-  border: 1px solid var(--amber);
+  background: var(--blue);
+  border: 1px solid var(--blue);
   border-radius: 0;
-  color: var(--night);
+  color: var(--white);
   height: 32px;
   width: 40px;
 }
@@ -102,7 +102,7 @@
 }
 
 [data-taskbar-pins] [data-icon] {
-  box-shadow: 2px 2px 0 var(--amber);
+  box-shadow: 2px 2px 0 var(--blue);
   height: 30px;
   width: 30px;
 }
@@ -118,7 +118,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-taskbar-pins] [data-app-icon]:hover [data-icon] {
-    box-shadow: 3px 3px 0 var(--amber);
+    box-shadow: 3px 3px 0 var(--blue);
     transform: translateY(-2px);
   }
 }
@@ -138,7 +138,7 @@
 
 [data-network-status] {
   align-items: center;
-  border-left: 1px solid var(--amber);
+  border-left: 1px solid var(--blue);
   display: flex;
   gap: 5px;
   padding-left: 7px;
@@ -171,8 +171,8 @@
 }
 
 [data-language-controls] button[aria-pressed='true'] {
-  background: var(--amber);
-  color: var(--night);
+  background: var(--blue);
+  color: var(--white);
 }
 
 [data-bot-mount] {
@@ -200,10 +200,10 @@
 [data-bot-sprite] { display: block; }
 
 [data-bot-bubble] {
-  background: var(--amber);
+  background: var(--white);
   border: var(--stroke);
   bottom: calc(100% - 6px);
-  color: var(--night);
+  color: var(--blue);
   font-size: 10px;
   left: 50%;
   letter-spacing: 0;
@@ -216,7 +216,7 @@
 
 [data-bot-steam] {
   bottom: calc(100% - 6px);
-  color: var(--amber);
+  color: var(--white);
   font-size: 10px;
   left: 50%;
   letter-spacing: 2px;
@@ -250,13 +250,13 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-app-icon]:hover [data-icon] {
-    box-shadow: 6px 6px 0 var(--amber);
+    box-shadow: 6px 6px 0 var(--blue);
     transform: translateY(-3px);
   }
 
   [data-bot-standby]:hover { transform: translateY(-2px); }
   [data-bot-standby]:hover [data-bot-sprite] {
-    filter: drop-shadow(3px 3px 0 var(--amber));
+    filter: drop-shadow(3px 3px 0 var(--white));
   }
 }
 
@@ -283,8 +283,8 @@
    Five base apps arranged in a 2-column grid (3 + 2) below
    the environment instrument cluster in the upper-left. Icons
    mirror the macOS dock visuals — same 46px tiles, label chips,
-   and hover lift — with amber shadows/outlines so they stay
-   legible on the night environment backdrop. */
+   and hover lift — with white shadows/outlines so they stay
+   legible on the blue environment backdrop. */
 
 [data-windows-icons] {
   display: grid;
@@ -299,22 +299,22 @@
 }
 
 [data-windows-icons] [data-icon] {
-  box-shadow: 4px 4px 0 var(--amber);
+  box-shadow: 4px 4px 0 var(--white);
 }
 
 [data-windows-icons] [data-app-icon][data-selected='true'] [data-icon] {
-  box-shadow: 4px 4px 0 var(--amber);
+  box-shadow: 4px 4px 0 var(--white);
 }
 
-/* The selected label chip inverts to amber like the macOS dock;
- * a night border keeps it readable against the amber chip. */
+/* The selected label chip inverts to blue like the macOS dock;
+ * a white border keeps it readable against the blue desktop. */
 [data-windows-icons] [data-app-icon][data-selected='true'] [data-app-label] {
-  border: 1px solid var(--amber);
+  border: 1px solid var(--white);
 }
 
 @media (hover: hover) and (pointer: fine) {
   [data-windows-icons] [data-app-icon]:hover [data-icon] {
-    box-shadow: 6px 6px 0 var(--amber);
+    box-shadow: 6px 6px 0 var(--white);
     transform: translateY(-6px) scale(1.04);
   }
 }

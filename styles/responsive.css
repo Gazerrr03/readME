@@ -50,7 +50,7 @@ html, body { overflow-x: hidden; }
   [data-window-layer] { z-index: 5; }
   [data-app-window] {
     bottom: 56px !important;
-    box-shadow: 4px 4px 0 var(--amber);
+    box-shadow: 4px 4px 0 var(--blue);
     height: auto !important;
     left: 8px !important;
     right: 8px !important;

@@ -1,6 +1,6 @@
 [data-desktop-mode='macos'][data-desktop-root],
 [data-desktop-mode='windows'][data-desktop-root] {
-  background-color: var(--night);
+  background-color: var(--blue);
   background-image: none;
 }
 
@@ -12,8 +12,8 @@
 }
 
 [data-macos-environment] {
-  background: var(--night);
-  color: var(--amber);
+  background: var(--white);
+  color: var(--blue);
   inset: 0;
   overflow: hidden;
   pointer-events: none;
@@ -48,11 +48,11 @@
 
 [data-environment-widgets] > button,
 [data-environment-deck] {
-  background: var(--amber);
-  border: 1px solid var(--night);
+  background: var(--blue);
+  border: 1px solid var(--white);
   border-radius: 0;
-  box-shadow: 4px 4px 0 var(--night);
-  color: var(--night);
+  box-shadow: 4px 4px 0 var(--white);
+  color: var(--white);
   display: flex;
   flex-direction: column;
   font-family: var(--mono);
@@ -65,7 +65,7 @@
 
 [data-environment-widgets] button:focus-visible,
 [data-environment-deck] button:focus-visible {
-  outline: 2px solid var(--night);
+  outline: 2px solid var(--white);
   outline-offset: 3px;
 }
 
@@ -201,7 +201,7 @@
 
 [data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] > button,
 [data-macos-environment][data-environment-motion='focused'] [data-environment-deck] {
-  box-shadow: 1px 1px 0 var(--night);
+  box-shadow: 1px 1px 0 var(--white);
 }
 
 [data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] span {

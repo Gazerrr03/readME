@@ -1,12 +1,12 @@
 [data-app-icon] {
-  color: var(--amber);
+  color: var(--blue);
 }
 
 [data-icon] {
   align-items: center;
-  background: var(--night);
+  background: var(--white);
   border: var(--stroke);
-  box-shadow: 4px 4px 0 var(--amber);
+  box-shadow: 4px 4px 0 var(--blue);
   color: inherit;
   display: inline-flex;
   height: 46px;
@@ -22,10 +22,10 @@
 }
 
 [data-app-icon][data-selected='true'] [data-icon] {
-  background: var(--amber);
-  box-shadow: 4px 4px 0 var(--amber);
+  background: var(--blue);
+  box-shadow: 4px 4px 0 var(--blue);
 }
 
 [data-app-icon][data-selected='true'] {
-  color: var(--night);
+  color: var(--white);
 }

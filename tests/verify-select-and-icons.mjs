@@ -74,8 +74,8 @@ check('windows desktop icon tile matches dock tile (46px)', desktopIcons.tile ==
 check('windows desktop label uses the same chip as the dock',
   desktopIcons.labelBackground === dock.labelBackground && desktopIcons.labelColor === dock.labelColor,
   `${desktopIcons.labelBackground}/${desktopIcons.labelColor} vs ${dock.labelBackground}/${dock.labelColor}`);
-check('windows desktop icon shadow adapts to amber on night',
-  desktopIcons.shadow.includes('rgb(255, 180, 84)'), desktopIcons.shadow);
+check('windows desktop icon shadow adapts to white on blue',
+  desktopIcons.shadow.includes('rgb(255, 255, 255)'), desktopIcons.shadow);
 check('windows desktop grid keeps 5 icons',
   await page.locator('[data-windows-icons] [data-app-icon]').count() === 5);
 
