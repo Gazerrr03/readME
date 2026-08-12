@@ -27,7 +27,7 @@
   background: transparent;
   border: 0;
   border-radius: 0;
-  color: var(--blue);
+  color: var(--amber);
   cursor: default;
   display: flex;
   flex-direction: column;
@@ -39,9 +39,9 @@
 
 [data-stamp-art] {
   align-items: center;
-  background: var(--white);
+  background: var(--night);
   border: var(--stroke);
-  box-shadow: 4px 4px 0 var(--blue);
+  box-shadow: 4px 4px 0 var(--amber);
   color: inherit;
   display: inline-flex;
   height: 46px;
@@ -66,16 +66,16 @@
 
 /* Expanded folder reads as "open": same inversion as a selected icon. */
 [data-desktop-folder][data-expanded='true'] [data-folder-toggle] {
-  color: var(--white);
+  color: var(--night);
 }
 
 [data-desktop-folder][data-expanded='true'] [data-folder-toggle] [data-icon] {
-  background: var(--blue);
+  background: var(--amber);
 }
 
 [data-desktop-folder][data-expanded='true'] [data-folder-toggle] [data-app-label] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--amber);
+  color: var(--night);
 }
 
 /* Stamps slide out from behind the folder, closest first. While collapsed
@@ -108,14 +108,14 @@
 @media (hover: hover) and (pointer: fine) {
   [data-folder-toggle]:hover [data-icon],
   [data-stamp]:hover [data-stamp-art] {
-    box-shadow: 6px 6px 0 var(--blue);
+    box-shadow: 6px 6px 0 var(--amber);
     transform: translateY(-3px);
   }
 }
 
 [data-folder-toggle]:focus-visible,
 [data-stamp]:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 

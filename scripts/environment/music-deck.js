@@ -94,7 +94,7 @@ export function createMusicDeck({
     }
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
     context.clearRect(0, 0, RING_SIZE, RING_SIZE);
-    context.strokeStyle = '#ffffff';
+    context.strokeStyle = '#FFB454';
     context.lineWidth = 1;
     context.globalAlpha = 0.5;
     context.beginPath();

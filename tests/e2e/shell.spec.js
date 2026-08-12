@@ -7,7 +7,7 @@ test('loads the portfolio OS shell with the English title', async ({ page }) => 
   await expect(page.locator('[data-desktop-root]')).toBeVisible();
 });
 
-test('provides reusable icon markup with selected white artwork', async ({ page }) => {
+test('provides reusable icon markup with selected inverted artwork', async ({ page }) => {
   await page.goto('/?skipBoot=1');
 
   const result = await page.evaluate(() => {
@@ -47,8 +47,8 @@ test('provides reusable icon markup with selected white artwork', async ({ page 
   });
   expect(result.hasSharedButton).toBe(true);
   expect(result.hasLabel).toBe(true);
-  expect(result.frame).toBe('rgb(38, 21, 154)');
-  expect(result.artwork).toBe('rgb(255, 255, 255)');
+  expect(result.frame).toBe('rgb(255, 180, 84)');
+  expect(result.artwork).toBe('rgb(10, 25, 47)');
   expect(result.pixelGrid).toBe('0 0 16 16');
   expect(result.crisp).toBe('crispedges');
 });

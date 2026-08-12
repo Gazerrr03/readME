@@ -21,8 +21,8 @@
 }
 
 [data-app-label] {
-  background: var(--white);
-  color: var(--blue);
+  background: var(--night);
+  color: var(--amber);
   font-family: var(--mono);
   font-size: 11px;
   line-height: 1.2;
@@ -32,12 +32,12 @@
 }
 
 [data-app-icon][data-selected='true'] [data-app-label] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--amber);
+  color: var(--night);
 }
 
 [data-app-icon]:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 
@@ -45,8 +45,8 @@
 [data-macos-menu],
 [data-macos-dock] {
   align-items: center;
-  background: var(--white);
-  border-color: var(--blue);
+  background: var(--night);
+  border-color: var(--amber);
   border-style: solid;
   display: flex;
   font-family: var(--mono);
@@ -67,10 +67,10 @@
 }
 
 [data-windows-start] {
-  background: var(--blue);
-  border: 1px solid var(--blue);
+  background: var(--amber);
+  border: 1px solid var(--amber);
   border-radius: 0;
-  color: var(--white);
+  color: var(--night);
   height: 32px;
   width: 40px;
 }
@@ -90,7 +90,7 @@
 }
 
 [data-taskbar-pins] [data-icon] {
-  box-shadow: 2px 2px 0 var(--blue);
+  box-shadow: 2px 2px 0 var(--amber);
   height: 30px;
   width: 30px;
 }
@@ -106,7 +106,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-taskbar-pins] [data-app-icon]:hover [data-icon] {
-    box-shadow: 3px 3px 0 var(--blue);
+    box-shadow: 3px 3px 0 var(--amber);
     transform: translateY(-2px);
   }
 }
@@ -128,7 +128,7 @@
 
 [data-network-status] {
   align-items: center;
-  border-left: 1px solid var(--blue);
+  border-left: 1px solid var(--amber);
   display: flex;
   gap: 5px;
   padding-left: 7px;
@@ -161,8 +161,8 @@
 }
 
 [data-language-controls] button[aria-pressed='true'] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--amber);
+  color: var(--night);
 }
 
 [data-bot-mount] {
@@ -180,11 +180,11 @@
 }
 
 [data-bot-standby] {
-  background: var(--blue);
-  border: 1px solid var(--blue);
+  background: var(--amber);
+  border: 1px solid var(--amber);
   border-radius: 0;
-  box-shadow: 3px 3px 0 var(--blue);
-  color: var(--white);
+  box-shadow: 3px 3px 0 var(--amber);
+  color: var(--night);
   font-family: var(--mono);
   min-height: 32px;
   padding: 6px;
@@ -193,14 +193,14 @@
     box-shadow var(--ui-duration) var(--ease-out);
 }
 
-[data-bot-standby]:active { box-shadow: 1px 1px 0 var(--blue); }
+[data-bot-standby]:active { box-shadow: 1px 1px 0 var(--amber); }
 
 [data-bot-status]:empty { display: none; }
-[data-bot-status] { border-left: 1px solid var(--blue); padding-left: 8px; }
+[data-bot-status] { border-left: 1px solid var(--amber); padding-left: 8px; }
 
 @media (hover: hover) and (pointer: fine) {
   [data-app-icon]:hover [data-icon] {
-    box-shadow: 6px 6px 0 var(--blue);
+    box-shadow: 6px 6px 0 var(--amber);
     transform: translateY(-3px);
   }
 

@@ -1,9 +1,9 @@
 :root {
-  --blue: #26159a;
-  --white: #ffffff;
+  --amber: #FFB454;
+  --night: #0A192F;
   --grid-size: 32px;
-  --stroke: 1px solid var(--blue);
-  --hard-shadow: 12px 12px 0 var(--blue);
+  --stroke: 1px solid var(--amber);
+  --hard-shadow: 12px 12px 0 var(--amber);
   --serif: "Times New Roman", "Songti SC", "Yu Mincho", serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -16,7 +16,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { min-height: 100%; }
-body { color: var(--blue); background: var(--white); font-family: var(--serif); }
+body { color: var(--amber); background: var(--night); font-family: var(--serif); }
 button, input { color: inherit; font: inherit; }
 button { transition: transform var(--press-duration) var(--ease-out); }
 button:active { transform: scale(0.97); }

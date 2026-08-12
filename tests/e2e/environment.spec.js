@@ -145,7 +145,7 @@ test('desktop instrument geometry exactly fills its two-column grid', async ({ p
   expect({ width: deckBox.width, height: deckBox.height }).toEqual({ width: 128, height: 80 });
   expect(nowBox.x - (primaryBox.x + primaryBox.width)).toBe(8);
   expect(deckBox.y - (nowBox.y + nowBox.height)).toBe(8);
-  await expect(page.locator('[data-bot-mount]')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+  await expect(page.locator('[data-bot-mount]')).toHaveCSS('background-color', 'rgb(10, 25, 47)');
 });
 
 test('longest non-time reading fits the fixed tablet primary geometry', async ({ page }) => {
@@ -242,7 +242,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
     };
   })).toEqual({
     focusVisible: true,
-    outlineColor: 'rgb(255, 255, 255)',
+    outlineColor: 'rgb(10, 25, 47)',
     outlineOffset: '3px',
     outlineStyle: 'solid',
     outlineWidth: '2px',
@@ -256,7 +256,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
   ))).toBeCloseTo(0.28, 2);
   await expect.poll(async () => projects.evaluate(
     (node) => getComputedStyle(node).boxShadow,
-  )).toBe('rgb(255, 255, 255) 1px 1px 0px 0px');
+  )).toBe('rgb(10, 25, 47) 1px 1px 0px 0px');
   await expect.poll(async () => Number(await secondaryLabel.evaluate(
     (node) => getComputedStyle(node).opacity,
   ))).toBeCloseTo(0.7, 2);
@@ -314,7 +314,7 @@ test('animated canvas is nonblank, advances while idle, and freezes in focus mod
   const sample = () => canvas.evaluate((node) => {
     const pixels = node.getContext('2d').getImageData(0, 0, node.width, node.height).data;
     let digest = 2166136261;
-    let white = 0;
+    let night = 0;
     let ink = 0;
     for (let index = 0; index < pixels.length; index += 16) {
       const red = pixels[index];
@@ -323,16 +323,16 @@ test('animated canvas is nonblank, advances while idle, and freezes in focus mod
       digest = Math.imul(digest ^ red, 16777619);
       digest = Math.imul(digest ^ green, 16777619);
       digest = Math.imul(digest ^ blueChannel, 16777619);
-      if (red > 245 && green > 245 && blueChannel > 245) white += 1;
-      if (red < 252 || green < 252 || blueChannel < 252) ink += 1;
+      if (red < 45 && green < 55 && blueChannel < 75) night += 1;
+      if (red > 15 || green > 30 || blueChannel > 52) ink += 1;
     }
-    return { white, ink, digest: digest >>> 0 };
+    return { night, ink, digest: digest >>> 0 };
   });
 
   const first = await sample();
   await page.waitForTimeout(350);
   const running = await sample();
-  expect(first.white).toBeGreaterThan(100);
+  expect(first.night).toBeGreaterThan(100);
   expect(first.ink).toBeGreaterThan(10);
   expect(running.digest).not.toBe(first.digest);
 

@@ -1,14 +1,14 @@
 import { getQuietZoneOpacity } from './environment-state.js';
 
-const BLUE = '#26159a';
-const WHITE = '#ffffff';
+const AMBER = '#FFB454';
+const NIGHT = '#0A192F';
 // Paul Bourke's density-ordered ramp, darkest to lightest.
 const GLYPHS = '$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,"^`. ';
 const FRAME_INTERVAL = 100;
 const CELL_WIDTH = 3.6;
 const CELL_HEIGHT = 6;
 const FONT_SIZE = 6;
-const INK_ALPHA = 0.3;
+const INK_ALPHA = 0.18;
 
 export function createEnvironmentRenderer({
   canvas,
@@ -46,9 +46,9 @@ export function createEnvironmentRenderer({
   const draw = () => {
     const { width, height, dpr, quietZones } = geometry;
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
-    context.fillStyle = WHITE;
+    context.fillStyle = NIGHT;
     context.fillRect(0, 0, width, height);
-    context.fillStyle = BLUE;
+    context.fillStyle = AMBER;
     context.font = `600 ${FONT_SIZE}px ui-monospace, monospace`;
     context.textBaseline = 'top';
     const columns = Math.max(1, Math.ceil(width / CELL_WIDTH));

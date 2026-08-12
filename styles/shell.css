@@ -2,10 +2,10 @@
 [data-desktop-root] {
   position: relative;
   overflow: hidden;
-  background-color: var(--white);
+  background-color: var(--night);
   background-image:
-    linear-gradient(90deg, color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px);
+    linear-gradient(90deg, color-mix(in srgb, var(--amber) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--amber) 6%, transparent) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
 }
 
@@ -21,7 +21,7 @@
 }
 
 [data-desktop-root]::before {
-  background-image: radial-gradient(circle, var(--blue) 0 1px, transparent 1px);
+  background-image: radial-gradient(circle, var(--amber) 0 1px, transparent 1px);
   background-size: 4px 4px;
 }
 
@@ -29,7 +29,7 @@
   background-image: repeating-radial-gradient(
     ellipse at center,
     transparent 0 12px,
-    color-mix(in srgb, var(--blue) 32%, transparent) 13px 14px,
+    color-mix(in srgb, var(--amber) 32%, transparent) 13px 14px,
     transparent 15px 24px
   );
 }
@@ -42,10 +42,10 @@
     repeating-linear-gradient(
       to bottom,
       transparent 0 3px,
-      color-mix(in srgb, var(--blue) 12%, transparent) 3px 4px
+      color-mix(in srgb, var(--amber) 12%, transparent) 3px 4px
     ),
-    linear-gradient(90deg, color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px),
-    linear-gradient(color-mix(in srgb, var(--blue) 6%, transparent) 1px, transparent 1px);
+    linear-gradient(90deg, color-mix(in srgb, var(--amber) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--amber) 6%, transparent) 1px, transparent 1px);
 }
 
 [data-desktop-root][data-post-process='contrast'] { filter: contrast(1.18); }
