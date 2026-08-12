@@ -22,7 +22,7 @@ The kaomoji cat specification (`2026-08-11-kaomoji-desktop-bot-design.md`) is su
 ### Silhouette And Pose
 
 - One penguin, standing naturally, weight even, head very slightly tilted — a calm resident, not a mascot waving.
-- The visible desktop surface is the dark environment layer in both modes: the `[data-macos-environment]` layer (`styles/environment.css`) paints `var(--blue)` full-bleed above the desktop root, with white ASCII glyphs rendered over it, even in Windows layout. So the sprite inverts the house ink language: `var(--white)` is the drawn ink, `var(--blue)` is the plate color. (Do not base ink decisions on computed styles alone — verify with a screenshot or pixel sample.)
+- The visible desktop surface is the dark environment layer in both modes: the `[data-macos-environment]` layer (`styles/environment.css`) paints the desaturated dark navy `var(--environment-surface)` full-bleed above the desktop root, with white ASCII glyphs rendered over it, even in Windows layout. So the sprite inverts the house ink language: `var(--white)` is the drawn ink, `var(--blue)` is the plate color. (Do not base ink decisions on computed styles alone — verify with a screenshot or pixel sample.)
 - Classic penguin color blocking, translated into that ink language:
   - Back, head cap, flippers, beak, and feet: a SOLID `var(--white)` silhouette. The body and head must be filled white shapes, not outline rings — a hollow silhouette dissolves into the dark surface at pet size.
   - Belly and face patch: blue plates laid on top of the solid body, each closed by a hairline `1px` white contour so the plate separates from both the white body and the dark surface.

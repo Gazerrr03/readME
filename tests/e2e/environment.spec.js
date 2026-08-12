@@ -242,7 +242,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
     };
   })).toEqual({
     focusVisible: true,
-    outlineColor: 'rgb(38, 21, 154)',
+    outlineColor: 'rgb(255, 255, 255)',
     outlineOffset: '3px',
     outlineStyle: 'solid',
     outlineWidth: '2px',
@@ -256,7 +256,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
   ))).toBeCloseTo(0.28, 2);
   await expect.poll(async () => projects.evaluate(
     (node) => getComputedStyle(node).boxShadow,
-  )).toBe('rgb(38, 21, 154) 1px 1px 0px 0px');
+  )).toBe('rgb(255, 255, 255) 1px 1px 0px 0px');
   await expect.poll(async () => Number(await secondaryLabel.evaluate(
     (node) => getComputedStyle(node).opacity,
   ))).toBeCloseTo(0.7, 2);
@@ -323,8 +323,9 @@ test('animated canvas is nonblank, advances while idle, and freezes in focus mod
       digest = Math.imul(digest ^ red, 16777619);
       digest = Math.imul(digest ^ green, 16777619);
       digest = Math.imul(digest ^ blueChannel, 16777619);
-      // The canvas is a blue surface with white glyphs blended on top.
-      if (red < 50 && green < 30) surface += 1;
+      // The canvas is a desaturated dark navy surface with white glyphs
+      // blended on top.
+      if (red < 48 && green < 52) surface += 1;
       if (red > 60 && green > 50) ink += 1;
     }
     return { surface, ink, digest: digest >>> 0 };

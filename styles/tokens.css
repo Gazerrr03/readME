@@ -1,6 +1,9 @@
 :root {
   --blue: #26159a;
   --white: #ffffff;
+  /* Desaturated dark navy for the desktop environment surface; keeps the
+     ASCII artwork readable without the high saturation of --blue. */
+  --environment-surface: #20243d;
   --grid-size: 32px;
   --stroke: 1px solid var(--blue);
   --hard-shadow: 12px 12px 0 var(--blue);
