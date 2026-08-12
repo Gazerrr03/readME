@@ -231,7 +231,10 @@ export function createWindowManager({
         windowElements.set(window.appId, elements);
       }
       updateWindowElement(elements, window, app);
-      layer.append(elements.article);
+      // Only mount windows that are not already in the layer: re-appending a
+      // mounted node moves it in the DOM, restarts its entry animation, and on
+      // Windows Chromium instantly dismisses any open native <select> popup.
+      if (elements.article.parentNode !== layer) layer.append(elements.article);
     });
     renderRunningApps();
   };
@@ -375,7 +378,11 @@ export function createWindowManager({
       const window = state.windows.find((candidate) => candidate.appId === appId);
       if (window?.fullscreen) manager.unmaximize(appId);
       else manager.maximize(appId);
-    } else manager.focus(appId);
+    } else if (state.activeId !== appId) manager.focus(appId);
+    // The active window is already on top. Re-focusing it bumps its z-index,
+    // rebuilds the taskbar/dock entries, and restyles the window on every
+    // click inside it — on Windows Chromium that churn instantly closes the
+    // native <select> dropdown opened by the same click.
   });
   if (taskSurface !== root && !root.contains(taskSurface)) {
     taskSurface.addEventListener('click', handleRunningAppClick);
@@ -388,7 +395,7 @@ export function createWindowManager({
 
     cancelInertia();
     const appId = titleBar.closest('[data-app-window]').dataset.appWindow;
-    manager.focus(appId);
+    if (state.activeId !== appId) manager.focus(appId);
     const window = state.windows.find((candidate) => candidate.appId === appId);
     drag = {
       appId,
