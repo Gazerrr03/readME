@@ -12,8 +12,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('opens one placeholder window and restores it from the taskbar', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').click();
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
 
   const appWindow = page.locator('[data-app-window="projects"]');
   await expect(appWindow).toHaveCount(1);
@@ -29,8 +29,8 @@ test('opens one placeholder window and restores it from the taskbar', async ({ p
 });
 
 test('focuses an existing window and close removes its running entry', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').click();
-  await page.locator('[data-app-icon="writing"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
+  await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
 
   const projects = page.locator('[data-app-window="projects"]');
   const writing = page.locator('[data-app-window="writing"]');
@@ -44,7 +44,7 @@ test('focuses an existing window and close removes its running entry', async ({ 
 });
 
 test('dragging the title bar moves the window and keeps it reachable', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   const appWindow = page.locator('[data-app-window="projects"]');
   const titleBar = appWindow.locator('[data-window-titlebar]');
   const before = await appWindow.boundingBox();
@@ -109,7 +109,7 @@ test('renderer-owned DOM survives focus and pointer dragging', async ({ page }) 
 });
 
 test('switching from Windows to macOS re-clamps an open window below the menu', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   const appWindow = page.locator('[data-app-window="projects"]');
   const titleBar = appWindow.locator('[data-window-titlebar]');
   const titleBox = await titleBar.boundingBox();
@@ -136,7 +136,7 @@ test('switching from Windows to macOS re-clamps an open window below the menu', 
 });
 
 test('a left-clamped window exposes a draggable recovery region beside its controls', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   const appWindow = page.locator('[data-app-window="projects"]');
   const titleBar = appWindow.locator('[data-window-titlebar]');
   const titleBox = await titleBar.boundingBox();

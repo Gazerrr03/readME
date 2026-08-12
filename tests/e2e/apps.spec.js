@@ -21,7 +21,7 @@ test('projects ring rotates on card click and opens a detail view', async ({ pag
   // Reduced motion disables the ring's auto-advance so the front card is deterministic.
   await page.emulateMedia({ reducedMotion: 'reduce' });
 
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   const appWindow = page.locator('[data-app-window="projects"]');
 
   await expect(appWindow.locator('[data-projects-crumb]')).toHaveText('Projects /');
@@ -62,7 +62,7 @@ test('projects ring rotates on card click and opens a detail view', async ({ pag
 });
 
 test('projects ring rotates by dragging with snap', async ({ page }) => {
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   const appWindow = page.locator('[data-app-window="projects"]');
   const ring = appWindow.locator('[data-projects-ring]');
   const first = appWindow.locator('[data-projects-card][data-slot="0"]');
@@ -80,7 +80,7 @@ test('projects ring rotates by dragging with snap', async ({ page }) => {
 });
 
 test('writing opens a fullscreen reader and returns to the archive', async ({ page }) => {
-  await page.locator('[data-app-icon="writing"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
   const appWindow = page.locator('[data-app-window="writing"]');
 
   await expect(appWindow.locator('[data-writing-kicker]')).toHaveText('ARCHIVE');
@@ -114,7 +114,7 @@ test('writing opens a fullscreen reader and returns to the archive', async ({ pa
 });
 
 test('about renders bio, timeline, stack, and now sections', async ({ page }) => {
-  await page.locator('[data-app-icon="about"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="about"]').dblclick();
   const appWindow = page.locator('[data-app-window="about"]');
 
   await expect(appWindow.locator('[data-about-masthead] h3')).toHaveText('QIZHI');
@@ -124,7 +124,7 @@ test('about renders bio, timeline, stack, and now sections', async ({ page }) =>
 });
 
 test('contact lists four channels with working links', async ({ page }) => {
-  await page.locator('[data-app-icon="contact"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="contact"]').dblclick();
   const appWindow = page.locator('[data-app-window="contact"]');
 
   await expect(appWindow.locator('a[data-contact-row]')).toHaveCount(4);
@@ -137,7 +137,7 @@ test('narrow screens show the ring and open details with back navigation', async
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
 
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-taskbar-pins] [data-app-icon="projects"]').click();
   const appWindow = page.locator('[data-app-window="projects"]');
 
   await expect(appWindow.locator('[data-projects-card]')).toHaveCount(10);
@@ -153,8 +153,8 @@ test('narrow screens show the ring and open details with back navigation', async
 });
 
 test('apps re-render localized content when the locale changes', async ({ page }) => {
-  await page.locator('[data-app-icon="writing"]').click();
-  await page.locator('[data-app-icon="settings"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
+  await page.locator('[data-windows-icons] [data-app-icon="settings"]').dblclick();
 
   const settings = page.locator('[data-app-window="settings"]');
   await settings.getByLabel('Language').selectOption('zh-CN');

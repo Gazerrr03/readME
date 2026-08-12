@@ -35,10 +35,6 @@
   gap: 8px;
 }
 
-[data-desktop-mode='macos'] [data-bot-mount] {
-  background: var(--night);
-  bottom: 130px;
-}
 
 [data-desktop-mode='macos'] [data-windows-taskbar] {
   display: none;

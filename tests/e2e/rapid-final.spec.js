@@ -19,10 +19,10 @@ test('Settings drives live layout, locale, audio, replay, and BOT status', async
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
 
-  await page.locator('[data-app-icon="projects"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   await expect(page.locator('[data-app-window="projects"] [data-projects-ring]')).toBeVisible();
   await expect(page.locator('[data-app-window="projects"] [data-projects-position]')).toHaveText('01 / 05');
-  await page.locator('[data-app-icon="settings"]').click();
+  await page.locator('[data-windows-icons] [data-app-icon="settings"]').dblclick();
 
   const settings = page.locator('[data-app-window="settings"]');
   await settings.getByLabel('Desktop Layout').selectOption('macos');
@@ -59,7 +59,7 @@ test('390x844 opens one usable Settings surface without horizontal overflow', as
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
 
-  await page.locator('[data-app-icon="settings"]').click();
+  await page.locator('[data-taskbar-pins] [data-app-icon="settings"]').click();
   const settings = page.locator('[data-app-window="settings"]');
   await expect(settings).toBeVisible();
   await expect(settings.getByLabel('Desktop Layout')).toBeVisible();
