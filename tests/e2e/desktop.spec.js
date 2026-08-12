@@ -120,7 +120,7 @@ test('fine pointer selects an icon with a click and opens it with a double click
 
 test('coarse pointer opens once with a single tap', async ({ page }) => {
   const desktop = await mountDesktopController(page, { coarse: true });
-  const writing = desktop.locator('[data-app-icon="writing"]');
+  const writing = desktop.locator('[data-windows-icons] [data-app-icon="writing"]');
 
   await writing.click();
 
@@ -130,16 +130,16 @@ test('coarse pointer opens once with a single tap', async ({ page }) => {
 
 test('Windows ArrowRight moves selection and Enter opens the focused app once', async ({ page }) => {
   const desktop = await mountDesktopController(page);
-  const projects = desktop.locator('[data-app-icon="projects"]');
-  const writing = desktop.locator('[data-app-icon="writing"]');
+  const projects = desktop.locator('[data-windows-icons] [data-app-icon="projects"]');
+  const contact = desktop.locator('[data-windows-icons] [data-app-icon="contact"]');
 
   await projects.focus();
   await projects.press('ArrowRight');
 
-  await expect(writing).toBeFocused();
-  await expect(writing).toHaveAttribute('data-selected', 'true');
-  await writing.press('Enter');
-  await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['writing']);
+  await expect(contact).toBeFocused();
+  await expect(contact).toHaveAttribute('data-selected', 'true');
+  await contact.press('Enter');
+  await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['contact']);
 });
 
 test('Windows ArrowDown moves focus down the first icon column', async ({ page }) => {
@@ -245,6 +245,8 @@ test('Windows system chrome keeps its title visible at 390x844', async ({ page }
 
 test('penguin sprite replaces the BOT tile and answers with one protocol token', async ({ page }) => {
   await seedLayout(page, 'windows');
+  // Pin the clock outside the hot-spring hour so the bubble reads SPLASH.
+  await page.clock.install({ time: new Date('2026-08-13T10:00:00') });
   await page.goto('/');
   const mount = page.locator('[data-bot-mount]');
 
