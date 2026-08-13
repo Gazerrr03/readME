@@ -1,6 +1,7 @@
 .astro/
 .superpowers/
 .worktrees/
+.qoder-cn/
 .DS_Store
 node_modules/
 .playwright-cli/
