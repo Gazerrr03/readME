@@ -20,7 +20,21 @@ const documentRef = document;
 const kind = documentRef.body.dataset.contentKind;
 const slug = documentRef.body.dataset.contentSlug;
 const mount = documentRef.querySelector('[data-content-page]');
-const locale = resolvePreferredLocale(localStorage, navigator.languages);
+
+const SUPPORTED_LOCALES = new Set(['en', 'zh-CN', 'ja']);
+
+function readLocaleFromUrl() {
+  const value = new URLSearchParams(window.location.search).get('lang');
+  return SUPPORTED_LOCALES.has(value) ? value : null;
+}
+
+function writeLocaleToUrl(locale) {
+  const url = new URL(window.location.href);
+  url.searchParams.set('lang', locale);
+  window.history.replaceState(null, '', url);
+}
+
+const locale = readLocaleFromUrl() ?? resolvePreferredLocale(localStorage, navigator.languages);
 const i18n = createI18n(locale);
 let focused = false;
 let disposePresentation = () => {};
@@ -61,6 +75,7 @@ function renderHeader() {
     const preferences = loadPreferences(localStorage);
     preferences.locale = select.value;
     savePreferences(localStorage, preferences);
+    writeLocaleToUrl(select.value);
     i18n.setLocale(select.value);
   });
   label.append(select);
@@ -91,10 +106,7 @@ function render() {
   const main = createElement(documentRef, 'main', { 'data-content-main': '' });
   let presentation;
   if (article) {
-    presentation = {
-      element: renderArticlePage({ document: documentRef, i18n, article, articles }),
-      dispose() {},
-    };
+    presentation = renderArticlePage({ document: documentRef, i18n, article, articles });
   } else if (project) {
     presentation = renderProjectPage({ document: documentRef, i18n, project });
   } else {
