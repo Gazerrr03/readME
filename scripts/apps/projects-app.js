@@ -5,7 +5,9 @@ import { createWireframePreview } from './wireframe-preview.js';
 const SLOT_COUNT = projects.length * 2; // ring shows each project twice so the loop closes seamlessly
 const STEP_DEG = 360 / SLOT_COUNT;
 const DRAG_DEG_PER_PX = 0.25;
-const FLING_FRAMES = 12;
+const INERTIA_MS = 380; // fling distance = smoothed angular velocity × this
+const STALE_AFTER_MS = 80; // a drag paused longer than this releases without inertia
+const MIN_FLING_SPEED = 0.005; // degrees per millisecond; below this the drag counts as stopped
 const AUTO_ADVANCE_MS = 4200;
 const ACTIVE_COS = 0.35; // only near-front cards animate their wireframes
 const EASE = 0.14;
@@ -106,6 +108,7 @@ export function renderProjectsApp({ i18n, mount }) {
         'data-projects-card': '',
         'data-slot': String(slot),
         'data-slug': project.slug,
+        draggable: 'false', // native link drag cancels the pointer mid-fling (three-finger drag)
         role: 'option',
       });
       const frame = createElement(document, 'span', { 'data-projects-card-frame': '' });
@@ -131,29 +134,41 @@ export function renderProjectsApp({ i18n, mount }) {
       dragging = true;
       suppressClick = false;
       let lastX = event.clientX;
-      let lastVelocity = 0;
+      let lastMoveAt = view.performance.now();
+      let velocity = 0; // smoothed angular velocity, degrees per millisecond
       let totalDx = 0;
       const onMove = (move) => {
+        const now = view.performance.now();
         const dx = move.clientX - lastX;
+        const dt = now - lastMoveAt;
         lastX = move.clientX;
+        lastMoveAt = now;
         totalDx += dx;
-        lastVelocity = dx * DRAG_DEG_PER_PX;
+        const instant = dt > 1 ? (dx * DRAG_DEG_PER_PX) / dt : 0;
+        // ignore long gaps (the pointer paused), otherwise smooth the rate
+        velocity = dt > 0 && dt < 120 ? velocity * 0.7 + instant * 0.3 : instant;
         current += dx * DRAG_DEG_PER_PX;
         target = current;
         if (Math.abs(totalDx) > 5) suppressClick = true;
       };
-      const onUp = () => {
+      const finish = (withInertia) => {
         document.removeEventListener('pointermove', onMove);
         document.removeEventListener('pointerup', onUp);
-        document.removeEventListener('pointercancel', onUp);
+        document.removeEventListener('pointercancel', onCancel);
         dragging = false;
-        target = snap(current + lastVelocity * FLING_FRAMES);
+        // a stale lastVelocity from an old move must not fling the ring after a pause
+        const paused = view.performance.now() - lastMoveAt > STALE_AFTER_MS;
+        const flinging = withInertia && !paused && Math.abs(velocity) > MIN_FLING_SPEED;
+        target = flinging ? snap(current + velocity * INERTIA_MS) : snap(current);
         // a click fired by this drag lands before the timeout; a stray flag must not eat the next real click
         if (suppressClick) view.setTimeout(() => { suppressClick = false; }, 0);
       };
+      const onUp = () => finish(true);
+      // a system gesture (e.g. macOS three-finger drag) cancelled the pointer: snap, never fling
+      const onCancel = () => finish(false);
       document.addEventListener('pointermove', onMove);
       document.addEventListener('pointerup', onUp);
-      document.addEventListener('pointercancel', onUp);
+      document.addEventListener('pointercancel', onCancel);
     });
     viewport.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
