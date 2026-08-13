@@ -125,5 +125,5 @@ test('apps re-render localized content when the locale changes', async ({ page }
 
   const writing = page.locator('[data-app-window="writing"]');
   await expect(writing.locator('[data-writing-kicker]')).toHaveText('归档');
-  await expect(writing.locator('[data-writing-list]')).toContainText('不存在的频率');
+  await expect(writing.locator('[data-writing-list]')).toContainText('少即是多：当 Token 开始假装努力');
 });
