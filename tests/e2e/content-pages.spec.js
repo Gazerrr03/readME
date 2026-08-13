@@ -25,7 +25,7 @@ test('article URL loads and reloads as an independent document', async ({ page }
   expect(errors).toEqual([]);
 });
 
-test('article language follows browser preference and changes without changing the URL', async ({ page }) => {
+test('article language follows browser preference and switches sync the URL', async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'languages', { value: ['ja-JP'], configurable: true });
   });
@@ -33,14 +33,24 @@ test('article language follows browser preference and changes without changing t
   await expect(page.locator('html')).toHaveAttribute('lang', 'ja');
   await expect(page.locator('h1')).toHaveText(firstArticle.title.ja);
 
-  const url = page.url();
   await page.locator('[data-content-language]').selectOption('zh-CN');
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
   await expect(page.locator('h1')).toHaveText(firstArticle.title['zh-CN']);
-  expect(page.url()).toBe(url);
+  await expect(page).toHaveURL(new RegExp(`/writing/${firstArticle.slug}/\\?lang=zh-CN$`));
   await expect.poll(() => page.evaluate(() => (
     JSON.parse(localStorage.getItem('portfolio-os:preferences')).locale
   ))).toBe('zh-CN');
+});
+
+test('lang query parameter wins over stored preference', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+      version: 1, locale: 'en', bootComplete: true,
+    }));
+  });
+  await page.goto(`/writing/${firstArticle.slug}/?lang=ja`);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ja');
+  await expect(page.locator('h1')).toHaveText(firstArticle.title.ja);
 });
 
 test('project URL loads a standalone detail with its live preview and actions', async ({ page }) => {
@@ -94,14 +104,101 @@ test('article landmarks, locale control, and sibling navigation remain stable', 
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(page.locator('[data-content-language]')).toHaveAccessibleName('Language');
 
-  const originalUrl = page.url();
   await page.locator('[data-content-language]').selectOption('zh-CN');
-  await expect(page).toHaveURL(originalUrl);
+  await expect(page).toHaveURL(/lang=zh-CN$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
 
   await page.locator('[data-content-next]').click();
   await expect(page).toHaveURL(new RegExp(`/writing/${articles[1].slug}/$`));
   await expect(page.locator('h1')).toHaveText(articles[1].title['zh-CN']);
+});
+
+test('article masthead exposes published, edited, minutes and a clickable tag', async ({ page }) => {
+  await page.goto(`/writing/${firstArticle.slug}/`);
+
+  const meta = page.locator('[data-content-article-meta]');
+  await expect(meta.locator('[data-content-published]'))
+    .toContainText(`PUBLISHED ${firstArticle.date}`);
+  if (firstArticle.edited !== firstArticle.date) {
+    await expect(meta.locator('[data-content-edited]'))
+      .toContainText(`LAST EDITED ${firstArticle.edited}`);
+  } else {
+    await expect(meta.locator('[data-content-edited]')).toHaveCount(0);
+  }
+  await expect(meta.locator('[data-content-minutes]')).toContainText('MIN');
+  await expect(page.locator('[data-content-tag]')).toHaveText(`{${firstArticle.tag}}`);
+  await expect(page.locator('[data-content-tag]')).toHaveAttribute('href', '../../?open=writing');
+});
+
+test('long-form articles render quotes, field notes and markdown editions', async ({ page }) => {
+  const longForm = articles.find((article) => article.notes);
+  await page.goto(`/writing/${longForm.slug}/`);
+
+  await expect(page.locator('[data-content-quote]').first()).toBeVisible();
+  await expect(page.locator('[data-content-field-notes-rule]')).toBeAttached();
+  await expect(page.locator('[data-content-field-notes]')).toContainText('FIELD NOTES');
+  await expect(page.locator('[data-content-rights]')).toContainText('QIZHI');
+
+  for (const [locale, file] of [['en', 'en.md'], ['zh-CN', 'zh.md'], ['ja', 'ja.md']]) {
+    const link = page.locator(`[data-content-markdown="${locale}"]`);
+    await expect(link).toHaveAttribute('href', file);
+  }
+});
+
+test('timeline, share and notes tools operate on the article', async ({ page }) => {
+  const longForm = articles.find((article) => article.notes);
+  await page.goto(`/writing/${longForm.slug}/?lang=en`);
+
+  // Timeline panel scrolls to a section anchor.
+  await page.locator('[data-tool-open="timeline"]').click();
+  await expect(page.locator('[data-tool-panel-timeline]')).toBeVisible();
+  const firstItem = page.locator('[data-tool-timeline-item]').first();
+  await firstItem.click();
+  await page.waitForTimeout(600);
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
+
+  // Share panel exposes the current URL, copy and email actions.
+  await page.locator('[data-tool-open="share"]').click();
+  await expect(page.locator('[data-tool-panel-share]')).toBeVisible();
+  const shareUrl = await page.locator('[data-tool-share-url]').inputValue();
+  expect(shareUrl).toContain(`/writing/${longForm.slug}/`);
+  await expect(page.locator('[data-tool-share-email]')).toHaveAttribute('href', /^mailto:/);
+
+  // Panels are mutually exclusive and closable.
+  await page.locator('[data-tool-close]').click();
+  await expect(page.locator('[data-article-tools-panel]')).toBeHidden();
+});
+
+test('selecting text saves a highlight that can be exported and removed', async ({ page }) => {
+  const longForm = articles.find((article) => article.notes);
+  await page.goto(`/writing/${longForm.slug}/?lang=en`);
+
+  const lead = page.locator('[data-content-article-lead]');
+  const box = await lead.boundingBox();
+  await page.mouse.move(box.x + 10, box.y + 8);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 180, box.y + 8, { steps: 8 });
+  await page.mouse.up();
+
+  const highlightButton = page.locator('[data-tool-highlight]');
+  await expect(highlightButton).toBeVisible();
+  await highlightButton.click();
+
+  await expect(lead.locator('[data-note-mark]')).toHaveCount(1);
+  await expect(page.locator('[data-tool-open="notes"]')).toContainText('[1]');
+
+  await page.locator('[data-tool-open="notes"]').click();
+  await expect(page.locator('[data-tool-note-item]')).toHaveCount(1);
+  await expect(page.locator('[data-tool-notes-export]')).toBeVisible();
+
+  const stored = await page.evaluate((slug) => (
+    JSON.parse(localStorage.getItem(`article-notes:${slug}`))
+  ), longForm.slug);
+  expect(stored).toHaveLength(1);
+
+  await page.locator('[data-tool-note-remove]').click();
+  await expect(page.locator('[data-tool-note-item]')).toHaveCount(0);
+  await expect(lead.locator('[data-note-mark]')).toHaveCount(0);
 });
 
 test('browser Back returns from an article to the open desktop app', async ({ page }) => {
@@ -159,6 +256,9 @@ test('GitHub Pages project base resolves content, modules, and sibling links', a
 test('generated pages and critical assets return successful responses', async ({ request }) => {
   for (const path of [
     `/writing/${firstArticle.slug}/`,
+    `/writing/${firstArticle.slug}/en.md`,
+    `/writing/${firstArticle.slug}/zh.md`,
+    `/writing/${firstArticle.slug}/ja.md`,
     '/styles/content-page.css',
     '/scripts/pages/content-page.js',
     '/media/music/tide-study-0200.wav',

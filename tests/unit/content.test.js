@@ -40,7 +40,14 @@ test('every project is fully localized and well-formed', () => {
 test('every article is localized and well-formed in all locales', () => {
   for (const article of articles) {
     assert.match(article.date, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(article.edited, /^\d{4}-\d{2}-\d{2}$/, `${article.slug} edited`);
+    assert.ok(article.edited >= article.date, `${article.slug} edited not before date`);
     assert.ok(article.tag && article.tag.length > 0, `${article.slug} tag`);
+    if (article.notes) {
+      for (const locale of LOCALES) {
+        assert.ok(article.notes[locale], `${article.slug} notes ${locale}`);
+      }
+    }
     for (const locale of LOCALES) {
       assert.ok(article.title[locale], `${article.slug} title ${locale}`);
       const body = article.body[locale];
@@ -49,11 +56,23 @@ test('every article is localized and well-formed in all locales', () => {
         const wellFormed =
           typeof item === 'string' ||
           (typeof item.h === 'string') ||
+          (typeof item.q === 'string') ||
           (typeof item.a === 'string' && typeof item.href === 'string');
         assert.ok(wellFormed, `${article.slug} malformed body item (${locale})`);
       }
       assert.ok(body.some((item) => typeof item === 'string'),
         `${article.slug} has prose in ${locale}`);
+    }
+  }
+});
+
+test('long-form articles carry quote sentences and field notes in all locales', () => {
+  const longForm = articles.filter((article) => article.notes);
+  assert.ok(longForm.length >= 2, 'expected at least two long-form articles');
+  for (const article of longForm) {
+    for (const locale of LOCALES) {
+      const quotes = article.body[locale].filter((item) => item && item.q);
+      assert.ok(quotes.length >= 1, `${article.slug} quotes ${locale}`);
     }
   }
 });

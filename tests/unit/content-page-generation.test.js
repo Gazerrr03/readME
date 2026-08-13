@@ -14,7 +14,7 @@ test('generates one metadata-rich physical page per content item', async () => {
   const root = await temporaryRoot();
   const result = await generateContentPages({ root, check: false });
 
-  assert.equal(result.files.length, articles.length + projects.length);
+  assert.equal(result.files.length, articles.length * 4 + projects.length);
   const file = join(root, 'writing', articles[0].slug, 'index.html');
   const html = await readFile(file, 'utf8');
   assert.match(html, /<base href="\.\.\/\.\.\/">/);
@@ -25,6 +25,28 @@ test('generates one metadata-rich physical page per content item', async () => {
   const manifest = JSON.parse(await readFile(join(root, 'content-pages.manifest.json'), 'utf8'));
   assert.deepEqual(manifest.files, [...result.files].sort());
   await generateContentPages({ root, check: true });
+});
+
+test('every article ships machine-readable markdown editions in all locales', async () => {
+  const root = await temporaryRoot();
+  await generateContentPages({ root, check: false });
+
+  for (const article of articles) {
+    const english = await readFile(join(root, 'writing', article.slug, 'en.md'), 'utf8');
+    assert.match(english, new RegExp(`^# ${article.title.en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm'));
+    if (article.body.en.some((item) => item && item.h)) {
+      assert.match(english, /^## /m);
+    }
+    assert.match(english, new RegExp(`Published: ${article.date}`));
+    const chinese = await readFile(join(root, 'writing', article.slug, 'zh.md'), 'utf8');
+    assert.match(chinese, new RegExp(`# ${article.title['zh-CN']}`));
+    await readFile(join(root, 'writing', article.slug, 'ja.md'), 'utf8');
+  }
+
+  const longForm = articles.find((article) => article.notes);
+  const english = await readFile(join(root, 'writing', longForm.slug, 'en.md'), 'utf8');
+  assert.match(english, /^> /m);
+  assert.match(english, /^Field notes: /m);
 });
 
 test('freshness check rejects modified output', async () => {
