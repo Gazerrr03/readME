@@ -47,7 +47,7 @@ test('provides reusable icon markup with selected white artwork', async ({ page 
   });
   expect(result.hasSharedButton).toBe(true);
   expect(result.hasLabel).toBe(true);
-  expect(result.frame).toBe('rgb(38, 21, 154)');
+  expect(result.frame).toBe('rgb(24, 59, 155)');
   expect(result.artwork).toBe('rgb(255, 255, 255)');
   expect(result.pixelGrid).toBe('0 0 16 16');
   expect(result.crisp).toBe('crispedges');

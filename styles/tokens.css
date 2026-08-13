@@ -1,5 +1,7 @@
 :root {
-  --blue: #26159a;
+  /* Ink blue, hue-converged onto the album-blue backdrop (224° vs 226°)
+     so upper-left instruments read as depth, not stickers. */
+  --blue: #183B9B;
   --white: #ffffff;
   /* Deep album-blue backdrop for the desktop environment; white ASCII ink sits on top. */
   --environment-blue: #1E40AF;

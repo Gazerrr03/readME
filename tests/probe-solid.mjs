@@ -4,7 +4,7 @@ import { writeFileSync } from 'node:fs';
 
 const browser = await chromium.launch();
 const page = await (await browser.newContext({ viewport: { width: 400, height: 300 } })).newPage();
-await page.setContent('<div style="width:400px;height:300px;background:#26159a;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-family:monospace">INK TEST</span></div>');
+await page.setContent('<div style="width:400px;height:300px;background:#183B9B;display:flex;align-items:center;justify-content:center"><span style="color:#fff;font-family:monospace">INK TEST</span></div>');
 const buf = await page.screenshot();
 writeFileSync('g:/My Portfolio/readME/screenshots/debug-solid.png', buf);
 

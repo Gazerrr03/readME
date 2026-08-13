@@ -1,5 +1,5 @@
 const THREE_URL = '../../vendor/three.module.min.js';
-const INK = 0x26159a;
+const INK = 0x183b9b;
 const STEP_MS = 220;
 const STEP_ANGLE = Math.PI / 24;
 const MAX_DPR = 1.5;
