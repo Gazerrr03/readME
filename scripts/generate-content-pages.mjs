@@ -10,8 +10,13 @@ import { articles, projects } from './data/content.js';
 import { contentPath } from './routing/content-routes.js';
 
 const MANIFEST = 'content-pages.manifest.json';
-const OWNED_PATH = /^(writing|projects)\/[a-z0-9]+(?:-[a-z0-9]+)*\/index\.html$/;
+const OWNED_PATH = /^(writing|projects)\/[a-z0-9]+(?:-[a-z0-9]+)*\/(index\.html|en\.md|zh\.md|ja\.md)$/;
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const MARKDOWN_LOCALES = Object.freeze([
+  ['en', 'en'],
+  ['zh-CN', 'zh'],
+  ['ja', 'ja'],
+]);
 
 function escapeHtml(value) {
   return String(value)
@@ -86,6 +91,36 @@ function outputFor(entry) {
   return `${contentPath(entry.kind, entry.slug)}index.html`;
 }
 
+function localizedValue(value, localeKey) {
+  return value?.[localeKey] ?? value?.en ?? '';
+}
+
+export function renderArticleMarkdown(article, localeKey) {
+  const lines = [];
+  lines.push(`# ${localizedValue(article.title, localeKey)}`, '');
+  lines.push(`Published: ${article.date}`);
+  if (article.edited && article.edited !== article.date) {
+    lines.push(`Last edited: ${article.edited}`);
+  }
+  lines.push(`Tag: ${article.tag}`, '');
+  const body = article.body[localeKey] ?? article.body.en;
+  for (const item of body) {
+    if (typeof item === 'string') {
+      lines.push(item, '');
+    } else if (item.h) {
+      lines.push(`## ${item.h}`, '');
+    } else if (item.q) {
+      lines.push(`> ${item.q}`, '');
+    } else if (item.a) {
+      lines.push(`[${item.a}](${item.href})${item.rest ?? ''}`, '');
+    }
+  }
+  if (article.notes) {
+    lines.push('---', '', `Field notes: ${localizedValue(article.notes, localeKey)}`, '');
+  }
+  return `${lines.join('\n')}`;
+}
+
 async function readManifest(root) {
   try {
     const manifest = JSON.parse(await readFile(join(root, MANIFEST), 'utf8'));
@@ -107,6 +142,14 @@ async function readOrMissing(file) {
 export async function generateContentPages({ root = PROJECT_ROOT, check = false } = {}) {
   const entries = buildContentEntries();
   const expected = new Map(entries.map((entry) => [outputFor(entry), renderEntryPage(entry)]));
+  for (const article of articles) {
+    for (const [localeKey, fileName] of MARKDOWN_LOCALES) {
+      expected.set(
+        `writing/${article.slug}/${fileName}.md`,
+        renderArticleMarkdown(article, localeKey),
+      );
+    }
+  }
   const files = [...expected.keys()].sort();
   const manifestSource = `${JSON.stringify({ files }, null, 2)}\n`;
   const previousFiles = await readManifest(root);
