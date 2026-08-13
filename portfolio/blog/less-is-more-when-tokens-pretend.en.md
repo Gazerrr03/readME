@@ -1,5 +1,5 @@
 ---
-title: 'Less Is More: When Tokens Pretend to Work Hard'
+title: 'Do Agents Dream of Farnsworth?'
 date: 2026-08-13
 excerpt: 'After burning through a friend\'s Kimi quota across six parallel windows and finishing nothing, I went back to The Mythical Man-Month. When AI keeps getting closer to a wish-granting machine, what\'s scarce is never compute — it\'s review, judgment, and restraint.'
 cover: '/covers/load-bearing.svg'

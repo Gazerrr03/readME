@@ -1,5 +1,5 @@
 ---
-title: '少即是多：当 Token 开始假装努力'
+title: '仿生 Agent 会梦见范斯沃斯吗'
 date: 2026-08-13
 excerpt: '六窗齐开、烧光朋友给的 Kimi 额度却什么都没做完之后，我重读《人月神话》。当 AI 越来越像一台许愿机，真正稀缺的从来不是算力，而是 review、判断和克制。'
 cover: '/covers/load-bearing.svg'
