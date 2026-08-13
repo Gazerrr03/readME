@@ -91,6 +91,7 @@ export const articles = Object.freeze([
   Object.freeze({
     slug: 'flow-canvas-information-overload',
     date: '2026-08-09',
+    edited: '2026-08-13',
     tag: '设计',
     title: L(
       'When Information Starts Thinking for Me',
@@ -144,7 +145,7 @@ export const articles = Object.freeze([
         '并且我一直没有真正学会怎么表达：我的思维发散而跳跃，可以很电波系地蹦出很多抽象的念头，却无法把它们描述出来。这体现在我的工作中——我曾相当依赖 plan mode，但多数时候，它只是对我想法的部分提炼。我自认为在和 AI 结对工作时，AI 只拿走了它最需要的那部分上下文，可实际干下来，过程对我来说却常常是个黑盒：我不清楚它是否真的 get 到了我所有的想法。',
         { h: '在那满溢而出的上下文口袋里，究竟要装下什么' },
         '信息过载不只是信息太多。',
-        '更准确地说，它夺走的是一个人决定信息何时进入、以什么关系进入当前思考的权力。',
+        { q: '更准确地说，它夺走的是一个人决定信息何时进入、以什么关系进入当前思考的权力。' },
         '最近一位朋友把他写的《Why Obelisk》这篇 blog 分享给我，读完后里面很多话都让我感同身受，尤其是检索那一段：检索本身就是一次关于时机、范围和权威性的判断；一条略有偏差、或者只是属于另一个时刻的记忆，不会中性进入上下文，它会跟当前证据竞争，抢走你的注意力，把一个旧结论悄悄变成当下的约束。',
         '在一个产品团队里，解决信息过载有时并不意味着建立更完整的资料库，也不意味着每个人都要参与每一个判断。',
         '一个有 taste 的人，如果对某件事情形成了足够明确的判断，并且愿意交付一个有把握的结果，那么其他人就不必再为这件事消耗信息带宽。这在国内一些大厂的环境里也能看到——未来的互联网行业，或许主要会收敛成两类人：价值工程师和优化工程师。',
@@ -189,7 +190,7 @@ export const articles = Object.freeze([
         '真正需要改变的，不是从此拒绝调研，也不是拒绝借鉴，更不是拒绝 Skill 和 AI。',
         '而是不要让它们在我们还没有形成自己的问题之前，替我们开始思考。',
         '先从原点形成判断，再让世界进入；先找到值得继续的方向，再把 effort 投进去。',
-        '我们需要的也许不是更多信息，而是重新获得决定信息如何进入自己的权力。',
+        { q: '我们需要的也许不是更多信息，而是重新获得决定信息如何进入自己的权力。' },
         { h: '参考与延伸阅读' },
         { h: '灵感来源' },
         { a: 'Sediment and Seed: The Memory Paradox in Agent Engineering（沉积与种子：智能体工程中的记忆悖论）', href: 'https://kinomotomio.github.io/writing/sediment-and-seed/', rest: ' — kinomotomio。记忆的价值不在于"记得多"，而在于能否改变未来的决策；遗忘得好，比记住更多更重要。文中"上下文口袋里究竟要装下什么"一节，很大程度上由它触发。' },
@@ -247,7 +248,7 @@ export const articles = Object.freeze([
         'And I\'d never truly learned how to express myself: my thinking is divergent and leaping, able to spout many abstract notions like some radio wave from another dimension, yet unable to describe them. This showed in my work — I leaned heavily on plan mode, but most of the time it was only a partial distillation of my thoughts. When pair-programming with AI, I believed the AI only took the slice of context it most needed; but the process was often a black box to me: I couldn\'t tell whether it had really grasped all my ideas.',
         { h: 'What exactly should fit in that overflowing context pocket' },
         'Information overload is not just too much information.',
-        'More precisely, it strips away a person\'s power to decide when information enters, and in what relationship to the current thinking.',
+        { q: 'More precisely, it strips away a person\'s power to decide when information enters, and in what relationship to the current thinking.' },
         'A friend recently shared his blog post "Why Obelisk" with me, and much of it resonated deeply — especially the passage on retrieval: retrieval itself is a judgment about timing, scope, and authority; a slightly off-target memory, or one that simply belongs to another moment, doesn\'t enter the context neutrally — it competes with current evidence, snatches your attention, and quietly turns an old conclusion into a present constraint.',
         'In a product team, solving information overload sometimes doesn\'t mean building a more complete knowledge base, nor does it mean everyone participates in every decision.',
         'A person with taste, who has formed a sufficiently clear judgment on something and is willing to deliver a confident result, frees everyone else from spending information bandwidth on it. You can see this in some big Chinese companies too — the future internet industry might converge into two kinds of people: value engineers and optimization engineers.',
@@ -292,7 +293,7 @@ export const articles = Object.freeze([
         'What really needs to change isn\'t refusing research from now on, nor refusing borrowing, nor refusing Skill and AI.',
         'It\'s not letting them start thinking for us before we\'ve formed a problem of our own.',
         'Form a judgment at the origin first, then let the world in; find a direction worth continuing first, then pour in the effort.',
-        'What we need may not be more information, but to reclaim the power to decide how information enters us.',
+        { q: 'What we need may not be more information, but to reclaim the power to decide how information enters us.' },
         { h: 'References and further reading' },
         { h: 'Inspirations' },
         { a: 'Sediment and Seed: The Memory Paradox in Agent Engineering', href: 'https://kinomotomio.github.io/writing/sediment-and-seed/', rest: ' — kinomotomio. The value of memory lies not in remembering more, but in whether it can change future decisions; forgetting well matters more than remembering more. The section "What exactly should fit in that overflowing context pocket" was largely triggered by it.' },
@@ -350,7 +351,7 @@ export const articles = Object.freeze([
         'そして私は表現を本当に学べたことがなかった。思考は発散的で飛躍し、電波的に抽象的な観念をぽんぽん浮かべるのに、それを言葉にできない。それは仕事にも表れた。私は plan mode にかなり依存していたが、それはたいてい私の考えの部分的な蒸留にすぎなかった。AI とペア作業するとき、AI は必要な部分のコンテキストだけを取っていると思っていたが、実際は私にとってブラックボックスだった。本当に私の考えをすべて掴んだのか分からない。',
         { h: '溢れ出るコンテキストのポケットに、一体何を入れるべきか' },
         '情報過多とは、情報が多いことだけではない。',
-        'より正確には、情報がいつ、現在の思考とどういう関係で入ってくるかを決める権利を、人から奪うことだ。',
+        { q: 'より正確には、情報がいつ、現在の思考とどういう関係で入ってくるかを決める権利を、人から奪うことだ。' },
         '最近、友人から彼のブログ『Why Obelisk』を共有された。読んで感銘を受けた言葉が多い。特に検索の部分だ。検索そのものが、タイミング、範囲、権威についての判断である。少しズレた記憶、あるいは別の瞬間に属する記憶は、中立にコンテキストに入らない。現在の証拠と競合し、注意を奪い、古い結論を静かに現在の制約にしてしまう。',
         '製品チームで情報過多を解決するのは、時に、より完全な資料庫を作ることでも、全員がすべての判断に参加することでもない。',
         'taste のある人が、ある物事について十分明確な判断を形成し、確信のある結果を引き渡す用意があれば、他の人はそのために情報の帯域を消費する必要がない。これは中国の大企業でも見られる。未来のインターネット業界は、おそらく二種類の人に収斂するだろう。価値エンジニアと最適化エンジニアに。',
@@ -395,7 +396,7 @@ export const articles = Object.freeze([
         '本当に変えるべきなのは、調査を拒むことでも、借りることを拒むことでも、Skill や AI を拒むことでもない。',
         '自分自身の問題を形成する前に、それらに代わりに考えさせることをやめることだ。',
         '原点から判断を形成してから、世界を入れよ。続ける価値のある方向を見つけてから、effort を注ぎ込め。',
-        '私たちに必要なのは、より多くの情報ではなく、情報がどのように自分に入ってくるかを決める権利を取り戻すことかもしれない。',
+        { q: '私たちに必要なのは、より多くの情報ではなく、情報がどのように自分に入ってくるかを決める権利を取り戻すことかもしれない。' },
         { h: '参考と延伸読書' },
         { h: 'インスピレーション' },
         { a: 'Sediment and Seed: The Memory Paradox in Agent Engineering（堆積と種子——エージェント工学における記憶のパラドックス）', href: 'https://kinomotomio.github.io/writing/sediment-and-seed/', rest: ' — kinomotomio。記憶の価値は「多く覚える」ことではなく、未来の意思決定を変えられるかどうかにある。上手に忘れることは、より多く覚えることより大事だ。「溢れ出るコンテキストのポケットに、一体何を入れるべきか」の節は、多くがこれに触発された。' },
@@ -408,22 +409,28 @@ export const articles = Object.freeze([
         { a: 'Beyond AGENTS.md: Shared Memory for Coding Agents Across Services and Repos', href: 'https://mem0.ai/blog/beyond-agents.md-shared-memory-for-coding-agents-across-services-and-repos', rest: ' — AGENTS.md は「ここでのルールは何か」に答え、共有記憶は「前回誰かが見てから、何が変わったか」に答える。' },
       ]),
     }),
+    notes: L(
+      'Field notes: the framing of information overload draws on kinomotomio\'s "Sediment and Seed" and "Why Obelisk"; the memory figures from the Mem0 "In Context" series; the passage on trust from The Almanack of Naval Ravikant. All citations are linked in the references above.',
+      '旁注：文中关于信息过载的框架受到 kinomotomio 的《沉积与种子》与《Why Obelisk》启发；记忆相关数据来自 Mem0「In Context」系列；关于信任的段落引自《纳瓦尔宝典》。所有出处见上文参考链接。',
+      'フィールドノート：情報過多の枠組みは kinomotomio の『堆積と種子』『Why Obelisk』に触発された。記憶に関する数値は Mem0「In Context」シリーズから、信頼についての箇所は『ナバル・ラビカン』から引いた。出典はすべて上の参考リンクに載せている。',
+    ),
   }),
   Object.freeze({
     slug: 'less-is-more-when-tokens-pretend',
     date: '2026-08-13',
+    edited: '2026-08-13',
     tag: 'AI',
     title: L(
-      'Less Is More: When Tokens Pretend to Work Hard',
-      '少即是多：当 Token 开始假装努力',
-      '少なさは多さ：トークンが努力を装うとき',
+      'Do Agents Dream of Farnsworth?',
+      '仿生 Agent 会梦见范斯沃斯吗',
+      'エージェントはファーンズワースの夢を見るか？',
     ),
     body: Object.freeze({
       'zh-CN': Object.freeze([
         { h: '前言' },
         '我读《人月神话》的时候，总觉得哪里眼熟。不是眼熟书里的道理——「加人更慢」这句话我听过太多次，耳朵都起茧了——是眼熟我自己干过的蠢事。1975 年，Brooks 在书里写，任务是任意不可切的，「人月」是个神话：往一个已经延误的项目里加人，只会让它更延误。分配九个女人，也生不出一个孩子。',
         '五十年后，我们发明了另一个单位，叫 token。Tibo 出圈之后，「烧 token」成了努力程度的度量衡。社区发明了「重置前冲刺」，有人晒出一天烧掉的百万 token；省着用，反而像一种亏。',
-        '两个时代隔了半个世纪，错在同一个地方。人类在 AI 面前，用两种方式假装努力：把消耗当成产出，把愿望当成工作。我们不是没读过这本书——我们是把它换了一身衣服，又犯了一遍。',
+        { q: '两个时代隔了半个世纪，错在同一个地方。人类在 AI 面前，用两种方式假装努力：把消耗当成产出，把愿望当成工作。我们不是没读过这本书——我们是把它换了一身衣服，又犯了一遍。' },
         { h: '把窗口开满，等于没开' },
         '我最近就干过这么一件事。一个很小的项目，为了快速拼功能，我一次性开了六个并行的 Agent 窗口。',
         '六，是一个看起来很努力的数字。当时我觉得自己在并行——像把六个线程塞进六个核。但人不是机器，人的 review 只有一个线程。',
@@ -464,7 +471,7 @@ export const articles = Object.freeze([
         '密斯·凡·德·罗说 less is more，被误读了很久。大家以为说的是「少放点东西」，像把一个房间清空。但密斯讲的从来不是删减，是让结构自己站出来。范斯沃斯住宅 almost nothing——玻璃盒子几乎空无一物，可钢柱、玻璃、比例精确到骨头里。「上帝在细节里」和「less is more」是同一个人说的。他的少，是剥掉一切不承重的装饰，让承重的东西精确地立在那里。少不是空，少是精确。',
         '《人月神话》里的概念完整性，是同一句话的另一个版本：系统应该呈现一个思想，而不是一堆东西的堆积。Brooks 说这是系统设计里最重要的一条，要靠架构出自一个头脑来保证。',
         '还有「没有银弹」：软件的复杂度分本质和偶然，工具只能打掉偶然的那部分，打不掉本质。我上一篇博客里写过，「Skill 降低的是执行成本，不是判断成本」——判断成本就是本质复杂度。它删不掉，加再多的 Skill 也删不掉。',
-        '所以 less is more 不是审美，是工程纪律。每多一个不承重的组件，都在稀释那个唯一的思想。',
+        { q: '所以 less is more 不是审美，是工程纪律。每多一个不承重的组件，都在稀释那个唯一的思想。' },
         { h: '巴别塔教我们要沟通，兰斯教我们忍得住' },
         '《人月神话》用巴比伦塔讲沟通：语言一乱，塔就建不成。但我想讲另一座建筑。',
         '兰斯大教堂，法国历代国王加冕的地方，建了近一个世纪，一代代匿名的石匠接着干。没有人画过今天意义上的总图，没有人和所有人说明白过每一块石头——可它偏偏是哥特建筑里整体性最好的作品之一。秘密不在沟通，在克制：每个石匠守着自己的贡献域，用同一套结构语法，忍住自己多余的发明。',
@@ -493,7 +500,7 @@ export const articles = Object.freeze([
         { h: 'Prologue' },
         'When I read The Mythical Man-Month, something felt familiar. Not the lessons themselves — "adding manpower to a late software project makes it later" is a sentence I\'ve heard so many times my ears are calloused. What felt familiar was the foolishness of my own. In 1975, Brooks wrote that tasks are not arbitrarily partitionable, that the "man-month" is a myth: adding people to an already-late project only makes it later. Assign nine women, and no child is born in a month.',
         'Fifty years on, we invented a new unit: the token. After Tibo went viral, "burning tokens" became the yardstick of effort. The community invented the "sprint before the reset"; people post the million tokens they burned in a day. Saving tokens started to feel like losing.',
-        'Two eras, half a century apart, wrong in the same place. In front of AI, humans pretend to work in two ways: taking consumption as output, and taking wishes as work. It isn\'t that we never read the book — it\'s that we dressed it in a new outfit and committed the same sin again.',
+        { q: 'Two eras, half a century apart, wrong in the same place. In front of AI, humans pretend to work in two ways: taking consumption as output, and taking wishes as work. It isn\'t that we never read the book — it\'s that we dressed it in a new outfit and committed the same sin again.' },
         { h: 'Opening every window equals opening none' },
         'I did exactly this recently. A very small project — to assemble features fast, I opened six parallel Agent windows at once.',
         'Six is a number that looks hard at work. I thought I was parallelizing — like shoving six threads into six cores. But a person is not a machine; a person\'s review has only one thread.',
@@ -534,7 +541,7 @@ export const articles = Object.freeze([
         'Mies van der Rohe\'s "less is more" has been misread for a long time. People take it to mean "put fewer things in," like emptying a room. But Mies never talked about deletion — he talked about letting the structure stand up on its own. Farnsworth House is almost nothing — a glass box with nearly nothing in it, yet the steel columns, the glass, the proportions are precise to the bone. "God is in the details" and "less is more" were said by the same man. His "less" means stripping away everything that doesn\'t bear weight, so that what bears weight stands precisely. Less is not emptiness; less is precision.',
         'Conceptual integrity in The Mythical Man-Month is another version of the same sentence: a system should present one idea, not a pile of things. Brooks calls it the most important consideration in system design, guaranteed by the architecture coming from a single mind.',
         'Then there is "no silver bullet": software\'s complexity splits into essential and accidental; tools can only beat down the accidental part, never the essential. In my previous post I wrote that "a Skill lowers the cost of execution, not the cost of judgment" — the cost of judgment is essential complexity. It cannot be deleted, no matter how many Skills you add.',
-        'So less is more is not aesthetics; it is engineering discipline. Every extra non-load-bearing component dilutes that single idea.',
+        { q: 'So less is more is not aesthetics; it is engineering discipline. Every extra non-load-bearing component dilutes that single idea.' },
         { h: 'Babel taught us to communicate; Reims taught us to restrain' },
         'The Mythical Man-Month uses the Tower of Babel to talk about communication: let the language fall apart, and the tower cannot be built. But I want to talk about another building.',
         'Reims Cathedral, where kings of France were crowned, took nearly a century to build, generation after generation of anonymous masons carrying on. No one drew a master plan in today\'s sense; no one explained every stone to everyone — yet it is one of the most coherent works of Gothic architecture. The secret is not communication; it\'s restraint: each mason stays in his own domain of contribution, works in the same structural grammar, and holds back his superfluous inventions.',
@@ -563,7 +570,7 @@ export const articles = Object.freeze([
         { h: '序章' },
         '『人月の神話』を読んだとき、どこか見覚えがあると思った。本の教えそのものに見覚えがあるのではない——「遅れているソフトウェアプロジェクトに人を足すと、さらに遅くなる」という言葉は、耳にタコができるほど聞いてきた。見覚えがあったのは、自分自身の愚かさの方だ。1975年、ブルックスは書いた。仕事は任意に分割できるものではなく、「人月」は神話だと。すでに遅れているプロジェクトに人を足しても、遅くなるだけだ。九人の女性を集めても、ひと月で子供は生まれない。',
         '五十年後の私たちは、新しい単位を発明した。トークンだ。Tibo が話題になって以降、「トークンを焼く」ことは努力の物差しになった。コミュニティは「リセット前の追い込み」を発明し、一日に百万トークンを焼いた画面を晒す人もいる。節約していると、まるで損をしているかのように感じる。',
-        '五十年隔てた二つの時代は、同じ場所で間違えている。人間は AI の前で、二通りのやり方で努力を装う。消費を産出とみなし、願いを仕事とみなす。私たちはこの本を読んでいなかったわけではない——着替えさせて、同じ罪をもう一度犯したのだ。',
+        { q: '五十年隔てた二つの時代は、同じ場所で間違えている。人間は AI の前で、二通りのやり方で努力を装う。消費を産出とみなし、願いを仕事とみなす。私たちはこの本を読んでいなかったわけではない——着替えさせて、同じ罪をもう一度犯したのだ。' },
         { h: 'すべての窓を開けることは、何も開けないこと' },
         '私はつい最近、まさにそれをやった。ごく小さなプロジェクトで、機能を素早く組み上げるために、Agent の窓を六つ並行で開けた。',
         '六という数字は、いかにも努力しているように見える。私は並列化していると思っていた——六つのスレッドを六つのコアに突っ込むように。だが人間は機械ではない。人間のレビューは、スレッドが一本しかない。',
@@ -604,7 +611,7 @@ export const articles = Object.freeze([
         'ミース・ファン・デル・ローエの「less is more」は、長いあいだ誤解されてきた。「ものを少なく置け」、部屋を空にすることだと思われている。だがミースが語っていたのは削減ではない。構造そのものを立ち上がらせることだ。ファンズワース邸は almost nothing——ガラスの箱にはほとんど何もない。だが鋼の柱、ガラス、プロポーションは、骨の髄まで正確だ。「神は細部に宿る」と「less is more」は、同じ男の言葉である。彼の「少なさ」とは、荷重を支えない装飾をすべて剥がし、荷重を支えるものを正確に立たせることだ。少ないことは空であることではなく、少ないことは正確であることだ。',
         '『人月の神話』の概念的一貫性は、同じ言葉の別の版である。システムは一つの思想を示すべきであり、物の堆積を示すべきではない。ブルックスはこれをシステム設計において最も重要な考慮事項と呼び、それを保証するのは、アーキテクチャがひとつの頭脳から生まれることだとした。',
         'そして「銀の弾丸はない」——ソフトウェアの複雑さは本質的なものと偶発的なものに分かれ、道具は偶発的な部分を打ち落とせるだけで、本質は落とせない。私は前回の記事でこう書いた。「Skill が下げるのは実行コストであり、判断コストではない」——判断コストこそ本質的な複雑さである。それは消せない。Skill をどれだけ増やしても、消せない。',
-        'だから less is more は美学ではない。工学の規律である。荷重を支えないコンポーネントが一つ増えるたびに、唯一の思想は薄められていく。',
+        { q: 'だから less is more は美学ではない。工学の規律である。荷重を支えないコンポーネントが一つ増えるたびに、唯一の思想は薄められていく。' },
         { h: 'バベルの塔は「話せ」と教え、ランスは「堪えろ」と教える' },
         '『人月の神話』はバベルの塔でコミュニケーションを語る。言葉が乱れれば、塔は建たない。だが私はもう一つの建築について語りたい。',
         'ランス大聖堂。フランス歴代国王が戴冠した場所で、建設には約一世紀を要し、世代を超えて無名の石工たちが引き継いだ。今日の意味での全体図を描いた者はいない。誰もすべての石を全員に説明していない——それなのに、それはゴシック建築の中でももっとも一体感のある作品の一つだ。秘密はコミュニケーションではない。克制である。各石工は自分の貢献領域を守り、同じ構造の文法を使い、余分な自分の着想を堪える。',
@@ -630,10 +637,16 @@ export const articles = Object.freeze([
         '前回の記事：情報が、私の代わりに考え始めるとき',
       ]),
     }),
+    notes: L(
+      'Field notes: the software-engineering material is from Fred Brooks\'s The Mythical Man-Month (1975 / 1995); "less is more" and "God is in the details" are attributed to Mies van der Rohe; the passage on unused Skills was triggered by kinomotomio\'s "Sediment and Seed". The reading of Reims Cathedral is my own.',
+      '旁注：软件工程部分出自 Fred Brooks《人月神话》（1975 / 1995）；"less is more" 与 "God is in the details" 归于密斯·凡·德·罗；关于不被使用的 Skill 的段落由 kinomotomio《沉积与种子》触发。对兰斯大教堂的解读是我自己的。',
+      'フィールドノート：ソフトウェア工学の材料は Fred Brooks『人月の神話』（1975 / 1995）から。「less is more」と「God is in the details」はミース・ファン・デル・ローエに帰する。使われない Skill に関する箇所は kinomotomio の『堆積と種子』に触発された。ランス大聖堂の解釈は私自身のものだ。',
+    ),
   }),
   Object.freeze({
     slug: 'notes-on-information-overload',
     date: '2026-05-18',
+    edited: '2026-05-18',
     tag: 'NOTES',
     title: L(
       'Notes on Information Overload',
@@ -661,6 +674,7 @@ export const articles = Object.freeze([
   Object.freeze({
     slug: 'the-shelf-is-a-camera',
     date: '2025-11-30',
+    edited: '2025-11-30',
     tag: 'ESSAY',
     title: L(
       'The Shelf Is a Camera',
@@ -688,6 +702,7 @@ export const articles = Object.freeze([
   Object.freeze({
     slug: 'blue-and-white-are-enough',
     date: '2025-07-12',
+    edited: '2025-07-12',
     tag: 'ESSAY',
     title: L(
       'Blue and White Are Enough',
@@ -715,6 +730,7 @@ export const articles = Object.freeze([
   Object.freeze({
     slug: 'the-dither-decides',
     date: '2025-03-09',
+    edited: '2025-03-09',
     tag: 'LOG',
     title: L(
       'The Dither Decides',
@@ -742,6 +758,7 @@ export const articles = Object.freeze([
   Object.freeze({
     slug: 'a-window-is-a-promise',
     date: '2024-09-21',
+    edited: '2024-09-21',
     tag: 'ESSAY',
     title: L(
       'A Window Is a Promise',
@@ -769,6 +786,7 @@ export const articles = Object.freeze([
   Object.freeze({
     slug: 'signal-to-noise-to-signal',
     date: '2024-03-16',
+    edited: '2024-03-16',
     tag: 'NOTES',
     title: L(
       'Signal to Noise to Signal',
@@ -796,6 +814,7 @@ export const articles = Object.freeze([
   Object.freeze({
     slug: 'the-cursor-blinks-first',
     date: '2023-12-02',
+    edited: '2023-12-02',
     tag: 'LOG',
     title: L(
       'The Cursor Blinks First',
