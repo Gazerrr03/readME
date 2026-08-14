@@ -308,6 +308,41 @@ test('penguin sprite replaces the BOT tile and answers with one protocol token',
   await expect(mount.locator('[data-bot-bubble]')).toHaveCount(1);
 });
 
+test('penguin can be long-pressed and dragged without persisting its position', async ({ page }) => {
+  await seedLayout(page, 'macos');
+  await page.clock.install({ time: new Date('2026-08-13T10:00:00') });
+  await page.goto('/');
+
+  const mount = page.locator('[data-bot-mount]');
+  const sprite = mount.locator('[data-bot-sprite]');
+  const initial = await mount.boundingBox();
+  expect(initial).not.toBeNull();
+
+  const start = {
+    x: initial.x + initial.width / 2,
+    y: initial.y + initial.height / 2,
+  };
+  await page.mouse.move(start.x, start.y);
+  await page.mouse.down();
+  await expect(mount).toHaveAttribute('data-bot-dragging', 'true');
+
+  await page.mouse.move(start.x - 160, start.y - 100, { steps: 4 });
+  await expect(sprite).toHaveAttribute('data-bot-state', 'running-left');
+  const moved = await mount.boundingBox();
+  expect(moved.x).toBeLessThan(initial.x - 20);
+  expect(moved.y).toBeLessThan(initial.y - 20);
+
+  await page.mouse.up();
+  await expect(mount).not.toHaveAttribute('data-bot-dragging', 'true');
+  await expect(sprite).toHaveAttribute('data-bot-state', 'idle');
+
+  await page.reload();
+  await expect(page.locator('[data-desktop-mode="macos"]')).toBeVisible();
+  const reset = await page.locator('[data-bot-mount]').boundingBox();
+  expect(Math.abs(reset.x - initial.x)).toBeLessThan(1);
+  expect(Math.abs(reset.y - initial.y)).toBeLessThan(1);
+});
+
 test('penguin keeps its localized accessible name in all three locales', async ({ page }) => {
   const names = {
     en: 'BOT SERVICE: STANDBY',

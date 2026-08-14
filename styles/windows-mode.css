@@ -195,7 +195,20 @@
   min-width: 76px;
   padding: 0;
   position: relative;
+  cursor: grab;
+  touch-action: none;
   transition: transform var(--ui-duration) var(--ease-out);
+  user-select: none;
+}
+
+[data-bot-mount][data-bot-dragging='true'] {
+  z-index: 40;
+}
+
+[data-bot-mount][data-bot-dragging='true'] [data-bot-standby] {
+  cursor: grabbing;
+  transform: none;
+  transition: none;
 }
 
 [data-bot-sprite] {

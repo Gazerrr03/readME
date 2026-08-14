@@ -35,6 +35,9 @@ const BOT_ANIMATIONS = Object.freeze({
   review: Object.freeze({ row: 8, frames: 6, frameDuration: 180 }),
 });
 
+const BOT_DRAG_HOLD_MS = 180;
+const BOT_DRAG_DISTANCE = 8;
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 function svgElement(document, tagName, attributes = {}) {
@@ -159,11 +162,46 @@ export function createDesktopController({
   let botAnimationToken = 0;
   let botGlitchTimer = null;
   let botGlitchIndex = 0;
+  let botDrag = null;
+  let botPosition = null;
+  let botClickSuppressed = false;
+  let botClickSuppressionTimer = null;
 
   const getBotSprite = () => root.querySelector('[data-bot-sprite]');
 
   const prefersReducedMotion = () => root.ownerDocument.defaultView
     .matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const getBotPositionBounds = (mount) => {
+    const rootRect = root.getBoundingClientRect();
+    const mountRect = mount.getBoundingClientRect();
+    return {
+      maxLeft: Math.max(0, rootRect.width - mountRect.width),
+      maxTop: Math.max(0, rootRect.height - mountRect.height),
+    };
+  };
+
+  const applyBotPosition = (mount) => {
+    if (!mount || !botPosition) return;
+    const { maxLeft, maxTop } = getBotPositionBounds(mount);
+    botPosition = {
+      left: Math.min(Math.max(0, botPosition.left), maxLeft),
+      top: Math.min(Math.max(0, botPosition.top), maxTop),
+    };
+    mount.style.left = `${botPosition.left}px`;
+    mount.style.top = `${botPosition.top}px`;
+    mount.style.right = 'auto';
+    mount.style.bottom = 'auto';
+  };
+
+  const getBotPositionFromMount = (mount) => {
+    const rootRect = root.getBoundingClientRect();
+    const mountRect = mount.getBoundingClientRect();
+    return {
+      left: mountRect.left - rootRect.left,
+      top: mountRect.top - rootRect.top,
+    };
+  };
 
   const stopBotAnimation = () => {
     if (botAnimationTimer !== null) {
@@ -222,6 +260,109 @@ export function createDesktopController({
   };
 
   const settleBot = () => playBotState(getBotRestState());
+
+  const clearBotClickSuppression = () => {
+    if (botClickSuppressionTimer !== null) {
+      clearTimeout(botClickSuppressionTimer);
+      botClickSuppressionTimer = null;
+    }
+    botClickSuppressed = false;
+  };
+
+  const suppressBotClick = () => {
+    if (botClickSuppressionTimer !== null) clearTimeout(botClickSuppressionTimer);
+    botClickSuppressed = true;
+    botClickSuppressionTimer = setTimeout(() => {
+      botClickSuppressionTimer = null;
+      botClickSuppressed = false;
+    }, 500);
+  };
+
+  const startBotDrag = (drag) => {
+    if (
+      botDrag !== drag
+      || drag.active
+      || !root.contains(drag.mount)
+    ) return;
+    drag.active = true;
+    if (botClickSuppressionTimer !== null) {
+      clearTimeout(botClickSuppressionTimer);
+      botClickSuppressionTimer = null;
+    }
+    botClickSuppressed = true;
+    drag.mount.dataset.botDragging = 'true';
+    botPosition = getBotPositionFromMount(drag.mount);
+    applyBotPosition(drag.mount);
+    clearBotGlitch();
+    if (drag.mount.dataset.botActive === 'true') {
+      if (botTimer !== null) {
+        clearTimeout(botTimer);
+        botTimer = null;
+      }
+      drag.mount.dataset.botActive = 'false';
+      const bubble = drag.mount.querySelector('[data-bot-bubble]');
+      if (bubble) bubble.hidden = true;
+    }
+    if (drag.button.setPointerCapture) drag.button.setPointerCapture(drag.pointerId);
+    playBotState(drag.direction, { force: true });
+  };
+
+  const updateBotDrag = (event) => {
+    const drag = botDrag;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (!drag.active) {
+      const distance = Math.hypot(
+        event.clientX - drag.startX,
+        event.clientY - drag.startY,
+      );
+      const heldLongEnough = performance.now() - drag.startTime >= BOT_DRAG_HOLD_MS;
+      if (distance < BOT_DRAG_DISTANCE && !heldLongEnough) return;
+      startBotDrag(drag);
+    }
+    const rootRect = root.getBoundingClientRect();
+    const { maxLeft, maxTop } = getBotPositionBounds(drag.mount);
+    botPosition = {
+      left: Math.min(
+        Math.max(0, event.clientX - rootRect.left - drag.offsetX),
+        maxLeft,
+      ),
+      top: Math.min(
+        Math.max(0, event.clientY - rootRect.top - drag.offsetY),
+        maxTop,
+      ),
+    };
+    applyBotPosition(drag.mount);
+
+    const deltaX = event.clientX - drag.lastX;
+    if (Math.abs(deltaX) > 0.5) {
+      const nextDirection = deltaX > 0 ? 'running-right' : 'running-left';
+      if (nextDirection !== drag.direction) {
+        drag.direction = nextDirection;
+        playBotState(nextDirection, { force: true });
+      }
+    }
+    drag.lastX = event.clientX;
+  };
+
+  const finishBotDrag = (event) => {
+    const drag = botDrag;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    if (drag.timer !== null) {
+      clearTimeout(drag.timer);
+      drag.timer = null;
+    }
+    if (drag.active) {
+      updateBotDrag(event);
+      drag.mount.removeAttribute('data-bot-dragging');
+      settleBot();
+      if (event.type === 'pointerup') suppressBotClick();
+      else clearBotClickSuppression();
+    }
+    if (drag.button.hasPointerCapture?.(drag.pointerId)) {
+      drag.button.releasePointerCapture(drag.pointerId);
+    }
+    botDrag = null;
+  };
 
   const clearBotGlitch = () => {
     if (botGlitchTimer !== null) {
@@ -287,6 +428,43 @@ export function createDesktopController({
     return icon && root.contains(icon) ? icon : null;
   };
 
+  root.addEventListener('pointerdown', (event) => {
+    const botButton = event.target.closest('[data-bot-standby]');
+    if (
+      !botButton
+      || !root.contains(botButton)
+      || event.button !== 0
+      || botDrag
+    ) return;
+    const mount = botButton.closest('[data-bot-mount]');
+    if (!mount) return;
+    const mountRect = mount.getBoundingClientRect();
+    const drag = {
+      button: botButton,
+      mount,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      lastX: event.clientX,
+      offsetX: event.clientX - mountRect.left,
+      offsetY: event.clientY - mountRect.top,
+      startTime: performance.now(),
+      direction: 'running-right',
+      active: false,
+      timer: null,
+    };
+    botDrag = drag;
+    drag.timer = setTimeout(() => {
+      drag.timer = null;
+      startBotDrag(drag);
+    }, BOT_DRAG_HOLD_MS);
+    if (botButton.setPointerCapture) botButton.setPointerCapture(event.pointerId);
+  });
+
+  root.addEventListener('pointermove', updateBotDrag);
+  root.addEventListener('pointerup', finishBotDrag);
+  root.addEventListener('pointercancel', finishBotDrag);
+
   root.addEventListener('click', (event) => {
     const localeButton = event.target.closest('[data-locale]');
     if (localeButton && root.contains(localeButton)) {
@@ -296,6 +474,11 @@ export function createDesktopController({
 
     const botButton = event.target.closest('[data-bot-standby]');
     if (botButton && root.contains(botButton)) {
+      if (botClickSuppressed) {
+        event.preventDefault();
+        clearBotClickSuppression();
+        return;
+      }
       activateBot();
       return;
     }
@@ -520,6 +703,7 @@ export function createDesktopController({
 
     root.replaceChildren(macosMenu, foldersElement, windowsIcons, bot, windowsTaskbar, macosDock);
     if (windowLayer) root.append(windowLayer);
+    applyBotPosition(bot);
     root.dataset.desktopMode = mode;
     settleBot();
     onRender({ root, mode });
