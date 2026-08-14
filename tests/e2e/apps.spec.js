@@ -80,14 +80,18 @@ test('writing archive uses real links to independent article pages', async ({ pa
   await expect(page.locator('[data-content-article] h1')).toHaveText('When Information Starts Thinking for Me');
 });
 
-test('about renders bio, timeline, stack, and now sections', async ({ page }) => {
+test('about renders personal identity, experience, works, toolbox, and now sections', async ({ page }) => {
   await page.locator('[data-windows-icons] [data-app-icon="about"]').dblclick();
   const appWindow = page.locator('[data-app-window="about"]');
 
-  await expect(appWindow.locator('[data-about-masthead] h3')).toHaveText('QIZHI');
-  await expect(appWindow.locator('[data-about-kicker]')).toHaveText(['BIO', 'TIMELINE', 'STACK', 'NOW']);
-  await expect(appWindow.locator('[data-about-timeline] li')).toHaveCount(5);
-  await expect(appWindow.locator('[data-about-now] dt').first()).toHaveText('LOCATION');
+  await expect(appWindow.locator('[data-about-masthead] h3')).toHaveText('Qizhi（Gazerrr）');
+  await expect(appWindow.locator('[data-about-kicker]')).toHaveText(['BIO', 'EXPERIENCE', 'WORKS', 'TOOLBOX', 'NOW']);
+  await expect(appWindow.locator('[data-about-experience] li')).toHaveCount(1);
+  await expect(appWindow.locator('[data-about-experience]')).toContainText('Tencent IEG');
+  await expect(appWindow.locator('[data-about-work]')).toHaveCount(2);
+  await expect(appWindow.locator('[data-about-work-name]')).toHaveText(['Flovvas', 'Skillcraft']);
+  await expect(appWindow.locator('[data-about-work-meta]').first()).toHaveText('CO-BUILDER / PRIVATE WORK');
+  await expect(appWindow.locator('[data-about-now] dt').first()).toHaveText('FOCUS');
 });
 
 test('contact lists four channels with working links', async ({ page }) => {
@@ -117,11 +121,17 @@ test('narrow screens navigate the front project to its independent page', async 
 });
 
 test('apps re-render localized content when the locale changes', async ({ page }) => {
+  await page.locator('[data-windows-icons] [data-app-icon="about"]').dblclick();
   await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
   await page.locator('[data-windows-icons] [data-app-icon="settings"]').dblclick();
 
   const settings = page.locator('[data-app-window="settings"]');
   await settings.getByLabel('Language').selectOption('zh-CN');
+
+  const about = page.locator('[data-app-window="about"]');
+  await expect(about.locator('[data-about-kicker]')).toHaveText(['自述', '经历', '作品', '工具箱', '当前']);
+  await expect(about.locator('[data-about-role]')).toHaveText('产品工程师 / AI 与 Agent 系统');
+  await expect(about.locator('[data-about-work-description]').first()).toContainText('无限画布');
 
   const writing = page.locator('[data-app-window="writing"]');
   await expect(writing.locator('[data-writing-kicker]')).toHaveText('归档');

@@ -30,39 +30,57 @@ export function renderAboutApp({ i18n, mount }) {
       createElement(document, 'p', { 'data-about-bio': '' }, pick(about.bio, locale)),
     );
 
-    const timeline = createElement(document, 'section', { 'data-about-section': 'timeline' });
-    timeline.append(sectionKicker(document, i18n.t('about.timeline')));
-    const timelineList = createElement(document, 'ul', { 'data-about-timeline': '' });
-    about.timeline.forEach((entry) => {
+    const experience = createElement(document, 'section', { 'data-about-section': 'experience' });
+    experience.append(sectionKicker(document, i18n.t('about.experience')));
+    const experienceList = createElement(document, 'ul', { 'data-about-experience': '' });
+    about.experience.forEach((entry) => {
       const row = createElement(document, 'li', {});
       row.append(
-        createElement(document, 'span', { 'data-about-year': '' }, entry.year),
-        createElement(document, 'span', {}, pick(entry.event, locale)),
+        createElement(document, 'span', { 'data-about-experience-label': '' }, pick(entry.label, locale)),
+        createElement(document, 'span', { 'data-about-experience-name': '' }, entry.name),
       );
-      timelineList.append(row);
+      experienceList.append(row);
     });
-    timeline.append(timelineList);
+    experience.append(experienceList);
 
-    const stack = createElement(document, 'section', { 'data-about-section': 'stack' });
-    stack.append(sectionKicker(document, i18n.t('about.stack')));
-    const stackList = createElement(document, 'ul', { 'data-about-stack': '' });
-    about.stack.forEach((line) => {
-      stackList.append(createElement(document, 'li', {}, line));
+    const works = createElement(document, 'section', { 'data-about-section': 'works' });
+    works.append(sectionKicker(document, i18n.t('about.works')));
+    const worksList = createElement(document, 'ul', { 'data-about-works': '' });
+    about.works.forEach((entry) => {
+      const row = createElement(document, 'li', { 'data-about-work': '' });
+      const heading = createElement(document, 'div', { 'data-about-work-heading': '' });
+      heading.append(
+        createElement(document, 'h4', { 'data-about-work-name': '' }, entry.name),
+        createElement(document, 'span', { 'data-about-work-meta': '' }, pick(entry.meta, locale)),
+      );
+      row.append(
+        heading,
+        createElement(document, 'p', { 'data-about-work-description': '' }, pick(entry.description, locale)),
+      );
+      worksList.append(row);
     });
-    stack.append(stackList);
+    works.append(worksList);
+
+    const toolbox = createElement(document, 'section', { 'data-about-section': 'toolbox' });
+    toolbox.append(sectionKicker(document, i18n.t('about.toolbox')));
+    const toolboxList = createElement(document, 'ul', { 'data-about-toolbox': '' });
+    about.toolbox.forEach((line) => {
+      toolboxList.append(createElement(document, 'li', {}, pick(line, locale)));
+    });
+    toolbox.append(toolboxList);
 
     const now = createElement(document, 'section', { 'data-about-section': 'now' });
     now.append(sectionKicker(document, i18n.t('about.now')));
     const nowList = createElement(document, 'dl', { 'data-about-now': '' });
     about.now.forEach((entry) => {
       nowList.append(
-        createElement(document, 'dt', {}, entry.key),
+        createElement(document, 'dt', {}, pick(entry.key, locale)),
         createElement(document, 'dd', {}, pick(entry.value, locale)),
       );
     });
     now.append(nowList);
 
-    root.replaceChildren(masthead, bio, timeline, stack, now);
+    root.replaceChildren(masthead, bio, experience, works, toolbox, now);
   };
 
   render();

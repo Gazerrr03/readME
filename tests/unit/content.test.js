@@ -79,11 +79,17 @@ test('long-form articles carry quote sentences and field notes in all locales', 
 
 test('about and contact content is complete', () => {
   for (const locale of LOCALES) {
+    assert.ok(about.role[locale]);
     assert.ok(about.bio[locale]);
-    assert.ok(about.timeline.every((entry) => entry.event[locale]));
+    assert.ok(about.experience.every((entry) => entry.label[locale]));
+    assert.ok(about.works.every((entry) => entry.meta[locale] && entry.description[locale]));
+    assert.ok(about.toolbox.every((line) => line[locale]));
+    assert.ok(about.now.every((entry) => entry.key[locale]));
     assert.ok(about.now.every((entry) => entry.value[locale]));
   }
-  assert.ok(about.stack.length > 0);
+  assert.equal(about.name, 'Qizhi（Gazerrr）');
+  assert.deepEqual(about.experience.map(({ name }) => name), ['Tencent IEG']);
+  assert.deepEqual(about.works.map(({ name }) => name), ['Flovvas', 'Skillcraft']);
   assert.deepEqual(channels.map(({ id }) => id), ['email', 'github', 'x', 'rss']);
   for (const channel of channels) assert.ok(channel.address && channel.href);
 });
