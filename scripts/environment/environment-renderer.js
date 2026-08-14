@@ -8,6 +8,9 @@ const NEBULA_GLYPHS = ' .,:;+=*';
 const NEBULA_STEP = 2;
 const SCENE_PERIOD = 21_000;
 const NEBULA_PERIOD = 60_000;
+const RIPPLE_RADIUS = 160;
+const RIPPLE_WAVELENGTH = 0.075;
+const RIPPLE_DISPLACEMENT = 10;
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -83,6 +86,24 @@ export function createEnvironmentRenderer({
     return Math.sin((elapsed % SCENE_PERIOD) / SCENE_PERIOD * Math.PI * 2) * amplitude;
   };
 
+  const getPointerRipple = (x, y) => {
+    const pointerX = dampedPointer.x * geometry.width;
+    const pointerY = dampedPointer.y * geometry.height;
+    const deltaX = x - pointerX;
+    const deltaY = y - pointerY;
+    const distance = Math.hypot(deltaX, deltaY);
+    const envelope = Math.exp(-(distance * distance) / (2 * RIPPLE_RADIUS ** 2));
+    const wave = Math.sin(distance * RIPPLE_WAVELENGTH - elapsed / 650)
+      * pointerEnergy * envelope;
+    if (distance === 0) return { x: 0, y: 0, value: wave * 32 };
+    const displacement = wave * RIPPLE_DISPLACEMENT / distance;
+    return {
+      x: deltaX * displacement,
+      y: deltaY * displacement,
+      value: wave * 32,
+    };
+  };
+
   const getNebulaDensity = (x, y) => {
     const { width, height } = geometry;
     const normalizedX = x / Math.max(1, width);
@@ -109,9 +130,12 @@ export function createEnvironmentRenderer({
     const offsetX = Math.sin((elapsed % NEBULA_PERIOD) / NEBULA_PERIOD * Math.PI * 2) * width * 0.012;
     for (let row = 0; row < layout.visibleHeight; row += NEBULA_STEP) {
       for (let column = 0; column < layout.visibleWidth; column += NEBULA_STEP) {
-        const x = column * layout.cellWidth + offsetX;
-        const y = row * layout.cellHeight;
-        if (x < -layout.cellWidth || x > width) continue;
+        const baseX = column * layout.cellWidth + offsetX;
+        const baseY = row * layout.cellHeight;
+        if (baseX < -layout.cellWidth || baseX > width) continue;
+        const ripple = getPointerRipple(baseX, baseY);
+        const x = baseX + ripple.x;
+        const y = baseY + ripple.y;
         const quietOpacity = quietOpacityAt(x, y);
         if (quietOpacity <= 0.04) continue;
         const sourceValue = getSceneValue(layout, column, row);
@@ -124,30 +148,28 @@ export function createEnvironmentRenderer({
         );
         const glyph = NEBULA_GLYPHS[glyphIndex];
         if (glyph === ' ') continue;
-        context.globalAlpha = (0.04 + density * 0.14) * quietOpacity;
+        context.globalAlpha = (0.03 + density * 0.11) * quietOpacity;
         context.fillText(glyph, x, y);
       }
     }
   };
 
   const drawAsciiScene = (layout) => {
-    const { width, height } = geometry;
-    const pointerX = dampedPointer.x * width;
-    const pointerY = dampedPointer.y * height;
+    const { width } = geometry;
     const phase = elapsed / 1500;
     const offsetX = getSceneOffset();
     for (let row = 0; row < layout.visibleHeight; row += 1) {
       for (let column = 0; column < layout.visibleWidth; column += 1) {
         const sourceValue = getSceneValue(layout, column, row);
-        const x = column * layout.cellWidth + offsetX;
-        const y = row * layout.cellHeight;
-        if (x < -layout.cellWidth || x > width) continue;
+        const baseX = column * layout.cellWidth + offsetX;
+        const baseY = row * layout.cellHeight;
+        if (baseX < -layout.cellWidth || baseX > width) continue;
+        const ripple = getPointerRipple(baseX, baseY);
+        const x = baseX + ripple.x;
+        const y = baseY + ripple.y;
         const quietOpacity = quietOpacityAt(x, y);
         if (quietOpacity <= 0.04) continue;
-        const distance = Math.hypot(x - pointerX, y - pointerY);
-        const ripple = Math.sin(distance * 0.045 - phase) * pointerEnergy
-          * Math.exp(-(distance * distance) / (2 * 110 * 110));
-        const value = clamp(sourceValue + ripple * 24 + Math.sin(phase + row * 0.12) * 2, 0, 255);
+        const value = clamp(sourceValue + ripple.value + Math.sin(phase + row * 0.12) * 2, 0, 255);
         const glyphIndex = value <= 3
           ? 0
           : Math.min(
@@ -156,7 +178,7 @@ export function createEnvironmentRenderer({
           );
         const glyph = ASCII_GLYPHS[glyphIndex];
         if (glyph === ' ') continue;
-        context.globalAlpha = (0.38 + value / 255 * 0.42) * quietOpacity;
+        context.globalAlpha = (0.28 + value / 255 * 0.34) * quietOpacity;
         context.fillText(glyph, x, y);
       }
     }
