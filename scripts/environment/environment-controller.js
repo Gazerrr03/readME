@@ -9,7 +9,7 @@ import { createEnvironmentRenderer } from './environment-renderer.js';
 import { createMusicDeck } from './music-deck.js';
 import { tracks } from '../../media/catalog.js';
 import { projects } from '../data/content.js';
-import { JACKET_MAP } from './jacket-map.js';
+import { QIFENG_SCENE } from './qifeng-scene.js';
 
 function element(document, tagName, attributes = {}, text = '') {
   const node = document.createElement(tagName);
@@ -164,7 +164,7 @@ export function createDesktopEnvironmentController({
     if (capability !== ENVIRONMENT_CAPABILITY.PHONE_STATIC) mount.append(createWidgets());
     root.prepend(mount);
     try {
-      const nextRenderer = rendererFactory({ canvas, terrainMap: JACKET_MAP });
+      const nextRenderer = rendererFactory({ canvas, scene: QIFENG_SCENE });
       if (!isEnvironmentRenderer(nextRenderer)) throw new Error('Invalid environment renderer');
       renderer = nextRenderer;
     } catch {

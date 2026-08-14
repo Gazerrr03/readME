@@ -1,21 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { JACKET_MAP } from '../../scripts/environment/jacket-map.js';
 import { createEnvironmentRenderer } from '../../scripts/environment/environment-renderer.js';
+import { QIFENG_SCENE } from '../../scripts/environment/qifeng-scene.js';
 
 function createHarness() {
   const textCalls = [];
   const draws = [];
   const context = {
     setTransform() {},
-    clearRect() {},
     fillRect() { draws.push([]); },
     fillText: (...args) => {
       textCalls.push(args);
       draws.at(-1)?.push(args);
     },
-    save() {},
-    restore() {},
     set fillStyle(value) {},
     set font(value) {},
     set globalAlpha(value) {},
@@ -36,25 +33,17 @@ function createHarness() {
   };
 }
 
-function createTerrainMap(value = 150) {
-  return { width: 20, height: 5, values: Array(100).fill(value) };
-}
-
-function createGradientMap() {
-  return {
-    width: 20,
-    height: 5,
-    values: Array.from({ length: 100 }, (_, index) => 100 + index),
-  };
+function createRenderer(harness) {
+  return createEnvironmentRenderer({
+    canvas: harness.canvas,
+    scene: QIFENG_SCENE,
+    scheduler: harness.scheduler,
+  });
 }
 
 function renderPointer(pointer) {
   const harness = createHarness();
-  const renderer = createEnvironmentRenderer({
-    canvas: harness.canvas,
-    terrainMap: createGradientMap(),
-    scheduler: harness.scheduler,
-  });
+  const renderer = createRenderer(harness);
   renderer.resize({ width: 220, height: 70, quietZones: [] });
   renderer.setMotionState('running');
   renderer.setPointer(pointer);
@@ -63,22 +52,20 @@ function renderPointer(pointer) {
   return harness.draws.at(-1);
 }
 
-test('generated jacket map carries source attribution and normalized values', () => {
-  assert.equal(JACKET_MAP.sourcePage, 'https://music.apple.com/jp/album/%E3%81%A0%E3%81%8B%E3%82%89%E5%83%95%E3%81%AF%E9%9F%B3%E6%A5%BD%E3%82%92%E8%BE%9E%E3%82%81%E3%81%9F/1648876058');
-  assert.equal(JACKET_MAP.attribution, 'ヨルシカ『だから僕は音楽を辞めた』jacket artwork (© U&R records / Universal Music LLC)');
-  assert.equal(JACKET_MAP.width, 495);
-  assert.equal(JACKET_MAP.height, 300);
-  assert.equal(JACKET_MAP.values.length, 148500);
-  assert.ok(JACKET_MAP.values.every((value) => value >= 0 && value <= 255));
+test('image-derived scene carries a title-free grayscale map', () => {
+  assert.equal(QIFENG_SCENE.id, 'qifeng-image-ascii');
+  assert.equal(QIFENG_SCENE.source, 'assets/image/hq720.jpg');
+  assert.equal(QIFENG_SCENE.surface, '#1E40AF');
+  assert.equal(QIFENG_SCENE.width, 320);
+  assert.equal(QIFENG_SCENE.height, 180);
+  assert.equal(QIFENG_SCENE.values.length, 57_600);
+  assert.ok(QIFENG_SCENE.values.some((value) => value > 220));
+  assert.ok(QIFENG_SCENE.values.some((value) => value > 3 && value < 48));
 });
 
-test('renderer caps DPR, draws text, pauses in focus, and tears down', () => {
+test('renderer caps DPR, draws the scene, pauses in focus, and tears down', () => {
   const harness = createHarness();
-  const renderer = createEnvironmentRenderer({
-    canvas: harness.canvas,
-    terrainMap: JACKET_MAP,
-    scheduler: harness.scheduler,
-  });
+  const renderer = createRenderer(harness);
   renderer.resize({ width: 320, height: 180, dpr: 3, quietZones: [] });
   renderer.setMotionState('running');
   harness.scheduler.flush(100);
@@ -98,38 +85,26 @@ test('pointer ripples the artwork', () => {
   assert.notDeepEqual(leftWind, rightWind);
 });
 
-test('shimmer animation evolves between frames', () => {
+test('image scene drift evolves between frames', () => {
   const harness = createHarness();
-  const renderer = createEnvironmentRenderer({
-    canvas: harness.canvas,
-    terrainMap: createGradientMap(),
-    scheduler: harness.scheduler,
-  });
+  const renderer = createRenderer(harness);
   renderer.resize({ width: 220, height: 70, quietZones: [] });
   renderer.setMotionState('running');
   harness.scheduler.flush(100);
-  const early = harness.draws.at(-1);
+  const early = renderer.getDebugState().sceneOffset;
   for (let time = 200; time <= 1000; time += 100) harness.scheduler.flush(time);
-  const late = harness.draws.at(-1);
+  const late = renderer.getDebugState().sceneOffset;
 
-  assert.notDeepEqual(early, late);
+  assert.notEqual(early, late);
 });
 
 test('focused pointer input is discarded before animation resumes', () => {
   const control = createHarness();
   const focusedInput = createHarness();
-  const createRenderer = (harness) => createEnvironmentRenderer({
-    canvas: harness.canvas,
-    terrainMap: createTerrainMap(),
-    scheduler: harness.scheduler,
-  });
   const controlRenderer = createRenderer(control);
   const focusedInputRenderer = createRenderer(focusedInput);
 
-  for (const { renderer } of [
-    { renderer: controlRenderer },
-    { renderer: focusedInputRenderer },
-  ]) {
+  for (const renderer of [controlRenderer, focusedInputRenderer]) {
     renderer.resize({ width: 220, height: 70, quietZones: [] });
     renderer.setMotionState('focused');
   }
@@ -148,11 +123,7 @@ test('focused pointer input is discarded before animation resumes', () => {
 
 test('destroy prevents subsequent drawing and scheduling', () => {
   const harness = createHarness();
-  const renderer = createEnvironmentRenderer({
-    canvas: harness.canvas,
-    terrainMap: createTerrainMap(),
-    scheduler: harness.scheduler,
-  });
+  const renderer = createRenderer(harness);
   renderer.resize({ width: 220, height: 70, quietZones: [] });
   renderer.destroy();
   const drawCount = harness.draws.length;
@@ -167,11 +138,7 @@ test('destroy prevents subsequent drawing and scheduling', () => {
 
 test('running mode limits drawing to one frame per 100 milliseconds', () => {
   const harness = createHarness();
-  const renderer = createEnvironmentRenderer({
-    canvas: harness.canvas,
-    terrainMap: createTerrainMap(),
-    scheduler: harness.scheduler,
-  });
+  const renderer = createRenderer(harness);
   renderer.resize({ width: 220, height: 70, quietZones: [] });
   const beforeRunning = harness.draws.length;
   renderer.setMotionState('running');
