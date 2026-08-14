@@ -103,7 +103,23 @@ const check = (name, ok, detail = '') => {
   await context.close();
 }
 
-// 6. zh locale: labels + viewer title
+// 6. Three.js bookshelf: an empty library keeps the model clean
+{
+  const { context, page } = await session('macos');
+  await page.locator('[data-folder-toggle="books"]').click();
+  const win = page.locator('[data-app-window="books"]');
+  const stage = win.locator('[data-bookshelf-stage]');
+  const stageBox = await stage.boundingBox();
+  check('bookshelf stage is centered inside its window', stageBox.width > 300 && stageBox.height > 240,
+    `w=${Math.round(stageBox.width)} h=${Math.round(stageBox.height)}`);
+  check('bookshelf canvas mounts Three.js scene',
+    (await win.locator('[data-bookshelf-canvas]').count()) === 1);
+  check('bookshelf has no temporary empty-state copy',
+    (await win.locator('[data-bookshelf-empty]').count()) === 0);
+  await context.close();
+}
+
+// 7. zh locale: labels + viewer title
 {
   const { context, page } = await session('windows', 'zh-CN');
   check('zh folder label 照片', (await page.locator('[data-folder-toggle="photos"]').innerText()).includes('照片'));

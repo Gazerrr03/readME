@@ -62,6 +62,11 @@ await shoot('folders-albums-player', {
     await page.locator('[data-folder-item="tide-study-0200"]').dblclick();
   },
 });
+await shoot('folders-bookshelf-empty', {
+  layout: 'macos',
+  viewport: DESKTOP,
+  act: (page) => page.locator('[data-folder-toggle="books"]').click(),
+});
 await shoot('folders-macos-phone', { layout: 'macos', viewport: { width: 390, height: 844 } });
 
 await browser.close();

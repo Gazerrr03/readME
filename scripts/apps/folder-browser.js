@@ -226,6 +226,11 @@ export function createFolderBrowser({
     }
   });
 
+  // 3D collection renderers can use the same folder contract without
+  // duplicating the desktop/mobile activation rules.
+  root.selectItem = (slug) => setSelection(slug);
+  root.openItem = openItem;
+
   render();
   i18n.subscribe(() => {
     if (root.isConnected) render();

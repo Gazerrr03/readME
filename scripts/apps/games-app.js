@@ -1,8 +1,7 @@
+import { GAMES } from '../data/collections.js';
 import { createFolderBrowser } from './folder-browser.js';
 
-// The mount point is deliberately real but empty: game modules can be added
-// later without changing the desktop or collection navigation contract.
-export const GAMES = Object.freeze([]);
+export { GAMES };
 
 export function renderGamesApp({ i18n, mount, preferences }) {
   const document = mount.ownerDocument;

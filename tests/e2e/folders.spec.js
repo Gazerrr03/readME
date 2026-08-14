@@ -91,18 +91,19 @@ test('games and books expose their own collection windows', async ({ page }) => 
 
   await page.locator('[data-folder-toggle="games"]').click();
   const games = page.locator('[data-app-window="games"]');
+  await expect(games.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'folder');
+  await expect(games.locator('[data-folder-item]')).toHaveCount(0);
   await expect(games.locator('[data-games-empty]')).toContainText('NO GAME MODULES MOUNTED');
   await expect(games.locator('[data-game-mount]')).toHaveText('MOUNT /GAMES/*.HTML');
   await games.locator('[data-window-close]').click();
 
   await page.locator('[data-folder-toggle="books"]').click();
   const books = page.locator('[data-app-window="books"]');
-  await expect(books.locator('[data-bookshelf] [data-folder-item]')).toHaveCount(9);
-  await books.locator('[data-folder-item]').first().dblclick();
-  await expect(books.locator('[data-book-reader]')).toBeVisible();
-  await expect(books.locator('[data-book-reader-title]')).toHaveText('When Information Starts Thinking for Me');
-  await books.locator('[data-folder-back]').click();
-  await expect(books.locator('[data-bookshelf]')).toBeVisible();
+  await expect(books.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'folder');
+  await expect(books.locator('[data-folder-item]')).toHaveCount(0);
+  await expect(books.locator('[data-bookshelf-stage]')).toBeVisible();
+  await expect(books.locator('[data-bookshelf-canvas]')).toBeVisible();
+  await expect(books.locator('[data-bookshelf-empty]')).toHaveCount(0);
 });
 
 test('collection labels and viewer titles follow the locale', async ({ page }) => {

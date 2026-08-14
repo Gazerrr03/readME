@@ -1,33 +1,8 @@
-import { articles, pick } from '../data/content.js';
-import { contentPath } from '../routing/content-routes.js';
-import { createPixelSvg } from './pixel-art.js';
+import { BOOKS } from '../data/collections.js';
+import { createBookshelfScene } from './bookshelf-scene.js';
 import { createFolderBrowser } from './folder-browser.js';
 
-// Until a separate book catalog exists, the shelf is a physical index of the
-// site's authored essays. The browser contract stays the same when real books
-// are added later.
-export const BOOKS = articles;
-
-const BOOK_PIXELS = Object.freeze([
-  Object.freeze([
-    '##..####..##....',
-    '.##.##..####..#.',
-    '....####..##....',
-    '##..##..####..##',
-  ]),
-  Object.freeze([
-    '....##..####....',
-    '..######..##..#.',
-    '##..##..######..',
-    '....####..##..##',
-  ]),
-  Object.freeze([
-    '####....##..####',
-    '..##..######....',
-    '####..##..##..##',
-    '..##....######..',
-  ]),
-]);
+export { BOOKS };
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -36,69 +11,29 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
+function localize(value, locale, fallback = '') {
+  if (!value) return fallback;
+  if (typeof value === 'string') return value;
+  return value[locale] ?? value.en ?? Object.values(value)[0] ?? fallback;
+}
+
 function pad2(value) {
   return String(value + 1).padStart(2, '0');
 }
 
-function createBookBox(document, item, index, detail = false) {
-  const box = createElement(document, 'span', {
-    'data-book-box': '',
-    ...(detail ? { 'data-book-box-detail': '' } : {}),
-    'aria-hidden': 'true',
-  });
-  const front = createElement(document, 'span', { 'data-book-front': '' });
-  const ascii = createElement(document, 'pre', { 'data-book-ascii': '' });
-  ascii.textContent = [
-    '+----------------+',
-    `| BOOK / ${pad2(index)}     |`,
-    '|                |',
-    '|   ##  ####     |',
-    '|  ######  ##    |',
-    '|                |',
-    '+----------------+',
-  ].join('\n');
-  const pixels = createElement(document, 'span', { 'data-book-pixels': '' });
-  pixels.append(createPixelSvg(document, BOOK_PIXELS[index % BOOK_PIXELS.length]));
-  front.append(ascii, pixels);
-  box.append(
-    front,
-    createElement(document, 'span', { 'data-book-spine': '' }, `B${pad2(index)}`),
-    createElement(document, 'span', { 'data-book-pages': '' }),
-  );
-  return box;
-}
-
 function renderBookItem({ document, i18n, item, index }) {
+  const title = localize(item.title, i18n.locale, item.slug);
+  const meta = [item.author, item.year, item.format].filter(Boolean).join(' · ')
+    || 'EPUB / PDF';
   return [
-    createBookBox(document, item, index),
-    createElement(document, 'span', { 'data-folder-item-title': '' }, pick(item.title, i18n.locale)),
-    createElement(document, 'span', { 'data-folder-item-meta': '' }, `${item.date} · ${item.tag}`),
+    createElement(document, 'span', {
+      'data-bookshelf-item': '',
+      'data-bookshelf-index': String(index),
+      'aria-hidden': 'true',
+    }),
+    createElement(document, 'span', { 'data-folder-item-title': '' }, title),
+    createElement(document, 'span', { 'data-folder-item-meta': '' }, meta),
   ];
-}
-
-function renderBookBody(document, i18n, item) {
-  const body = createElement(document, 'div', { 'data-book-reader-body': '' });
-  (item.body[i18n.locale] ?? item.body.en).forEach((part) => {
-    if (typeof part === 'string') {
-      body.append(createElement(document, 'p', {}, part));
-      return;
-    }
-    if (part.h) {
-      body.append(createElement(document, 'h4', {}, part.h));
-      return;
-    }
-    if (part.q) {
-      body.append(createElement(document, 'blockquote', {}, part.q));
-      return;
-    }
-    if (part.a && part.href) {
-      const paragraph = createElement(document, 'p');
-      const link = createElement(document, 'a', { href: part.href, target: '_blank', rel: 'noreferrer' }, part.a);
-      paragraph.append(link, part.rest ?? '');
-      body.append(paragraph);
-    }
-  });
-  return body;
 }
 
 function renderBookViewer({ document, i18n, item, index, total, previous, next }) {
@@ -107,24 +42,39 @@ function renderBookViewer({ document, i18n, item, index, total, previous, next }
     'data-book-reader': '',
     'data-content-viewer': '',
   });
+  const title = localize(item.title, i18n.locale, item.slug);
+  const meta = [item.author, item.year, item.format].filter(Boolean).join(' · ')
+    || 'EPUB / PDF';
   const masthead = createElement(document, 'div', { 'data-book-reader-masthead': '' });
   masthead.append(
     createElement(document, 'p', { 'data-book-reader-kicker': '' },
       `BOOK / ${pad2(index)} · ${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`),
-    createElement(document, 'h3', { 'data-book-reader-title': '' }, pick(item.title, i18n.locale)),
-    createElement(document, 'p', { 'data-book-reader-meta': '' }, `${item.date} · ${item.tag}`),
+    createElement(document, 'h3', { 'data-book-reader-title': '' }, title),
+    createElement(document, 'p', { 'data-book-reader-meta': '' }, meta),
   );
 
-  const cover = createElement(document, 'div', { 'data-book-reader-cover': '' });
-  cover.append(createBookBox(document, item, index, true));
-  const copy = createElement(document, 'article', { 'data-book-reader-copy': '' });
-  copy.append(
-    renderBookBody(document, i18n, item),
-    createElement(document, 'a', {
-      href: contentPath('writing', item.slug),
-      'data-book-open': item.slug,
-    }, i18n.t('books.open')),
-  );
+  const frame = createElement(document, 'div', { 'data-book-reader-frame': '' });
+  if (item.file) {
+    const isPdf = /\.pdf(?:$|\?)/i.test(item.file);
+    if (isPdf) {
+      frame.append(createElement(document, 'iframe', {
+        src: item.file,
+        title,
+        'data-book-file-frame': '',
+      }));
+    }
+    frame.append(createElement(document, 'a', {
+      href: item.file,
+      target: '_blank',
+      rel: 'noreferrer',
+      'data-book-open-file': '',
+    }, i18n.t('books.openFile')));
+  } else {
+    frame.append(
+      createElement(document, 'p', { 'data-book-reader-empty': '' }, i18n.t('books.readerEmpty')),
+      createElement(document, 'p', { 'data-book-reader-hint': '' }, i18n.t('books.readerHint')),
+    );
+  }
 
   const navigation = createElement(document, 'nav', {
     'data-book-reader-nav': '',
@@ -140,23 +90,125 @@ function renderBookViewer({ document, i18n, item, index, total, previous, next }
   nextButton.addEventListener('click', next);
   navigation.append(previousButton, nextButton);
 
-  viewer.append(masthead, cover, copy, navigation);
+  viewer.append(masthead, frame, navigation);
   return viewer;
+}
+
+function createBookshelfStage(document, i18n) {
+  const stage = createElement(document, 'section', {
+    'data-bookshelf-stage': '',
+    'aria-label': i18n.t('bookshelf.canvas'),
+  });
+  const canvas = createElement(document, 'canvas', {
+    'data-bookshelf-canvas': '',
+    'aria-hidden': 'true',
+  });
+  const masthead = createElement(document, 'div', { 'data-bookshelf-masthead': '' });
+  const title = createElement(document, 'h3', { 'data-bookshelf-title': '' }, i18n.t('bookshelf.title'));
+  const countLabel = createElement(document, 'p', { 'data-bookshelf-count': '' });
+  masthead.append(title, countLabel);
+
+  const inspector = createElement(document, 'aside', {
+    'data-bookshelf-inspector': '',
+    'data-bookshelf-inspector-state': 'empty',
+    'aria-live': 'polite',
+  });
+  const inspectorKicker = createElement(document, 'p', {
+    'data-bookshelf-inspector-kicker': '',
+  });
+  const inspectorTitle = createElement(document, 'h4', {
+    'data-bookshelf-inspector-title': '',
+  });
+  const inspectorMeta = createElement(document, 'p', {
+    'data-bookshelf-inspector-meta': '',
+  });
+  const inspectorDescription = createElement(document, 'p', {
+    'data-bookshelf-inspector-description': '',
+  });
+  inspector.append(inspectorKicker, inspectorTitle, inspectorMeta, inspectorDescription);
+
+  stage.append(canvas, masthead, inspector);
+  return {
+    stage,
+    canvas,
+    countLabel,
+    inspector,
+    inspectorKicker,
+    inspectorTitle,
+    inspectorMeta,
+    inspectorDescription,
+  };
 }
 
 export function renderBooksApp({ i18n, mount, preferences }) {
   const document = mount.ownerDocument;
-  const root = createFolderBrowser({
+  const view = document.defaultView;
+  let scene = null;
+  let viewObserver = null;
+  const browser = createFolderBrowser({
     document,
     i18n,
     appId: 'books',
     titleKey: 'apps.books',
     items: BOOKS,
+    initialItemId: BOOKS[0]?.slug ?? null,
     renderItem: renderBookItem,
     renderViewer: renderBookViewer,
     doubleClickThreshold: preferences?.doubleClickThreshold,
+    onSelectionChange: (slug) => scene?.setSelected(slug),
   });
-  root.dataset.booksApp = '';
-  root.dataset.bookshelf = '';
+  const stage = createBookshelfStage(document, i18n);
+  const root = createElement(document, 'section', {
+    'data-books-app': '',
+    'data-bookshelf': '',
+    'data-bookshelf-view': browser.dataset.folderView,
+  });
+  root.append(stage.stage, browser);
+  let hoveredBookSlug = null;
+
+  const syncBookInfo = (slug = hoveredBookSlug) => {
+    hoveredBookSlug = slug;
+    const item = BOOKS.find((candidate) => candidate.slug === slug);
+    stage.inspector.dataset.bookshelfInspectorState = item ? 'active' : 'empty';
+    stage.inspectorKicker.textContent = item ? i18n.t('bookshelf.inspectKicker') : '';
+    stage.inspectorTitle.textContent = item
+      ? localize(item.title, i18n.locale, item.slug)
+      : '';
+    stage.inspectorMeta.textContent = item
+      ? [item.author, item.year, item.format].filter(Boolean).join(' · ')
+      : '';
+    stage.inspectorDescription.textContent = item
+      ? localize(item.description, i18n.locale, i18n.t('bookshelf.inspectNoDescription'))
+      : '';
+  };
+
+  const syncStageText = () => {
+    stage.countLabel.textContent = i18n.t('bookshelf.count').replace('{n}', String(BOOKS.length));
+    root.dataset.bookshelfView = browser.dataset.folderView ?? 'folder';
+    syncBookInfo();
+  };
+  syncStageText();
+
+  scene = createBookshelfScene(stage.canvas, {
+    items: BOOKS,
+    onHover: (slug) => syncBookInfo(slug),
+    isSingleTap: () => view.matchMedia('(pointer: coarse)').matches
+      || view.matchMedia('(max-width: 760px)').matches,
+    onSelect: (slug) => browser.selectItem?.(slug),
+    onOpen: (slug) => browser.openItem?.(slug),
+  });
+  viewObserver = new view.MutationObserver(syncStageText);
+  viewObserver.observe(browser, { attributes: true, attributeFilter: ['data-folder-view'] });
+  i18n.subscribe(() => {
+    if (!root.isConnected) return;
+    syncStageText();
+  });
+
+  root.addEventListener('DOMNodeRemoved', () => {
+    if (!root.isConnected) {
+      viewObserver?.disconnect();
+      scene?.dispose();
+    }
+  });
   return root;
 }
