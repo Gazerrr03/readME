@@ -416,7 +416,7 @@ export const articles = Object.freeze([
     ),
   }),
   Object.freeze({
-    slug: 'less-is-more-when-tokens-pretend',
+    slug: 'do-agents-dream-of-farnsworth',
     date: '2026-08-13',
     edited: '2026-08-13',
     tag: 'AI',
