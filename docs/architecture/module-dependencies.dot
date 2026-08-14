@@ -1,0 +1,86 @@
+digraph ModuleDependencies {
+  graph [rankdir=TB, label="Portfolio OS — Current-State Module Dependencies\nsource: docs/architecture/architecture-model.json", labelloc=t, fontsize=16, fontname="Helvetica", bgcolor="white"];
+  node [shape=box, style="rounded,filled", fillcolor="#ffffff", color="#183B9B", fontname="Helvetica", fontsize=10, margin="0.12,0.06"];
+  edge [color="#183B9B", fontname="Helvetica", fontsize=9, arrowsize=0.7];
+
+  subgraph cluster_external {
+    label="External";
+    color="#9DB8E8";
+    fontcolor="#183B9B";
+    visitor [label="Site Visitor\nsourceRefs: README.md"];
+    github_pages [label="GitHub Pages\nsourceRefs: README.md"];
+  }
+
+  subgraph cluster_shell {
+    label="App Shell (index.html + styles/*)";
+    color="#9DB8E8";
+    app_shell [label="App Shell\nsourceRefs: index.html, styles/tokens.css"];
+  }
+
+  subgraph cluster_runtime {
+    label="Browser Runtime (scripts/*)";
+    color="#9DB8E8";
+    main [label="main.js\ncomposition root\nsourceRefs: scripts/main.js"];
+    boot [label="Boot Sequence\nsourceRefs: scripts/boot.js"];
+    desktop [label="Desktop Kernel\nsourceRefs: scripts/desktop.js"];
+    window_manager [label="Window Manager\nsourceRefs: scripts/window-manager.js"];
+    window_state [label="Window State\nsourceRefs: scripts/state/window-state.js"];
+    app_registry [label="App Registry\nsourceRefs: scripts/apps/app-registry.js"];
+    apps [label="App Renderers (7 apps + folders\n+ pixel-art + wireframe-preview)\nsourceRefs: scripts/apps/*"];
+    environment [label="Environment Renderer\n(controller, renderer, state,\nmusic-deck, jacket-map)\nsourceRefs: scripts/environment/*"];
+    i18n [label="i18n\nsourceRefs: scripts/i18n/*"];
+    data [label="Content Data\nsourceRefs: scripts/data/content.js"];
+    media_catalog [label="Media Catalog\nsourceRefs: media/catalog.js"];
+    routing [label="Content Routes\nsourceRefs: scripts/routing/content-routes.js"];
+    preferences [label="Preferences\nsourceRefs: scripts/state/preferences.js"];
+    audio [label="Audio Service\nsourceRefs: scripts/audio.js"];
+    content_pages [label="Content Pages\n(article-page, project-page)\nsourceRefs: scripts/pages/*"];
+    vendor_three [label="three.js (vendored)\nsourceRefs: vendor/three.module.min.js"];
+  }
+
+  subgraph cluster_build {
+    label="Build-time (Node)";
+    color="#9DB8E8";
+    static_generator [label="Static Page Generator\nsourceRefs: scripts/generate-content-pages.mjs"];
+    generated_pages [shape=folder, label="Generated Pages\nwriting|projects/*/index.html\nsourceRefs: content-pages.manifest.json"];
+  }
+
+  subgraph cluster_storage {
+    label="Browser Storage";
+    color="#9DB8E8";
+    localStorage [shape=cylinder, label="localStorage\nportfolio-os:preferences\nsourceRefs: scripts/state/preferences.js"];
+  }
+
+  visitor -> app_shell [label="opens"];
+  github_pages -> app_shell [label="serves"];
+  app_shell -> main [label="loads module entry"];
+  main -> boot [label="createBootController"];
+  main -> desktop [label="createDesktopController"];
+  main -> window_manager [label="createWindowManager"];
+  main -> environment [label="createDesktopEnvironmentController"];
+  main -> apps [label="imports 7 renderers + registry"];
+  main -> app_registry [label="getApps()"];
+  main -> i18n [label="createI18n"];
+  main -> routing [label="readDesktopTarget(?open=)"];
+  main -> preferences [label="load/save"];
+  main -> audio [label="createAudioService"];
+  desktop -> apps [label="desktop-folders"];
+  window_manager -> window_state [label="pure geometry/state helpers"];
+  environment -> data [label="terrain seeds from projects"];
+  environment -> media_catalog [label="tracks + jacket map"];
+  apps -> data [label="projects/articles/about/contact"];
+  apps -> media_catalog [label="photos/tracks"];
+  apps -> routing [label="contentPath links"];
+  apps -> environment [label="deck timecode (albums)"];
+  apps -> vendor_three [label="dynamic import (wireframe)"];
+  content_pages -> data [label="article/project bodies"];
+  content_pages -> i18n [label="page locale"];
+  content_pages -> routing [label="back links to desktop"];
+  content_pages -> preferences [label="locale + prefs"];
+  content_pages -> vendor_three [label="wireframe preview"];
+  static_generator -> data [label="articles/projects (node)"];
+  static_generator -> routing [label="contentPath ownership"];
+  static_generator -> generated_pages [label="writes index.html"];
+  generated_pages -> routing [label="?open= back links"];
+  preferences -> localStorage [label="reads/writes", style=dashed];
+}

@@ -1,0 +1,653 @@
+{
+  "metadata": {
+    "modelName": "portfolio-blogs current-state architecture",
+    "generatedAt": "2026-08-13",
+    "scenarioSkill": "system-modeler",
+    "foundationSkills": ["c4model", "graphviz"],
+    "sourceRefPolicy": "resolvable",
+    "state": "current",
+    "scope": "Repository /Users/qizhi_dong/Projects/portfolio-blogs (two-am-portfolio-os). Static, framework-free, ES-module portfolio desktop simulation served by GitHub Pages."
+  },
+  "nodes": [
+    {
+      "id": "actor.visitor",
+      "label": "Site Visitor",
+      "type": "actor",
+      "state": "current",
+      "description": "Opens the site through a browser and interacts with the desktop surface and content pages.",
+      "sourceRefs": ["README.md"],
+      "confidence": "high"
+    },
+    {
+      "id": "actor.owner",
+      "label": "Site Owner (maintainer)",
+      "type": "actor",
+      "state": "current",
+      "description": "Author of the portfolio content and maintainer of the repo; the only data author.",
+      "sourceRefs": ["README.md", "scripts/data/content.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "ext.github-pages",
+      "label": "GitHub Pages",
+      "type": "external-system",
+      "state": "current",
+      "description": "Static hosting for the repository root; publishes the app shell and generated content pages.",
+      "sourceRefs": ["README.md"],
+      "confidence": "high"
+    },
+    {
+      "id": "container.app-shell",
+      "label": "App Shell",
+      "type": "container",
+      "state": "current",
+      "description": "Single-page entry: index.html with boot/desktop roots and icon templates, plus 10 CSS layers (tokens, shell, boot, icons, folders, windows-mode, macos-mode, environment, windows, apps, responsive).",
+      "sourceRefs": ["index.html", "styles/tokens.css", "styles/shell.css"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.main",
+      "label": "main.js (composition root)",
+      "type": "module",
+      "state": "current",
+      "description": "Wires preferences, i18n, boot, desktop, environment, window manager and app renderers together; handles ?open= deep links and skipBoot test hook.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.boot",
+      "label": "Boot Sequence",
+      "type": "module",
+      "state": "current",
+      "description": "Timed boot panel with skip; respects preferences.bootComplete and prefers-reduced-motion; persists completion.",
+      "sourceRefs": ["scripts/boot.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.desktop",
+      "label": "Desktop Kernel",
+      "type": "module",
+      "state": "current",
+      "description": "Renders the desktop surface, detects windows/macos mode, draws the bot sprite, renders desktop folders and app icons, dispatches opens.",
+      "sourceRefs": ["scripts/desktop.js", "scripts/apps/desktop-folders.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.window-manager",
+      "label": "Window Manager",
+      "type": "module",
+      "state": "current",
+      "description": "Owns window lifecycle: open, focus, minimize, maximize, restore, close, bounds clamping and reclamp on preference changes.",
+      "sourceRefs": ["scripts/window-manager.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.window-state",
+      "label": "Window State",
+      "type": "module",
+      "state": "current",
+      "description": "Pure window state and geometry helpers (create/open/focus/minimize/maximize/restore/close, clamp/bounds fill) used by the window manager.",
+      "sourceRefs": ["scripts/state/window-state.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.app-registry",
+      "label": "App Registry",
+      "type": "module",
+      "state": "current",
+      "description": "Frozen registry of 7 apps (projects, writing, about, contact, settings, photos, albums) with default window sizes and renderer names.",
+      "sourceRefs": ["scripts/apps/app-registry.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.apps",
+      "label": "App Renderers (apps/*)",
+      "type": "module",
+      "state": "current",
+      "description": "Pure DOM renderers: about, contact, placeholder, projects (ring), writing (list + reader), settings (4 sections), photos, albums, plus pixel-art SVG helper and wireframe-preview (dynamic three.js canvas).",
+      "sourceRefs": [
+        "scripts/apps/about-app.js",
+        "scripts/apps/contact-app.js",
+        "scripts/apps/projects-app.js",
+        "scripts/apps/writing-app.js",
+        "scripts/apps/settings-app.js",
+        "scripts/apps/photos-app.js",
+        "scripts/apps/albums-app.js",
+        "scripts/apps/placeholder-app.js",
+        "scripts/apps/pixel-art.js",
+        "scripts/apps/wireframe-preview.js"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "module.environment",
+      "label": "Environment Renderer",
+      "type": "module",
+      "state": "current",
+      "description": "Canvas 2D ASCII terrain + quiet-zone opacity renderer with capability detection (phone-static/static/animated) driven by environment-state; hosts the music deck and jacket map.",
+      "sourceRefs": [
+        "scripts/environment/environment-controller.js",
+        "scripts/environment/environment-renderer.js",
+        "scripts/environment/environment-state.js",
+        "scripts/environment/music-deck.js",
+        "scripts/environment/jacket-map.js"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "module.environment-state",
+      "label": "Environment State",
+      "type": "module",
+      "state": "current",
+      "description": "Pure capability detection (phone-static/static/animated), motion state, view enumeration, and quiet-zone opacity logic for the environment renderer.",
+      "sourceRefs": ["scripts/environment/environment-state.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.i18n",
+      "label": "i18n",
+      "type": "module",
+      "state": "current",
+      "description": "Locale-aware dictionary lookup with subscription; three locales: en, zh-CN, ja.",
+      "sourceRefs": ["scripts/i18n/i18n.js", "scripts/i18n/dictionaries.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.data",
+      "label": "Content Data",
+      "type": "module",
+      "state": "current",
+      "description": "Frozen source of truth for projects, articles, about, contact channels; all labels localized via L(en, zhCN, ja).",
+      "sourceRefs": ["scripts/data/content.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.media-catalog",
+      "label": "Media Catalog",
+      "type": "module",
+      "state": "current",
+      "description": "Tracks (wav files with pixel covers) and photos metadata; consumed by desktop folders, albums, photos and the environment deck.",
+      "sourceRefs": ["media/catalog.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.routing",
+      "label": "Content Routes",
+      "type": "module",
+      "state": "current",
+      "description": "Validates kind (writing|projects) and slug, builds content paths, desktop ?open= targets, and reads the deep-link target.",
+      "sourceRefs": ["scripts/routing/content-routes.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.preferences",
+      "label": "Preferences",
+      "type": "module",
+      "state": "current",
+      "description": "Versioned, validated load/save of user preferences in localStorage; locale resolution from storage or browser languages.",
+      "sourceRefs": ["scripts/state/preferences.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.audio",
+      "label": "Audio Service",
+      "type": "module",
+      "state": "current",
+      "description": "WebAudio synthesized UI cues (boot/click/window/notice) with enabled flag and lazy AudioContext.",
+      "sourceRefs": ["scripts/audio.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.content-pages",
+      "label": "Content Pages (pages/*)",
+      "type": "module",
+      "state": "current",
+      "description": "Standalone generated pages: content-page dispatches by data-content-kind, article-page renders reader, project-page renders wireframe preview.",
+      "sourceRefs": ["scripts/pages/content-page.js", "scripts/pages/article-page.js", "scripts/pages/project-page.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.static-generator",
+      "label": "Static Page Generator",
+      "type": "module",
+      "state": "current",
+      "description": "Node build-time script that renders writing|projects/*/index.html from content data, emits manifest, supports --check validation.",
+      "sourceRefs": ["scripts/generate-content-pages.mjs", "content-pages.manifest.json"],
+      "confidence": "high"
+    },
+    {
+      "id": "data.generated-pages",
+      "label": "Generated Pages (writing|projects/*/index.html)",
+      "type": "database",
+      "state": "current",
+      "description": "14 generated standalone HTML pages (9 writing, 5 projects) listed in content-pages.manifest.json.",
+      "sourceRefs": ["content-pages.manifest.json"],
+      "confidence": "high"
+    },
+    {
+      "id": "data.localstorage",
+      "label": "localStorage",
+      "type": "database",
+      "state": "current",
+      "description": "Browser storage for the portfolio-os:preferences key; schema version 1 with full validation on load.",
+      "sourceRefs": ["scripts/state/preferences.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.vendor-three",
+      "label": "three.js (vendored)",
+      "type": "module",
+      "state": "current",
+      "description": "Local vendored three.module.min.js dynamically imported by wireframe-preview for project model previews.",
+      "sourceRefs": ["vendor/three.module.min.js", "scripts/apps/wireframe-preview.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "module.tests",
+      "label": "Test Suite",
+      "type": "module",
+      "state": "current",
+      "description": "Node unit tests (node --test) for state/data/routing/renderer modules and Playwright e2e specs for boot, desktop, apps, folders, windows, environment and content pages.",
+      "sourceRefs": ["tests/unit/preferences.test.js", "tests/unit/window-state.test.js", "tests/e2e/boot.spec.js", "tests/e2e/apps.spec.js", "package.json"],
+      "confidence": "high"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge.visitor-app-shell",
+      "from": "actor.visitor",
+      "to": "container.app-shell",
+      "type": "opens",
+      "sync": "sync",
+      "protocol": "HTTP",
+      "description": "Visitor loads index.html through GitHub Pages in a browser.",
+      "sourceRefs": ["README.md"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.github-pages-app-shell",
+      "from": "ext.github-pages",
+      "to": "container.app-shell",
+      "type": "serves",
+      "sync": "sync",
+      "protocol": "HTTP",
+      "description": "Hosts repository root including app shell and generated pages.",
+      "sourceRefs": ["README.md"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.app-shell-main",
+      "from": "container.app-shell",
+      "to": "module.main",
+      "type": "loads",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "index.html loads scripts/main.js as module entry.",
+      "sourceRefs": ["index.html"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-boot",
+      "from": "module.main",
+      "to": "module.boot",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "createBootController with preferences and onComplete=revealDesktop.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-desktop",
+      "from": "module.main",
+      "to": "module.desktop",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "createDesktopController wires apps, preferences, open dispatch, bot notice and environment sync.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-window-manager",
+      "from": "module.main",
+      "to": "module.window-manager",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "createWindowManager receives registry, i18n, preferences and the 7 app renderers.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-environment",
+      "from": "module.main",
+      "to": "module.environment",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "createDesktopEnvironmentController syncs terrain with desktop mode.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-apps",
+      "from": "module.main",
+      "to": "module.apps",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "Imports all 7 app renderers plus registry and passes them to window manager.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-i18n",
+      "from": "module.main",
+      "to": "module.i18n",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "createI18n with locale from preferences; subscribes to update lang/title.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-routing",
+      "from": "module.main",
+      "to": "module.routing",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "readDesktopTarget(location.search) for ?open= deep links.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-preferences",
+      "from": "module.main",
+      "to": "module.preferences",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "loadPreferences/savePreferences with localStorage.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.main-audio",
+      "from": "module.main",
+      "to": "module.audio",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "createAudioService; plays window/boot/notice cues.",
+      "sourceRefs": ["scripts/main.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.desktop-folders",
+      "from": "module.desktop",
+      "to": "module.apps",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "desktop.js imports renderDesktopFolders from apps/desktop-folders.js.",
+      "sourceRefs": ["scripts/desktop.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.window-state",
+      "from": "module.window-manager",
+      "to": "module.window-state",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "window-manager.js delegates geometry/state to state/window-state.js pure functions.",
+      "sourceRefs": ["scripts/window-manager.js", "scripts/state/window-state.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.environment-state",
+      "from": "module.environment",
+      "to": "module.environment-state",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "controller imports capability/motion/view helpers; renderer imports quiet-zone opacity.",
+      "sourceRefs": ["scripts/environment/environment-controller.js", "scripts/environment/environment-renderer.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.environment-data",
+      "from": "module.environment",
+      "to": "module.data",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "environment-controller imports projects for terrain; music-deck imports pick.",
+      "sourceRefs": ["scripts/environment/environment-controller.js", "scripts/environment/music-deck.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.environment-media",
+      "from": "module.environment",
+      "to": "module.media-catalog",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "environment-controller imports tracks and JACKET_MAP.",
+      "sourceRefs": ["scripts/environment/environment-controller.js", "scripts/environment/jacket-map.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.apps-data",
+      "from": "module.apps",
+      "to": "module.data",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "about/contact/projects/writing/albums/photos/desktop-folders import content data.",
+      "sourceRefs": ["scripts/apps/projects-app.js", "scripts/apps/writing-app.js", "scripts/apps/about-app.js", "scripts/apps/contact-app.js", "scripts/apps/albums-app.js", "scripts/apps/photos-app.js", "scripts/apps/desktop-folders.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.apps-media",
+      "from": "module.apps",
+      "to": "module.media-catalog",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "desktop-folders, albums and photos import photos/tracks from media/catalog.js.",
+      "sourceRefs": ["scripts/apps/desktop-folders.js", "scripts/apps/albums-app.js", "scripts/apps/photos-app.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.apps-deck",
+      "from": "module.apps",
+      "to": "module.environment",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "albums-app imports formatDeckTimecode from environment/music-deck.js.",
+      "sourceRefs": ["scripts/apps/albums-app.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.apps-routing",
+      "from": "module.apps",
+      "to": "module.routing",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "projects-app and writing-app build contentPath links.",
+      "sourceRefs": ["scripts/apps/projects-app.js", "scripts/apps/writing-app.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.apps-vendor",
+      "from": "module.apps",
+      "to": "module.vendor-three",
+      "type": "depends-on",
+      "sync": "async",
+      "protocol": "in-process",
+      "description": "wireframe-preview dynamically imports vendor/three.module.min.js (lazy, cached).",
+      "sourceRefs": ["scripts/apps/wireframe-preview.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.pages-data",
+      "from": "module.content-pages",
+      "to": "module.data",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "content-page imports articles/pick/projects; article-page and project-page import pick.",
+      "sourceRefs": ["scripts/pages/content-page.js", "scripts/pages/article-page.js", "scripts/pages/project-page.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.pages-i18n",
+      "from": "module.content-pages",
+      "to": "module.i18n",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "content-page builds its own i18n instance from resolved locale.",
+      "sourceRefs": ["scripts/pages/content-page.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.pages-preferences",
+      "from": "module.content-pages",
+      "to": "module.preferences",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "content-page loads/saves preferences and resolves preferred locale.",
+      "sourceRefs": ["scripts/pages/content-page.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.pages-vendor",
+      "from": "module.content-pages",
+      "to": "module.vendor-three",
+      "type": "depends-on",
+      "sync": "async",
+      "protocol": "in-process",
+      "description": "project-page uses createWireframePreview which imports three.js lazily.",
+      "sourceRefs": ["scripts/pages/project-page.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.generator-data",
+      "from": "module.static-generator",
+      "to": "module.data",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "generate-content-pages.mjs imports articles/projects from data/content.js.",
+      "sourceRefs": ["scripts/generate-content-pages.mjs"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.generator-routing",
+      "from": "module.static-generator",
+      "to": "module.routing",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "generator uses contentPath(kind, slug) for output routes and ownership validation.",
+      "sourceRefs": ["scripts/generate-content-pages.mjs"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.generator-pages",
+      "from": "module.static-generator",
+      "to": "data.generated-pages",
+      "type": "writes",
+      "sync": "sync",
+      "protocol": "file",
+      "description": "Build-time render of writing|projects/<slug>/index.html entries listed in the manifest.",
+      "sourceRefs": ["scripts/generate-content-pages.mjs", "content-pages.manifest.json"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.pages-share-routing",
+      "from": "data.generated-pages",
+      "to": "module.routing",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "Generated pages embed desktopPath(?open=kind) links back to the desktop view.",
+      "sourceRefs": ["scripts/pages/content-page.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.preferences-localstorage",
+      "from": "module.preferences",
+      "to": "data.localstorage",
+      "type": "reads",
+      "sync": "sync",
+      "protocol": "browser-storage",
+      "description": "Reads/writes portfolio-os:preferences with version check and full field validation.",
+      "sourceRefs": ["scripts/state/preferences.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.tests-state",
+      "from": "module.tests",
+      "to": "module.window-state",
+      "type": "validates",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "Unit tests cover window state geometry and lifecycle transitions.",
+      "sourceRefs": ["tests/unit/window-state.test.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.tests-env-state",
+      "from": "module.tests",
+      "to": "module.environment-state",
+      "type": "validates",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "Unit tests cover capability detection and renderer behavior.",
+      "sourceRefs": ["tests/unit/environment-state.test.js", "tests/unit/environment-renderer.test.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.tests-routing",
+      "from": "module.tests",
+      "to": "module.routing",
+      "type": "validates",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "Unit tests cover content route validation and desktop targets.",
+      "sourceRefs": ["tests/unit/content-routes.test.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.tests-generator",
+      "from": "module.tests",
+      "to": "module.static-generator",
+      "type": "validates",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "Unit tests cover page generation entries; e2e specs cover generated pages and desktop flows.",
+      "sourceRefs": ["tests/unit/content-page-generation.test.js", "tests/e2e/content-pages.spec.js", "tests/e2e/desktop.spec.js"],
+      "confidence": "high"
+    },
+    {
+      "id": "edge.generator-tests",
+      "from": "module.static-generator",
+      "to": "module.tests",
+      "type": "depends-on",
+      "sync": "sync",
+      "protocol": "in-process",
+      "description": "check:pages runs the generator in validation mode as part of npm test.",
+      "sourceRefs": ["package.json"],
+      "confidence": "high"
+    }
+  ]
+}
