@@ -2,9 +2,11 @@ import { createBootController } from './boot.js';
 import { createAudioService } from './audio.js';
 import { getApps } from './apps/app-registry.js';
 import { renderAboutApp } from './apps/about-app.js';
-import { renderAlbumsApp, selectAlbum } from './apps/albums-app.js';
+import { renderAlbumsApp } from './apps/albums-app.js';
+import { renderBooksApp } from './apps/books-app.js';
 import { renderContactApp } from './apps/contact-app.js';
-import { renderPhotosApp, selectPhoto } from './apps/photos-app.js';
+import { renderGamesApp } from './apps/games-app.js';
+import { renderPhotosApp } from './apps/photos-app.js';
 import { renderPlaceholderApp } from './apps/placeholder-app.js';
 import { renderProjectsApp } from './apps/projects-app.js';
 import { renderSettingsApp } from './apps/settings-app.js';
@@ -42,11 +44,7 @@ export const desktop = createDesktopController({
   i18n,
   preferences,
   onOpen: openApp,
-  onOpenFolderItem: (kind, slug) => {
-    if (kind === 'photos') selectPhoto(slug);
-    else if (kind === 'albums') selectAlbum(slug);
-    openApp(kind);
-  },
+  onOpenFolder: (folderId) => openApp(folderId),
   onPreferenceChange: (patch) => updatePreferences(patch),
   onBotNotice: () => audio.play('notice'),
   onRender: ({ mode }) => environment.sync({ mode }),
@@ -65,6 +63,8 @@ windowManager = createWindowManager({
     contact: renderContactApp,
     photos: renderPhotosApp,
     albums: renderAlbumsApp,
+    games: renderGamesApp,
+    books: renderBooksApp,
     settings: (context) => renderSettingsApp({
       ...context,
       preferences,

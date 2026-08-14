@@ -1,6 +1,7 @@
 import { photos } from '../../media/catalog.js';
 import { pick } from '../data/content.js';
 import { createPixelSvg } from './pixel-art.js';
+import { createFolderBrowser } from './folder-browser.js';
 
 let selectedSlug = photos[0].slug;
 const listeners = new Set();
@@ -20,58 +21,74 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
-export function renderPhotosApp({ i18n, mount }) {
+function renderPhotoItem({ document, i18n, item }) {
+  const art = createElement(document, 'span', {
+    'data-folder-item-art': '',
+    'data-photo-item-art': '',
+    'aria-hidden': 'true',
+  });
+  art.append(createPixelSvg(document, item.pixels));
+  return [
+    art,
+    createElement(document, 'span', { 'data-folder-item-title': '' }, pick(item.title, i18n.locale)),
+    createElement(document, 'span', { 'data-folder-item-meta': '' }, item.date),
+  ];
+}
+
+function renderPhotoViewer({ document, i18n, item, index, total, previous, next }) {
+  const viewer = createElement(document, 'section', {
+    'data-photos-app': '',
+    'data-content-viewer': '',
+    'aria-live': 'polite',
+  });
+  const counter = createElement(document, 'p', { 'data-photos-count': '' },
+    `${pad2(index + 1)} / ${pad2(total)}`);
+
+  const frame = createElement(document, 'div', { 'data-photos-frame': '' });
+  frame.append(createPixelSvg(document, item.pixels, { 'aria-hidden': 'true' }));
+
+  const caption = createElement(document, 'div', { 'data-photos-caption': '' });
+  caption.append(
+    createElement(document, 'h3', { 'data-photos-title': '' }, pick(item.title, i18n.locale)),
+    createElement(document, 'span', { 'data-photos-date': '' }, item.date),
+  );
+
+  const nav = createElement(document, 'div', { 'data-photos-nav': '' });
+  const previousButton = createElement(document, 'button', {
+    type: 'button', 'data-photos-prev': '', 'aria-label': i18n.t('photos.previous'),
+  }, '‹ PREV');
+  const nextButton = createElement(document, 'button', {
+    type: 'button', 'data-photos-next': '', 'aria-label': i18n.t('photos.next'),
+  }, 'NEXT ›');
+  previousButton.addEventListener('click', previous);
+  nextButton.addEventListener('click', next);
+  nav.append(previousButton, nextButton);
+
+  viewer.append(counter, frame, caption, nav);
+  return viewer;
+}
+
+export function renderPhotosApp({ i18n, mount, preferences }) {
   const document = mount.ownerDocument;
-  const root = createElement(document, 'section', { 'data-photos-app': '' });
-
-  const step = (direction) => {
-    const index = photos.findIndex((photo) => photo.slug === selectedSlug);
-    const next = (index + direction + photos.length) % photos.length;
-    selectPhoto(photos[next].slug);
-  };
-
-  const render = () => {
-    const index = Math.max(0, photos.findIndex((photo) => photo.slug === selectedSlug));
-    const photo = photos[index];
-
-    const counter = createElement(document, 'p', { 'data-photos-count': '' },
-      `${pad2(index + 1)} / ${pad2(photos.length)}`);
-
-    const frame = createElement(document, 'div', { 'data-photos-frame': '' });
-    frame.append(createPixelSvg(document, photo.pixels, { 'aria-hidden': 'true' }));
-
-    const caption = createElement(document, 'div', { 'data-photos-caption': '' });
-    caption.append(
-      createElement(document, 'h3', { 'data-photos-title': '' }, pick(photo.title, i18n.locale)),
-      createElement(document, 'span', { 'data-photos-date': '' }, photo.date),
-    );
-
-    const nav = createElement(document, 'div', { 'data-photos-nav': '' });
-    const previous = createElement(document, 'button', {
-      type: 'button', 'data-photos-prev': '', 'aria-label': i18n.t('photos.previous'),
-    }, '‹ PREV');
-    const next = createElement(document, 'button', {
-      type: 'button', 'data-photos-next': '', 'aria-label': i18n.t('photos.next'),
-    }, 'NEXT ›');
-    previous.addEventListener('click', () => step(-1));
-    next.addEventListener('click', () => step(1));
-    nav.append(previous, next);
-
-    root.replaceChildren(counter, frame, caption, nav);
-  };
-
-  const onExternalSelect = () => {
-    if (root.isConnected) render();
-    else listeners.delete(onExternalSelect);
-  };
-  listeners.add(onExternalSelect);
-
-  root.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') { event.preventDefault(); step(-1); }
-    if (event.key === 'ArrowRight') { event.preventDefault(); step(1); }
+  const root = createFolderBrowser({
+    document,
+    i18n,
+    appId: 'photos',
+    titleKey: 'apps.photos',
+    items: photos,
+    initialItemId: selectedSlug,
+    renderItem: renderPhotoItem,
+    renderViewer: renderPhotoViewer,
+    doubleClickThreshold: preferences?.doubleClickThreshold,
+    onSelectionChange: (slug) => {
+      selectedSlug = slug;
+      listeners.forEach((listener) => listener());
+    },
   });
 
-  render();
-  i18n.subscribe(render);
+  const onExternalSelect = () => {
+    if (!root.isConnected) listeners.delete(onExternalSelect);
+  };
+  listeners.add(onExternalSelect);
   return root;
 }

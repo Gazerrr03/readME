@@ -1,7 +1,3 @@
-import { photos, tracks } from '../../media/catalog.js';
-import { pick } from '../data/content.js';
-import { createPixelSvg } from './pixel-art.js';
-
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
   Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
@@ -9,64 +5,37 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
-const FOLDERS = [
-  { id: 'photos', icon: 'stamp-folder-photos', items: photos },
-  { id: 'albums', icon: 'stamp-folder-albums', items: tracks },
-];
+const FOLDER_DEFINITIONS = Object.freeze([
+  Object.freeze({ id: 'photos', icon: 'stamp-folder-photos' }),
+  Object.freeze({ id: 'albums', icon: 'stamp-folder-albums' }),
+  Object.freeze({ id: 'games', icon: 'folder-games' }),
+  Object.freeze({ id: 'books', icon: 'folder-books' }),
+]);
 
-function createStamp(document, i18n, folderId, item, index) {
-  const stamp = createElement(document, 'button', {
-    type: 'button',
-    'data-stamp': item.slug,
-    'data-stamp-folder': folderId,
-    'aria-label': pick(item.title, i18n.locale),
-  });
-  stamp.style.setProperty('--i', String(index));
-  const art = createElement(document, 'span', { 'data-stamp-art': '', 'aria-hidden': 'true' });
-  art.append(createPixelSvg(document, item.pixels ?? item.cover));
-  stamp.append(
-    art,
-    createElement(document, 'span', { 'data-app-label': '' }, pick(item.title, i18n.locale)),
-  );
-  return stamp;
-}
-
-/* Desktop folders: a folder toggle with a stack of "stamps" (content items)
-   that slide out to the left when the folder is expanded. Markup only —
-   expand/collapse and open behaviour live in desktop.js. */
-export function renderDesktopFolders({ document, i18n, expandedFolder = null }) {
-  const documentRef = document;
-  const container = createElement(documentRef, 'div', {
+/* The desktop cluster is now a launcher only. Collection contents live in
+   the centered app window so desktop and mobile share the same route. */
+export function renderDesktopFolders({ document, i18n }) {
+  const container = createElement(document, 'div', {
     'data-desktop-folders': '',
     role: 'group',
-    'aria-label': i18n.t('site.title'),
+    'aria-label': i18n.t('folders.group'),
   });
 
-  const template = documentRef.querySelector('[data-desktop-folder-template]');
+  const template = document.querySelector('[data-desktop-folder-template]');
   if (!template) throw new Error('Missing desktop folder template');
 
-  FOLDERS.forEach(({ id, icon, items }) => {
-    const folder = createElement(documentRef, 'div', {
-      'data-desktop-folder': id,
-      'data-expanded': String(expandedFolder === id),
-    });
-
+  FOLDER_DEFINITIONS.forEach(({ id }) => {
     const toggle = template.content.querySelector(`[data-folder-toggle="${id}"]`);
     if (!toggle) throw new Error(`Missing folder toggle: ${id}`);
     const button = toggle.cloneNode(true);
-    button.setAttribute('aria-expanded', String(expandedFolder === id));
     button.setAttribute('aria-label', i18n.t(`apps.${id}`));
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.setAttribute('aria-expanded', 'false');
     button.querySelector('[data-app-label]').textContent = i18n.t(`apps.${id}`);
-
-    const stamps = createElement(documentRef, 'div', {
-      'data-folder-stamps': id,
-      role: 'group',
-      'aria-label': i18n.t(`apps.${id}`),
+    const folder = createElement(document, 'div', {
+      'data-desktop-folder': id,
     });
-    stamps.append(...items.map((item, index) => createStamp(documentRef, i18n, id, item, index)));
-    if (expandedFolder !== id) stamps.setAttribute('inert', '');
-
-    folder.append(button, stamps);
+    folder.append(button);
     container.append(folder);
   });
 

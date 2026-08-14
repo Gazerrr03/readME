@@ -101,7 +101,7 @@ export function createWindowManager({
       maximize: () => manager.maximize(app.id),
       unmaximize: () => manager.unmaximize(app.id),
     };
-    const content = renderer({ app, i18n, mount, host });
+    const content = renderer({ app, i18n, mount, host, preferences });
     if (content instanceof root.ownerDocument.defaultView.Node) mount.append(content);
     else if (typeof content === 'string') mount.textContent = content;
   };

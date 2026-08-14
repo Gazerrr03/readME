@@ -14,6 +14,8 @@ const apps = Object.freeze([
   createApp('settings', 'apps.settings', 'controls', 900, 600, 'settings'),
   createApp('photos', 'apps.photos', 'stamp-folder-photos', 480, 430, 'photos'),
   createApp('albums', 'apps.albums', 'stamp-folder-albums', 380, 440, 'albums'),
+  createApp('games', 'apps.games', 'folder-games', 620, 460, 'games'),
+  createApp('books', 'apps.books', 'folder-books', 760, 560, 'books'),
 ]);
 
 export const APP_REGISTRY = apps;

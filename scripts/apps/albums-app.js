@@ -2,6 +2,7 @@ import { tracks } from '../../media/catalog.js';
 import { pick } from '../data/content.js';
 import { createPixelSvg } from './pixel-art.js';
 import { formatDeckTimecode } from '../environment/music-deck.js';
+import { createFolderBrowser } from './folder-browser.js';
 
 let selectedSlug = tracks[0].slug;
 const listeners = new Set();
@@ -21,37 +22,44 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
-export function renderAlbumsApp({ i18n, mount }) {
-  const document = mount.ownerDocument;
-  const view = mount.ownerDocument.defaultView;
-  const root = createElement(document, 'section', {
-    'data-albums-app': '',
-    'data-player-status': 'idle',
+function renderAlbumItem({ document, i18n, item }) {
+  const art = createElement(document, 'span', {
+    'data-folder-item-art': '',
+    'data-album-item-art': '',
+    'aria-hidden': 'true',
   });
+  art.append(createPixelSvg(document, item.cover));
+  return [
+    art,
+    createElement(document, 'span', { 'data-folder-item-title': '' }, pick(item.title, i18n.locale)),
+    createElement(document, 'span', { 'data-folder-item-meta': '' },
+      `${item.format} · ${formatDeckTimecode(item.seconds)}`),
+  ];
+}
 
+export function renderAlbumsApp({ i18n, mount, preferences }) {
+  const document = mount.ownerDocument;
+  const view = document.defaultView;
   const audio = new view.Audio();
   audio.loop = true;
   audio.preload = 'metadata';
-  let status = 'idle'; // idle | playing | paused | unavailable
+  let status = 'idle';
   let frameId = null;
-
-  const currentIndex = () => Math.max(0, tracks.findIndex((track) => track.slug === selectedSlug));
+  let activeViewer = null;
 
   const stopTick = () => {
     if (frameId !== null) view.cancelAnimationFrame(frameId);
     frameId = null;
   };
 
-  // No window-manager destroy hook: stop the audio once the window's DOM
-  // node is removed (same self-disposal pattern as the wireframe previews).
   const tick = () => {
     frameId = null;
-    if (!root.isConnected) {
+    if (!activeViewer?.isConnected) {
       audio.pause();
-      audio.removeAttribute('src');
       return;
     }
-    root.querySelector('[data-player-time]').textContent = formatDeckTimecode(audio.currentTime);
+    const time = activeViewer.querySelector('[data-player-time]');
+    if (time) time.textContent = formatDeckTimecode(audio.currentTime);
     if (status === 'playing') frameId = view.requestAnimationFrame(tick);
   };
 
@@ -60,63 +68,81 @@ export function renderAlbumsApp({ i18n, mount }) {
     if (status === 'playing') frameId = view.requestAnimationFrame(tick);
   };
 
-  const setStatus = (next) => {
-    status = next;
-    root.dataset.playerStatus = next;
-    const toggle = root.querySelector('[data-player-toggle]');
-    toggle.textContent = next === 'playing' ? '■' : '►';
-    toggle.setAttribute('aria-label', i18n.t(next === 'playing' ? 'deck.pause' : 'deck.play'));
-    if (next === 'unavailable') {
-      root.querySelector('[data-player-time]').textContent = i18n.t('deck.unavailable');
+  const setStatus = (nextStatus) => {
+    status = nextStatus;
+    if (activeViewer) {
+      activeViewer.dataset.playerStatus = nextStatus;
+      const toggle = activeViewer.querySelector('[data-player-toggle]');
+      if (toggle) {
+        toggle.textContent = nextStatus === 'playing' ? '■' : '►';
+        toggle.setAttribute('aria-label', i18n.t(
+          nextStatus === 'playing' ? 'deck.pause' : 'deck.play',
+        ));
+      }
+      if (nextStatus === 'unavailable') {
+        const time = activeViewer.querySelector('[data-player-time]');
+        if (time) time.textContent = i18n.t('deck.unavailable');
+      }
     }
     syncTick();
   };
 
-  const loadTrack = ({ autoplay = false } = {}) => {
-    const index = currentIndex();
-    const track = tracks[index];
-    root.querySelector('[data-player-track]').textContent = `TRK ${pad2(index + 1)}/${pad2(tracks.length)}`;
-    root.querySelector('[data-player-title]').textContent = pick(track.title, i18n.locale);
-    root.querySelector('[data-player-format]').textContent = `${track.format} · ${formatDeckTimecode(track.seconds)}`;
-    const cover = root.querySelector('[data-player-cover]');
-    cover.replaceChildren(createPixelSvg(document, track.cover, { 'aria-hidden': 'true' }));
+  const loadTrack = (viewer, track, { autoplay = false } = {}) => {
+    viewer.querySelector('[data-player-track]').textContent = `TRK ${pad2(
+      tracks.indexOf(track) + 1,
+    )}/${pad2(tracks.length)}`;
+    viewer.querySelector('[data-player-title]').textContent = pick(track.title, i18n.locale);
+    viewer.querySelector('[data-player-format]').textContent = `${track.format} · ${formatDeckTimecode(
+      track.seconds,
+    )}`;
+    viewer.querySelector('[data-player-cover]').replaceChildren(
+      createPixelSvg(document, track.cover, { 'aria-hidden': 'true' }),
+    );
     if (!audio.src.endsWith(track.file)) {
       audio.src = track.file;
-      root.querySelector('[data-player-time]').textContent = formatDeckTimecode(0);
+      viewer.querySelector('[data-player-time]').textContent = formatDeckTimecode(0);
     }
-    if (autoplay) audio.play().then(() => setStatus('playing')).catch(() => setStatus('unavailable'));
+    if (autoplay) {
+      audio.play().then(() => setStatus('playing')).catch(() => setStatus('unavailable'));
+    }
   };
 
-  const build = () => {
+  const renderAlbumViewer = ({
+    item,
+    i18n: localized,
+    previous,
+    next,
+    shouldAutoplay,
+  }) => {
+    const viewer = createElement(document, 'section', {
+      'data-albums-app': '',
+      'data-content-viewer': '',
+      'data-player-status': status,
+    });
+    activeViewer = viewer;
+
     const counter = createElement(document, 'p', { 'data-player-track': '' });
     const cover = createElement(document, 'div', { 'data-player-cover': '' });
     const title = createElement(document, 'h3', { 'data-player-title': '' });
     const meta = createElement(document, 'p', { 'data-player-format': '' });
-
     const controls = createElement(document, 'div', { 'data-player-controls': '' });
-    const previous = createElement(document, 'button', {
-      type: 'button', 'data-player-prev': '', 'aria-label': i18n.t('player.previous'),
+    const previousButton = createElement(document, 'button', {
+      type: 'button', 'data-player-prev': '', 'aria-label': localized.t('player.previous'),
     }, '‹');
-    const toggle = createElement(document, 'button', { type: 'button', 'data-player-toggle': '' }, '►');
-    const next = createElement(document, 'button', {
-      type: 'button', 'data-player-next': '', 'aria-label': i18n.t('deck.next'),
+    const toggle = createElement(document, 'button', {
+      type: 'button', 'data-player-toggle': '',
+      'aria-label': localized.t(status === 'playing' ? 'deck.pause' : 'deck.play'),
+    }, status === 'playing' ? '■' : '►');
+    const nextButton = createElement(document, 'button', {
+      type: 'button', 'data-player-next': '', 'aria-label': localized.t('deck.next'),
     }, '›');
-    controls.append(previous, toggle, next);
+    controls.append(previousButton, toggle, nextButton);
+    const time = createElement(document, 'p', {
+      'data-player-time': '',
+    }, formatDeckTimecode(audio.currentTime));
 
-    const time = createElement(document, 'p', { 'data-player-time': '' }, formatDeckTimecode(0));
-
-    previous.addEventListener('click', () => {
-      const nextIndex = (currentIndex() - 1 + tracks.length) % tracks.length;
-      const keepPlaying = status === 'playing';
-      selectAlbum(tracks[nextIndex].slug);
-      if (!keepPlaying) setStatus('idle');
-    });
-    next.addEventListener('click', () => {
-      const nextIndex = (currentIndex() + 1) % tracks.length;
-      const keepPlaying = status === 'playing';
-      selectAlbum(tracks[nextIndex].slug);
-      if (!keepPlaying) setStatus('idle');
-    });
+    previousButton.addEventListener('click', previous);
+    nextButton.addEventListener('click', next);
     toggle.addEventListener('click', () => {
       if (status === 'playing') {
         audio.pause();
@@ -126,26 +152,40 @@ export function renderAlbumsApp({ i18n, mount }) {
       audio.play().then(() => setStatus('playing')).catch(() => setStatus('unavailable'));
     });
 
-    root.replaceChildren(counter, cover, title, meta, controls, time);
+    viewer.append(counter, cover, title, meta, controls, time);
+    loadTrack(viewer, item, { autoplay: shouldAutoplay });
+    setStatus(status);
+    return viewer;
   };
-
-  const onExternalSelect = () => {
-    if (!root.isConnected) {
-      listeners.delete(onExternalSelect);
-      return;
-    }
-    loadTrack({ autoplay: status === 'playing' });
-  };
-  listeners.add(onExternalSelect);
 
   audio.addEventListener('error', () => setStatus('unavailable'));
 
-  build();
-  loadTrack({ autoplay: true });
-  i18n.subscribe(() => {
-    build();
-    loadTrack();
-    setStatus(status);
+  const root = createFolderBrowser({
+    document,
+    i18n,
+    appId: 'albums',
+    titleKey: 'apps.albums',
+    items: tracks,
+    initialItemId: selectedSlug,
+    renderItem: renderAlbumItem,
+    renderViewer: renderAlbumViewer,
+    doubleClickThreshold: preferences?.doubleClickThreshold,
+    onBeforeBack: () => {
+      audio.pause();
+      audio.removeAttribute('src');
+      setStatus('paused');
+      stopTick();
+      activeViewer = null;
+    },
+    onSelectionChange: (slug) => {
+      selectedSlug = slug;
+      listeners.forEach((listener) => listener());
+    },
   });
+
+  const onExternalSelect = () => {
+    if (!root.isConnected) listeners.delete(onExternalSelect);
+  };
+  listeners.add(onExternalSelect);
   return root;
 }

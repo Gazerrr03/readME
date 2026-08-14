@@ -64,7 +64,7 @@ test('macOS mode shows the menu bar and Dock', async ({ page }) => {
   await expect(page.locator('[data-desktop-mode="macos"]')).toBeVisible();
   await expect(page.locator('[data-macos-menu]')).toBeVisible();
   await expect(page.locator('[data-macos-dock]')).toBeVisible();
-  await expect(page.locator('[data-desktop-folders] [data-folder-toggle]')).toHaveCount(2);
+  await expect(page.locator('[data-desktop-folders] [data-folder-toggle]')).toHaveCount(4);
   await expect(page.locator('[data-macos-dock] [data-app-icon]')).toHaveCount(5);
 });
 
@@ -190,7 +190,7 @@ test('macOS desktop shows a vertical folder column and the Dock opens apps', asy
   const albums = desktop.locator('[data-folder-toggle="albums"]');
   const projects = desktop.locator('[data-macos-dock] [data-app-icon="projects"]');
 
-  await expect(desktop.locator('[data-folder-toggle]')).toHaveCount(2);
+  await expect(desktop.locator('[data-folder-toggle]')).toHaveCount(4);
 
   await photos.focus();
   await photos.press('ArrowDown');

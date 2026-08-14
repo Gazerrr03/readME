@@ -1,5 +1,5 @@
-/* Captures the desktop folders for visual review: collapsed, expanded,
-   the photos viewer, and the albums player. */
+/* Captures the collection launchers for visual review: the desktop cluster,
+   folder windows, content viewers, and the mobile launcher. */
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 
@@ -30,18 +30,18 @@ async function shoot(name, { layout, viewport, act }) {
 const DESKTOP = { width: 1440, height: 900 };
 
 await shoot('folders-macos-collapsed', { layout: 'macos', viewport: DESKTOP });
-await shoot('folders-macos-photos-expanded', {
+await shoot('folders-macos-photos-window', {
   layout: 'macos',
   viewport: DESKTOP,
   act: (page) => page.locator('[data-folder-toggle="photos"]').click(),
 });
-await shoot('folders-macos-albums-expanded', {
+await shoot('folders-macos-albums-window', {
   layout: 'macos',
   viewport: DESKTOP,
   act: (page) => page.locator('[data-folder-toggle="albums"]').click(),
 });
 await shoot('folders-windows-collapsed', { layout: 'windows', viewport: DESKTOP });
-await shoot('folders-windows-photos-expanded', {
+await shoot('folders-windows-photos-window', {
   layout: 'windows',
   viewport: DESKTOP,
   act: (page) => page.locator('[data-folder-toggle="photos"]').click(),
@@ -51,7 +51,7 @@ await shoot('folders-photos-viewer', {
   viewport: DESKTOP,
   act: async (page) => {
     await page.locator('[data-folder-toggle="photos"]').click();
-    await page.locator('[data-stamp="coast"]').click();
+    await page.locator('[data-folder-item="coast"]').dblclick();
   },
 });
 await shoot('folders-albums-player', {
@@ -59,7 +59,7 @@ await shoot('folders-albums-player', {
   viewport: DESKTOP,
   act: async (page) => {
     await page.locator('[data-folder-toggle="albums"]').click();
-    await page.locator('[data-stamp="tide-study-0200"]').click();
+    await page.locator('[data-folder-item="tide-study-0200"]').dblclick();
   },
 });
 await shoot('folders-macos-phone', { layout: 'macos', viewport: { width: 390, height: 844 } });

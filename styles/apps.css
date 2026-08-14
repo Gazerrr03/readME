@@ -632,3 +632,382 @@ a[data-contact-row] {
   [data-photos-nav] button,
   [data-player-controls] button { transition-duration: 1ms; }
 }
+
+/* ── Collection folder / viewer shell ─────────────────────── */
+
+[data-folder-browser] {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--mono);
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+}
+
+[data-folder-header] {
+  align-items: flex-start;
+  border-bottom: var(--stroke);
+  display: flex;
+  flex: 0 0 auto;
+  gap: 16px;
+  justify-content: space-between;
+  padding-bottom: 12px;
+}
+
+[data-folder-heading] { min-width: 0; }
+
+[data-folder-kicker],
+[data-folder-count],
+[data-folder-hint],
+[data-folder-item-meta],
+[data-book-reader-kicker],
+[data-book-reader-meta] {
+  font-size: 10px;
+  letter-spacing: 1px;
+  opacity: 0.72;
+}
+
+[data-folder-title] {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.05;
+  margin: 4px 0;
+}
+
+[data-folder-hint] {
+  flex: 0 0 auto;
+  margin-top: 4px;
+  text-align: right;
+}
+
+[data-folder-back],
+[data-book-open] {
+  background: var(--white);
+  border: var(--stroke);
+  border-radius: 0;
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 10px;
+  min-height: 30px;
+  padding: 6px 10px;
+  text-decoration: none;
+  transition:
+    transform var(--press-duration) var(--ease-out),
+    background-color var(--ui-duration) ease,
+    color var(--ui-duration) ease;
+}
+
+[data-folder-list] {
+  align-content: start;
+  display: grid;
+  flex: 1;
+  gap: 20px 16px;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  min-height: 0;
+  overflow: auto;
+  padding: 4px 8px 12px 0;
+}
+
+[data-folder-item] {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--blue);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  padding: 4px;
+  text-align: center;
+  transition: color var(--ui-duration) ease;
+}
+
+[data-folder-item-art] {
+  align-items: center;
+  background: var(--white);
+  border: var(--stroke);
+  box-shadow: 5px 5px 0 var(--blue);
+  display: flex;
+  height: 92px;
+  justify-content: center;
+  line-height: 0;
+  padding: 8px;
+  transition:
+    transform var(--ui-duration) var(--ease-out),
+    box-shadow var(--ui-duration) var(--ease-out),
+    background-color var(--ui-duration) ease,
+    color var(--ui-duration) ease;
+  width: min(128px, 100%);
+}
+
+[data-folder-item-art] svg {
+  display: block;
+  height: auto;
+  image-rendering: pixelated;
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+}
+
+[data-folder-item-title] {
+  font-size: 11px;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+[data-folder-item][data-selected='true'] [data-folder-item-art],
+[data-folder-item]:focus-visible [data-folder-item-art] {
+  background: var(--blue);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+[data-folder-item][data-selected='true'] { color: var(--blue); }
+
+[data-folder-item]:focus-visible,
+[data-folder-back]:focus-visible,
+[data-book-open]:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+[data-folder-empty] {
+  align-self: center;
+  border: var(--stroke);
+  font-size: 11px;
+  justify-self: center;
+  line-height: 1.8;
+  max-width: 280px;
+  padding: 18px;
+  text-align: center;
+}
+
+[data-games-empty] code {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* ── ASCII / pixel bookshelf ───────────────────────────────── */
+
+[data-bookshelf] [data-folder-list] {
+  align-items: end;
+  gap: 28px 20px;
+  grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
+  perspective: 1200px;
+  perspective-origin: 50% 38%;
+}
+
+[data-bookshelf] [data-folder-item] {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+[data-book-box] {
+  display: block;
+  height: 154px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform var(--ui-duration) var(--ease-out);
+  width: 112px;
+}
+
+[data-book-front],
+[data-book-spine],
+[data-book-pages] {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+[data-book-front] {
+  background: var(--white);
+  border: var(--stroke);
+  box-shadow: 6px 6px 0 var(--blue);
+  display: flex;
+  inset: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  transform: translateZ(14px);
+}
+
+[data-book-spine] {
+  align-items: center;
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  color: var(--white);
+  display: flex;
+  font-size: 9px;
+  height: 100%;
+  justify-content: center;
+  left: -14px;
+  padding: 4px 2px;
+  top: 0;
+  transform: rotateY(-90deg);
+  transform-origin: right center;
+  width: 14px;
+}
+
+[data-book-pages] {
+  background: repeating-linear-gradient(
+    0deg,
+    var(--white) 0,
+    var(--white) 3px,
+    var(--blue) 3px,
+    var(--blue) 4px
+  );
+  border: var(--stroke);
+  height: 100%;
+  right: -14px;
+  top: 0;
+  transform: rotateY(90deg);
+  transform-origin: left center;
+  width: 14px;
+}
+
+[data-book-ascii] {
+  color: var(--blue);
+  font-family: var(--mono);
+  font-size: 7px;
+  line-height: 1.16;
+  white-space: pre;
+}
+
+[data-book-pixels] {
+  align-self: center;
+  display: block;
+  width: 82px;
+}
+
+[data-book-pixels] svg { width: 100%; }
+
+[data-bookshelf] [data-folder-item]:hover [data-book-box],
+[data-bookshelf] [data-folder-item]:focus-visible [data-book-box] {
+  transform: translateZ(15px) translateY(-5px) rotateY(-5deg);
+}
+
+[data-book-reader] {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+  min-height: 0;
+}
+
+[data-book-reader-masthead] { grid-column: 1 / -1; }
+
+[data-book-reader-title] {
+  font-family: var(--serif);
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 5px 0;
+}
+
+[data-book-reader-cover] {
+  align-self: start;
+  display: flex;
+  justify-content: center;
+  padding: 10px 12px 12px 0;
+}
+
+[data-book-box-detail] {
+  height: 260px;
+  width: 190px;
+}
+
+[data-book-box-detail] [data-book-ascii] { font-size: 10px; }
+[data-book-box-detail] [data-book-pixels] { width: 138px; }
+
+[data-book-reader-copy] {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 8px;
+}
+
+[data-book-reader-body] {
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+[data-book-reader-body] p,
+[data-book-reader-body] h4,
+[data-book-reader-body] blockquote { margin-bottom: 12px; }
+
+[data-book-reader-body] h4 {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+}
+
+[data-book-reader-body] blockquote {
+  border-left: 4px solid var(--blue);
+  font-style: italic;
+  padding-left: 12px;
+}
+
+[data-book-reader-body] a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+}
+
+[data-book-open] { display: inline-block; margin-top: 6px; }
+
+[data-book-reader-nav] {
+  display: flex;
+  gap: 8px;
+  grid-column: 1 / -1;
+}
+
+[data-book-reader-nav] button {
+  background: var(--white);
+  border: var(--stroke);
+  border-radius: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  min-height: 30px;
+  padding: 6px 10px;
+}
+
+[data-book-reader-nav] button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+@media (hover: hover) and (pointer: fine) {
+  [data-folder-back]:hover,
+  [data-book-open]:hover,
+  [data-book-reader-nav] button:hover {
+    background: var(--blue);
+    color: var(--white);
+  }
+}
+
+@media (max-width: 760px) {
+  [data-folder-header] { gap: 8px; }
+  [data-folder-title] { font-size: 23px; }
+  [data-folder-hint] { font-size: 9px; }
+  [data-folder-list] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  [data-bookshelf] [data-folder-list] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  [data-book-reader] {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    overflow: auto;
+  }
+  [data-book-reader-cover] { padding: 0 0 8px; }
+  [data-book-reader-copy] { overflow: visible; }
+  [data-book-box-detail] { height: 216px; width: 158px; }
+  [data-book-box-detail] [data-book-ascii] { font-size: 8px; }
+  [data-book-box-detail] [data-book-pixels] { width: 112px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-folder-item-art],
+  [data-book-box],
+  [data-folder-back],
+  [data-book-open] { transition-duration: 1ms; }
+}

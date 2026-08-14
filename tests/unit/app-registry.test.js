@@ -4,7 +4,7 @@ import { getApp, getApps } from '../../scripts/apps/app-registry.js';
 
 test('registers the applications in desktop order', () => {
   assert.deepEqual(getApps().map(({ id }) => id), [
-    'projects', 'writing', 'about', 'contact', 'settings', 'photos', 'albums',
+    'projects', 'writing', 'about', 'contact', 'settings', 'photos', 'albums', 'games', 'books',
   ]);
 });
 

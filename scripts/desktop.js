@@ -122,12 +122,6 @@ function getHorizontalRowIndex(index, key, length) {
   return (index + direction + length) % length;
 }
 
-function getVerticalColumnIndex(index, key, length) {
-  if (key === 'ArrowLeft' || key === 'ArrowRight') return index;
-  const direction = key === 'ArrowUp' ? -1 : 1;
-  return (index + direction + length) % length;
-}
-
 function getGridNextIndex(index, key, icons, columns) {
   const rows = Math.ceil(icons.length / columns);
   const row = index % rows;
@@ -151,7 +145,7 @@ export function createDesktopController({
   i18n,
   preferences,
   onOpen = () => {},
-  onOpenFolderItem = () => {},
+  onOpenFolder = () => {},
   onPreferenceChange = () => {},
   onBotNotice = () => {},
   onRender = () => {},
@@ -160,7 +154,6 @@ export function createDesktopController({
   let mode = detectDesktopMode(environment, preferences.layout);
   let selectedAppId = null;
   let lastIconClick = null;
-  let expandedFolder = null;
   let botTimer = null;
   let botAnimationTimer = null;
   let botAnimationToken = 0;
@@ -289,18 +282,6 @@ export function createDesktopController({
     setSelectedApp(null);
   };
 
-  const setExpandedFolder = (folderId) => {
-    expandedFolder = folderId;
-    root.querySelectorAll('[data-desktop-folder]').forEach((folder) => {
-      const expanded = folder.dataset.desktopFolder === folderId;
-      folder.dataset.expanded = String(expanded);
-      folder.querySelector('[data-folder-toggle]').setAttribute('aria-expanded', String(expanded));
-      const stamps = folder.querySelector('[data-folder-stamps]');
-      if (expanded) stamps.removeAttribute('inert');
-      else stamps.setAttribute('inert', '');
-    });
-  };
-
   const getEventIcon = (event) => {
     const icon = event.target.closest('[data-app-icon]');
     return icon && root.contains(icon) ? icon : null;
@@ -321,20 +302,8 @@ export function createDesktopController({
 
     const folderToggle = event.target.closest('[data-folder-toggle]');
     if (folderToggle && root.contains(folderToggle)) {
-      const folderId = folderToggle.dataset.folderToggle;
-      setExpandedFolder(expandedFolder === folderId ? null : folderId);
+      onOpenFolder(folderToggle.dataset.folderToggle);
       return;
-    }
-
-    const stamp = event.target.closest('[data-stamp]');
-    if (stamp && root.contains(stamp)) {
-      setExpandedFolder(null);
-      onOpenFolderItem(stamp.dataset.stampFolder, stamp.dataset.stamp);
-      return;
-    }
-
-    if (expandedFolder && !event.target.closest('[data-desktop-folders]')) {
-      setExpandedFolder(null);
     }
 
     const icon = getEventIcon(event);
@@ -389,38 +358,12 @@ export function createDesktopController({
   });
 
   root.addEventListener('keydown', (event) => {
-    const stamp = event.target.closest('[data-stamp]');
-    if (stamp && root.contains(stamp)) {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        const folderId = stamp.dataset.stampFolder;
-        setExpandedFolder(null);
-        root.querySelector(`[data-folder-toggle="${folderId}"]`)?.focus();
-        return;
-      }
-      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-      event.preventDefault();
-      const stamps = [...stamp.parentElement.querySelectorAll('[data-stamp]')];
-      const nextIndex = getHorizontalRowIndex(
-        stamps.indexOf(stamp), event.key, stamps.length,
-      );
-      stamps[nextIndex].focus();
-      return;
-    }
-
     const folderToggle = event.target.closest('[data-folder-toggle]');
     if (folderToggle && root.contains(folderToggle)) {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        setExpandedFolder(null);
-        return;
-      }
       if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
       event.preventDefault();
       const toggles = [...root.querySelectorAll('[data-folder-toggle]')];
-      const nextIndex = getVerticalColumnIndex(
-        toggles.indexOf(folderToggle), event.key, toggles.length,
-      );
+      const nextIndex = getGridNextIndex(toggles.indexOf(folderToggle), event.key, toggles, 2);
       toggles[nextIndex].focus();
       return;
     }
@@ -516,7 +459,7 @@ export function createDesktopController({
       createSystemStatus(document, i18n, preferences),
     );
 
-    const foldersElement = renderDesktopFolders({ document, i18n, expandedFolder });
+    const foldersElement = renderDesktopFolders({ document, i18n });
 
     const bot = createElement(document, 'aside', {
       'data-bot-mount': '',

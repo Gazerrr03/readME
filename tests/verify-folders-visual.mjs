@@ -30,7 +30,7 @@ const check = (name, ok, detail = '') => {
     Math.round(box.x + box.width) === 1440 - 24 && Math.round(box.y) === 56,
     `right=${Math.round(box.x + box.width)} top=${Math.round(box.y)}`);
   const icons = page.locator('[data-desktop-folders] [data-icon]');
-  check('macos toggle icon svg count = 2', await icons.count() === 2, `count=${await icons.count()}`);
+  check('macos launcher icon svg count = 4', await icons.count() === 4, `count=${await icons.count()}`);
   const svg = icons.first().locator('svg').first();
   check('macos toggle svg viewBox 16x16', (await svg.getAttribute('viewBox')) === '0 0 16 16',
     await svg.getAttribute('viewBox'));
@@ -40,27 +40,18 @@ const check = (name, ok, detail = '') => {
   await context.close();
 }
 
-// 2. macOS expanded photos: stamps slide out to the LEFT, below-ish of toggle, staggered
+// 2. macOS photos launcher opens a centered folder window
 {
   const { context, page } = await session('macos');
   await page.locator('[data-folder-toggle="photos"]').click();
-  await page.waitForTimeout(600);
-  const toggleBox = await page.locator('[data-folder-toggle="photos"]').boundingBox();
-  const stamps = page.locator('[data-folder-stamps="photos"] [data-stamp]');
-  const count = await stamps.count();
-  const stampBoxes = [];
-  for (let i = 0; i < count; i++) stampBoxes.push(await stamps.nth(i).boundingBox());
-  check('photos expanded: 4 stamps', count === 4, `count=${count}`);
-  const sorted = [...stampBoxes].sort((a, b) => a.x - b.x);
-  check('stamps spread horizontally to the left of the toggle',
-    sorted.every((b) => b.x + b.width <= toggleBox.x),
-    `leftmost x=${Math.round(sorted[0].x)} toggle left=${Math.round(toggleBox.x)}`);
-  check('stamps do not overlap horizontally',
-    sorted.every((b, i) => i === 0 || b.x >= sorted[i - 1].x + sorted[i - 1].width - 1));
-  const art = page.locator('[data-stamp="coast"] [data-stamp-art] svg');
-  check('stamp art svg present', await art.count() === 1);
+  const win = page.locator('[data-app-window="photos"]');
+  const winBox = await win.boundingBox();
+  check('photos folder window on screen', winBox.y >= 0 && winBox.x >= 0);
+  check('photos folder has four items', await win.locator('[data-folder-item]').count() === 4);
+  const art = win.locator('[data-folder-item="coast"] [data-folder-item-art] svg');
+  check('photo item art svg present', await art.count() === 1);
   const viewBox = await art.first().getAttribute('viewBox');
-  check('stamp art viewBox 24x16 landscape', viewBox === '0 0 24 16', viewBox);
+  check('photo item art viewBox 24x16 landscape', viewBox === '0 0 24 16', viewBox);
   await context.close();
 }
 
@@ -68,7 +59,7 @@ const check = (name, ok, detail = '') => {
 {
   const { context, page } = await session('macos');
   await page.locator('[data-folder-toggle="photos"]').click();
-  await page.locator('[data-stamp="coast"]').click();
+  await page.locator('[data-folder-item="coast"]').dblclick();
   await page.waitForTimeout(300);
   const win = page.locator('[data-app-window="photos"]');
   const winBox = await win.boundingBox();
@@ -86,7 +77,7 @@ const check = (name, ok, detail = '') => {
 {
   const { context, page } = await session('macos');
   await page.locator('[data-folder-toggle="albums"]').click();
-  await page.locator('[data-stamp="tide-study-0200"]').click();
+  await page.locator('[data-folder-item="tide-study-0200"]').dblclick();
   await page.waitForTimeout(400);
   const win = page.locator('[data-app-window="albums"]');
   const cover = win.locator('[data-player-cover] svg');
@@ -112,12 +103,13 @@ const check = (name, ok, detail = '') => {
   await context.close();
 }
 
-// 6. zh locale: labels + stamp title
+// 6. zh locale: labels + viewer title
 {
   const { context, page } = await session('windows', 'zh-CN');
   check('zh folder label 照片', (await page.locator('[data-folder-toggle="photos"]').innerText()).includes('照片'));
   await page.locator('[data-folder-toggle="photos"]').click();
-  check('zh stamp 海岸 02:14', (await page.locator('[data-stamp="coast"]').innerText()).includes('海岸 02:14'));
+  await page.locator('[data-folder-item="coast"]').dblclick();
+  check('zh viewer 海岸 02:14', (await page.locator('[data-photos-title]').innerText()).includes('海岸 02:14'));
   await context.close();
 }
 
