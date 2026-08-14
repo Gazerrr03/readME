@@ -17,15 +17,17 @@ const probe = await page.evaluate(() => {
   const root = document.querySelector('[data-desktop-root]');
   const sprite = document.querySelector('[data-bot-sprite]');
   const box = sprite.getBoundingClientRect();
-  const inkGroup = sprite.querySelector('g');
+  const style = getComputedStyle(sprite);
   return {
     desktopBackground: getComputedStyle(root).backgroundColor,
     desktopMode: root.dataset.desktopMode,
+    pet: sprite.closest('[data-bot-mount]')?.dataset.botPet,
     spriteSize: { width: box.width, height: box.height },
-    inkFill: inkGroup?.getAttribute('fill'),
-    childCount: sprite.childElementCount,
-    dotCount: sprite.querySelectorAll('g:nth-of-type(2) rect').length,
-    sampleSVG: sprite.outerHTML.slice(0, 300),
+    state: sprite.dataset.botState,
+    frame: sprite.dataset.botFrame,
+    backgroundImage: style.backgroundImage,
+    backgroundSize: style.backgroundSize,
+    backgroundPosition: style.backgroundPosition,
   };
 });
 console.log(JSON.stringify(probe, null, 2));

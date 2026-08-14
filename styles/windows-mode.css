@@ -194,10 +194,70 @@
   min-height: 76px;
   min-width: 76px;
   padding: 0;
+  position: relative;
   transition: transform var(--ui-duration) var(--ease-out);
 }
 
-[data-bot-sprite] { display: block; }
+[data-bot-sprite] {
+  --bot-cell-height: 78px;
+  --bot-cell-width: 72px;
+  background-image: url('../assets/pets/pen-pen/spritesheet.webp');
+  background-position: calc(var(--bot-frame, 0) * -1 * var(--bot-cell-width))
+    calc(var(--bot-row, 0) * -1 * var(--bot-cell-height));
+  background-repeat: no-repeat;
+  background-size: calc(var(--bot-cell-width) * 8) calc(var(--bot-cell-height) * 9);
+  display: block;
+  height: var(--bot-cell-height);
+  image-rendering: pixelated;
+  width: var(--bot-cell-width);
+}
+
+[data-bot-glitch-layer] {
+  display: none;
+  inset: -8px;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+[data-bot-standby][data-bot-glitch] [data-bot-glitch-layer] {
+  animation: bot-glitch-pulse 320ms steps(3, end) both;
+  display: block;
+}
+
+[data-bot-standby][data-bot-glitch='contour'] [data-bot-glitch-layer] {
+  border: 2px solid var(--white);
+  clip-path: polygon(34% 2%, 67% 2%, 86% 24%, 94% 60%, 78% 96%, 22% 96%, 6% 60%, 14% 24%);
+  transform: translate(4px, -2px) scale(0.92);
+}
+
+[data-bot-standby][data-bot-glitch='dots'] [data-bot-glitch-layer] {
+  background-image: radial-gradient(circle, var(--white) 0 1px, transparent 1.5px);
+  background-size: 7px 7px;
+  clip-path: polygon(27% 5%, 73% 5%, 91% 30%, 84% 93%, 16% 93%, 9% 30%);
+  opacity: 0.8;
+  transform: translate(-5px, 2px);
+}
+
+[data-bot-standby][data-bot-glitch='blocks'] [data-bot-glitch-layer] {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0 7px,
+    var(--white) 7px 10px,
+    transparent 10px 15px
+  );
+  clip-path: polygon(11% 28%, 89% 28%, 89% 38%, 67% 38%, 67% 47%, 94% 47%, 94% 60%, 24% 60%, 24% 73%, 8% 73%);
+  opacity: 0.72;
+  transform: translate(5px, 1px);
+}
+
+@keyframes bot-glitch-pulse {
+  0% { opacity: 0; }
+  18% { opacity: 0.95; }
+  46% { opacity: 0.45; transform: translate(2px, 0); }
+  72% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
 
 [data-bot-bubble] {
   background: var(--white);
@@ -257,6 +317,13 @@
   [data-bot-standby]:hover { transform: translateY(-2px); }
   [data-bot-standby]:hover [data-bot-sprite] {
     filter: drop-shadow(3px 3px 0 var(--white));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-bot-standby][data-bot-glitch] [data-bot-glitch-layer] {
+    animation: none;
+    display: none;
   }
 }
 

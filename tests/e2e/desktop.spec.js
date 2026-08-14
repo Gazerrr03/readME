@@ -118,6 +118,21 @@ test('fine pointer selects an icon with a click and opens it with a double click
   await expect.poll(() => page.evaluate(() => window.testOpenCalls)).toEqual(['projects']);
 });
 
+test('clicking the blank desktop surface clears icon selection', async ({ page }) => {
+  await seedLayout(page, 'windows');
+  await page.goto('/?skipBoot=1');
+  const desktop = page.locator('[data-desktop-root]');
+  const projects = desktop.locator('[data-windows-icons] [data-app-icon="projects"]');
+
+  await projects.click();
+  await expect(projects).toHaveAttribute('data-selected', 'true');
+
+  await desktop.click({ position: { x: 720, y: 160 } });
+
+  await expect(projects).toHaveAttribute('data-selected', 'false');
+  await expect(projects).toHaveAttribute('aria-pressed', 'false');
+});
+
 test('coarse pointer opens once with a single tap', async ({ page }) => {
   const desktop = await mountDesktopController(page, { coarse: true });
   const writing = desktop.locator('[data-windows-icons] [data-app-icon="writing"]');
@@ -249,21 +264,36 @@ test('penguin sprite replaces the BOT tile and answers with one protocol token',
   await page.clock.install({ time: new Date('2026-08-13T10:00:00') });
   await page.goto('/');
   const mount = page.locator('[data-bot-mount]');
+  const sprite = mount.locator('[data-bot-sprite]');
 
-  await expect(mount.locator('[data-bot-sprite]')).toHaveCount(1);
+  await expect(sprite).toHaveCount(1);
+  await expect(mount).toHaveAttribute('data-bot-pet', 'pen-pen');
+  await expect(sprite).toHaveAttribute('data-bot-state', 'idle');
+  await expect.poll(() => page.evaluate(() => (
+    getComputedStyle(document.querySelector('[data-bot-sprite]')).backgroundImage
+  ))).toContain('spritesheet.webp');
   await expect(mount).not.toContainText('BOT');
   await expect(mount.locator('[data-bot-bubble]')).toBeHidden();
 
+  const botButton = page.locator('[data-bot-standby]');
+  await botButton.hover();
+  await expect(botButton.locator('[data-bot-glitch-layer]')).toHaveCount(1);
+  await expect(botButton).toHaveAttribute('data-bot-glitch', 'contour');
+  await expect.poll(() => botButton.getAttribute('data-bot-glitch')).toBeNull();
+
   const before = await mount.boundingBox();
-  await page.locator('[data-bot-standby]').click();
+  await botButton.click();
+  await expect(sprite).toHaveAttribute('data-bot-state', 'jumping');
   await expect(mount.locator('[data-bot-bubble]')).toBeVisible();
   await expect(mount.locator('[data-bot-bubble]')).toHaveText('SPLASH');
   await expect(page.getByRole('status')).toHaveText('BOT SERVICE: STANDBY');
   expect(await mount.boundingBox()).toEqual(before);
 
+  await expect.poll(() => sprite.getAttribute('data-bot-state'), { timeout: 1000 }).toBe('waiting');
   await expect(mount.locator('[data-bot-bubble]')).toBeHidden({ timeout: 4000 });
+  await expect(sprite).toHaveAttribute('data-bot-state', 'idle');
 
-  await page.locator('[data-bot-standby]').focus();
+  await botButton.focus();
   await page.keyboard.press('Enter');
   await expect(mount.locator('[data-bot-bubble]')).toHaveText('SPLASH');
   await expect(mount.locator('[data-bot-bubble]')).toHaveCount(1);
@@ -324,7 +354,10 @@ test('writing app summons and releases the reading companion paper', async ({ pa
   await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
   await expect(page.locator('[data-app-window="writing"]')).toBeVisible();
   await expect(paper).toBeVisible();
+  await expect.poll(() => page.locator('[data-bot-sprite]').getAttribute('data-bot-state'))
+    .toBe('review');
 
   await page.locator('[data-app-window="writing"] [data-window-close]').click();
   await expect(paper).toBeHidden();
+  await expect(page.locator('[data-bot-sprite]')).toHaveAttribute('data-bot-state', 'idle');
 });

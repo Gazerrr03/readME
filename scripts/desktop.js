@@ -23,6 +23,18 @@ export function isHotSpringHour(date = new Date()) {
   return hour === 1 || hour === 2;
 }
 
+const BOT_ANIMATIONS = Object.freeze({
+  idle: Object.freeze({ row: 0, frames: 6, frameDuration: 180 }),
+  'running-right': Object.freeze({ row: 1, frames: 8, frameDuration: 95 }),
+  'running-left': Object.freeze({ row: 2, frames: 8, frameDuration: 95 }),
+  waving: Object.freeze({ row: 3, frames: 4, frameDuration: 135 }),
+  jumping: Object.freeze({ row: 4, frames: 5, frameDuration: 120 }),
+  failed: Object.freeze({ row: 5, frames: 8, frameDuration: 120 }),
+  waiting: Object.freeze({ row: 6, frames: 6, frameDuration: 220 }),
+  running: Object.freeze({ row: 7, frames: 6, frameDuration: 100 }),
+  review: Object.freeze({ row: 8, frames: 6, frameDuration: 180 }),
+});
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 function svgElement(document, tagName, attributes = {}) {
@@ -31,78 +43,11 @@ function svgElement(document, tagName, attributes = {}) {
   return element;
 }
 
-function ellipsePath(cx, cy, rx, ry) {
-  return `M ${cx + rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx - rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx + rx} ${cy} Z`;
-}
-
-// The running desktop surface is solid var(--blue), so the sprite inverts the
-// ink roles: white is the drawn ink and the blue desktop reads through as the
-// negative space (belly, face patch, eye socket). Dither dots are blue marks
-// set into the white regions, like a 1-bit silkscreen print.
 function createPenguinSprite(document) {
-  const svg = svgElement(document, 'svg', {
-    viewBox: '0 0 68 92',
-    width: '68',
-    height: '92',
-    'aria-hidden': 'true',
-    focusable: 'false',
+  return createElement(document, 'span', {
     'data-bot-sprite': '',
+    'aria-hidden': 'true',
   });
-
-  const ink = svgElement(document, 'g', { fill: 'var(--white)' });
-  ink.append(
-    // Flippers reach out from the silhouette.
-    svgElement(document, 'ellipse', {
-      cx: '11.5', cy: '52', rx: '5', ry: '14', transform: 'rotate(12 11.5 52)',
-    }),
-    svgElement(document, 'ellipse', {
-      cx: '56.5', cy: '52', rx: '5', ry: '14', transform: 'rotate(-12 56.5 52)',
-    }),
-    // Body with the belly carved out (desktop blue shows through).
-    svgElement(document, 'path', {
-      d: `${ellipsePath(34, 54, 21, 30)} ${ellipsePath(34, 58, 12, 21)}`,
-      'fill-rule': 'evenodd',
-    }),
-    // Head, very slightly off-centre, with the face patch carved out.
-    svgElement(document, 'path', {
-      d: `${ellipsePath(31, 16, 13, 13)} ${ellipsePath(27, 18, 8, 7)}`,
-      'fill-rule': 'evenodd',
-    }),
-    // Beak and the single eye point inside the face patch.
-    svgElement(document, 'polygon', { points: '18,17 7,21 18,25' }),
-    svgElement(document, 'circle', { cx: '26', cy: '17', r: '1.8' }),
-    // Feet planted under the body.
-    svgElement(document, 'polygon', { points: '22,84 31,84 33,90 19,90' }),
-    svgElement(document, 'polygon', { points: '37,84 46,84 49,90 35,90' }),
-  );
-
-  const dither = svgElement(document, 'g', { fill: 'var(--blue)' });
-  const addDot = (x, y) => dither.append(svgElement(document, 'rect', {
-    x: String(x - 0.8), y: String(y - 0.8), width: '1.6', height: '1.6',
-  }));
-  // Back-edge shading: sparse dots between the belly and the body contour.
-  for (let y = 28; y <= 82; y += 3) {
-    for (let x = 16; x <= 54; x += 3) {
-      const body = ((x - 34) / 21) ** 2 + ((y - 54) / 30) ** 2;
-      const belly = ((x - 34) / 12) ** 2 + ((y - 58) / 21) ** 2;
-      if (body > 1 || body < 0.55 || belly <= 1.25) continue;
-      if (((x + y * 2) / 3) % 4 !== 0) continue;
-      addDot(x, y);
-    }
-  }
-  // Head-cap shading: sparse dots on the back of the head.
-  for (let y = 6; y <= 26; y += 3) {
-    for (let x = 26; x <= 42; x += 3) {
-      const head = ((x - 31) / 13) ** 2 + ((y - 16) / 13) ** 2;
-      const face = ((x - 27) / 8) ** 2 + ((y - 18) / 7) ** 2;
-      if (head > 1 || face <= 1.2) continue;
-      if (((x + y) / 3) % 3 !== 0) continue;
-      addDot(x, y);
-    }
-  }
-
-  svg.append(ink, dither);
-  return svg;
 }
 
 function createBotPaper(document) {
@@ -217,6 +162,93 @@ export function createDesktopController({
   let lastIconClick = null;
   let expandedFolder = null;
   let botTimer = null;
+  let botAnimationTimer = null;
+  let botAnimationToken = 0;
+  let botGlitchTimer = null;
+  let botGlitchIndex = 0;
+
+  const getBotSprite = () => root.querySelector('[data-bot-sprite]');
+
+  const prefersReducedMotion = () => root.ownerDocument.defaultView
+    .matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const stopBotAnimation = () => {
+    if (botAnimationTimer !== null) {
+      clearTimeout(botAnimationTimer);
+      botAnimationTimer = null;
+    }
+    botAnimationToken += 1;
+  };
+
+  const setBotFrame = (sprite, state, frame) => {
+    const animation = BOT_ANIMATIONS[state] ?? BOT_ANIMATIONS.idle;
+    sprite.dataset.botState = state;
+    sprite.dataset.botFrame = String(frame);
+    sprite.style.setProperty('--bot-row', String(animation.row));
+    sprite.style.setProperty('--bot-frame', String(frame));
+  };
+
+  const playBotState = (state, {
+    loop = true,
+    onComplete = null,
+    force = false,
+  } = {}) => {
+    const sprite = getBotSprite();
+    const animation = BOT_ANIMATIONS[state] ?? BOT_ANIMATIONS.idle;
+    if (!sprite) return;
+    if (prefersReducedMotion()) {
+      stopBotAnimation();
+      setBotFrame(sprite, 'idle', 0);
+      return;
+    }
+    if (!force && sprite.dataset.botState === state) return;
+
+    stopBotAnimation();
+    const token = botAnimationToken;
+    let frame = 0;
+    const tick = () => {
+      if (token !== botAnimationToken || !root.contains(sprite)) return;
+      setBotFrame(sprite, state, frame);
+      frame += 1;
+      if (frame >= animation.frames) {
+        if (!loop) {
+          botAnimationTimer = null;
+          onComplete?.();
+          return;
+        }
+        frame = 0;
+      }
+      botAnimationTimer = setTimeout(tick, animation.frameDuration);
+    };
+    tick();
+  };
+
+  const getBotRestState = () => {
+    const writingWindow = root.querySelector('[data-app-window="writing"]');
+    return writingWindow && !writingWindow.hidden ? 'review' : 'idle';
+  };
+
+  const settleBot = () => playBotState(getBotRestState());
+
+  const clearBotGlitch = () => {
+    if (botGlitchTimer !== null) {
+      clearTimeout(botGlitchTimer);
+      botGlitchTimer = null;
+    }
+    root.querySelector('[data-bot-standby]')?.removeAttribute('data-bot-glitch');
+  };
+
+  const triggerBotGlitch = (botButton) => {
+    if (prefersReducedMotion()) return;
+    clearBotGlitch();
+    const modes = ['contour', 'dots', 'blocks'];
+    botButton.dataset.botGlitch = modes[botGlitchIndex % modes.length];
+    botGlitchIndex += 1;
+    botGlitchTimer = setTimeout(() => {
+      botGlitchTimer = null;
+      botButton.removeAttribute('data-bot-glitch');
+    }, 320);
+  };
 
   const activateBot = () => {
     const mount = root.querySelector('[data-bot-mount]');
@@ -229,11 +261,17 @@ export function createDesktopController({
     mount.dataset.botActive = 'true';
     if (status) status.textContent = i18n.t('bot.standby');
     onBotNotice();
+    playBotState('jumping', {
+      force: true,
+      loop: false,
+      onComplete: () => playBotState('waiting', { force: true }),
+    });
     botTimer = setTimeout(() => {
       botTimer = null;
       if (!root.contains(bubble)) return;
       bubble.hidden = true;
       mount.dataset.botActive = 'false';
+      settleBot();
     }, 1200);
   };
 
@@ -333,6 +371,23 @@ export function createDesktopController({
     lastIconClick = { appId: icon.dataset.appIcon, time: now, x: event.clientX, y: event.clientY };
   });
 
+  root.addEventListener('pointerover', (event) => {
+    const botButton = event.target.closest('[data-bot-standby]');
+    if (!botButton || !root.contains(botButton) || botButton.contains(event.relatedTarget)) return;
+    if (!root.ownerDocument.defaultView.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const mount = botButton.closest('[data-bot-mount]');
+    if (mount?.dataset.botActive === 'true') return;
+    triggerBotGlitch(botButton);
+    playBotState('waving', { force: true, loop: false, onComplete: settleBot });
+  });
+
+  root.addEventListener('pointerout', (event) => {
+    const botButton = event.target.closest('[data-bot-standby]');
+    if (!botButton || !root.contains(botButton) || botButton.contains(event.relatedTarget)) return;
+    const mount = botButton.closest('[data-bot-mount]');
+    if (mount?.dataset.botActive !== 'true') settleBot();
+  });
+
   root.addEventListener('keydown', (event) => {
     const stamp = event.target.closest('[data-stamp]');
     if (stamp && root.contains(stamp)) {
@@ -395,12 +450,26 @@ export function createDesktopController({
     nextIcon.focus();
   });
 
+  const MutationObserver = root.ownerDocument.defaultView.MutationObserver;
+  const botWindowObserver = MutationObserver ? new MutationObserver(() => {
+    const mount = root.querySelector('[data-bot-mount]');
+    if (mount?.dataset.botActive !== 'true') settleBot();
+  }) : null;
+  botWindowObserver?.observe(root, {
+    attributes: true,
+    attributeFilter: ['hidden'],
+    childList: true,
+    subtree: true,
+  });
+
   const render = () => {
     const document = root.ownerDocument;
     if (botTimer !== null) {
       clearTimeout(botTimer);
       botTimer = null;
     }
+    clearBotGlitch();
+    stopBotAnimation();
     applyDesktopPreferences(root, preferences);
     const appIds = new Set(apps.map(({ id }) => id));
     const stampIcons = (templateSelector) => {
@@ -449,7 +518,10 @@ export function createDesktopController({
 
     const foldersElement = renderDesktopFolders({ document, i18n, expandedFolder });
 
-    const bot = createElement(document, 'aside', { 'data-bot-mount': '' });
+    const bot = createElement(document, 'aside', {
+      'data-bot-mount': '',
+      'data-bot-pet': 'pen-pen',
+    });
     const botBubble = createElement(document, 'span', {
       'data-bot-bubble': '', 'aria-hidden': 'true',
     });
@@ -457,7 +529,10 @@ export function createDesktopController({
     const botButton = createElement(document, 'button', {
       type: 'button', 'data-bot-standby': '', 'aria-label': i18n.t('bot.standby'),
     });
-    botButton.append(createPenguinSprite(document));
+    botButton.append(
+      createPenguinSprite(document),
+      createElement(document, 'span', { 'data-bot-glitch-layer': '', 'aria-hidden': 'true' }),
+    );
     const botPaper = createElement(document, 'span', { 'data-bot-paper': '', 'aria-hidden': 'true' });
     botPaper.append(createBotPaper(document));
     bot.append(
@@ -503,6 +578,7 @@ export function createDesktopController({
     root.replaceChildren(macosMenu, foldersElement, windowsIcons, bot, windowsTaskbar, macosDock);
     if (windowLayer) root.append(windowLayer);
     root.dataset.desktopMode = mode;
+    settleBot();
     onRender({ root, mode });
     return root;
   };

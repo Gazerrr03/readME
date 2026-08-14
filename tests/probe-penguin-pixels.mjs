@@ -21,7 +21,7 @@ const shot = await page.screenshot({
   clip: { x: box.x - 20, y: box.y - 20, width: box.width + 40, height: box.height + 40 },
 });
 
-const pixels = await page.evaluate(async (b64) => {
+const pixels = await page.evaluate(async ({ b64, spriteWidth, spriteHeight }) => {
   const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
   const blob = new Blob([bytes], { type: 'image/png' });
   const bitmap = await createImageBitmap(blob);
@@ -35,14 +35,16 @@ const pixels = await page.evaluate(async (b64) => {
     size: [bitmap.width, bitmap.height],
     // clip origin is sprite box minus 20px padding
     desktopUpperLeft: at(2, 2),
-    headCapCenter: at(20 + 31, 20 + 12),
-    facePatch: at(20 + 27, 20 + 18),
-    eye: at(20 + 26, 20 + 17),
-    bellyCenter: at(20 + 34, 20 + 58),
-    bodyRightEdge: at(20 + 50, 20 + 54),
-    footArea: at(20 + 26, 20 + 87),
+    spriteTopCenter: at(20 + Math.round(spriteWidth / 2), 20 + Math.round(spriteHeight * 0.16)),
+    spriteFaceCenter: at(20 + Math.round(spriteWidth / 2), 20 + Math.round(spriteHeight * 0.34)),
+    spriteBellyCenter: at(20 + Math.round(spriteWidth / 2), 20 + Math.round(spriteHeight * 0.65)),
+    spriteFootArea: at(20 + Math.round(spriteWidth / 2), 20 + Math.round(spriteHeight * 0.91)),
   };
-}, shot.toString('base64'));
+}, {
+  b64: shot.toString('base64'),
+  spriteWidth: box.width,
+  spriteHeight: box.height,
+});
 
 console.log(JSON.stringify(pixels, null, 2));
 await browser.close();

@@ -37,7 +37,10 @@ html, body { overflow-x: hidden; }
   }
 
   [data-desktop-mode='macos'] [data-bot-mount] { top: 38px; }
-  [data-bot-sprite] { height: 74px; width: 54px; }
+  [data-bot-sprite] {
+    --bot-cell-height: 63px;
+    --bot-cell-width: 58px;
+  }
 
   /* Narrow mounts sit near the top edge, so the transient token and steam
      drop below the sprite instead of being clipped above it. */
