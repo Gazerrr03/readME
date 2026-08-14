@@ -246,6 +246,11 @@ export function createDesktopController({
     });
   };
 
+  const clearAppSelection = () => {
+    lastIconClick = null;
+    setSelectedApp(null);
+  };
+
   const setExpandedFolder = (folderId) => {
     expandedFolder = folderId;
     root.querySelectorAll('[data-desktop-folder]').forEach((folder) => {
@@ -295,7 +300,10 @@ export function createDesktopController({
     }
 
     const icon = getEventIcon(event);
-    if (!icon) return;
+    if (!icon) {
+      if (event.target === root) clearAppSelection();
+      return;
+    }
     setSelectedApp(icon.dataset.appIcon);
     if (icon.closest('[data-taskbar-pins]')) {
       onOpen(icon.dataset.appIcon);
