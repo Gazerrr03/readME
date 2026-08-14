@@ -38,8 +38,8 @@ html, body { overflow-x: hidden; }
 
   [data-desktop-mode='macos'] [data-bot-mount] { top: 38px; }
   [data-bot-sprite] {
-    --bot-cell-height: 63px;
-    --bot-cell-width: 58px;
+    --bot-cell-height: 95px;
+    --bot-cell-width: 87px;
   }
 
   /* Narrow mounts sit near the top edge, so the transient token and steam

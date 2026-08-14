@@ -199,9 +199,9 @@
 }
 
 [data-bot-sprite] {
-  --bot-cell-height: 78px;
-  --bot-cell-width: 72px;
-  background-image: url('../assets/pets/pen-pen/spritesheet.webp');
+  --bot-cell-height: 117px;
+  --bot-cell-width: 108px;
+  background-image: url('../assets/pets/pen-pen/spritesheet-white.webp');
   background-position: calc(var(--bot-frame, 0) * -1 * var(--bot-cell-width))
     calc(var(--bot-row, 0) * -1 * var(--bot-cell-height));
   background-repeat: no-repeat;

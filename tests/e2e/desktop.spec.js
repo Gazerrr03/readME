@@ -271,7 +271,16 @@ test('penguin sprite replaces the BOT tile and answers with one protocol token',
   await expect(sprite).toHaveAttribute('data-bot-state', 'idle');
   await expect.poll(() => page.evaluate(() => (
     getComputedStyle(document.querySelector('[data-bot-sprite]')).backgroundImage
-  ))).toContain('spritesheet.webp');
+  ))).toContain('spritesheet-white.webp');
+  const spriteStyle = await sprite.evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { filter: style.filter, width: style.width, height: style.height };
+  });
+  expect(spriteStyle).toEqual({
+    filter: 'none',
+    width: '108px',
+    height: '117px',
+  });
   await expect(mount).not.toContainText('BOT');
   await expect(mount.locator('[data-bot-bubble]')).toBeHidden();
 
