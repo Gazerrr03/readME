@@ -1,3 +1,5 @@
+import { moveTheMountain } from './move-the-mountain.js';
+
 const L = (en, zhCN, ja) => Object.freeze({ en, 'zh-CN': zhCN, ja });
 
 export const pick = (localized, locale) => localized[locale] ?? localized.en;
@@ -643,6 +645,7 @@ export const articles = Object.freeze([
       'フィールドノート：ソフトウェア工学の材料は Fred Brooks『人月の神話』（1975 / 1995）から。「less is more」と「God is in the details」はミース・ファン・デル・ローエに帰する。使われない Skill に関する箇所は kinomotomio の『堆積と種子』に触発された。ランス大聖堂の解釈は私自身のものだ。',
     ),
   }),
+  moveTheMountain,
   Object.freeze({
     slug: 'notes-on-information-overload',
     date: '2026-05-18',

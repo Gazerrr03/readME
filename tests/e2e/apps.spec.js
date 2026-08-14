@@ -73,7 +73,12 @@ test('writing archive uses real links to independent article pages', async ({ pa
   const appWindow = page.locator('[data-app-window="writing"]');
 
   await expect(appWindow.locator('[data-writing-kicker]')).toHaveText('ARCHIVE');
-  await expect(appWindow.locator('[data-writing-list] a')).toHaveCount(9);
+  await expect(appWindow.locator('[data-writing-list] a')).toHaveCount(10);
+  await expect(appWindow.locator('[data-writing-open]').nth(2)).toHaveAttribute(
+    'href',
+    'writing/move-the-mountain/',
+  );
+  await expect(appWindow.locator('[data-writing-open]').nth(2)).toContainText('Move the Mountain Elsewhere');
   await expect(appWindow.locator('[data-writing-tag]').first()).toHaveText('{设计}');
   await appWindow.locator('[data-writing-open]').first().click();
   await expect(page).toHaveURL(/\/writing\/flow-canvas-information-overload\/$/);
