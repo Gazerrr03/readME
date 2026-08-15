@@ -63,6 +63,20 @@ test('minimizing or closing the active window activates the top remaining window
   assert.equal(closeWindow(second, 'writing').activeId, 'projects');
 });
 
+test('focusing keeps one active window and minimizing it promotes the next window', () => {
+  const first = openWindow(createWindowState(), app, bounds);
+  const second = openWindow(first, secondApp, bounds);
+  const focused = focusWindow(second, 'projects');
+
+  assert.equal(focused.activeId, 'projects');
+  assert.equal(focused.windows.filter((window) => window.status === 'normal').length, 2);
+  assert.equal(focused.windows.filter((window) => window.appId === focused.activeId).length, 1);
+
+  const minimized = minimizeWindow(focused, 'projects');
+  assert.equal(minimized.activeId, 'writing');
+  assert.equal(minimized.windows.filter((window) => window.status === 'normal').length, 1);
+});
+
 test('moving clamps a reachable title bar inside bounds', () => {
   const opened = openWindow(createWindowState(), app, bounds);
   const moved = moveWindow(opened, 'projects', { x: -900, y: 900 }, bounds);

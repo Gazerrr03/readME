@@ -69,7 +69,11 @@ html, body { overflow-x: hidden; }
   [data-desktop-root][data-has-visible-window='true'] [data-desktop-folders],
   [data-desktop-root][data-has-visible-window='true'] [data-macos-dock] { visibility: hidden; }
 
-  [data-window-titlebar] { cursor: default; }
+  [data-window-titlebar] {
+    cursor: default;
+    min-width: 0;
+  }
+  [data-window-title] { min-width: 0; }
   [data-window-content] { padding: 16px; }
 
   [data-running-apps] { max-width: 110px; }

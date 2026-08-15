@@ -110,17 +110,23 @@ export function createWindowManager({
     const document = root.ownerDocument;
     const article = createElement(document, 'article', {
       'data-app-window': app.id,
+      'data-os-surface': 'window',
     });
-    const titleBar = createElement(document, 'header', { 'data-window-titlebar': '' });
+    const titleBar = createElement(document, 'header', {
+      'data-window-titlebar': '',
+      'data-os-surface': 'titlebar',
+    });
     const title = createElement(document, 'h2', { 'data-window-title': '' });
     const controls = createElement(document, 'div', { 'data-window-controls': '' });
     const minimizeButton = createElement(document, 'button', {
       type: 'button',
       'data-window-minimize': '',
+      'data-os-control': 'window',
     }, '_');
     const closeButton = createElement(document, 'button', {
       type: 'button',
       'data-window-close': '',
+      'data-os-control': 'window',
     }, 'X');
     controls.append(
       minimizeButton,
@@ -133,16 +139,19 @@ export function createWindowManager({
       type: 'button',
       'data-window-mac-close': '',
       'data-tone': 'close',
+      'data-os-control': 'window',
     });
     const macMinimizeButton = createElement(document, 'button', {
       type: 'button',
       'data-window-mac-minimize': '',
       'data-tone': 'minimize',
+      'data-os-control': 'window',
     });
     const macMaximizeButton = createElement(document, 'button', {
       type: 'button',
       'data-window-mac-maximize': '',
       'data-tone': 'maximize',
+      'data-os-control': 'window',
     });
     controlsMac.append(macCloseButton, macMinimizeButton, macMaximizeButton);
     titleBar.append(controlsMac, title, controls);

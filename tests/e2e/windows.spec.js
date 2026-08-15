@@ -43,6 +43,21 @@ test('focuses an existing window and close removes its running entry', async ({ 
   await expect(page.locator('[data-running-app="projects"]')).toHaveCount(0);
 });
 
+test('active and inactive windows expose the shared OS state contract', async ({ page }) => {
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
+  await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
+
+  const projects = page.locator('[data-app-window="projects"]');
+  const writing = page.locator('[data-app-window="writing"]');
+  await projects.locator('[data-window-titlebar]').click({ position: { x: 8, y: 8 } });
+
+  await expect(projects).toHaveAttribute('data-window-status', 'normal');
+  await expect(projects).toHaveAttribute('data-window-active', 'true');
+  await expect(writing).toHaveAttribute('data-window-active', 'false');
+  await expect(projects.locator('[data-window-titlebar]')).toHaveAttribute('data-os-surface', 'titlebar');
+  await expect(projects.locator('[data-window-controls] button').first()).toHaveAttribute('data-os-control', 'window');
+});
+
 test('dragging the title bar moves the window and keeps it reachable', async ({ page }) => {
   await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   const appWindow = page.locator('[data-app-window="projects"]');

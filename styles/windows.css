@@ -26,12 +26,17 @@
 }
 
 [data-app-window][data-window-active='true'] { box-shadow: 9px 9px 0 var(--os-shadow); }
+[data-app-window][data-window-active='false'] { box-shadow: 4px 4px 0 var(--os-shadow); }
 
 [data-app-window][data-window-fullscreen='true'],
 [data-app-window][data-window-fullscreen='true'][data-window-active='true'] { box-shadow: none; }
 
 [data-app-window][hidden] {
   display: none;
+}
+
+[data-app-window][data-window-status='minimized'] {
+  pointer-events: none;
 }
 
 [data-window-titlebar] {
