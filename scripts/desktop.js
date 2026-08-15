@@ -705,6 +705,7 @@ export function createDesktopController({
     if (windowLayer) root.append(windowLayer);
     applyBotPosition(bot);
     root.dataset.desktopMode = mode;
+    root.dataset.osSkin = mode;
     settleBot();
     onRender({ root, mode });
     return root;

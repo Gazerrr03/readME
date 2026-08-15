@@ -1,13 +1,21 @@
 :root {
-  /* Ink blue, hue-converged onto the album-blue backdrop (224° vs 226°)
-     so upper-left instruments read as depth, not stickers. */
-  --blue: #183B9B;
-  --white: #ffffff;
-  /* Fallback color beneath the replaceable desktop background asset. */
-  --environment-blue: #1E40AF;
+  --os-canvas: #071426;
+  --os-surface: #0E2340;
+  --os-surface-raised: #1A2E46;
+  --os-surface-highlight: #40566A;
+  --os-accent: #748BFF;
+  --os-accent-bright: #B9D7FF;
+  --os-ink: #F2F6FF;
+  --os-muted: #8296B8;
+  --os-shadow: #020811;
+  --os-focus-width: 2px;
+  /* Compatibility aliases for modules that are migrated task by task. */
+  --blue: var(--os-accent);
+  --white: var(--os-ink);
+  --environment-blue: var(--os-canvas);
   --grid-size: 32px;
-  --stroke: 1px solid var(--blue);
-  --hard-shadow: 12px 12px 0 var(--blue);
+  --stroke: 1px solid var(--os-accent);
+  --hard-shadow: 12px 12px 0 var(--os-shadow);
   --serif: "Times New Roman", "Songti SC", "Yu Mincho", serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -20,7 +28,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { min-height: 100%; }
-body { color: var(--blue); background: var(--white); font-family: var(--serif); }
+body { color: var(--os-ink); background: var(--os-canvas); font-family: var(--serif); }
 button, input { color: inherit; font: inherit; }
 button { transition: transform var(--press-duration) var(--ease-out); }
 button:active { transform: scale(0.97); }
