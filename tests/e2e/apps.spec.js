@@ -104,7 +104,9 @@ test('contact lists four channels with working links', async ({ page }) => {
   const appWindow = page.locator('[data-app-window="contact"]');
 
   await expect(appWindow.locator('a[data-contact-row]')).toHaveCount(4);
-  await expect(appWindow.locator('[data-contact-row="email"]')).toHaveAttribute('href', 'mailto:hello@two-am.example.net');
+  await expect(appWindow.locator('[data-contact-row="email"]')).toHaveAttribute('href', 'mailto:gazerrr030303@gmail.com');
+  await expect(appWindow.locator('[data-contact-row="github"]')).toHaveAttribute('href', 'https://github.com/Gazerrr03');
+  await expect(appWindow.locator('[data-contact-row="github"]')).toContainText('@Gazerrr03');
   await expect(appWindow.locator('[data-contact-footer]')).toContainText('RECEIVING [OK]');
 });
 

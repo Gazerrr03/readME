@@ -895,16 +895,16 @@ export const channels = Object.freeze([
   Object.freeze({
     id: 'email',
     channel: 'EMAIL',
-    address: 'hello@two-am.example.net',
+    address: 'gazerrr030303@gmail.com',
     status: '[OK]',
-    href: 'mailto:hello@two-am.example.net',
+    href: 'mailto:gazerrr030303@gmail.com',
   }),
   Object.freeze({
     id: 'github',
     channel: 'GITHUB',
-    address: '@two-am-qz',
+    address: '@Gazerrr03',
     status: '[OK]',
-    href: 'https://github.example.net/two-am-qz',
+    href: 'https://github.com/Gazerrr03',
   }),
   Object.freeze({
     id: 'x',
