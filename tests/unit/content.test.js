@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { access } from 'node:fs/promises';
 import { photos, tracks } from '../../media/catalog.js';
+import { about } from '../../modules/base-buttons/about/data.js';
+import { channels } from '../../modules/base-buttons/contact/data.js';
 import {
   PROJECT_KINDS,
-  about,
   articles,
-  channels,
   pick,
   projects,
 } from '../../scripts/data/content.js';

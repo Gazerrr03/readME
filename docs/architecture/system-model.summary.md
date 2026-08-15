@@ -19,7 +19,7 @@ Two runtime surfaces exist side by side:
 | --- | --- | --- |
 | App Shell | Entry, CSS token layers, icon templates | `index.html`, `styles/*` (10 files) |
 | Desktop Kernel | Composition root, boot, desktop surface, window manager, registry | `scripts/main.js`, `boot.js`, `desktop.js`, `window-manager.js`, `apps/app-registry.js` |
-| App Renderers | 7 apps + folders + pixel-art + wireframe preview | `scripts/apps/*` |
+| App Modules | 9 app renderers + interactive container shell + shared helpers | `modules/*` |
 | Environment Renderer | Canvas 2D ASCII terrain, music deck, jacket map | `scripts/environment/*` |
 | Content Pages | Standalone article/project readers | `scripts/pages/*` |
 | Static Generator | Pre-renders pages + manifest + `--check` | `scripts/generate-content-pages.mjs` |

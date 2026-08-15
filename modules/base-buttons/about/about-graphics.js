@@ -1,4 +1,4 @@
-const AVATAR_URL = new URL('../../assets/about/ryo.jpg', import.meta.url).href;
+const AVATAR_URL = new URL('./assets/ryo.jpg', import.meta.url).href;
 const ASCII_GLYPHS = ' .,:;irsXA253hMHGS#9B&@';
 const MONO_FONT = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
 let avatarImagePromise;

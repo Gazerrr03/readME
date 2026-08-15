@@ -1,8 +1,8 @@
-import { tracks } from '../../media/catalog.js';
-import { pick } from '../data/content.js';
-import { createPixelSvg } from './pixel-art.js';
-import { formatDeckTimecode } from '../environment/music-deck.js';
-import { createFolderBrowser } from './folder-browser.js';
+import { tracks } from '../../../media/catalog.js';
+import { pick } from '../../../scripts/data/content.js';
+import { createPixelSvg } from '../shared/pixel-art.js';
+import { formatDeckTimecode } from '../../../scripts/environment/music-deck.js';
+import { createFolderBrowser } from '../shared/folder-browser.js';
 
 let selectedSlug = tracks[0].slug;
 const listeners = new Set();

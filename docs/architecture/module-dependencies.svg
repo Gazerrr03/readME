@@ -133,7 +133,7 @@
 <title>app_registry</title>
 <path fill="#ffffff" stroke="#183b9b" d="M979.56,-380.26C979.56,-380.26 811.22,-380.26 811.22,-380.26 805.22,-380.26 799.22,-374.26 799.22,-368.26 799.22,-368.26 799.22,-356.26 799.22,-356.26 799.22,-350.26 805.22,-344.26 811.22,-344.26 811.22,-344.26 979.56,-344.26 979.56,-344.26 985.56,-344.26 991.56,-350.26 991.56,-356.26 991.56,-356.26 991.56,-368.26 991.56,-368.26 991.56,-374.26 985.56,-380.26 979.56,-380.26"/>
 <text xml:space="preserve" text-anchor="middle" x="895.39" y="-365.26" font-family="Helvetica,sans-Serif" font-size="10.00">App Registry</text>
-<text xml:space="preserve" text-anchor="middle" x="895.39" y="-353.26" font-family="Helvetica,sans-Serif" font-size="10.00">sourceRefs: scripts/apps/app&#45;registry.js</text>
+<text xml:space="preserve" text-anchor="middle" x="895.39" y="-353.26" font-family="Helvetica,sans-Serif" font-size="10.00">sourceRefs: modules/app&#45;registry.js</text>
 </g>
 <!-- main&#45;&gt;app_registry -->
 <g id="edge9" class="edge">
@@ -146,9 +146,9 @@
 <g id="node10" class="node">
 <title>apps</title>
 <path fill="#ffffff" stroke="#183b9b" d="M1015.43,-297.46C1015.43,-297.46 877.35,-297.46 877.35,-297.46 871.35,-297.46 865.35,-291.46 865.35,-285.46 865.35,-285.46 865.35,-264.82 865.35,-264.82 865.35,-258.82 871.35,-252.82 877.35,-252.82 877.35,-252.82 1015.43,-252.82 1015.43,-252.82 1021.43,-252.82 1027.43,-258.82 1027.43,-264.82 1027.43,-264.82 1027.43,-285.46 1027.43,-285.46 1027.43,-291.46 1021.43,-297.46 1015.43,-297.46"/>
-<text xml:space="preserve" text-anchor="middle" x="946.39" y="-284.14" font-family="Helvetica,sans-Serif" font-size="10.00">App Renderers (7 apps + folders</text>
+<text xml:space="preserve" text-anchor="middle" x="946.39" y="-284.14" font-family="Helvetica,sans-Serif" font-size="10.00">App Modules (9 app renderers + containers</text>
 <text xml:space="preserve" text-anchor="middle" x="946.39" y="-272.14" font-family="Helvetica,sans-Serif" font-size="10.00">+ pixel&#45;art + wireframe&#45;preview)</text>
-<text xml:space="preserve" text-anchor="middle" x="946.39" y="-260.14" font-family="Helvetica,sans-Serif" font-size="10.00">sourceRefs: scripts/apps/*</text>
+<text xml:space="preserve" text-anchor="middle" x="946.39" y="-260.14" font-family="Helvetica,sans-Serif" font-size="10.00">sourceRefs: modules/*</text>
 </g>
 <!-- main&#45;&gt;apps -->
 <g id="edge8" class="edge">

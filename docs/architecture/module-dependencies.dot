@@ -25,8 +25,8 @@ digraph ModuleDependencies {
     desktop [label="Desktop Kernel\nsourceRefs: scripts/desktop.js"];
     window_manager [label="Window Manager\nsourceRefs: scripts/window-manager.js"];
     window_state [label="Window State\nsourceRefs: scripts/state/window-state.js"];
-    app_registry [label="App Registry\nsourceRefs: scripts/apps/app-registry.js"];
-    apps [label="App Renderers (7 apps + folders\n+ pixel-art + wireframe-preview)\nsourceRefs: scripts/apps/*"];
+    app_registry [label="App Registry\nsourceRefs: modules/app-registry.js"];
+    apps [label="App Modules (9 app renderers + interactive container shell\n+ shared helpers)\nsourceRefs: modules/*"];
     environment [label="Environment Renderer\n(controller, renderer, state,\nmusic-deck, jacket-map)\nsourceRefs: scripts/environment/*"];
     i18n [label="i18n\nsourceRefs: scripts/i18n/*"];
     data [label="Content Data\nsourceRefs: scripts/data/content.js"];

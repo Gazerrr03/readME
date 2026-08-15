@@ -1,5 +1,6 @@
-import { pick, projects } from '../data/content.js';
-import { contentPath } from '../routing/content-routes.js';
+import { projects } from './data.js';
+import { pick } from '../../../scripts/data/content.js';
+import { contentPath } from '../../../scripts/routing/content-routes.js';
 import { createWireframePreview } from './wireframe-preview.js';
 
 const SLOT_COUNT = projects.length * 2; // ring shows each project twice so the loop closes seamlessly

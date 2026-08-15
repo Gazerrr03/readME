@@ -1,4 +1,4 @@
-const THREE_URL = '../../vendor/three.module.min.js';
+const THREE_URL = '../../../vendor/three.module.min.js';
 const MAX_DPR = 1.5;
 const INK = 0x183b9b;
 const PAPER = 0xffffff;

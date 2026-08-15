@@ -1,4 +1,4 @@
-const THREE_URL = '../../vendor/three.module.min.js';
+const THREE_URL = '../../../vendor/three.module.min.js';
 const INK = 0x183b9b;
 const STEP_MS = 220;
 const STEP_ANGLE = Math.PI / 24;

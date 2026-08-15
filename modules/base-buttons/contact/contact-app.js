@@ -1,4 +1,4 @@
-import { channels } from '../data/content.js';
+import { channels } from './data.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);

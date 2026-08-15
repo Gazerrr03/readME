@@ -1,5 +1,6 @@
-import { articles, pick } from '../data/content.js';
-import { contentPath } from '../routing/content-routes.js';
+import { articles } from './data.js';
+import { pick } from '../../../scripts/data/content.js';
+import { contentPath } from '../../../scripts/routing/content-routes.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);

@@ -60,7 +60,7 @@ test('renderer-owned DOM survives focus and pointer dragging', async ({ page }) 
   await page.evaluate(async () => {
     const [{ createWindowManager }, { getApps }, { createI18n }] = await Promise.all([
       import('/scripts/window-manager.js'),
-      import('/scripts/apps/app-registry.js'),
+      import('/modules/app-registry.js'),
       import('/scripts/i18n/i18n.js'),
     ]);
     const root = document.createElement('section');
@@ -161,7 +161,7 @@ test('an external task surface restores a minimized window', async ({ page }) =>
   await page.evaluate(async () => {
     const [{ createWindowManager }, { getApps }, { createI18n }] = await Promise.all([
       import('/scripts/window-manager.js'),
-      import('/scripts/apps/app-registry.js'),
+      import('/modules/app-registry.js'),
       import('/scripts/i18n/i18n.js'),
     ]);
     const root = document.createElement('section');

@@ -1,6 +1,6 @@
-import { BOOKS } from '../data/collections.js';
+import { BOOKS } from './data.js';
 import { createBookshelfScene } from './bookshelf-scene.js';
-import { createFolderBrowser } from './folder-browser.js';
+import { createFolderBrowser } from '../shared/folder-browser.js';
 
 export { BOOKS };
 

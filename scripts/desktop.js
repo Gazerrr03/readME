@@ -1,4 +1,4 @@
-import { renderDesktopFolders } from './apps/desktop-folders.js';
+import { renderDesktopFolders } from '../modules/interactive-buttons/shared/desktop-folders.js';
 
 const MODES = new Set(['windows', 'macos']);
 const RENDER_PREFERENCES = new Set([

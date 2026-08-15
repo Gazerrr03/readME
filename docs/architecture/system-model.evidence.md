@@ -13,18 +13,18 @@ Modeled with the `system-modeler` scenario skill; sources shaped with `c4model` 
 | Boot sequence | `scripts/boot.js` (BOOT_STEPS, `preferences.bootComplete`, reduced-motion branch) | high |
 | Desktop kernel | `scripts/desktop.js` (mode detection, bot sprite, folders via `apps/desktop-folders.js`) | high |
 | Window lifecycle | `scripts/window-manager.js` + `scripts/state/window-state.js` (pure geometry/state helpers) | high |
-| App registry | `scripts/apps/app-registry.js` (frozen 7-app registry, `getApps()`/`getApp()`) | high |
-| App renderers | `scripts/apps/*` import graph (see below) | high |
+| App registry | `modules/app-registry.js` (frozen 9-app registry, `getApps()`/`getApp()`) | high |
+| App renderers | `modules/*` import graph (see below) | high |
 | Environment | `scripts/environment/*` (controller/renderer/state/music-deck/jacket-map) | high |
 | i18n | `scripts/i18n/i18n.js`, `scripts/i18n/dictionaries.js` (en/zh-CN/ja) | high |
-| Content data | `scripts/data/content.js` (projects, articles, about, channels, `L()` localization) | high |
+| Content data | `scripts/data/content.js` (projects, articles, `pick()` and localization) plus module-owned About/contact data | high |
 | Media catalog | `media/catalog.js` (tracks with pixel covers, photos), `media/music/*.wav` | high |
 | Routing | `scripts/routing/content-routes.js` (kind/slug validation, `contentPath`, `desktopPath`, `readDesktopTarget`) | high |
 | Preferences | `scripts/state/preferences.js` (versioned schema v1, field validation, locale resolution) | high |
 | Audio | `scripts/audio.js` (WebAudio cues: boot/click/window/notice) | high |
 | Content pages | `scripts/pages/content-page.js` (dispatcher by `data-content-kind`), `article-page.js`, `project-page.js` | high |
 | Static generator | `scripts/generate-content-pages.mjs` (render, manifest, `--check`), `content-pages.manifest.json` (14 pages) | high |
-| three.js vendor | `vendor/three.module.min.js`, dynamic `import(THREE_URL)` in `scripts/apps/wireframe-preview.js` | high |
+| three.js vendor | `vendor/three.module.min.js`, dynamic `import(THREE_URL)` in `modules/base-buttons/projects/wireframe-preview.js` and the books module | high |
 | Tests | `tests/unit/*.test.js` (11 files), `tests/e2e/*.spec.js` (9 files), `package.json` scripts | high |
 | Hosting | `README.md` (GitHub Pages, static server instructions) | high |
 
@@ -32,14 +32,14 @@ Modeled with the `system-modeler` scenario skill; sources shaped with `c4model` 
 
 | Renderer | Imports | Applies to |
 | --- | --- | --- |
-| `about-app.js` | `data/content.js` (about, pick) | About |
-| `contact-app.js` | `data/content.js` (channels) | Contact |
-| `projects-app.js` | `data/content.js`, `routing/content-routes.js`, `wireframe-preview.js` | Projects |
-| `writing-app.js` | `data/content.js`, `routing/content-routes.js` | Writing |
-| `settings-app.js` | none (pure renderer; receives context from `main.js`) | Settings |
-| `photos-app.js` | `media/catalog.js`, `data/content.js`, `pixel-art.js` | Photos |
-| `albums-app.js` | `media/catalog.js`, `data/content.js`, `pixel-art.js`, `environment/music-deck.js` | Albums |
-| `desktop-folders.js` | `media/catalog.js`, `data/content.js`, `pixel-art.js` | Desktop folders |
+| `about/about-app.js` | `about/data.js`, `scripts/data/content.js` (`pick`) | About |
+| `contact/contact-app.js` | `contact/data.js` | Contact |
+| `projects/projects-app.js` | `projects/data.js`, `scripts/data/content.js` (`pick`), routing, local wireframe preview | Projects |
+| `writing/writing-app.js` | `writing/data.js`, `scripts/data/content.js` (`pick`), routing | Writing |
+| `design/settings-app.js` | none (pure renderer; receives context from `main.js`) | Design / Settings |
+| `photos/photos-app.js` | `media/catalog.js`, `scripts/data/content.js` (`pick`), shared pixel-art and folder-browser | Photos |
+| `albums/albums-app.js` | `media/catalog.js`, `scripts/data/content.js` (`pick`), shared pixel-art and folder-browser, `environment/music-deck.js` | Albums |
+| `interactive-buttons/shared/desktop-folders.js` | launcher-only renderer for the four interactive containers | Interactive launchers |
 
 ## Known unknowns and validation gaps
 

@@ -1,7 +1,7 @@
-import { photos } from '../../media/catalog.js';
-import { pick } from '../data/content.js';
-import { createPixelSvg } from './pixel-art.js';
-import { createFolderBrowser } from './folder-browser.js';
+import { photos } from '../../../media/catalog.js';
+import { pick } from '../../../scripts/data/content.js';
+import { createPixelSvg } from '../shared/pixel-art.js';
+import { createFolderBrowser } from '../shared/folder-browser.js';
 
 let selectedSlug = photos[0].slug;
 const listeners = new Set();

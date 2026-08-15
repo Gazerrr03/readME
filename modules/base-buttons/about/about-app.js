@@ -1,4 +1,5 @@
-import { about, pick } from '../data/content.js';
+import { about } from './data.js';
+import { pick } from '../../../scripts/data/content.js';
 import { createAboutAvatar, createAboutBanner } from './about-graphics.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {

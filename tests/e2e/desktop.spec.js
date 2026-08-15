@@ -23,7 +23,7 @@ async function mountDesktopController(page, { coarse = false, layout = 'windows'
     );
     const [{ createDesktopController }, { getApps }, { createI18n }, { DEFAULT_PREFERENCES }] = await Promise.all([
       import('/scripts/desktop.js'),
-      import('/scripts/apps/app-registry.js'),
+      import('/modules/app-registry.js'),
       import('/scripts/i18n/i18n.js'),
       import('/scripts/state/preferences.js'),
     ]);

@@ -1,5 +1,5 @@
-import { GAMES } from '../data/collections.js';
-import { createFolderBrowser } from './folder-browser.js';
+import { GAMES } from './data.js';
+import { createFolderBrowser } from '../shared/folder-browser.js';
 
 export { GAMES };
 

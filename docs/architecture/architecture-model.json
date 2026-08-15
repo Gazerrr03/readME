@@ -69,7 +69,7 @@
       "type": "module",
       "state": "current",
       "description": "Renders the desktop surface, detects windows/macos mode, draws the bot sprite, renders desktop folders and app icons, dispatches opens.",
-      "sourceRefs": ["scripts/desktop.js", "scripts/apps/desktop-folders.js"],
+      "sourceRefs": ["scripts/desktop.js", "modules/interactive-buttons/shared/desktop-folders.js"],
       "confidence": "high"
     },
     {
@@ -95,27 +95,30 @@
       "label": "App Registry",
       "type": "module",
       "state": "current",
-      "description": "Frozen registry of 7 apps (projects, writing, about, contact, settings, photos, albums) with default window sizes and renderer names.",
-      "sourceRefs": ["scripts/apps/app-registry.js"],
+      "description": "Frozen registry of 9 apps (projects, writing, about, contact, settings, photos, albums, games, books) with default window sizes and renderer names.",
+      "sourceRefs": ["modules/app-registry.js"],
       "confidence": "high"
     },
     {
       "id": "module.apps",
-      "label": "App Renderers (apps/*)",
+      "label": "App Modules (modules/*)",
       "type": "module",
       "state": "current",
-      "description": "Pure DOM renderers: about, contact, placeholder, projects (ring), writing (list + reader), settings (4 sections), photos, albums, plus pixel-art SVG helper and wireframe-preview (dynamic three.js canvas).",
+      "description": "Pure DOM renderers grouped as base buttons and interactive buttons: about, contact, projects, writing, settings, photos, albums, games, books, placeholder, plus shared folder-browser/pixel-art helpers and a dynamic three.js preview.",
       "sourceRefs": [
-        "scripts/apps/about-app.js",
-        "scripts/apps/contact-app.js",
-        "scripts/apps/projects-app.js",
-        "scripts/apps/writing-app.js",
-        "scripts/apps/settings-app.js",
-        "scripts/apps/photos-app.js",
-        "scripts/apps/albums-app.js",
-        "scripts/apps/placeholder-app.js",
-        "scripts/apps/pixel-art.js",
-        "scripts/apps/wireframe-preview.js"
+        "modules/base-buttons/about/about-app.js",
+        "modules/base-buttons/contact/contact-app.js",
+        "modules/base-buttons/projects/projects-app.js",
+        "modules/base-buttons/writing/writing-app.js",
+        "modules/base-buttons/design/settings-app.js",
+        "modules/interactive-buttons/photos/photos-app.js",
+        "modules/interactive-buttons/albums/albums-app.js",
+        "modules/interactive-buttons/games/games-app.js",
+        "modules/interactive-buttons/books/books-app.js",
+        "modules/interactive-buttons/books/bookshelf-scene.js",
+        "modules/shared/placeholder-app.js",
+        "modules/interactive-buttons/shared/pixel-art.js",
+        "modules/base-buttons/projects/wireframe-preview.js"
       ],
       "confidence": "high"
     },
@@ -157,8 +160,8 @@
       "label": "Content Data",
       "type": "module",
       "state": "current",
-      "description": "Frozen source of truth for projects, articles, about, contact channels; all labels localized via L(en, zhCN, ja).",
-      "sourceRefs": ["scripts/data/content.js"],
+      "description": "Shared frozen source of truth for projects and articles, with module-owned About/contact data; localized values use the same L(en, zhCN, ja) shape.",
+      "sourceRefs": ["scripts/data/content.js", "modules/base-buttons/about/data.js", "modules/base-buttons/contact/data.js"],
       "confidence": "high"
     },
     {
@@ -239,7 +242,7 @@
       "type": "module",
       "state": "current",
       "description": "Local vendored three.module.min.js dynamically imported by wireframe-preview for project model previews.",
-      "sourceRefs": ["vendor/three.module.min.js", "scripts/apps/wireframe-preview.js"],
+      "sourceRefs": ["vendor/three.module.min.js", "modules/base-buttons/projects/wireframe-preview.js"],
       "confidence": "high"
     },
     {
@@ -447,8 +450,8 @@
       "type": "depends-on",
       "sync": "sync",
       "protocol": "in-process",
-      "description": "about/contact/projects/writing/albums/photos/desktop-folders import content data.",
-      "sourceRefs": ["scripts/apps/projects-app.js", "scripts/apps/writing-app.js", "scripts/apps/about-app.js", "scripts/apps/contact-app.js", "scripts/apps/albums-app.js", "scripts/apps/photos-app.js", "scripts/apps/desktop-folders.js"],
+      "description": "Base button modules import project/article or module-owned About/contact data; interactive modules keep their container data local and share the folder shell.",
+      "sourceRefs": ["modules/base-buttons/projects/projects-app.js", "modules/base-buttons/writing/writing-app.js", "modules/base-buttons/about/about-app.js", "modules/base-buttons/contact/contact-app.js", "modules/interactive-buttons/albums/albums-app.js", "modules/interactive-buttons/photos/photos-app.js", "modules/interactive-buttons/games/games-app.js", "modules/interactive-buttons/books/books-app.js"],
       "confidence": "high"
     },
     {
@@ -459,7 +462,7 @@
       "sync": "sync",
       "protocol": "in-process",
       "description": "desktop-folders, albums and photos import photos/tracks from media/catalog.js.",
-      "sourceRefs": ["scripts/apps/desktop-folders.js", "scripts/apps/albums-app.js", "scripts/apps/photos-app.js"],
+      "sourceRefs": ["modules/interactive-buttons/shared/desktop-folders.js", "modules/interactive-buttons/albums/albums-app.js", "modules/interactive-buttons/photos/photos-app.js"],
       "confidence": "high"
     },
     {
@@ -470,7 +473,7 @@
       "sync": "sync",
       "protocol": "in-process",
       "description": "albums-app imports formatDeckTimecode from environment/music-deck.js.",
-      "sourceRefs": ["scripts/apps/albums-app.js"],
+      "sourceRefs": ["modules/interactive-buttons/albums/albums-app.js"],
       "confidence": "high"
     },
     {
@@ -481,7 +484,7 @@
       "sync": "sync",
       "protocol": "in-process",
       "description": "projects-app and writing-app build contentPath links.",
-      "sourceRefs": ["scripts/apps/projects-app.js", "scripts/apps/writing-app.js"],
+      "sourceRefs": ["modules/base-buttons/projects/projects-app.js", "modules/base-buttons/writing/writing-app.js"],
       "confidence": "high"
     },
     {
@@ -492,7 +495,7 @@
       "sync": "async",
       "protocol": "in-process",
       "description": "wireframe-preview dynamically imports vendor/three.module.min.js (lazy, cached).",
-      "sourceRefs": ["scripts/apps/wireframe-preview.js"],
+      "sourceRefs": ["modules/base-buttons/projects/wireframe-preview.js"],
       "confidence": "high"
     },
     {

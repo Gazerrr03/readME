@@ -1,4 +1,4 @@
-import { createWireframePreview } from '../apps/wireframe-preview.js';
+import { createWireframePreview } from '../../modules/base-buttons/projects/wireframe-preview.js';
 import { pick } from '../data/content.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
