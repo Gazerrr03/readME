@@ -36,7 +36,8 @@ html, body { overflow-x: hidden; }
     top: 8px;
   }
 
-  [data-desktop-mode='macos'] [data-bot-mount] { top: 38px; }
+  /* Leave the mobile folder row clear even when the page is zoomed to 200%. */
+  [data-desktop-mode='macos'] [data-bot-mount] { top: 136px; }
   [data-bot-sprite] {
     --bot-cell-height: 95px;
     --bot-cell-width: 87px;

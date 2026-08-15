@@ -343,6 +343,20 @@ test('penguin can be long-pressed and dragged without persisting its position', 
   expect(Math.abs(reset.y - initial.y)).toBeLessThan(1);
 });
 
+test('macOS Pen Pen keeps clear of mobile folders at 200 percent zoom', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await seedLayout(page, 'macos');
+  await page.goto('/');
+  await page.locator('body').evaluate((body) => { body.style.zoom = '2'; });
+
+  const geometry = await page.evaluate(() => ({
+    bot: document.querySelector('[data-bot-mount]').getBoundingClientRect().toJSON(),
+    folders: document.querySelector('[data-desktop-folders]').getBoundingClientRect().toJSON(),
+  }));
+
+  expect(geometry.bot.top).toBeGreaterThanOrEqual(geometry.folders.bottom);
+});
+
 test('penguin keeps its localized accessible name in all three locales', async ({ page }) => {
   const names = {
     en: 'BOT SERVICE: STANDBY',

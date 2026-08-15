@@ -1,16 +1,16 @@
 # Portfolio OS Design Language
 
 > 本文档是后续新增页面、窗口、组件、图标、背景素材、动效与内容呈现的设计约束。
-> 当前基线是“蓝调像素怀旧”，不是 blueprint，也不是运行时 ASCII 展示。
+> 当前基线是“Deep Indigo × Retro Hardware × Workstation Desktop”的成套 OS 界面，不是 blueprint，也不是运行时 ASCII 展示。
 > 它总结当前已实现的视觉语言，不是对某个真实操作系统的复刻规范。
 
 ## 1. 设计定位
 
 ### 核心描述
 
-这是一个发生在凌晨两点的、虚构的个人作品集操作系统：像一台安静运行的旧显示设备，也像一款克制的像素游戏。它首先应当是一个**可以操作的系统**，其次才是一个网站；像素感负责建立记忆点，系统结构负责保证可用性。
+这是一个发生在凌晨两点的、虚构的个人作品集操作系统：像一台安静运行的旧显示设备，也像一款克制的像素游戏。它首先应当是一个**可以操作的系统**，其次才是一个网站；像素感负责建立记忆点，OS 结构负责保证可用性。
 
-当前视觉主题从 blueprint 转向蓝调像素怀旧：背景由经过处理的低分辨率图片或 GIF 构成，前景由蓝白色的系统栏、窗口、图标和 Pen Pen 组成。画面可以有颗粒、色阶和像素块，但不靠装饰堆叠气氛。
+当前视觉主题已经从 blueprint 转为深靛蓝的像素怀旧 OS：背景由经过处理的低分辨率图片或 GIF 构成，前景由深色系统栏、窗口、图标和白色 Pen Pen 组成。画面可以有颗粒、色阶和像素块，但不靠装饰堆叠气氛。
 
 ### 设计关键词
 
@@ -21,6 +21,12 @@
 - 稀疏而非空洞：背景提供空间感，前景只保留真正可操作或可识别的对象。
 - 少即是多：像素细节服务于构图和识别，不把每个空白填满。
 - 有人格的彩蛋：Pen Pen 是常驻的白色前景对象，安静存在，交互时才暴露少量故障感和生命感。
+
+### 三个系统级决策
+
+- **Shell 2：Shared OS + Platform Skins**。菜单栏、Dock、任务栏、窗口、图标、焦点环和状态反馈使用同一套组件契约；macOS 与 Windows 只改变系统 chrome、入口位置和少量空间规则，不各自发展一套视觉语言。
+- **Density 2：Workstation Desktop**。桌面允许同时承载背景、环境仪表、应用入口、系统状态和窗口，但每个区域都有有限的信息预算。仪表是低频状态，窗口是主要工作区，背景只提供空间和情绪。
+- **Surface 2：Retro Hardware**。组件使用直角、细边框、硬阴影和明确的 pressed / selected 状态，像贴在旧设备上的面板；不使用玻璃、模糊或软浮层。轻微 bevel 只服务于控件边缘和状态，不把内容包装成层层卡片。
 
 ## 2. 视觉层级与约束
 
@@ -36,13 +42,13 @@
 
 ### 固定层：新增设计必须遵守
 
-- 系统壳层使用蓝 / 白及其透明度、反相和线型变化表达状态。
+- 系统壳层使用 Deep Indigo 色阶、近白色文字和反相状态表达层级；透明度只用于次要背景可读性，不承担主要状态表达。
 - 背景采用经过预处理的像素图像或 GIF；默认全屏显示，使用 `object-fit: cover` 自适应尺寸。
 - 图像的像素感来自硬边、有限色阶和像素化采样，不通过难读的像素字体制造怀旧感。
 - 系统组件使用直角、细边框和无模糊硬阴影。
 - Serif 展示标题与 Monospace 系统文本保持明确分工。
 - 以 4px / 8px 为基础的间距节奏和 32px 默认网格继续有效，但网格是布局工具，不是背景主题。
-- Windows / macOS 两种桌面布局共享同一组件语言，只改变系统 chrome 和应用入口位置。
+- Windows / macOS 两种桌面布局共享同一组件语言，只改变系统 chrome、应用入口位置和必要的窄屏空间关系。
 - 英文、简体中文、日文三种语言下均不溢出、不遮挡、不改变信息层级。
 - `prefers-reduced-motion` 下仍能看懂全部状态变化。
 - 任何新增装饰都必须回答它服务的是识别、层级、状态还是操作；没有答案的装饰不加入。
@@ -58,26 +64,32 @@
 
 ## 3. 颜色
 
-### 系统基础色
+### Deep Indigo token 关系
 
 | Token | 值 | 用途 |
 | --- | --- | --- |
-| `--blue` | `#183B9B` | 系统文字、边框、主状态、标题栏和硬阴影 |
-| `--environment-blue` | `#1E40AF` | 桌面背景加载前的底色，以及环境层的深蓝基底 |
-| `--white` | `#ffffff` | 页面底色、反相文字、图标填充和 Pen Pen 主体 |
+| `--os-canvas` | `#071426` | 页面、桌面和背景加载前的最深底色 |
+| `--os-surface` | `#0E2340` | 普通窗口、应用内容和基础控件表面 |
+| `--os-surface-raised` | `#1A2E46` | 标题栏、系统栏、仪表和抬高一级的控件表面 |
+| `--os-surface-highlight` | `#40566A` | 边框、分隔线和低对比结构线 |
+| `--os-accent` | `#748BFF` | 选中、激活、按下和主要操作的反相底色 |
+| `--os-accent-bright` | `#B9D7FF` | focus ring、亮边框、故障轮廓和高优先级提示 |
+| `--os-ink` | `#F2F6FF` | 主要文字、图标、白色 Pen Pen 和前景高对比内容 |
+| `--os-muted` | `#8296B8` | 次要说明、低频状态和不抢焦点的信息 |
+| `--os-shadow` | `#020811` | 无模糊硬阴影和 pressed 后的深色边缘 |
 
-系统壳层保持蓝白识别。背景图片可以使用从原图提取的少量深蓝、亮蓝和近白色阶，但它们属于内容素材，不应被当作新的 UI token 扩散到按钮、窗口和导航中。
+系统壳层保持深靛蓝、亮蓝和近白的关系。背景图片可以使用从原图提取的少量蓝色阶，但它们属于内容素材，不应被当作新的 UI token 扩散到按钮、窗口和导航中。`--blue`、`--white` 等旧别名只用于迁移兼容，新组件必须直接使用 `--os-*` token。
 
 ### 颜色使用规则
 
-- 默认状态：白底蓝字，或在深色背景上使用蓝底 / 白字的系统对象。
-- 强调 / 选中 / 当前状态：蓝底白字反相。
-- 聚焦：`2px solid var(--blue)` 或在深色环境上使用白色 focus ring，通常配合 `2px` 外偏移。
-- Pen Pen 默认使用单一白色视觉，保持与蓝调像素背景的高对比；故障碎片只使用白色、蓝色或透明度变化。
+- 默认状态：`--os-surface` / `--os-surface-raised` 表面配 `--os-ink` 文字和 `--os-surface-highlight` 边框。
+- 强调 / 选中 / 当前状态：`--os-accent` 底色配 `--os-canvas` 文字；必要时用 `--os-accent-bright` 加边。
+- 聚焦：`2px solid var(--os-accent-bright)`，通常配合 `2px` 外偏移。
+- Pen Pen 默认使用完全不透明的单一白色视觉，保持与像素背景的高对比；故障碎片只使用 `--os-ink`、`--os-accent-bright` 和透明度变化。
 - macOS 交通灯可以保留其熟悉的系统识别色，但只能用于窗口控制，不得扩展为应用品牌色。
 - 禁止把红、紫、橙、荧光绿等颜色作为新的 UI 强调色。
 - 禁止彩色渐变、霓虹光、米色纸张底、灰色拟物层、透明玻璃和背景模糊。
-- CSS gradient 仅可用于扫描线、dither 或其他明确的像素显示纹理，不得作为装饰性光影。
+- CSS gradient 仅可用于 Pen Pen 的短暂图形化故障纹理或其他明确的像素显示纹理；UI 表面不使用装饰性渐变。预处理背景的色阶和纹理属于素材，不属于 UI 表面。
 
 ## 4. 字体与文字层级
 
@@ -137,9 +149,9 @@
 ### 形状
 
 - 所有系统组件使用 `border-radius: 0`。
-- 基础描边为 `1px solid var(--blue)`。
-- 需要章节强调时可使用 `4px double var(--blue)`。
-- 次级分隔可用 `1px dotted var(--blue)`；最小化等非活跃状态可用 dashed border。
+- 基础描边为 `1px solid var(--os-surface-highlight)`；需要强调时使用 `var(--os-accent-bright)`。
+- 需要章节强调时可使用 `4px double var(--os-accent)`。
+- 次级分隔可用 `1px dotted var(--os-surface-highlight)`；最小化等非活跃状态可用 dashed border。
 - 不使用药丸、圆形浮动按钮或大圆角容器。
 
 ### 硬阴影层级
@@ -151,24 +163,24 @@
 | `9px` | 当前活动窗口 |
 | `12px` | 启动面板或唯一主舞台 |
 
-阴影必须是无模糊、无扩散的纯蓝色块。按下状态可把偏移压缩到 `1px`，模拟明确的机械反馈。不要用软阴影制造悬浮卡片。
+阴影必须是无模糊、无扩散的 `var(--os-shadow)` 色块。按下状态可把偏移压缩到 `1px`，模拟明确的机械反馈。Retro Hardware 的 bevel 只通过相邻的 surface / highlight 边线、硬阴影和 pressed 位移表达；不要用软阴影制造悬浮卡片。渐变不用于系统表面，只允许出现在明确的像素故障纹理或预处理背景素材中。
 
 ## 7. 图标、像素资产与 Pen Pen
 
-- 系统图标以 `46 x 46px` 为标准画布，白底、1px 蓝框、`4px` 蓝色硬阴影。
+- 系统图标以 `46 x 46px` 为标准画布，使用 `--os-surface` 表面、`--os-surface-highlight` 边框和 `--os-shadow` 硬阴影。
 - 图形使用 1px 线条、矩形、字符和少量实心块构成，保持 1-bit / 低分辨率观感。
 - 新图标必须先保证对象轮廓可辨识，再考虑风格化；不能依赖颜色区分含义。
 - 优先用 CSS、字符或像素位图实现系统图标，不使用现代圆角应用图标、emoji、彩色插画或未经处理的第三方 icon set。
-- 选中时图标和标签同时反相：蓝底白色图形 / 文字。
+- 选中时图标和标签同时反相：`--os-accent` 底色配 `--os-canvas` 文字 / 图形。
 - 照片、视频和项目截图属于内容资产，应显示真实作品；若需要统一视觉，可用像素化或蓝调处理，但不把内容做成模糊氛围背景。
 
 ### Pen Pen
 
 - Pen Pen 是系统前景层的常驻彩蛋，不能与背景素材合并。
-- 默认使用白色单色形象，保留 `PEN²` 等能让熟悉作品的访客识别的细节。
+- 默认使用完全不透明的白色单色形象，保留 `PEN²` 等能让熟悉作品的访客识别的细节。
 - 造型必须一眼可辨识为企鹅；故障元素只能作为 hover 或特定状态的短暂叠加。
-- 支持鼠标长按拖动，拖动过程中可使用轻量行走帧；释放后位置可以在当前会话中保留，但刷新页面回到默认右下位置。
-- 互动优先级低于窗口、菜单、Dock 和桌面图标，不得遮挡主要操作入口。
+- 支持鼠标长按拖动，拖动过程中使用轻量行走帧和左右方向帧；释放后位置只在当前会话中保留，刷新页面回到默认右下位置。
+- Pen Pen 是独立的前景层，视觉上位于背景、工作站仪表和窗口之上，保证彩蛋不会被吞没；默认位置和窄屏 clearance 必须避开系统栏、Dock 与主要入口，不能成为主要导航。
 
 ## 8. 核心组件规范
 
@@ -181,8 +193,8 @@
 
 ### 窗口
 
-- 白底、1px 蓝框、普通 `6px` 硬阴影；活动窗口提升为 `9px`。
-- 标题栏高 `32px`，蓝底白字；控件至少 `32 x 32px`，白底蓝色符号。
+- `--os-surface` 表面、1px `--os-surface-highlight` 边框、普通 `6px` 硬阴影；活动窗口提升为 `9px`，全屏状态可去除阴影。
+- 标题栏高 `32px`，`--os-surface-raised` 表面配 `--os-ink`；控件至少 `32 x 32px`，使用反相和亮边表达状态。
 - 控件使用熟悉的符号，如最小化 `-`、关闭 `X`，并提供本地化的可访问名称。
 - 同一应用只保留一个窗口实例；再次启动应聚焦或恢复，而不是叠加副本。
 - 窗口状态必须包含 active、inactive、minimized、restored、closed。
@@ -193,7 +205,7 @@
 - 系统栏高 `32-48px`，只承载全局状态和高频入口。
 - 状态文本保持单行、可扫描，以边线和空隙分组。
 - 运行应用使用反相表示当前态，dashed border 表示最小化。
-- BOT 和 Pen Pen 等常驻对象应贴近边缘，但避开系统栏、Dock、窗口控件和应用入口。
+- Pen Pen 等常驻对象应贴近边缘，但默认位置和拖动边界要避开系统栏、Dock、窗口控件和应用入口。
 
 ## 9. 动效与反馈
 
@@ -209,7 +221,7 @@
 - 常规 hover、选择、窗口显隐控制在 `120-200ms`。
 - 按压先改变位移或阴影，再改变颜色；反馈必须短而清楚。
 - 启动、扫描、数据包和像素故障等“系统过程”使用 `steps()`，形成离散输出感。
-- 背景默认静止；GIF 的运动来自素材本身。禁止无意义的持续漂浮、视差、ASCII 流动和鼠标水波。
+- 背景默认静止；GIF 的运动来自素材本身。运行时背景只允许一个图片元素，不引入 ASCII 字符渲染、Canvas、鼠标水波、pointermove 扰动、实时滤镜或持续漂移。
 - Pen Pen 的 hover 故障、拖拽行走和窗口状态变化可以运动，但必须短、可中断、服务于状态表达。
 - 新动效必须回答：什么状态发生了变化、用户是否能中断、减少动态后如何表达同一信息。
 
@@ -226,7 +238,7 @@
 - `760px` 及以下进入窄屏系统模式。
 - 窄屏窗口占据除系统 chrome 外的可用空间，窗口打开时隐藏被遮挡的桌面图标 / Dock。
 - 背景继续使用 `cover`，允许裁切，但主体必须在 `390px x 844px` 下保持可辨识。
-- 设置侧栏在窄屏转为顶部四列导航，字段从多列转为单列。
+- 设置侧栏在窄屏转为顶部三列导航，字段从多列转为单列。
 - 图标触控目标保持约 `76px` 单元；窗口控制不能小于 `32px`。
 - 不按视口宽度连续缩放字体，使用明确断点和稳定字号。
 
@@ -244,7 +256,7 @@
 - 键盘可以完成图标选择、应用打开、窗口控制、设置修改和语言切换。
 - focus ring 不得因视觉“更干净”而移除。
 - 状态变化使用 `aria-pressed`、`aria-live` 或等价语义，不只依赖视觉反相。
-- 文字与背景保持蓝白高对比；通过透明度弱化的内容仍需满足可读性。
+- 文字与背景保持 Deep Indigo / `--os-ink` 高对比；通过透明度弱化的内容仍需满足可读性。
 - Pen Pen 的拖动不能成为唯一交互路径，必须保留键盘和其他系统操作的可达性。
 - 组件必须在 200% 缩放、窄屏和三种语言下保持可操作，不允许文字与控件重叠。
 
@@ -283,10 +295,10 @@
 
 ## 14. 交付检查清单
 
-- [ ] 系统 chrome 仅使用既有蓝白 token；背景素材使用受控的蓝调有限色阶。
+- [ ] 系统 chrome 仅使用既有 Deep Indigo / 近白 token；背景素材使用受控的蓝调有限色阶。
 - [ ] 背景是独立的 PNG / GIF 素材，已注册到背景清单，并通过 `cover` 自适应。
 - [ ] 没有运行时 ASCII、鼠标水波或无意义的环境扰动。
-- [ ] 所有系统容器保持直角、1px 蓝框和规定的硬阴影层级。
+- [ ] 所有系统容器保持直角、1px 结构边框和规定的硬阴影层级。
 - [ ] Serif / Mono 的角色没有混用，像素感没有以牺牲可读性为代价。
 - [ ] 复用了现有间距、标题栏、控件和状态模式。
 - [ ] 没有新增装饰性卡片、渐变、软阴影、模糊或第三 UI 强调色。
@@ -301,18 +313,20 @@
 ## 15. 当前实现的参考入口
 
 - 设计 token：[`styles/tokens.css`](./styles/tokens.css)
-- 桌面背景样式：[`styles/environment.css`](./styles/environment.css)
+- OS 桌面边界与背景样式：[`styles/shell.css`](./styles/shell.css)、[`styles/environment.css`](./styles/environment.css)
 - 背景素材目录：[`assets/background/`](./assets/background/)
 - 背景素材注册：[`scripts/environment/background/background-assets.js`](./scripts/environment/background/background-assets.js)
 - 背景控制器：[`scripts/environment/background/background-controller.js`](./scripts/environment/background/background-controller.js)
-- 桌面网格与显示效果：[`styles/shell.css`](./styles/shell.css)
 - 图标系统：[`styles/icons.css`](./styles/icons.css)
 - Windows / macOS chrome：[`styles/windows-mode.css`](./styles/windows-mode.css)、[`styles/macos-mode.css`](./styles/macos-mode.css)
-- 窗口语言：[`styles/windows.css`](./styles/windows.css)
+- 窗口状态与交互：[`styles/windows.css`](./styles/windows.css)、[`scripts/window-manager.js`](./scripts/window-manager.js)
 - 应用内部控件：[`styles/apps.css`](./styles/apps.css)
 - 窄屏规则：[`styles/responsive.css`](./styles/responsive.css)
 - 启动体验：[`styles/boot.css`](./styles/boot.css)
 - Pen Pen 行为：[`scripts/desktop.js`](./scripts/desktop.js)
-- 产品与交互背景：[`docs/superpowers/specs/2026-08-11-portfolio-os-desktop-shell-design.md`](./docs/superpowers/specs/2026-08-11-portfolio-os-desktop-shell-design.md)
+- Pen Pen 资产：[`assets/pets/pen-pen/`](./assets/pets/pen-pen/)
+- OS kit 契约测试：[`tests/e2e/ui-kit.spec.js`](./tests/e2e/ui-kit.spec.js)、[`tests/e2e/desktop.spec.js`](./tests/e2e/desktop.spec.js)、[`tests/e2e/windows.spec.js`](./tests/e2e/windows.spec.js)、[`tests/e2e/environment.spec.js`](./tests/e2e/environment.spec.js)
+- 单元契约测试：[`tests/unit/desktop-bot.test.js`](./tests/unit/desktop-bot.test.js)、[`tests/unit/window-state.test.js`](./tests/unit/window-state.test.js)
+- 产品与交互规格：[`docs/superpowers/specs/2026-08-15-portfolio-os-ui-kit-redesign-design.md`](./docs/superpowers/specs/2026-08-15-portfolio-os-ui-kit-redesign-design.md)
 
 当文档与实现发生差异时：先判断是实现偏离了固定层，还是项目确实需要演化固定层。前者应修正实现；后者必须同步更新本文档与相关 token，不能只在局部组件中留下例外。

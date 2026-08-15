@@ -237,3 +237,35 @@ test('Pen Pen hover deconstructs into the bright OS accent', async ({ page }) =>
     getComputedStyle(element).borderTopColor
   ))).toBe('rgb(185, 215, 255)');
 });
+
+test('the final OS kit keeps the four approved decisions visible in the rendered system', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+    version: 1,
+    bootComplete: true,
+    layout: 'windows',
+    locale: 'en',
+    audioEnabled: false,
+  })));
+  await page.goto('/?skipBoot=1');
+  await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
+  const result = await page.evaluate(() => {
+    const root = document.querySelector('[data-desktop-root]');
+    const window = document.querySelector('[data-app-window]');
+    const tokens = getComputedStyle(document.documentElement);
+    return {
+      skin: root.dataset.osSkin,
+      canvas: tokens.getPropertyValue('--os-canvas').trim(),
+      accent: tokens.getPropertyValue('--os-accent').trim(),
+      windowSurface: window?.dataset.osSurface,
+      workstation: Boolean(document.querySelector('[data-workstation-environment]')),
+      legacyGrid: getComputedStyle(root).backgroundImage,
+    };
+  });
+
+  expect(result.skin).toBe('windows');
+  expect(result.canvas).toBe('#071426');
+  expect(result.accent).toBe('#748BFF');
+  expect(result.windowSurface).toBe('window');
+  expect(result.workstation).toBe(true);
+  expect(result.legacyGrid).not.toContain('repeating-radial-gradient');
+});
