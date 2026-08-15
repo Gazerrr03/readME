@@ -164,3 +164,25 @@ test('macOS and Windows expose the same workstation layer with different chrome'
   await expect.poll(() => page.locator('[data-environment-primary]')
     .evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(26, 46, 70)');
 });
+
+test('settings does not expose blueprint display controls', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+    version: 1,
+    bootComplete: true,
+    layout: 'windows',
+    locale: 'en',
+    audioEnabled: false,
+  })));
+  await page.goto('/?skipBoot=1');
+  await page.locator('[data-windows-icons] [data-app-icon="settings"]').dblclick();
+  const settings = page.locator('[data-app-window="settings"]');
+
+  await expect(settings.locator('[data-settings-section="display"]')).toHaveCount(0);
+  await expect(settings.locator('[data-settings-section]')).toHaveCount(3);
+  await expect(settings.locator('input[name="gridDensity"]')).toHaveCount(0);
+  await expect(settings.locator('select[name="syncFrequency"]')).toHaveCount(0);
+  await expect(settings.locator('select[name="postProcessFilter"]')).toHaveCount(0);
+  await expect(settings.locator('input[name="ditherOverlay"]')).toHaveCount(0);
+  await expect(settings.locator('input[name="moireInterference"]')).toHaveCount(0);
+  await expect(settings.locator('input[name="aliasedEdges"]')).toHaveCount(0);
+});

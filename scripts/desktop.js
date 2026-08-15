@@ -73,14 +73,9 @@ function createBotPaper(document) {
 function applyDesktopPreferences(root, preferences) {
   const frequency = Number.parseInt(preferences.syncFrequency, 10) || 60;
   const packetRate = preferences.packetDitherRate / 100;
-  root.style.setProperty('--grid-size', `${preferences.gridDensity}px`);
   root.style.setProperty('--ui-duration', `${Math.round(12000 / frequency)}ms`);
   root.style.setProperty('--packet-opacity', String(0.15 + packetRate * 0.75));
   root.style.setProperty('--packet-duration', `${Math.round(1200 - packetRate * 900)}ms`);
-  root.dataset.ditherOverlay = String(preferences.ditherOverlay);
-  root.dataset.moireInterference = String(preferences.moireInterference);
-  root.dataset.aliasedEdges = String(preferences.aliasedEdges);
-  root.dataset.postProcess = preferences.postProcessFilter;
   root.dataset.protocol = preferences.protocolArchitecture.toLowerCase().replace('/', '-');
   root.dataset.encryption = preferences.encryptionLevel ? 'secure' : 'open';
 }

@@ -88,3 +88,26 @@ test('content locale tolerates corrupt or blocked storage', () => {
     assert.equal(resolvePreferredLocale(undefined, ['zh-TW']), 'zh-CN');
   });
 });
+
+test('legacy blueprint preferences are ignored while current preferences survive', () => {
+  const storage = memoryStorage(JSON.stringify({
+    version: 1,
+    layout: 'macos',
+    locale: 'zh-CN',
+    syncFrequency: '120Hz',
+    gridDensity: 16,
+    postProcessFilter: 'scanline',
+    ditherOverlay: true,
+    moireInterference: true,
+    aliasedEdges: false,
+  }));
+  const preferences = loadPreferences(storage);
+  assert.equal(preferences.layout, 'macos');
+  assert.equal(preferences.locale, 'zh-CN');
+  assert.equal(preferences.syncFrequency, '120Hz');
+  assert.equal('gridDensity' in preferences, false);
+  assert.equal('postProcessFilter' in preferences, false);
+  assert.equal('ditherOverlay' in preferences, false);
+  assert.equal('moireInterference' in preferences, false);
+  assert.equal('aliasedEdges' in preferences, false);
+});

@@ -87,14 +87,14 @@ html, body { overflow-x: hidden; }
 
   [data-settings-app] { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
   [data-settings-nav] {
-    border-bottom: var(--stroke);
+    border-bottom: 1px solid var(--os-surface-highlight);
     border-right: 0;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   [data-settings-nav] button {
     border-bottom: 0;
-    border-right: var(--stroke);
+    border-right: 1px solid var(--os-surface-highlight);
     font-size: 9px;
     min-height: 40px;
     overflow-wrap: anywhere;

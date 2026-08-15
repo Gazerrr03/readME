@@ -5,7 +5,7 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
-const sections = ['system', 'display', 'mouse', 'network'];
+const sections = ['system', 'mouse', 'network'];
 
 function option(document, value, label) {
   return createElement(document, 'option', { value }, label);
@@ -55,31 +55,7 @@ function settingsPanel(document, i18n, section, preferences) {
   const panel = createElement(document, 'section', { 'data-settings-panel': section });
   panel.append(createElement(document, 'h3', {}, i18n.t(`settings.${section}`)));
 
-  if (section === 'display') {
-    panel.append(
-      createElement(document, 'p', { 'data-settings-panel-kicker': '' }, i18n.t('settings.visualOutput')),
-      meter(document, i18n.t('settings.resolutionGridDensity'), 'gridDensity', preferences.gridDensity, {
-        min: 16, max: 64, suffix: 'px',
-      }),
-      selectControl(document, i18n.t('settings.syncFrequency'), 'syncFrequency', preferences.syncFrequency, [
-        ['60Hz', '60Hz'], ['75Hz', '75Hz'], ['120Hz', '120Hz'],
-      ]),
-      selectControl(
-        document,
-        i18n.t('settings.postProcessFilter'),
-        'postProcessFilter',
-        preferences.postProcessFilter,
-        [
-          ['none', i18n.t('settings.filterNone')],
-          ['scanline', i18n.t('settings.filterScanline')],
-          ['contrast', i18n.t('settings.filterContrast')],
-        ],
-      ),
-      toggleControl(document, i18n.t('settings.ditherOverlay'), 'ditherOverlay', preferences.ditherOverlay, i18n),
-      toggleControl(document, i18n.t('settings.moireInterference'), 'moireInterference', preferences.moireInterference, i18n),
-      toggleControl(document, i18n.t('settings.aliasedEdges'), 'aliasedEdges', preferences.aliasedEdges, i18n),
-    );
-  } else if (section === 'mouse') {
+  if (section === 'mouse') {
     panel.append(
       createElement(document, 'p', { 'data-settings-panel-kicker': '' }, i18n.t('settings.tactileInput')),
       meter(document, i18n.t('settings.trackingSensitivity'), 'trackingSensitivity', preferences.trackingSensitivity, {

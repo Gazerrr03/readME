@@ -1,14 +1,11 @@
 html {
-  background: var(--white);
+  background: var(--os-canvas);
   letter-spacing: 0;
 }
 
 body {
-  background-color: var(--white);
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--blue) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--blue) 10%, transparent) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
+  background-color: var(--os-canvas);
+  background-image: none;
   min-height: 100vh;
 }
 
@@ -18,12 +15,12 @@ select { color: inherit; }
 a:focus-visible,
 select:focus-visible,
 h1:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: var(--os-focus-width) solid var(--os-accent-bright);
   outline-offset: 3px;
 }
 
 h1:focus { outline: none; }
-h1:focus-visible { outline: 2px solid var(--blue); }
+h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright); }
 
 [data-content-page] {
   margin: 0 auto;
@@ -34,8 +31,8 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 
 [data-content-header] {
   align-items: center;
-  background: var(--white);
-  border-bottom: 4px double var(--blue);
+  background: var(--os-surface);
+  border-bottom: 4px double var(--os-accent);
   display: flex;
   font-family: var(--mono);
   justify-content: space-between;
@@ -75,9 +72,10 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 }
 
 [data-content-language] {
-  background: var(--white);
-  border: var(--stroke);
+  background: var(--os-surface-raised);
+  border: 1px solid var(--os-surface-highlight);
   border-radius: 0;
+  color: var(--os-ink);
   font-family: var(--mono);
   font-size: 11px;
   min-height: 32px;
@@ -92,7 +90,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 }
 
 [data-content-article-masthead] {
-  border-bottom: 4px double var(--blue);
+  border-bottom: 4px double var(--os-accent);
   margin-bottom: 8px;
   padding-bottom: 24px;
 }
@@ -156,7 +154,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 }
 
 [data-content-article-section] {
-  border-top: var(--stroke);
+  border-top: 1px solid var(--os-surface-highlight);
   font-size: 23px;
   font-weight: 400;
   line-height: 1.35;
@@ -171,8 +169,8 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 }
 
 [data-content-article-lead]::first-letter {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--os-accent);
+  color: var(--os-canvas);
   float: left;
   font-size: 46px;
   line-height: 0.82;
@@ -188,9 +186,9 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 }
 
 [data-content-pagination] a {
-  background: var(--white);
-  border: var(--stroke);
-  box-shadow: 4px 4px 0 var(--blue);
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
+  box-shadow: 4px 4px 0 var(--os-shadow);
   display: grid;
   gap: 8px;
   min-height: 80px;
@@ -203,7 +201,8 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 [data-content-nav-title] { font-size: 17px; line-height: 1.25; overflow-wrap: anywhere; }
 
 [data-content-unavailable] {
-  border: var(--stroke);
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
   display: grid;
   gap: 24px;
   margin: 12vh auto 0;
@@ -222,7 +221,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 
 [data-content-project-preview] {
   aspect-ratio: 1;
-  border: var(--stroke);
+  border: 1px solid var(--os-surface-highlight);
   min-width: 0;
   position: sticky;
   top: 24px;
@@ -237,7 +236,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 [data-content-project-body] { min-width: 0; }
 
 [data-content-project-heading] {
-  border-bottom: 4px double var(--blue);
+  border-bottom: 4px double var(--os-accent);
   padding-bottom: 24px;
 }
 
@@ -265,7 +264,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 
 [data-content-project-meta] dt,
 [data-content-project-meta] dd {
-  border-bottom: 1px dotted var(--blue);
+  border-bottom: 1px dotted var(--os-surface-highlight);
   min-width: 0;
   padding: 8px 0;
   overflow-wrap: anywhere;
@@ -287,8 +286,9 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 }
 
 [data-content-project-actions] a {
-  border: var(--stroke);
-  box-shadow: 3px 3px 0 var(--blue);
+  background: var(--os-surface-raised);
+  border: 1px solid var(--os-surface-highlight);
+  box-shadow: 3px 3px 0 var(--os-shadow);
   font-family: var(--mono);
   font-size: 11px;
   min-width: 112px;
@@ -299,7 +299,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 
 @media (hover: hover) and (pointer: fine) {
   [data-content-pagination] a:hover,
-  [data-content-project-actions] a:hover { background: var(--blue); color: var(--white); }
+  [data-content-project-actions] a:hover { background: var(--os-accent); color: var(--os-canvas); }
 }
 
 @media (max-width: 760px) {
@@ -325,8 +325,9 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 /* --- Blockquote (core thesis sentences) --- */
 
 [data-content-quote] {
-  border: var(--stroke);
-  box-shadow: 4px 4px 0 color-mix(in srgb, var(--blue) 16%, transparent);
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
+  box-shadow: 4px 4px 0 var(--os-shadow);
   font-size: 19px;
   line-height: 1.7;
   margin: 30px 0;
@@ -337,7 +338,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 
 [data-content-field-notes-rule] {
   border: none;
-  border-top: var(--stroke);
+  border-top: 1px solid var(--os-surface-highlight);
   margin: 36px 0 20px;
 }
 
@@ -358,7 +359,7 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 /* --- Article footer: rights + machine-readable editions --- */
 
 [data-content-article-footer] {
-  border-top: 4px double var(--blue);
+  border-top: 4px double var(--os-accent);
   display: grid;
   gap: 14px;
   margin-top: 32px;
@@ -384,14 +385,15 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 [data-content-markdown-label] { opacity: 0.68; }
 
 [data-content-markdown-links] a {
-  border: var(--stroke);
+  background: var(--os-surface-raised);
+  border: 1px solid var(--os-surface-highlight);
   padding: 4px 8px;
   text-decoration: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
   [data-content-markdown-links] a:hover,
-  [data-tool-open]:hover { background: var(--blue); color: var(--white); }
+  [data-tool-open]:hover { background: var(--os-accent); color: var(--os-canvas); }
 }
 
 /* --- Floating tools: Timeline / Notes / Share --- */
@@ -404,9 +406,9 @@ h1:focus-visible { outline: 2px solid var(--blue); }
 }
 
 [data-tool-open] {
-  background: var(--white);
-  border: var(--stroke);
-  box-shadow: 3px 3px 0 var(--blue);
+  background: var(--os-surface-raised);
+  border: 1px solid var(--os-surface-highlight);
+  box-shadow: 3px 3px 0 var(--os-shadow);
   cursor: pointer;
   font-family: var(--mono);
   font-size: 10px;

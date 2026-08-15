@@ -13,7 +13,6 @@
   --blue: var(--os-accent);
   --white: var(--os-ink);
   --environment-blue: var(--os-canvas);
-  --grid-size: 32px;
   --stroke: 1px solid var(--os-accent);
   --hard-shadow: 12px 12px 0 var(--os-shadow);
   --serif: "Times New Roman", "Songti SC", "Yu Mincho", serif;
