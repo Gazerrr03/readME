@@ -1,6 +1,6 @@
 [data-desktop-mode='macos'][data-desktop-root],
 [data-desktop-mode='windows'][data-desktop-root] {
-  background-color: var(--environment-blue);
+  background-color: var(--os-canvas);
   background-image: none;
 }
 
@@ -11,9 +11,10 @@
   opacity: 0;
 }
 
+[data-workstation-environment],
 [data-macos-environment] {
-  background: var(--environment-blue);
-  color: var(--white);
+  background: var(--os-canvas);
+  color: var(--os-ink);
   inset: 0;
   overflow: hidden;
   pointer-events: none;
@@ -21,6 +22,7 @@
   z-index: 0;
 }
 
+[data-desktop-mode='macos'] [data-workstation-environment],
 [data-desktop-mode='macos'] [data-macos-environment] {
   inset: 32px 0 0;
 }
@@ -52,11 +54,11 @@
 
 [data-environment-widgets] > button,
 [data-environment-deck] {
-  background: var(--blue);
-  border: 1px solid var(--white);
+  background: var(--os-surface-raised);
+  border: 1px solid var(--os-surface-highlight);
   border-radius: 0;
-  box-shadow: 4px 4px 0 var(--white);
-  color: var(--white);
+  box-shadow: 4px 4px 0 var(--os-shadow);
+  color: var(--os-ink);
   display: flex;
   flex-direction: column;
   font-family: var(--mono);
@@ -69,7 +71,7 @@
 
 [data-environment-widgets] button:focus-visible,
 [data-environment-deck] button:focus-visible {
-  outline: 2px solid var(--white);
+  outline: var(--os-focus-width) solid var(--os-accent-bright);
   outline-offset: 3px;
 }
 
@@ -199,15 +201,19 @@
   white-space: nowrap;
 }
 
+[data-workstation-environment][data-environment-motion='focused'] [data-environment-background],
 [data-macos-environment][data-environment-motion='focused'] [data-environment-background] {
   opacity: 0.28;
 }
 
+[data-workstation-environment][data-environment-motion='focused'] [data-environment-widgets] > button,
+[data-workstation-environment][data-environment-motion='focused'] [data-environment-deck],
 [data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] > button,
 [data-macos-environment][data-environment-motion='focused'] [data-environment-deck] {
-  box-shadow: 1px 1px 0 var(--white);
+  box-shadow: 1px 1px 0 var(--os-shadow);
 }
 
+[data-workstation-environment][data-environment-motion='focused'] [data-environment-widgets] span,
 [data-macos-environment][data-environment-motion='focused'] [data-environment-widgets] span {
   opacity: 0.7;
 }

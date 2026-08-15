@@ -243,7 +243,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
     };
   })).toEqual({
     focusVisible: true,
-    outlineColor: 'rgb(255, 255, 255)',
+    outlineColor: 'rgb(185, 215, 255)',
     outlineOffset: '3px',
     outlineStyle: 'solid',
     outlineWidth: '2px',
@@ -257,7 +257,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
   ))).toBeCloseTo(0.28, 2);
   await expect.poll(async () => projects.evaluate(
     (node) => getComputedStyle(node).boxShadow,
-  )).toBe('rgb(255, 255, 255) 1px 1px 0px 0px');
+  )).toBe('rgb(2, 8, 17) 1px 1px 0px 0px');
   await expect.poll(async () => Number(await secondaryLabel.evaluate(
     (node) => getComputedStyle(node).opacity,
   ))).toBeCloseTo(0.7, 2);

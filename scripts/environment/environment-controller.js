@@ -128,7 +128,10 @@ export function createDesktopEnvironmentController({
   const mountEnvironment = () => {
     if (mount && root.contains(mount)) return;
     unmount();
-    mount = element(document, 'section', { 'data-macos-environment': '' });
+    mount = element(document, 'section', {
+      'data-workstation-environment': '',
+      'data-macos-environment': '',
+    });
     try {
       const nextBackground = backgroundFactory({
         document,

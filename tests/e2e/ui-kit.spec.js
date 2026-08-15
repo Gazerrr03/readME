@@ -112,3 +112,55 @@ test('folder launchers expose the shared bright focus ring', async ({ page }) =>
 
   expect(focus).toEqual({ outlineColor: 'rgb(185, 215, 255)', outlineWidth: '2px' });
 });
+
+test('macOS and Windows expose the same workstation layer with different chrome', async ({ page }) => {
+  await page.addInitScript(() => {
+    if (!localStorage.getItem('portfolio-os:preferences')) {
+      localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+        version: 1,
+        bootComplete: true,
+        layout: 'macos',
+        locale: 'en',
+        audioEnabled: false,
+      }));
+    }
+  });
+  await page.goto('/?skipBoot=1');
+
+  const mac = await page.evaluate(() => ({
+    skin: document.querySelector('[data-desktop-root]').dataset.osSkin,
+    workstation: document.querySelector('[data-workstation-environment]')?.dataset.workstationEnvironment,
+    menu: Boolean(document.querySelector('[data-macos-menu]')),
+    dock: Boolean(document.querySelector('[data-macos-dock]')),
+    widgets: document.querySelectorAll('[data-environment-widgets]').length,
+    menuSurface: getComputedStyle(document.querySelector('[data-macos-menu]')).backgroundColor,
+    widgetSurface: getComputedStyle(document.querySelector('[data-environment-primary]')).backgroundColor,
+  }));
+
+  expect(mac).toEqual({
+    skin: 'macos',
+    workstation: '',
+    menu: true,
+    dock: true,
+    widgets: 1,
+    menuSurface: 'rgb(26, 46, 70)',
+    widgetSurface: 'rgb(26, 46, 70)',
+  });
+
+  await page.evaluate(() => {
+    const preferences = JSON.parse(localStorage.getItem('portfolio-os:preferences'));
+    preferences.layout = 'windows';
+    localStorage.setItem('portfolio-os:preferences', JSON.stringify(preferences));
+  });
+  await page.reload();
+
+  await expect(page.locator('[data-desktop-root]')).toHaveAttribute('data-os-skin', 'windows');
+  await expect(page.locator('[data-windows-taskbar]')).toBeVisible();
+  await expect(page.locator('[data-windows-taskbar] [data-system-status]')).toBeVisible();
+  await expect(page.locator('[data-workstation-environment]')).toHaveCount(1);
+  await expect(page.locator('[data-environment-widgets]')).toHaveCount(1);
+  await expect.poll(() => page.locator('[data-windows-taskbar]')
+    .evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(26, 46, 70)');
+  await expect.poll(() => page.locator('[data-environment-primary]')
+    .evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(26, 46, 70)');
+});

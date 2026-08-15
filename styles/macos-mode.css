@@ -9,11 +9,17 @@
   top: 0;
 }
 
+[data-macos-menu] [data-system-title],
+[data-macos-menu] [data-system-status] {
+  color: var(--os-ink);
+}
+
 [data-macos-mark] {
   font-size: 14px;
 }
 
 [data-macos-dock] {
+  border-color: var(--os-surface-highlight);
   border-width: 1px;
   bottom: 16px;
   height: auto;
@@ -23,6 +29,8 @@
   padding: 8px 12px;
   transform: translateX(-50%);
 }
+
+[data-macos-dock] [data-app-label] { color: var(--os-ink); }
 
 @media (hover: hover) and (pointer: fine) {
   [data-macos-dock] [data-app-icon]:hover [data-icon] {

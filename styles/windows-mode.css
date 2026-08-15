@@ -21,8 +21,8 @@
 }
 
 [data-app-label] {
-  background: var(--white);
-  color: var(--blue);
+  background: var(--os-surface);
+  color: var(--os-ink);
   font-family: var(--mono);
   font-size: 11px;
   line-height: 1.2;
@@ -32,26 +32,24 @@
 }
 
 [data-app-icon][data-selected='true'] [data-app-label] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--os-accent);
+  color: var(--os-canvas);
 }
 
 [data-app-icon]:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: var(--os-focus-width) solid var(--os-accent-bright);
   outline-offset: 2px;
-}
-
-[data-windows-icons] [data-app-icon]:focus-visible {
-  outline-color: var(--white);
 }
 
 [data-windows-taskbar],
 [data-macos-menu],
 [data-macos-dock] {
   align-items: center;
-  background: var(--white);
-  border-color: var(--blue);
+  background: var(--os-surface-raised);
+  border-color: var(--os-surface-highlight);
   border-style: solid;
+  box-shadow: 0 4px 0 var(--os-shadow);
+  color: var(--os-ink);
   display: flex;
   font-family: var(--mono);
   font-size: 11px;
@@ -71,12 +69,16 @@
 }
 
 [data-windows-start] {
-  background: var(--blue);
-  border: 1px solid var(--blue);
+  background: var(--os-accent);
+  border: 1px solid var(--os-accent-bright);
   border-radius: 0;
-  color: var(--white);
+  color: var(--os-canvas);
   height: 32px;
   width: 40px;
+}
+
+[data-windows-start]:active {
+  transform: translate(1px, 1px);
 }
 
 [data-system-title] {
@@ -102,7 +104,7 @@
 }
 
 [data-taskbar-pins] [data-icon] {
-  box-shadow: 2px 2px 0 var(--blue);
+  box-shadow: 2px 2px 0 var(--os-shadow);
   height: 30px;
   width: 30px;
 }
@@ -118,7 +120,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-taskbar-pins] [data-app-icon]:hover [data-icon] {
-    box-shadow: 3px 3px 0 var(--blue);
+    box-shadow: 3px 3px 0 var(--os-shadow);
     transform: translateY(-2px);
   }
 }
@@ -138,7 +140,7 @@
 
 [data-network-status] {
   align-items: center;
-  border-left: 1px solid var(--blue);
+  border-left: 1px solid var(--os-surface-highlight);
   display: flex;
   gap: 5px;
   padding-left: 7px;
@@ -171,8 +173,8 @@
 }
 
 [data-language-controls] button[aria-pressed='true'] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--os-accent);
+  color: var(--os-canvas);
 }
 
 [data-bot-mount] {
@@ -323,7 +325,7 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-app-icon]:hover [data-icon] {
-    box-shadow: 6px 6px 0 var(--blue);
+    box-shadow: 6px 6px 0 var(--os-shadow);
     transform: translateY(-3px);
   }
 
@@ -379,22 +381,22 @@
 }
 
 [data-windows-icons] [data-icon] {
-  box-shadow: 4px 4px 0 var(--white);
+  box-shadow: 4px 4px 0 var(--os-shadow);
 }
 
 [data-windows-icons] [data-app-icon][data-selected='true'] [data-icon] {
-  box-shadow: 4px 4px 0 var(--white);
+  box-shadow: 4px 4px 0 var(--os-shadow);
 }
 
 /* The selected label chip inverts to blue like the macOS dock;
  * a white border keeps it readable against the blue desktop. */
 [data-windows-icons] [data-app-icon][data-selected='true'] [data-app-label] {
-  border: 1px solid var(--white);
+  border: 1px solid var(--os-accent-bright);
 }
 
 @media (hover: hover) and (pointer: fine) {
   [data-windows-icons] [data-app-icon]:hover [data-icon] {
-    box-shadow: 6px 6px 0 var(--white);
+    box-shadow: 6px 6px 0 var(--os-shadow);
     transform: translateY(-6px) scale(1.04);
   }
 }
