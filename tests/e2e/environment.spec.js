@@ -310,8 +310,8 @@ test('pixel background loads and remains adaptive while focus state changes', as
   await seedLayout(page, 'macos');
   await page.goto('/');
   const background = page.locator('[data-environment-background]');
-  await expect(background).toHaveAttribute('data-background-id', 'railway-platform-pixel');
-  await expect(background).toHaveAttribute('src', /assets\/background\/railway-platform-pixel\.png/);
+  await expect(background).toHaveAttribute('data-background-id', 'aquarium-lab-pixel');
+  await expect(background).toHaveAttribute('src', /assets\/background\/aquarium-lab-pixel\.png/);
   await expect.poll(async () => background.evaluate((node) => ({
     complete: node.complete,
     width: node.naturalWidth,
