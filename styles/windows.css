@@ -6,9 +6,9 @@
 }
 
 [data-app-window] {
-  background: var(--white);
-  border: 1px solid var(--blue);
-  box-shadow: 6px 6px 0 var(--blue);
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
+  box-shadow: 6px 6px 0 var(--os-shadow);
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -25,7 +25,7 @@
   }
 }
 
-[data-app-window][data-window-active='true'] { box-shadow: 9px 9px 0 var(--blue); }
+[data-app-window][data-window-active='true'] { box-shadow: 9px 9px 0 var(--os-shadow); }
 
 [data-app-window][data-window-fullscreen='true'],
 [data-app-window][data-window-fullscreen='true'][data-window-active='true'] { box-shadow: none; }
@@ -36,8 +36,9 @@
 
 [data-window-titlebar] {
   align-items: center;
-  background: var(--blue);
-  color: var(--white);
+  background: var(--os-surface-raised);
+  border-bottom: 1px solid var(--os-surface-highlight);
+  color: var(--os-ink);
   cursor: move;
   display: flex;
   flex: 0 0 32px;
@@ -64,11 +65,11 @@
 }
 
 [data-window-controls] button {
-  background: var(--white);
+  background: var(--os-surface);
   border: 0;
-  border-left: 1px solid var(--blue);
+  border-left: 1px solid var(--os-surface-highlight);
   border-radius: 0;
-  color: var(--blue);
+  color: var(--os-ink);
   font-family: var(--mono);
   font-size: 13px;
   min-width: 32px;
@@ -81,14 +82,14 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-window-controls] button:hover {
-    background: var(--blue);
-    color: var(--white);
+    background: var(--os-accent);
+    color: var(--os-canvas);
   }
 }
 
 [data-window-controls] button:focus-visible,
 [data-running-app]:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: var(--os-focus-width) solid var(--os-accent-bright);
   outline-offset: 2px;
 }
 
@@ -130,10 +131,10 @@
 }
 
 [data-running-app] {
-  background: var(--white);
-  border: 1px solid var(--blue);
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
   border-radius: 0;
-  color: var(--blue);
+  color: var(--os-ink);
   font-family: var(--mono);
   font-size: 10px;
   height: 30px;
@@ -149,8 +150,8 @@
 }
 
 [data-running-app][aria-pressed='true'] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--os-accent);
+  color: var(--os-canvas);
 }
 
 [data-running-app][data-minimized='true'] {

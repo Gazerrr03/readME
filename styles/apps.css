@@ -16,11 +16,11 @@
 
 [data-settings-nav] button,
 [data-replay-boot] {
-  background: var(--white);
+  background: var(--os-surface);
   border: 0;
-  border-bottom: var(--stroke);
+  border-bottom: 1px solid var(--os-surface-highlight);
   border-radius: 0;
-  color: var(--blue);
+  color: var(--os-ink);
   font-family: var(--mono);
   min-height: 46px;
   padding: 10px 14px;
@@ -33,8 +33,8 @@
 }
 
 [data-settings-nav] button[aria-pressed='true'] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--os-accent);
+  color: var(--os-canvas);
 }
 
 [data-settings-panel] {
@@ -53,7 +53,7 @@
 }
 
 [data-settings-panel] h3 {
-  border-bottom: 4px double var(--blue);
+  border-bottom: 4px double var(--os-accent);
   font-family: var(--serif);
   font-size: 32px;
   font-weight: 400;
@@ -61,8 +61,8 @@
 }
 
 [data-settings-panel-kicker] {
-  background: var(--blue);
-  color: var(--white);
+  background: var(--os-surface-raised);
+  color: var(--os-ink);
   font-size: 11px;
   padding: 7px 9px;
   text-transform: uppercase;
@@ -71,7 +71,7 @@
 [data-settings-field],
 [data-settings-meter] {
   align-items: center;
-  border-bottom: 1px dotted var(--blue);
+  border-bottom: 1px dotted var(--os-surface-highlight);
   display: grid;
   gap: 12px;
   grid-template-columns: minmax(150px, 1fr) minmax(160px, 0.8fr);
@@ -84,11 +84,11 @@
 
 [data-settings-field] select,
 [data-settings-meter] input[type='range'] {
-  accent-color: var(--blue);
-  background: var(--white);
-  border: var(--stroke);
+  accent-color: var(--os-accent);
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
   border-radius: 0;
-  color: var(--blue);
+  color: var(--os-ink);
   font-family: var(--mono);
   min-height: 34px;
   min-width: 0;
@@ -114,7 +114,7 @@
 }
 
 [data-settings-toggle] input {
-  accent-color: var(--blue);
+  accent-color: var(--os-accent);
   height: 18px;
   width: 18px;
 }
@@ -128,24 +128,27 @@
 
 @media (hover: hover) and (pointer: fine) {
   [data-settings-nav] button:hover,
-  [data-replay-boot]:hover { background: color-mix(in srgb, var(--blue) 9%, var(--white)); }
+  [data-replay-boot]:hover { background: color-mix(in srgb, var(--os-accent) 18%, var(--os-surface)); }
 
-  [data-settings-nav] button[aria-pressed='true']:hover { background: var(--blue); }
+  [data-settings-nav] button[aria-pressed='true']:hover { background: var(--os-accent); }
 }
 
 [data-replay-boot] {
-  border: var(--stroke);
-  box-shadow: 4px 4px 0 var(--blue);
+  border: 1px solid var(--os-surface-highlight);
+  box-shadow: 4px 4px 0 var(--os-shadow);
   justify-self: start;
   margin-top: 8px;
 }
 
-[data-replay-boot]:active { box-shadow: 1px 1px 0 var(--blue); }
+[data-replay-boot]:active {
+  box-shadow: 1px 1px 0 var(--os-shadow);
+  transform: translate(1px, 1px);
+}
 
 [data-settings-app] button:focus-visible,
 [data-settings-app] select:focus-visible,
 [data-settings-app] input:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: var(--os-focus-width) solid var(--os-accent-bright);
   outline-offset: 2px;
 }
 

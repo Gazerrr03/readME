@@ -1,12 +1,12 @@
 [data-app-icon] {
-  color: var(--blue);
+  color: var(--os-ink);
 }
 
 [data-icon] {
   align-items: center;
-  background: var(--white);
-  border: var(--stroke);
-  box-shadow: 4px 4px 0 var(--blue);
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
+  box-shadow: 4px 4px 0 var(--os-shadow);
   color: inherit;
   display: inline-flex;
   height: 46px;
@@ -22,10 +22,15 @@
 }
 
 [data-app-icon][data-selected='true'] [data-icon] {
-  background: var(--blue);
-  box-shadow: 4px 4px 0 var(--blue);
+  background-color: var(--os-accent);
+  box-shadow: 4px 4px 0 var(--os-shadow);
 }
 
 [data-app-icon][data-selected='true'] {
-  color: var(--white);
+  color: var(--os-ink);
+}
+
+[data-app-icon]:focus-visible {
+  outline: var(--os-focus-width) solid var(--os-accent-bright);
+  outline-offset: 2px;
 }
