@@ -5,11 +5,11 @@ import {
   getEnvironmentMotionState,
   nextEnvironmentView,
 } from './environment-state.js';
-import { createEnvironmentRenderer } from './environment-renderer.js';
+import { DESKTOP_BACKGROUND } from './background/background-assets.js';
+import { createDesktopBackground } from './background/background-controller.js';
 import { createMusicDeck } from './music-deck.js';
 import { tracks } from '../../media/catalog.js';
 import { projects } from '../data/content.js';
-import { QIFENG_SCENE } from './qifeng-scene.js';
 
 function element(document, tagName, attributes = {}, text = '') {
   const node = document.createElement(tagName);
@@ -18,17 +18,12 @@ function element(document, tagName, attributes = {}, text = '') {
   return node;
 }
 
-function isEnvironmentRenderer(value) {
-  return value && ['resize', 'setMotionState', 'setPointer', 'destroy']
-    .every((method) => typeof value[method] === 'function');
-}
-
 export function createDesktopEnvironmentController({
   root,
   i18n,
   onOpen = () => {},
   now = () => new Date(),
-  rendererFactory = createEnvironmentRenderer,
+  backgroundFactory = createDesktopBackground,
 }) {
   const view = root.ownerDocument.defaultView;
   const document = root.ownerDocument;
@@ -38,7 +33,7 @@ export function createDesktopEnvironmentController({
   let capability = ENVIRONMENT_CAPABILITY.OFF;
   let reading = 'time';
   let mount = null;
-  let renderer = null;
+  let background = null;
   let deck = null;
   let minuteTimer = null;
 
@@ -108,23 +103,7 @@ export function createDesktopEnvironmentController({
     return widgets;
   };
 
-  const getQuietZones = () => {
-    const environmentBounds = mount?.getBoundingClientRect();
-    const widgets = mount?.querySelector('[data-environment-widgets]')?.getBoundingClientRect();
-    const dock = root.querySelector('[data-macos-dock]')?.getBoundingClientRect();
-    const taskbar = root.querySelector('[data-windows-taskbar]')?.getBoundingClientRect();
-    const windowsIcons = root.querySelector('[data-windows-icons]')?.getBoundingClientRect();
-    if (!environmentBounds) return [];
-    return [widgets, dock, taskbar, windowsIcons].filter(Boolean).map((rect) => ({
-      left: rect.left - environmentBounds.left - 24,
-      top: rect.top - environmentBounds.top - 24,
-      right: rect.right - environmentBounds.left + 24,
-      bottom: rect.bottom - environmentBounds.top + 24,
-      feather: 72,
-    }));
-  };
-
-  const syncRenderer = () => {
+  const syncBackground = () => {
     if (!mount) return;
     const motion = getEnvironmentMotionState({
       capability,
@@ -133,19 +112,12 @@ export function createDesktopEnvironmentController({
     });
     mount.dataset.environmentCapability = capability;
     mount.dataset.environmentMotion = motion;
-    if (!renderer) return;
-    renderer.resize({
-      width: mount.clientWidth,
-      height: mount.clientHeight,
-      dpr: view.devicePixelRatio,
-      quietZones: getQuietZones(),
-    });
-    renderer.setMotionState(motion);
+    background?.setMotionState(motion);
   };
 
   const unmount = () => {
-    renderer?.destroy();
-    renderer = null;
+    background?.destroy();
+    background = null;
     destroyDeck();
     mount?.remove();
     mount = null;
@@ -157,23 +129,25 @@ export function createDesktopEnvironmentController({
     if (mount && root.contains(mount)) return;
     unmount();
     mount = element(document, 'section', { 'data-macos-environment': '' });
-    const canvas = element(document, 'canvas', {
-      'data-environment-canvas': '', 'aria-hidden': 'true',
-    });
-    mount.append(canvas);
+    try {
+      const nextBackground = backgroundFactory({
+        document,
+        asset: DESKTOP_BACKGROUND,
+      });
+      if (!nextBackground?.element || typeof nextBackground.setMotionState !== 'function') {
+        throw new Error('Invalid desktop background');
+      }
+      background = nextBackground;
+      mount.append(background.element);
+    } catch {
+      background = null;
+      mount.dataset.environmentFallback = 'background-unavailable';
+    }
     if (capability !== ENVIRONMENT_CAPABILITY.PHONE_STATIC) mount.append(createWidgets());
     root.prepend(mount);
-    try {
-      const nextRenderer = rendererFactory({ canvas, scene: QIFENG_SCENE });
-      if (!isEnvironmentRenderer(nextRenderer)) throw new Error('Invalid environment renderer');
-      renderer = nextRenderer;
-    } catch {
-      renderer = null;
-      mount.dataset.environmentFallback = 'canvas-unavailable';
-    }
     renderReading();
     minuteTimer = view.setInterval(renderReading, 60_000);
-    syncRenderer();
+    syncBackground();
   };
 
   const sync = ({ mode: nextMode = mode } = {}) => {
@@ -191,7 +165,7 @@ export function createDesktopEnvironmentController({
       mount.append(createWidgets());
       renderReading();
     }
-    syncRenderer();
+    syncBackground();
   };
 
   const handleClick = (event) => {
@@ -203,21 +177,8 @@ export function createDesktopEnvironmentController({
       renderReading();
     }
   };
-  const handlePointerMove = (event) => {
-    if (
-      capability !== ENVIRONMENT_CAPABILITY.ANIMATED
-      || mount?.dataset.environmentMotion !== 'running'
-      || !renderer
-    ) return;
-    const bounds = mount.getBoundingClientRect();
-    renderer.setPointer({
-      x: (event.clientX - bounds.left) / bounds.width,
-      y: (event.clientY - bounds.top) / bounds.height,
-    });
-  };
   root.addEventListener('click', handleClick);
-  root.addEventListener('pointermove', handlePointerMove);
-  const observer = new MutationObserver(syncRenderer);
+  const observer = new MutationObserver(syncBackground);
   observer.observe(root, { attributes: true, attributeFilter: ['data-has-visible-window'] });
   const unsubscribeI18n = i18n.subscribe(() => {
     renderReading();
@@ -226,7 +187,7 @@ export function createDesktopEnvironmentController({
   });
   const handleEnvironmentChange = () => sync();
   view.addEventListener('resize', handleEnvironmentChange);
-  document.addEventListener('visibilitychange', syncRenderer);
+  document.addEventListener('visibilitychange', syncBackground);
   coarseQuery.addEventListener('change', handleEnvironmentChange);
   motionQuery.addEventListener('change', handleEnvironmentChange);
 
@@ -237,11 +198,10 @@ export function createDesktopEnvironmentController({
       observer.disconnect();
       unsubscribeI18n();
       view.removeEventListener('resize', handleEnvironmentChange);
-      document.removeEventListener('visibilitychange', syncRenderer);
+      document.removeEventListener('visibilitychange', syncBackground);
       coarseQuery.removeEventListener('change', handleEnvironmentChange);
       motionQuery.removeEventListener('change', handleEnvironmentChange);
       root.removeEventListener('click', handleClick);
-      root.removeEventListener('pointermove', handlePointerMove);
     },
   };
 }

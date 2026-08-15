@@ -51,13 +51,3 @@ export function formatEnvironmentClock(date, locale) {
     }).format(date),
   };
 }
-
-export function getQuietZoneOpacity({ x, y }, zones = []) {
-  return zones.reduce((opacity, zone) => {
-    const deltaX = Math.max(zone.left - x, 0, x - zone.right);
-    const deltaY = Math.max(zone.top - y, 0, y - zone.bottom);
-    const distance = Math.hypot(deltaX, deltaY);
-    const feather = Math.max(1, zone.feather);
-    return Math.min(opacity, Math.min(1, distance / feather));
-  }, 1);
-}

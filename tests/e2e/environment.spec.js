@@ -16,30 +16,31 @@ test('both macOS and Windows mount the environment', async ({ page }) => {
   await seedLayout(page, 'macos');
   await page.goto('/');
   await expect(page.locator('[data-macos-environment]')).toHaveCount(1);
-  await expect(page.locator('[data-environment-canvas]')).toHaveCount(1);
+  await expect(page.locator('[data-environment-background]')).toHaveCount(1);
 
   await seedLayout(page, 'windows');
   await page.reload();
   await expect(page.locator('[data-macos-environment]')).toHaveCount(1);
+  await expect(page.locator('[data-environment-background]')).toHaveCount(1);
   await expect(page.locator('[data-environment-widgets]')).toHaveCount(1);
 });
 
-test('invalid renderer results mark the canvas unavailable while retaining semantic widgets', async ({ page }) => {
+test('invalid background results retain semantic widgets', async ({ page }) => {
   await page.goto('/?skipBoot=1');
   const results = await page.evaluate(async () => {
     const [{ createDesktopEnvironmentController }, { createI18n }] = await Promise.all([
       import('/scripts/environment/environment-controller.js'),
       import('/scripts/i18n/i18n.js'),
     ]);
-    const rendererResults = [null, { destroy() {} }];
+    const backgroundResults = [null, { destroy() {} }];
 
-    return rendererResults.map((rendererResult) => {
+    return backgroundResults.map((backgroundResult) => {
       const root = document.createElement('section');
       document.body.append(root);
       const controller = createDesktopEnvironmentController({
         root,
         i18n: createI18n('en'),
-        rendererFactory: () => rendererResult,
+        backgroundFactory: () => backgroundResult,
       });
       let error = null;
       try {
@@ -63,8 +64,8 @@ test('invalid renderer results mark the canvas unavailable while retaining seman
   });
 
   expect(results).toEqual([
-    { fallback: 'canvas-unavailable', widgets: 1, openTargets: ['projects'], deck: 1, error: null },
-    { fallback: 'canvas-unavailable', widgets: 1, openTargets: ['projects'], deck: 1, error: null },
+    { fallback: 'background-unavailable', widgets: 1, openTargets: ['projects'], deck: 1, error: null },
+    { fallback: 'background-unavailable', widgets: 1, openTargets: ['projects'], deck: 1, error: null },
   ]);
 });
 
@@ -81,7 +82,7 @@ test('mounted controller refreshes compact labels when i18n changes', async ({ p
     const controller = createDesktopEnvironmentController({
       root,
       i18n,
-      rendererFactory: () => null,
+      backgroundFactory: () => null,
     });
     controller.sync({ mode: 'macos' });
     const widgets = root.querySelector('[data-environment-widgets]');
@@ -224,7 +225,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
   await seedLayout(page, 'macos');
   await page.goto('/');
   const environment = page.locator('[data-macos-environment]');
-  const canvas = page.locator('[data-environment-canvas]');
+  const background = page.locator('[data-environment-background]');
   const primary = page.locator('[data-environment-primary]');
   const projects = page.locator('[data-environment-open="projects"]');
   const secondaryLabel = projects.locator('span');
@@ -251,7 +252,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
   await projects.click();
   await expect(page.locator('[data-app-window="projects"]')).toBeVisible();
   await expect(environment).toHaveAttribute('data-environment-motion', 'focused');
-  await expect.poll(async () => Number(await canvas.evaluate(
+  await expect.poll(async () => Number(await background.evaluate(
     (node) => getComputedStyle(node).opacity,
   ))).toBeCloseTo(0.28, 2);
   await expect.poll(async () => projects.evaluate(
@@ -305,44 +306,21 @@ test('reduced motion renders static environment with widgets at desktop width', 
   await expect(page.locator('[data-environment-widgets]')).toHaveCount(1);
 });
 
-test('animated canvas is nonblank, advances while idle, and freezes in focus mode', async ({ page }) => {
-  const errors = [];
-  page.on('pageerror', (error) => errors.push(error.message));
+test('pixel background loads and remains adaptive while focus state changes', async ({ page }) => {
   await seedLayout(page, 'macos');
   await page.goto('/');
-  const canvas = page.locator('[data-environment-canvas]');
-  const sample = () => canvas.evaluate((node) => {
-    const pixels = node.getContext('2d').getImageData(0, 0, node.width, node.height).data;
-    let digest = 2166136261;
-    let surface = 0;
-    let ink = 0;
-    for (let index = 0; index < pixels.length; index += 16) {
-      const red = pixels[index];
-      const green = pixels[index + 1];
-      const blueChannel = pixels[index + 2];
-      digest = Math.imul(digest ^ red, 16777619);
-      digest = Math.imul(digest ^ green, 16777619);
-      digest = Math.imul(digest ^ blueChannel, 16777619);
-      // Deep album-blue surface (#1E40AF) with white glyphs blended on top.
-      if (blueChannel > 120 && red < 90 && green < 110) surface += 1;
-      if (red > 70 && green > 90) ink += 1;
-    }
-    return { surface, ink, digest: digest >>> 0 };
-  });
-
-  const first = await sample();
-  await page.waitForTimeout(350);
-  const running = await sample();
-  expect(first.surface).toBeGreaterThan(100);
-  expect(first.ink).toBeGreaterThan(10);
-  expect(running.digest).not.toBe(first.digest);
+  const background = page.locator('[data-environment-background]');
+  await expect(background).toHaveAttribute('data-background-id', 'railway-platform-pixel');
+  await expect(background).toHaveAttribute('src', /assets\/background\/railway-platform-pixel\.png/);
+  await expect.poll(async () => background.evaluate((node) => ({
+    complete: node.complete,
+    width: node.naturalWidth,
+  }))).toEqual({ complete: true, width: 1672 });
+  await expect(background).toHaveCSS('object-fit', 'cover');
 
   await page.locator('[data-environment-open="projects"]').click();
   await expect(page.locator('[data-macos-environment]')).toHaveAttribute('data-environment-motion', 'focused');
-  const focused = await sample();
-  await page.waitForTimeout(350);
-  expect((await sample()).digest).toBe(focused.digest);
-  expect(errors).toEqual([]);
+  await expect(background).toHaveCSS('opacity', '0.28');
 });
 
 test('phone dock stays fully visible and contains all application icons', async ({ page }) => {

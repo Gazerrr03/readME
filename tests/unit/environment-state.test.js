@@ -6,7 +6,6 @@ import {
   formatEnvironmentClock,
   getEnvironmentCapability,
   getEnvironmentMotionState,
-  getQuietZoneOpacity,
   nextEnvironmentView,
 } from '../../scripts/environment/environment-state.js';
 
@@ -40,12 +39,4 @@ test('clock formatting keeps a stable 24-hour value and localized date', () => {
   assert.equal(formatEnvironmentClock(date, 'en').time, '02:07');
   assert.match(formatEnvironmentClock(date, 'zh-CN').date, /2026/);
   assert.match(formatEnvironmentClock(date, 'ja').date, /2026/);
-});
-
-test('quiet zones attenuate inside and feather back to full opacity', () => {
-  const zones = [{ left: 0, top: 0, right: 100, bottom: 100, feather: 20 }];
-  assert.equal(getQuietZoneOpacity({ x: 50, y: 50 }, zones), 0);
-  assert.equal(getQuietZoneOpacity({ x: 110, y: 50 }, zones), 0.5);
-  assert.equal(getQuietZoneOpacity({ x: 130, y: 50 }, zones), 1);
-  assert.equal(getQuietZoneOpacity({ x: 50, y: 50 }, []), 1);
 });
