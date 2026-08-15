@@ -215,7 +215,7 @@ test('Pen Pen stays an independent white foreground object above the background'
   expect(result.pet).toBe('pen-pen');
   expect(result.spriteOpacity).toBe('1');
   expect(result.spriteImage).toContain('spritesheet-white.webp');
-  expect(result.backgroundId).toBe('aquarium-lab-pixel');
+  expect(result.backgroundId).toBe('storm-clouds-pixel');
   expect(result.backgroundPosition).toBe('50% 50%');
   expect(Number(result.mountZIndex)).toBeGreaterThan(10);
 });
