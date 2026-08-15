@@ -45,6 +45,7 @@
 
 [data-desktop-mode='macos'] [data-bot-mount] {
   bottom: 130px;
+  z-index: 30;
 }
 
 [data-desktop-mode='macos'] [data-windows-taskbar] {

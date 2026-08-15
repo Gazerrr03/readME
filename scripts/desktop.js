@@ -23,7 +23,7 @@ export function isHotSpringHour(date = new Date()) {
   return hour === 1 || hour === 2;
 }
 
-const BOT_ANIMATIONS = Object.freeze({
+export const BOT_ANIMATIONS = Object.freeze({
   idle: Object.freeze({ row: 0, frames: 6, frameDuration: 180 }),
   'running-right': Object.freeze({ row: 1, frames: 8, frameDuration: 95 }),
   'running-left': Object.freeze({ row: 2, frames: 8, frameDuration: 95 }),
@@ -35,8 +35,8 @@ const BOT_ANIMATIONS = Object.freeze({
   review: Object.freeze({ row: 8, frames: 6, frameDuration: 180 }),
 });
 
-const BOT_DRAG_HOLD_MS = 180;
-const BOT_DRAG_DISTANCE = 8;
+export const BOT_DRAG_HOLD_MS = 180;
+export const BOT_DRAG_DISTANCE = 8;
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -62,10 +62,10 @@ function createBotPaper(document) {
     focusable: 'false',
   });
   svg.append(
-    svgElement(document, 'rect', { width: '18', height: '14', fill: 'var(--white)' }),
-    svgElement(document, 'rect', { x: '3', y: '3', width: '12', height: '1.5', fill: 'var(--blue)' }),
-    svgElement(document, 'rect', { x: '3', y: '6.5', width: '12', height: '1.5', fill: 'var(--blue)' }),
-    svgElement(document, 'rect', { x: '3', y: '10', width: '8', height: '1.5', fill: 'var(--blue)' }),
+    svgElement(document, 'rect', { width: '18', height: '14', fill: 'var(--os-ink)' }),
+    svgElement(document, 'rect', { x: '3', y: '3', width: '12', height: '1.5', fill: 'var(--os-accent)' }),
+    svgElement(document, 'rect', { x: '3', y: '6.5', width: '12', height: '1.5', fill: 'var(--os-accent)' }),
+    svgElement(document, 'rect', { x: '3', y: '10', width: '8', height: '1.5', fill: 'var(--os-accent)' }),
   );
   return svg;
 }

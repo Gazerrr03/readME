@@ -186,3 +186,54 @@ test('settings does not expose blueprint display controls', async ({ page }) => 
   await expect(settings.locator('input[name="moireInterference"]')).toHaveCount(0);
   await expect(settings.locator('input[name="aliasedEdges"]')).toHaveCount(0);
 });
+
+test('Pen Pen stays an independent white foreground object above the background', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+    version: 1,
+    bootComplete: true,
+    layout: 'windows',
+    locale: 'en',
+    audioEnabled: false,
+  })));
+  await page.goto('/?skipBoot=1');
+
+  const result = await page.evaluate(() => {
+    const mount = document.querySelector('[data-bot-mount]');
+    const sprite = document.querySelector('[data-bot-sprite]');
+    const background = document.querySelector('[data-environment-background]');
+    const backgroundStyle = getComputedStyle(background);
+    return {
+      pet: mount?.dataset.botPet,
+      spriteOpacity: getComputedStyle(sprite).opacity,
+      spriteImage: getComputedStyle(sprite).backgroundImage,
+      backgroundId: background?.dataset.backgroundId,
+      backgroundPosition: backgroundStyle.objectPosition,
+      mountZIndex: getComputedStyle(mount).zIndex,
+    };
+  });
+
+  expect(result.pet).toBe('pen-pen');
+  expect(result.spriteOpacity).toBe('1');
+  expect(result.spriteImage).toContain('spritesheet-white.webp');
+  expect(result.backgroundId).toBe('railway-platform-pixel');
+  expect(result.backgroundPosition).toBe('50% 50%');
+  expect(Number(result.mountZIndex)).toBeGreaterThan(10);
+});
+
+test('Pen Pen hover deconstructs into the bright OS accent', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('portfolio-os:preferences', JSON.stringify({
+    version: 1,
+    bootComplete: true,
+    layout: 'windows',
+    locale: 'en',
+    audioEnabled: false,
+  })));
+  await page.goto('/?skipBoot=1');
+
+  const bot = page.locator('[data-bot-standby]');
+  await bot.hover();
+  await expect(bot).toHaveAttribute('data-bot-glitch', 'contour');
+  await expect.poll(() => bot.locator('[data-bot-glitch-layer]').evaluate((element) => (
+    getComputedStyle(element).borderTopColor
+  ))).toBe('rgb(185, 215, 255)');
+});
