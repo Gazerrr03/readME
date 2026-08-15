@@ -89,6 +89,11 @@ test('about renders personal identity, experience, works, toolbox, and now secti
   await page.locator('[data-windows-icons] [data-app-icon="about"]').dblclick();
   const appWindow = page.locator('[data-app-window="about"]');
 
+  await expect(appWindow.locator('[data-about-banner-canvas]')).toHaveCount(1);
+  await expect(appWindow.locator('[data-about-banner-kicker]')).toHaveText('GAZERRR / 03');
+  await expect(appWindow.locator('[data-about-banner-trail]')).toHaveText('IDEAS → SYSTEMS → EXPERIMENTS → ITERATION');
+  await expect(appWindow.locator('[data-about-avatar]')).toHaveAttribute('data-about-avatar-state', 'ready');
+  await expect(appWindow.locator('[data-about-avatar]')).toHaveAttribute('aria-label', 'Qizhi’s GitHub avatar');
   await expect(appWindow.locator('[data-about-masthead] h3')).toHaveText('Qizhi（Gazerrr）');
   await expect(appWindow.locator('[data-about-kicker]')).toHaveText(['BIO', 'EXPERIENCE', 'WORKS', 'TOOLBOX', 'NOW']);
   await expect(appWindow.locator('[data-about-experience] li')).toHaveCount(1);
@@ -127,6 +132,20 @@ test('narrow screens navigate the front project to its independent page', async 
   await expect(page.locator('[data-content-project] h1')).toHaveText('SIGNAL GARDEN');
 });
 
+test('about graphics fit a narrow screen without horizontal overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  await page.locator('[data-taskbar-pins] [data-app-icon="about"]').click();
+  const appWindow = page.locator('[data-app-window="about"]');
+
+  await expect(appWindow.locator('[data-about-avatar][data-about-avatar-state="ready"]')).toHaveCount(1);
+  await expect(appWindow.locator('[data-about-banner-trail]')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+    await page.evaluate(() => window.innerWidth),
+  );
+});
+
 test('apps re-render localized content when the locale changes', async ({ page }) => {
   await page.locator('[data-windows-icons] [data-app-icon="about"]').dblclick();
   await page.locator('[data-windows-icons] [data-app-icon="writing"]').dblclick();
@@ -137,6 +156,9 @@ test('apps re-render localized content when the locale changes', async ({ page }
 
   const about = page.locator('[data-app-window="about"]');
   await expect(about.locator('[data-about-kicker]')).toHaveText(['自述', '经历', '作品', '工具箱', '当前']);
+  await expect(about.locator('[data-about-banner-trail]')).toHaveText('想法 → 系统 → 实验 → 迭代');
+  await expect(about.locator('[data-about-avatar-label]')).toHaveText('GITHUB 头像');
+  await expect(about.locator('[data-about-avatar]')).toHaveAttribute('aria-label', 'Qizhi 的 GitHub 头像');
   await expect(about.locator('[data-about-role]')).toHaveText('产品工程师 / AI 与 Agent 系统');
   await expect(about.locator('[data-about-work-description]').first()).toContainText('无限画布');
 

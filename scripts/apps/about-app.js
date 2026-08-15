@@ -1,4 +1,5 @@
 import { about, pick } from '../data/content.js';
+import { createAboutAvatar, createAboutBanner } from './about-graphics.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -17,12 +18,15 @@ export function renderAboutApp({ i18n, mount }) {
 
   const render = () => {
     const locale = i18n.locale;
+    const banner = createAboutBanner({ document, i18n });
 
     const masthead = createElement(document, 'header', { 'data-about-masthead': '' });
     masthead.append(
       createElement(document, 'h3', {}, about.name),
       createElement(document, 'p', { 'data-about-role': '' }, pick(about.role, locale)),
     );
+    const identity = createElement(document, 'div', { 'data-about-identity': '' });
+    identity.append(createAboutAvatar({ document, i18n }), masthead);
 
     const bio = createElement(document, 'section', { 'data-about-section': 'bio' });
     bio.append(
@@ -80,7 +84,7 @@ export function renderAboutApp({ i18n, mount }) {
     });
     now.append(nowList);
 
-    root.replaceChildren(masthead, bio, experience, works, toolbox, now);
+    root.replaceChildren(banner, identity, bio, experience, works, toolbox, now);
   };
 
   render();
