@@ -118,6 +118,10 @@ export function createShaderBackground({ document, asset }) {
   const canvas = createCanvas(document, asset);
   const gl = createShaderContext(canvas);
   let renderer = null;
+  let motion = 'static';
+  let frameId = null;
+  let destroyed = false;
+  const view = document.defaultView;
 
   if (gl) {
     try {
@@ -132,13 +136,58 @@ export function createShaderBackground({ document, asset }) {
     canvas.dataset.backgroundFallback = 'shader-unavailable';
   }
 
+  const cancelFrame = () => {
+    if (frameId === null) return;
+    view?.cancelAnimationFrame?.(frameId);
+    frameId = null;
+  };
+
+  const render = (time = 0) => {
+    renderer?.render(time, getMotionConfig(motion));
+  };
+
+  const scheduleFrame = () => {
+    if (destroyed || !renderer || frameId !== null || motion === 'static' || document.hidden) return;
+    if (!view?.requestAnimationFrame) return;
+    frameId = view.requestAnimationFrame((time) => {
+      frameId = null;
+      if (destroyed || document.hidden || motion === 'static') return;
+      render(time);
+      scheduleFrame();
+    });
+  };
+
+  const handleResize = () => renderer?.resize();
+  const handleVisibility = () => {
+    if (document.hidden) {
+      cancelFrame();
+      return;
+    }
+    render();
+    scheduleFrame();
+  };
+
+  if (renderer) {
+    view?.addEventListener?.('resize', handleResize);
+    document.addEventListener?.('visibilitychange', handleVisibility);
+  }
+
   return {
     element: canvas,
-    setMotionState(motion) {
-      canvas.dataset.backgroundMotion = motion;
-      renderer?.render(0, getMotionConfig(motion));
+    setMotionState(nextMotion) {
+      motion = nextMotion;
+      canvas.dataset.backgroundMotion = nextMotion;
+      render();
+      if (motion === 'static' || document.hidden) cancelFrame();
+      else scheduleFrame();
     },
     destroy() {
+      destroyed = true;
+      cancelFrame();
+      if (renderer) {
+        view?.removeEventListener?.('resize', handleResize);
+        document.removeEventListener?.('visibilitychange', handleVisibility);
+      }
       renderer?.destroy();
       canvas.remove();
     },
