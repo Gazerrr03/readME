@@ -427,4 +427,3 @@ If no source adjustment is required, leave verification artifacts ignored and re
 - [ ] design.md and the background README reflect the new policy.
 - [ ] Focused tests and full npm test pass.
 - [ ] Screenshots confirm the background supports rather than dominates the OS interface.
-
