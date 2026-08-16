@@ -51,25 +51,27 @@ void main() {
   float aspect = resolution.x / resolution.y;
   vec2 point = (uv - 0.5) * vec2(aspect, 1.0);
   float time = u_time * u_motion;
-  vec2 drift = vec2(time * 0.08, -time * 0.05);
+  vec2 drift = vec2(time * 3.0, -time * 2.0);
 
-  float broad = fbm(point * 0.78 + drift);
+  float broad = fbm(point * 1.05 + drift);
   vec2 warp = vec2(
     fbm(point * 1.08 + drift * 0.72),
     fbm(point * 1.12 - drift * 0.56)
   );
   float detail = fbm((point + (warp - 0.5) * 0.34) * 1.55 - drift * 0.42);
-  float field = smoothstep(0.18, 0.86, clamp(broad * 0.68 + detail * 0.32, 0.0, 1.0));
+  float field = clamp(broad * 0.68 + detail * 0.32, 0.0, 1.0);
+  float quantizedField = floor(field * 6.0 + 0.5) / 6.0;
+  float paletteField = mix(field, quantizedField, 0.52);
 
   vec3 base = vec3(0.063, 0.173, 0.286);
-  vec3 middle = vec3(0.118, 0.290, 0.408);
-  vec3 light = vec3(0.435, 0.584, 0.675);
-  vec3 color = mix(base, middle, smoothstep(0.12, 0.62, field));
-  color = mix(color, light, smoothstep(0.62, 0.94, field) * u_contrast);
+  vec3 middle = vec3(0.145, 0.341, 0.475);
+  vec3 light = vec3(0.475, 0.616, 0.690);
+  vec3 color = mix(base, middle, smoothstep(0.24, 0.62, paletteField));
+  color = mix(color, light, smoothstep(0.56, 0.84, paletteField) * u_contrast * 0.72);
 
   vec2 cell = fract(gl_FragCoord.xy / 4.0) - 0.5;
   float dot = step(length(cell), 0.17 + field * 0.13);
-  float halftone = dot * smoothstep(0.48, 0.88, field) * u_density;
+  float halftone = dot * smoothstep(0.42, 0.78, field) * u_density;
   color = mix(color, light, halftone);
 
   float vignette = smoothstep(1.32, 0.30, length(point * vec2(0.70, 0.86)));
