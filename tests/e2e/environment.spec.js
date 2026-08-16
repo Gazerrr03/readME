@@ -306,17 +306,20 @@ test('reduced motion renders static environment with widgets at desktop width', 
   await expect(page.locator('[data-environment-widgets]')).toHaveCount(1);
 });
 
-test('pixel background loads and remains adaptive while focus state changes', async ({ page }) => {
+test('shader background mounts and remains adaptive while focus state changes', async ({ page }) => {
   await seedLayout(page, 'macos');
   await page.goto('/');
   const background = page.locator('[data-environment-background]');
-  await expect(background).toHaveAttribute('data-background-id', 'storm-clouds-pixel');
-  await expect(background).toHaveAttribute('src', /assets\/background\/storm-clouds-pixel\.png/);
-  await expect.poll(async () => background.evaluate((node) => ({
-    complete: node.complete,
-    width: node.naturalWidth,
-  }))).toEqual({ complete: true, width: 1672 });
-  await expect(background).toHaveCSS('object-fit', 'cover');
+  await expect(background).toHaveAttribute('data-background-id', 'blue-fluid-halftone');
+  await expect(background).toHaveAttribute('data-background-kind', 'shader');
+  await expect(background).toHaveAttribute('aria-hidden', 'true');
+  await expect.poll(async () => background.evaluate((node) => (
+    node.tagName === 'CANVAS'
+    && node.width > 0
+    && node.height > 0
+    && (node.dataset.backgroundRenderer === 'webgl2'
+      || node.dataset.backgroundFallback === 'shader-unavailable')
+  ))).toBe(true);
 
   await page.locator('[data-environment-open="projects"]').click();
   await expect(page.locator('[data-macos-environment]')).toHaveAttribute('data-environment-motion', 'focused');

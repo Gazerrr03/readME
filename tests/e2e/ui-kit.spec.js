@@ -206,8 +206,10 @@ test('Pen Pen stays an independent white foreground object above the background'
       pet: mount?.dataset.botPet,
       spriteOpacity: getComputedStyle(sprite).opacity,
       spriteImage: getComputedStyle(sprite).backgroundImage,
+      backgroundTag: background?.tagName,
       backgroundId: background?.dataset.backgroundId,
-      backgroundPosition: backgroundStyle.objectPosition,
+      backgroundKind: background?.dataset.backgroundKind,
+      backgroundFill: backgroundStyle.backgroundColor,
       mountZIndex: getComputedStyle(mount).zIndex,
     };
   });
@@ -215,8 +217,10 @@ test('Pen Pen stays an independent white foreground object above the background'
   expect(result.pet).toBe('pen-pen');
   expect(result.spriteOpacity).toBe('1');
   expect(result.spriteImage).toContain('spritesheet-white.webp');
-  expect(result.backgroundId).toBe('storm-clouds-pixel');
-  expect(result.backgroundPosition).toBe('50% 50%');
+  expect(result.backgroundTag).toBe('CANVAS');
+  expect(result.backgroundId).toBe('blue-fluid-halftone');
+  expect(result.backgroundKind).toBe('shader');
+  expect(result.backgroundFill).toBe('rgb(23, 59, 93)');
   expect(Number(result.mountZIndex)).toBeGreaterThan(10);
 });
 
