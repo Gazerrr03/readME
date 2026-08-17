@@ -31,14 +31,22 @@
   display: block;
   height: 100%;
   inset: 0;
-  image-rendering: pixelated;
   opacity: 1;
-  object-fit: var(--background-fit, cover);
-  object-position: var(--background-position, center center);
+  pointer-events: none;
   position: absolute;
   transition: opacity var(--ui-duration) var(--ease-out);
   user-select: none;
   width: 100%;
+}
+
+[data-environment-background][data-background-kind='image'] {
+  image-rendering: pixelated;
+  object-fit: var(--background-fit, cover);
+  object-position: var(--background-position, center center);
+}
+
+[data-environment-background][data-background-kind='shader'] {
+  background: var(--os-canvas);
 }
 
 [data-environment-widgets] {
