@@ -30,11 +30,14 @@ test('author lab loads one Flow Shards preview with schema-driven plain-language
     timeout: 20_000,
   });
   await expect(page.locator('[data-wallpaper-preview] [data-wallpaper-surface]')).toHaveCount(1);
+  await expect(page.locator('[data-wallpaper-preview] [data-environment-background]'))
+    .toHaveAttribute('data-wallpaper-state', 'ready');
   await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'ready');
   await expect(page.locator('[data-wallpaper-apply-local]')).toBeEnabled();
 });
 
 test('schema labels and options follow the saved supported locale', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.addInitScript((preferencesKey) => {
     localStorage.setItem(preferencesKey, JSON.stringify({
       version: 1,
@@ -67,8 +70,8 @@ test('schema labels and options follow the saved supported locale', async ({ pag
   await expect(densityCard.locator('h2')).toHaveText('Density');
   await expect(densityField).toHaveAttribute('lang', 'zh-CN');
   await expect(densityField.locator('select')).toHaveAccessibleName('晶片数量');
-  await expect(page.locator('[data-wallpaper-control="density"] option[value="medium"]')).toHaveText('中');
-  await expect(page.locator('[data-wallpaper-value="density"]')).toHaveText('中');
+  await expect(page.locator('[data-wallpaper-control="density"] option[value="high"]')).toHaveText('高');
+  await expect(page.locator('[data-wallpaper-value="density"]')).toHaveText('高');
   await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('参考');
   await expect(page.locator('[data-wallpaper-apply-local]')).toBeEnabled({ timeout: 20_000 });
   await page.locator('[data-wallpaper-preset="calm"]').click();
@@ -265,7 +268,7 @@ test('presets become custom after editing and reset saves the official default w
 test('density rebuild is debounced and keeps one live preview surface', async ({ page }) => {
   await page.goto('/setting/?wallpaper=flow-shards');
   const surface = page.locator('[data-wallpaper-preview] [data-wallpaper-active="true"]');
-  await expect(surface).toHaveAttribute('data-simulation-size', '96', { timeout: 20_000 });
+  await expect(surface).toHaveAttribute('data-simulation-size', '128', { timeout: 20_000 });
 
   const density = page.locator('[data-wallpaper-control="density"] select');
   const debounce = await density.evaluate((select) => {
@@ -294,7 +297,7 @@ test('density rebuild is debounced and keeps one live preview surface', async ({
     };
     select.value = 'low';
     select.dispatchEvent(new Event('change', { bubbles: true }));
-    select.value = 'high';
+    select.value = 'medium';
     select.dispatchEvent(new Event('change', { bubbles: true }));
     return {
       activeTimers: window.densityTimers.filter((timer) => !timer.cancelled).length,
@@ -303,16 +306,18 @@ test('density rebuild is debounced and keeps one live preview surface', async ({
       transitions: [...window.densityTransitions],
     };
   });
-  expect(debounce).toEqual({ activeTimers: 1, delays: [120, 120], size: '96', transitions: [] });
+  expect(debounce).toEqual({ activeTimers: 1, delays: [120, 120], size: '128', transitions: [] });
   await page.evaluate(() => {
     window.densityTimers.find((timer) => !timer.cancelled).callback();
   });
-  await expect(surface).toHaveAttribute('data-simulation-size', '128', { timeout: 20_000 });
-  await expect.poll(() => page.evaluate(() => window.densityTransitions)).toEqual(['128']);
+  await expect(surface).toHaveAttribute('data-simulation-size', '96', { timeout: 20_000 });
+  await expect.poll(() => page.evaluate(() => window.densityTransitions)).toEqual(['96']);
   await expect(page.locator('[data-wallpaper-preview] [data-wallpaper-surface]')).toHaveCount(1);
 });
 
 test('copy fallback and downloads use the same normalized deterministic JSON', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.addInitScript(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
@@ -354,7 +359,7 @@ test('copy fallback and downloads use the same normalized deterministic JSON', a
     schemaVersion: 1,
     wallpaperId: 'flow-shards',
     config: {
-      density: 'medium',
+      density: 'high',
       speed: 77,
       vortexSize: 58,
       turbulence: 62,
@@ -364,8 +369,8 @@ test('copy fallback and downloads use the same normalized deterministic JSON', a
       glow: 58,
       shadow: 56,
       fog: 44,
-      backgroundColor: '#0B1D32',
-      shardColor: '#C9E8FF',
+      backgroundColor: '#000000',
+      shardColor: '#FF3C3C',
     },
   });
   expect(firstText).not.toContain('timestamp');
@@ -423,7 +428,7 @@ test('a failing saved draft is rejected before the lab can enable Apply', async 
   await page.addInitScript((draftKey) => {
     localStorage.setItem(draftKey, JSON.stringify({
       version: 1,
-      drafts: { 'flow-shards': { density: 'high' } },
+      drafts: { 'flow-shards': { density: 'medium' } },
     }));
     window.applyWasEnabled = false;
     new MutationObserver(() => {

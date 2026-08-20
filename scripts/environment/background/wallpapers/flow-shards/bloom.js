@@ -6,6 +6,9 @@ import {
   FULLSCREEN_VERTEX_SHADER,
 } from './shaders.js';
 
+const REFERENCE_BLOOM_GAIN = 1.8;
+const BLUR_RADIUS_SCALES = Object.freeze([1, 5 / 3, 7 / 3, 3, 11 / 3]);
+
 function createTarget(THREE, width, height, { depthBuffer = false } = {}) {
   const target = new THREE.WebGLRenderTarget(width, height, {
     depthBuffer,
@@ -43,7 +46,7 @@ function createPostMaterial(THREE, fragmentShader, uniforms) {
 
 export function createBloomPipeline({ THREE, renderer, width, height }) {
   const sceneTarget = createTarget(THREE, 1, 1, { depthBuffer: true });
-  const levels = Array.from({ length: 3 }, () => ({
+  const levels = Array.from({ length: 5 }, () => ({
     horizontal: createTarget(THREE, 1, 1),
     vertical: createTarget(THREE, 1, 1),
   }));
@@ -64,7 +67,10 @@ export function createBloomPipeline({ THREE, renderer, width, height }) {
     uBloom0: { value: levels[0].vertical.texture },
     uBloom1: { value: levels[1].vertical.texture },
     uBloom2: { value: levels[2].vertical.texture },
+    uBloom3: { value: levels[3].vertical.texture },
+    uBloom4: { value: levels[4].vertical.texture },
     uStrength: { value: 0 },
+    uDevicePixelRatio: { value: 1 },
   });
   const fullscreenGeometry = createFullscreenTriangle(THREE);
   const fullscreenScene = new THREE.Scene();
@@ -114,6 +120,7 @@ export function createBloomPipeline({ THREE, renderer, width, height }) {
 
         for (let index = 0; index < levels.length; index += 1) {
           const level = levels[index];
+          const radiusScale = BLUR_RADIUS_SCALES[index];
           if (index > 0) {
             copyMaterial.uniforms.uTexture.value = levels[index - 1].vertical.texture;
             renderPass(copyMaterial, level.vertical);
@@ -123,7 +130,7 @@ export function createBloomPipeline({ THREE, renderer, width, height }) {
             1 / level.vertical.width,
             1 / level.vertical.height,
           );
-          blurMaterial.uniforms.uDirection.value.set(1, 0);
+          blurMaterial.uniforms.uDirection.value.set(radiusScale, 0);
           renderPass(blurMaterial, level.horizontal);
 
           blurMaterial.uniforms.uTexture.value = level.horizontal.texture;
@@ -131,12 +138,13 @@ export function createBloomPipeline({ THREE, renderer, width, height }) {
             1 / level.horizontal.width,
             1 / level.horizontal.height,
           );
-          blurMaterial.uniforms.uDirection.value.set(0, 1);
+          blurMaterial.uniforms.uDirection.value.set(0, radiusScale);
           renderPass(blurMaterial, level.vertical);
         }
       }
 
-      compositeMaterial.uniforms.uStrength.value = strength;
+      compositeMaterial.uniforms.uStrength.value = strength * REFERENCE_BLOOM_GAIN;
+      compositeMaterial.uniforms.uDevicePixelRatio.value = renderer.getPixelRatio();
       renderPass(compositeMaterial, null);
     },
     resize,

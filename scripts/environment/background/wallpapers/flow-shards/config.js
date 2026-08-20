@@ -12,7 +12,7 @@ const range = (key, label, description, min, max) => Object.freeze({
 });
 
 export const FLOW_SHARDS_DEFAULT_CONFIG = Object.freeze({
-  density: 'medium',
+  density: 'high',
   speed: 42,
   vortexSize: 58,
   turbulence: 62,
@@ -22,8 +22,8 @@ export const FLOW_SHARDS_DEFAULT_CONFIG = Object.freeze({
   glow: 58,
   shadow: 56,
   fog: 44,
-  backgroundColor: '#0B1D32',
-  shardColor: '#C9E8FF',
+  backgroundColor: '#000000',
+  shardColor: '#FF3C3C',
 });
 
 const preset = (config) => Object.freeze({ ...FLOW_SHARDS_DEFAULT_CONFIG, ...config });
@@ -148,16 +148,16 @@ export function mapFlowShardsConfig(input) {
   const config = normalizeFlowShardsConfig(input);
   return {
     simulationSize: { low: 64, medium: 96, high: 128 }[config.density],
-    timeScale: lerp(0.12, 1.15, config.speed / 100),
-    noiseScale: lerp(1.6, 0.28, config.vortexSize / 100),
-    curlStrength: lerp(0.15, 1.8, config.turbulence / 100),
-    lifeSeconds: lerp(4, 14, config.motionRange / 100),
-    spawnRadius: lerp(1.6, 5.5, config.motionRange / 100),
-    baseSize: lerp(0.035, 0.18, config.shardSize / 100),
-    stretch: lerp(0.2, 3.8, config.trailLength / 100),
-    bloomStrength: lerp(0, 1.35, config.glow / 100),
-    bloomThreshold: lerp(1.05, 0.48, config.glow / 100),
-    shadowOpacity: lerp(0, 0.62, config.shadow / 100),
+    timeScale: lerp(0.25, 2, config.speed / 100),
+    noiseScale: lerp(2.05, 0.24, config.vortexSize / 100),
+    curlStrength: lerp(0.2, 1.49, config.turbulence / 100),
+    lifeSeconds: lerp(3.4, 7.3, config.motionRange / 100),
+    spawnRadius: lerp(0.45, 1.55, config.motionRange / 100),
+    baseSize: lerp(0.55, 1.94, config.shardSize / 100),
+    stretch: lerp(0.35, 1.47, config.trailLength / 100),
+    bloomStrength: lerp(0.1, 2.4, config.glow / 100),
+    bloomThreshold: lerp(0.72, 0.065, config.glow / 100),
+    shadowOpacity: config.shadow / 100,
     fogAmount: config.fog / 100,
   };
 }

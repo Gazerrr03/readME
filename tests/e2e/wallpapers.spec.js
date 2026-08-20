@@ -93,6 +93,22 @@ async function settleWallpaperRequest(page, index, result, rejected = false) {
   }, { requestIndex: index, requestResult: result, shouldReject: rejected });
 }
 
+async function applyWallpaperFromPhotos(page, photosWindow, id) {
+  const host = page.locator('[data-environment-background]');
+  const wallpapersView = photosWindow.locator('[data-wallpapers-view]');
+  if (await wallpapersView.getAttribute('data-wallpaper-view') === 'detail') {
+    await wallpapersView.locator('[data-wallpaper-back]').click();
+  }
+  await wallpapersView.locator(`[data-wallpaper-card="${id}"]`).click();
+  await wallpapersView.locator('[data-wallpaper-apply]').click();
+  await expect(host).toHaveAttribute('data-background-id', id, { timeout: 20_000 });
+  await expect(host).toHaveAttribute('data-wallpaper-state', 'ready');
+  await expect(host.locator('[data-wallpaper-active="true"]')).toHaveCount(1);
+  await expect(host.locator('[data-wallpaper-surface]')).toHaveCount(1);
+  await expect(wallpapersView.locator('[data-wallpaper-apply-status]'))
+    .toHaveAttribute('data-wallpaper-apply-status', 'success');
+}
+
 test('Photos preserves four photos and applies a wallpaper through a static two-step preview', async ({ page }) => {
   await seedLayout(page, 'macos');
   await page.goto('/');
@@ -108,6 +124,7 @@ test('Photos preserves four photos and applies a wallpaper through a static two-
 
   await window.locator('[data-wallpaper-card="flow-shards"]').click();
   await expect(window.locator('[data-wallpaper-detail="flow-shards"]')).toBeVisible();
+  await expect(window.locator('[data-photos-panel="wallpapers"] canvas')).toHaveCount(0);
   const storedBeforeApply = await page.evaluate(() => localStorage.getItem('portfolio-os:preferences'));
   await expect(page.locator('[data-environment-background]')).toHaveAttribute('data-background-id', 'blue-fluid-halftone');
   await expect.poll(() => page.evaluate(() => localStorage.getItem('portfolio-os:preferences'))).toBe(storedBeforeApply);
@@ -126,6 +143,46 @@ test('Photos preserves four photos and applies a wallpaper through a static two-
   await expect(restoredBackground).toHaveAttribute('data-background-id', 'flow-shards');
   await expect(restoredBackground).toHaveAttribute('data-wallpaper-state', 'ready', { timeout: 20_000 });
   await expect(restoredBackground.locator('[data-wallpaper-renderer="three-webgl2"][data-wallpaper-active="true"]')).toHaveCount(1);
+});
+
+test('repeated blue and Flow switches settle with exactly one owned surface', async ({ page }) => {
+  test.setTimeout(90_000);
+  await seedLayout(page, 'macos');
+  await page.goto('/');
+  await page.locator('[data-folder-toggle="photos"]').click();
+  const photosWindow = page.locator('[data-app-window="photos"]');
+  await photosWindow.locator('[data-photos-tab="wallpapers"]').click();
+
+  for (const id of [
+    'flow-shards',
+    'blue-fluid-halftone',
+    'flow-shards',
+    'blue-fluid-halftone',
+  ]) {
+    await applyWallpaperFromPhotos(page, photosWindow, id);
+  }
+});
+
+test('a rejected Flow renderer preserves the DOM wallpaper ID and preference bytes', async ({ page }) => {
+  await seedLayout(page, 'windows');
+  await page.route('**/vendor/three.module.min.js', (route) => route.abort('failed'));
+  await page.goto('/');
+  await page.locator('[data-folder-toggle="photos"]').click();
+  const photosWindow = page.locator('[data-app-window="photos"]');
+  await photosWindow.locator('[data-photos-tab="wallpapers"]').click();
+  await photosWindow.locator('[data-wallpaper-card="flow-shards"]').click();
+
+  const before = await page.evaluate(() => ({
+    domId: document.querySelector('[data-environment-background]')?.dataset.backgroundId,
+    preferences: localStorage.getItem('portfolio-os:preferences'),
+  }));
+  await photosWindow.locator('[data-wallpaper-apply]').click();
+  await expect(photosWindow.locator('[data-wallpaper-apply-status]'))
+    .toHaveAttribute('data-wallpaper-apply-status', 'error');
+  expect(await page.evaluate(() => ({
+    domId: document.querySelector('[data-environment-background]')?.dataset.backgroundId,
+    preferences: localStorage.getItem('portfolio-os:preferences'),
+  }))).toEqual(before);
 });
 
 test('a wallpaper card opens its static detail with Enter', async ({ page }) => {

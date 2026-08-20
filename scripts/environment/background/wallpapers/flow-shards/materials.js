@@ -13,7 +13,7 @@ function deterministicScalar(index) {
 }
 
 function createInstancedShardGeometry(THREE, size) {
-  const sourceGeometry = new THREE.BoxGeometry(1, 1, 1);
+  const sourceGeometry = new THREE.BoxGeometry(2, 2, 2);
   const geometry = new THREE.InstancedBufferGeometry();
   geometry.setIndex(sourceGeometry.index.clone());
   for (const [name, attribute] of Object.entries(sourceGeometry.attributes)) {
@@ -23,14 +23,27 @@ function createInstancedShardGeometry(THREE, size) {
   const instanceCount = size * size;
   const stateUvs = new Float32Array(instanceCount * 2);
   const randoms = new Float32Array(instanceCount);
+  const decals = new Float32Array(instanceCount * 3);
+  const occlusion = new Float32Array(instanceCount);
+  const occlusionColor = new Float32Array(instanceCount);
   for (let index = 0; index < instanceCount; index += 1) {
     const [u, v] = stateUvForIndex(index, size);
     stateUvs[index * 2] = u;
     stateUvs[(index * 2) + 1] = v;
     randoms[index] = deterministicScalar(index);
+    for (let channel = 0; channel < 3; channel += 1) {
+      const first = deterministicScalar((index * 7) + channel + 17);
+      const second = deterministicScalar((index * 11) + channel + 7919);
+      decals[(index * 3) + channel] = 0.05 * (first - second);
+    }
+    occlusion[index] = deterministicScalar((index * 13) + 104729) < 0.02 ? 0 : 1;
+    occlusionColor[index] = deterministicScalar((index * 17) + 130363) < 0.3 ? 1 : 0;
   }
   geometry.setAttribute('aStateUv', new THREE.InstancedBufferAttribute(stateUvs, 2));
   geometry.setAttribute('aRandom', new THREE.InstancedBufferAttribute(randoms, 1));
+  geometry.setAttribute('aDecals', new THREE.InstancedBufferAttribute(decals, 3));
+  geometry.setAttribute('aOcclusion', new THREE.InstancedBufferAttribute(occlusion, 1));
+  geometry.setAttribute('aOcclusionColor', new THREE.InstancedBufferAttribute(occlusionColor, 1));
   geometry.instanceCount = instanceCount;
   geometry.name = 'Flow Shards instances';
   return { geometry, sourceGeometry };
@@ -48,6 +61,19 @@ function patchBeautyShader(shader) {
     '#include <beginnormal_vertex>',
     '#include <beginnormal_vertex>\nobjectNormal = flowDeformNormal(objectNormal);',
   );
+  shader.fragmentShader = shader.fragmentShader
+    .replace(
+      '#include <common>',
+      '#include <common>\nvarying vec3 vFlowColor;\nvarying float vFlowOcclusion;\nvarying float vFlowOcclusionColor;',
+    )
+    .replace(
+      'vec4 diffuseColor = vec4( diffuse, opacity );',
+      'vec4 diffuseColor = vec4(vFlowColor, opacity);',
+    )
+    .replace(
+      '#include <opaque_fragment>',
+      '#include <opaque_fragment>\ngl_FragColor.rgb = mix(vec3(vFlowOcclusionColor), gl_FragColor.rgb, vFlowOcclusion);',
+    );
 }
 
 function bindFlowUniforms(material, uniforms, patch) {
@@ -55,7 +81,28 @@ function bindFlowUniforms(material, uniforms, patch) {
     Object.assign(shader.uniforms, uniforms);
     patch(shader);
   };
-  material.customProgramCacheKey = () => 'flow-shards-shared-deformation-v1';
+  material.customProgramCacheKey = () => 'flow-shards-reference-deformation-v2';
+}
+
+function setRawHex(color, value) {
+  const numeric = Number.parseInt(value.slice(1), 16);
+  color.setRGB(
+    ((numeric >> 16) & 0xFF) / 255,
+    ((numeric >> 8) & 0xFF) / 255,
+    (numeric & 0xFF) / 255,
+  );
+}
+
+function setPalette(THREE, uniforms, primaryValue) {
+  setRawHex(uniforms.uPrimaryColor.value, primaryValue);
+  if (primaryValue.toUpperCase() === '#FF3C3C') {
+    setRawHex(uniforms.uSecondaryColor.value, '#5A008C');
+    return;
+  }
+  const secondary = new THREE.Color();
+  setRawHex(secondary, primaryValue);
+  secondary.offsetHSL(-0.225, 0, -0.34);
+  uniforms.uSecondaryColor.value.copy(secondary);
 }
 
 export function createShardMaterials({ THREE, size, state, mapped, config }) {
@@ -65,13 +112,14 @@ export function createShardMaterials({ THREE, size, state, mapped, config }) {
     uPreviousState: { value: state.previousTexture },
     uBaseSize: { value: mapped.baseSize },
     uStretch: { value: mapped.stretch },
+    uPrimaryColor: { value: new THREE.Color() },
+    uSecondaryColor: { value: new THREE.Color() },
   };
-  const material = new THREE.MeshStandardMaterial({
-    color: config.shardColor,
-    emissive: config.shardColor,
-    emissiveIntensity: 0.35 + (mapped.bloomStrength * 0.28),
-    metalness: 0.18,
-    roughness: 0.38,
+  setPalette(THREE, uniforms, config.shardColor);
+  const material = new THREE.MeshPhongMaterial({
+    color: 0xFFFFFF,
+    shininess: 30,
+    specular: 0x111111,
   });
   material.name = 'Flow Shards beauty';
   bindFlowUniforms(material, uniforms, patchBeautyShader);
@@ -82,6 +130,7 @@ export function createShardMaterials({ THREE, size, state, mapped, config }) {
 
   const mesh = new THREE.Mesh(geometry, material);
   mesh.castShadow = true;
+  mesh.receiveShadow = true;
   mesh.customDepthMaterial = depthMaterial;
   mesh.frustumCulled = false;
   mesh.name = 'Flow Shards field';
@@ -100,9 +149,7 @@ export function createShardMaterials({ THREE, size, state, mapped, config }) {
     updateConfig(nextMapped, nextConfig) {
       uniforms.uBaseSize.value = nextMapped.baseSize;
       uniforms.uStretch.value = nextMapped.stretch;
-      material.color.set(nextConfig.shardColor);
-      material.emissive.set(nextConfig.shardColor);
-      material.emissiveIntensity = 0.35 + (nextMapped.bloomStrength * 0.28);
+      setPalette(THREE, uniforms, nextConfig.shardColor);
     },
     dispose() {
       if (disposed) return;

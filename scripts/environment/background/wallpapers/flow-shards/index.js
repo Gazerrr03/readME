@@ -4,9 +4,18 @@ import { createShardMaterials } from './materials.js';
 import { createFlowSimulation } from './simulation.js';
 
 const MAX_DELTA_SECONDS = 1 / 20;
-const MAX_PIXEL_RATIO = 1.5;
+const MAX_PIXEL_RATIO = 1.7;
 const WARM_UP_DELTA_SECONDS = 1 / 120;
+const REFERENCE_WARM_UP_SECONDS = 3;
+const REFERENCE_WARM_UP_DELTA_SECONDS = 1 / 60;
+const REFERENCE_WARM_UP_STEPS = Math.round(
+  REFERENCE_WARM_UP_SECONDS / REFERENCE_WARM_UP_DELTA_SECONDS,
+);
+const REFERENCE_WARM_UP_STEPS_PER_FRAME = 6;
+const INITIAL_VISIBLE_INSTANCE_FRACTION = 0.25;
 const MOTION_STATES = new Set(['running', 'focused', 'static']);
+const CAMERA_BASE_POSITION = Object.freeze([57.57376061392961, 48.10061185396083, 144.38555018465544]);
+const CAMERA_TARGET = Object.freeze([21.4700462195145, 3.80829128472304, -4.742430795073441]);
 
 function createCanvas(document, descriptor) {
   const canvas = document.createElement('canvas');
@@ -64,8 +73,21 @@ function measureCanvas(canvas, view) {
   };
 }
 
-function fogDensity(amount) {
-  return 0.012 + (amount * 0.052);
+function fogRange(amount) {
+  return {
+    near: 260 - (amount * 180),
+    far: 620 - (amount * 420),
+  };
+}
+
+function positionReferenceCamera(camera, elapsed) {
+  const pulse = 1.1 - (0.17 * Math.sin(elapsed));
+  camera.position.set(
+    CAMERA_BASE_POSITION[0] * pulse,
+    CAMERA_BASE_POSITION[1] * pulse,
+    CAMERA_BASE_POSITION[2] * pulse,
+  );
+  camera.lookAt(...CAMERA_TARGET);
 }
 
 function disposePipeline(scene, pipeline) {
@@ -171,9 +193,12 @@ export function createWallpaperRenderer({
   const applySceneConfig = (targetRuntime, nextMapped, nextConfig) => {
     targetRuntime.scene.background.set(nextConfig.backgroundColor);
     targetRuntime.scene.fog.color.set(nextConfig.backgroundColor);
-    targetRuntime.scene.fog.density = fogDensity(nextMapped.fogAmount);
-    targetRuntime.planeMaterial.opacity = nextMapped.shadowOpacity;
-    targetRuntime.directional.intensity = 1.05 + (nextMapped.shadowOpacity * 0.35);
+    const nextFog = fogRange(nextMapped.fogAmount);
+    targetRuntime.scene.fog.near = nextFog.near;
+    targetRuntime.scene.fog.far = nextFog.far;
+    targetRuntime.planeMaterial.opacity = 0;
+    targetRuntime.directional.intensity = 0.45 + (nextMapped.shadowOpacity * 0.9);
+    targetRuntime.ambient.intensity = 0.18 - (nextMapped.shadowOpacity * 0.14);
   };
 
   const buildPipeline = (targetRuntime, nextMapped, nextConfig) => {
@@ -191,7 +216,17 @@ export function createWallpaperRenderer({
         mapped: nextMapped,
         config: nextConfig,
       });
-      return { simulation, shards, size: nextMapped.simulationSize };
+      const instanceCount = nextMapped.simulationSize ** 2;
+      shards.mesh.geometry.instanceCount = Math.ceil(
+        instanceCount * INITIAL_VISIBLE_INSTANCE_FRACTION,
+      );
+      return {
+        simulation,
+        shards,
+        size: nextMapped.simulationSize,
+        instanceCount,
+        warmUpRemaining: REFERENCE_WARM_UP_STEPS,
+      };
     } catch (error) {
       simulation.dispose();
       throw error;
@@ -199,8 +234,31 @@ export function createWallpaperRenderer({
   };
 
   const renderPipeline = (targetRuntime, pipeline, delta, bloomMapped = mapped) => {
+    if (frameCount > 0 && delta > 0 && pipeline.warmUpRemaining > 0) {
+      const warmUpSteps = Math.min(
+        pipeline.warmUpRemaining,
+        REFERENCE_WARM_UP_STEPS_PER_FRAME,
+      );
+      simulationTime += warmUpSteps * REFERENCE_WARM_UP_DELTA_SECONDS;
+      pipeline.simulation.warmUp(
+        warmUpSteps,
+        REFERENCE_WARM_UP_DELTA_SECONDS,
+        simulationTime,
+      );
+      pipeline.warmUpRemaining -= warmUpSteps;
+    }
+    const warmUpProgress = 1 - (pipeline.warmUpRemaining / REFERENCE_WARM_UP_STEPS);
+    const visibleFraction = INITIAL_VISIBLE_INSTANCE_FRACTION
+      + ((1 - INITIAL_VISIBLE_INSTANCE_FRACTION) * warmUpProgress);
+    pipeline.shards.mesh.geometry.instanceCount = Math.ceil(
+      pipeline.instanceCount * visibleFraction,
+    );
     const nextState = pipeline.simulation.step(delta, simulationTime);
     pipeline.shards.updateState(nextState);
+    if (delta > 0) {
+      pipeline.shards.mesh.rotation.y += delta * 0.18 * bloomMapped.timeScale;
+    }
+    positionReferenceCamera(targetRuntime.camera, simulationTime);
     canvas.dataset.simulationGeneration = String(pipeline.simulation.generation);
     const bloomScale = motion === 'focused' ? 0.55 : 1;
     targetRuntime.bloom.render(targetRuntime.scene, targetRuntime.camera, {
@@ -299,49 +357,50 @@ export function createWallpaperRenderer({
       });
       nextRuntime.renderer = renderer;
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.shadowMap.type = THREE.PCFShadowMap;
       renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMapping = THREE.NoToneMapping;
       renderer.toneMappingExposure = 1;
       assertFlowCapabilities(THREE, renderer, view);
 
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(normalized.backgroundColor);
-      scene.fog = new THREE.FogExp2(normalized.backgroundColor, fogDensity(mapped.fogAmount));
+      const initialFog = fogRange(mapped.fogAmount);
+      scene.fog = new THREE.Fog(normalized.backgroundColor, initialFog.near, initialFog.far);
       nextRuntime.scene = scene;
 
-      const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 48);
-      camera.position.set(0, 1.25, 11);
-      camera.lookAt(0, 0, 0);
+      const camera = new THREE.PerspectiveCamera(80, 1, 1, 700);
+      positionReferenceCamera(camera, 0);
       nextRuntime.camera = camera;
 
-      const ambient = new THREE.AmbientLight(0x9BCBFF, 0.24);
-      const directional = new THREE.DirectionalLight(0xDDF2FF, 1.2);
-      directional.position.set(4.5, 7.5, 5.5);
+      const ambient = new THREE.AmbientLight(0xFFFFFF, 0.1);
+      const directional = new THREE.DirectionalLight(0xFFFFFF, 0.95);
+      directional.position.set(0, 250, 0);
       directional.castShadow = true;
-      directional.shadow.mapSize.set(1024, 1024);
-      directional.shadow.camera.left = -8;
-      directional.shadow.camera.right = 8;
-      directional.shadow.camera.top = 8;
-      directional.shadow.camera.bottom = -8;
-      directional.shadow.camera.near = 0.1;
-      directional.shadow.camera.far = 30;
+      directional.shadow.mapSize.set(2048, 2048);
+      directional.shadow.camera.left = -80;
+      directional.shadow.camera.right = 80;
+      directional.shadow.camera.top = 80;
+      directional.shadow.camera.bottom = -80;
+      directional.shadow.camera.near = 20;
+      directional.shadow.camera.far = 500;
       directional.shadow.camera.updateProjectionMatrix();
-      directional.shadow.bias = -0.00035;
-      scene.add(ambient, directional);
+      directional.shadow.bias = 0.0001;
+      scene.add(ambient, directional, directional.target);
       nextRuntime.ambient = ambient;
       nextRuntime.directional = directional;
 
-      const planeGeometry = new THREE.PlaneGeometry(26, 26);
+      const planeGeometry = new THREE.PlaneGeometry(400, 400);
       const planeMaterial = new THREE.ShadowMaterial({
-        color: 0x020810,
-        opacity: mapped.shadowOpacity,
+        color: 0x000000,
+        opacity: 0,
         transparent: true,
       });
       const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-      plane.position.y = -4.25;
+      plane.position.y = -80;
       plane.rotation.x = -Math.PI / 2;
       plane.receiveShadow = true;
+      plane.visible = false;
       plane.name = 'Flow Shards shadow receiver';
       scene.add(plane);
       nextRuntime.plane = plane;

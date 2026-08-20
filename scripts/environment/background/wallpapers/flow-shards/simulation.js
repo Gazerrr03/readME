@@ -20,14 +20,10 @@ export function createOriginState(size, seed) {
   const state = new Float32Array(size * size * 4);
 
   for (let offset = 0; offset < state.length; offset += 4) {
-    const azimuth = random() * Math.PI * 2;
-    const z = (random() * 2) - 1;
-    const radius = Math.cbrt(random());
-    const radial = Math.sqrt(1 - (z * z)) * radius;
-    state[offset] = Math.cos(azimuth) * radial;
-    state[offset + 1] = z * radius;
-    state[offset + 2] = Math.sin(azimuth) * radial;
-    state[offset + 3] = random();
+    state[offset] = 0.12 * (random() - random());
+    state[offset + 1] = 0.12 * (random() - random());
+    state[offset + 2] = 0.12 * (random() - random());
+    state[offset + 3] = random() * 0.45;
   }
 
   return state;
@@ -137,6 +133,21 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
     }
   };
 
+  const advance = (delta, elapsed, countGeneration) => {
+    renderState({
+      delta,
+      elapsed,
+      initialize: 0,
+      source: currentTexture,
+      target: targets[writeIndex],
+    });
+    previousTexture = currentTexture;
+    currentTexture = targets[writeIndex].texture;
+    writeIndex = 1 - writeIndex;
+    if (countGeneration) generation += 1;
+    return state();
+  };
+
   try {
     renderState({
       delta: 0,
@@ -173,24 +184,23 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
     get generation() {
       return generation;
     },
+    warmUp(steps, delta = 1 / 60, endElapsed = 0) {
+      if (disposed) throw new Error('Flow Shards simulation has been disposed');
+      const safeSteps = Math.max(0, Math.floor(Number.isFinite(steps) ? steps : 0));
+      const safeDelta = Math.min(Math.max(Number.isFinite(delta) ? delta : 0, 0), 1 / 20);
+      const safeEndElapsed = Number.isFinite(endElapsed) ? endElapsed : 0;
+      if (safeDelta === 0) return state();
+      for (let index = 0; index < safeSteps; index += 1) {
+        const elapsed = safeEndElapsed + ((index - safeSteps + 1) * safeDelta);
+        advance(safeDelta, elapsed, false);
+      }
+      return state();
+    },
     step(delta, elapsed) {
       if (disposed) throw new Error('Flow Shards simulation has been disposed');
       const safeDelta = Math.min(Math.max(Number.isFinite(delta) ? delta : 0, 0), 1 / 20);
       if (safeDelta === 0) return state();
-
-      renderState({
-        delta: safeDelta,
-        elapsed: Number.isFinite(elapsed) ? elapsed : 0,
-        initialize: 0,
-        source: currentTexture,
-        target: targets[writeIndex],
-      });
-
-      previousTexture = currentTexture;
-      currentTexture = targets[writeIndex].texture;
-      writeIndex = 1 - writeIndex;
-      generation += 1;
-      return state();
+      return advance(safeDelta, Number.isFinite(elapsed) ? elapsed : 0, true);
     },
     updateConfig(nextMapped) {
       uniforms.uTimeScale.value = nextMapped.timeScale;

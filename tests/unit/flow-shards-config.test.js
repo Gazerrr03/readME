@@ -26,8 +26,26 @@ test('density tiers and semantic endpoints map to bounded renderer values', () =
   assert.equal(mapFlowShardsConfig({ density: 'low' }).simulationSize, 64);
   assert.equal(mapFlowShardsConfig({ density: 'medium' }).simulationSize, 96);
   assert.equal(mapFlowShardsConfig({ density: 'high' }).simulationSize, 128);
-  assert.equal(mapFlowShardsConfig({ speed: 0 }).timeScale, 0.12);
-  assert.equal(mapFlowShardsConfig({ speed: 100 }).timeScale, 1.15);
+  assert.equal(mapFlowShardsConfig({ speed: 0 }).timeScale, 0.25);
+  assert.equal(mapFlowShardsConfig({ speed: 100 }).timeScale, 2);
+});
+
+test('reference preset matches the original lab palette, density, and motion profile', () => {
+  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.density, 'high');
+  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.backgroundColor, '#000000');
+  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.shardColor, '#FF3C3C');
+
+  const mapped = mapFlowShardsConfig(FLOW_SHARDS_DEFAULT_CONFIG);
+  assert.equal(mapped.simulationSize, 128);
+  assert.ok(Math.abs(mapped.timeScale - 1) < 0.02);
+  assert.ok(Math.abs(mapped.noiseScale - 1) < 0.02);
+  assert.ok(Math.abs(mapped.curlStrength - 1) < 0.02);
+  assert.ok(Math.abs(mapped.lifeSeconds - 5.55) < 0.05);
+  assert.ok(Math.abs(mapped.spawnRadius - 1) < 0.06);
+  assert.ok(Math.abs(mapped.baseSize - 1.15) < 0.05);
+  assert.ok(Math.abs(mapped.stretch - 1) < 0.06);
+  assert.ok(Math.abs(mapped.bloomStrength - 1.43) < 0.02);
+  assert.ok(Math.abs(mapped.bloomThreshold - 0.34) < 0.02);
 });
 
 test('wallpaper export is deterministic and excludes unknown fields', () => {

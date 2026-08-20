@@ -13,8 +13,11 @@ test('origin state is deterministic and encodes xyz plus life for every instance
   const second = createOriginState(2, 882);
   assert.equal(first.length, 16);
   assert.deepEqual([...first], [...second]);
-  for (let index = 3; index < first.length; index += 4) {
-    assert.ok(first[index] >= 0 && first[index] <= 1);
+  for (let offset = 0; offset < first.length; offset += 4) {
+    assert.ok(Math.abs(first[offset]) <= 0.12);
+    assert.ok(Math.abs(first[offset + 1]) <= 0.12);
+    assert.ok(Math.abs(first[offset + 2]) <= 0.12);
+    assert.ok(first[offset + 3] >= 0 && first[offset + 3] <= 0.45);
   }
 });
 
@@ -36,6 +39,7 @@ test('simulation initializes coherent history and zero-delta renders preserve it
       const { uniforms } = scene.children[0].material;
       renders.push({
         delta: uniforms.uDelta.value,
+        elapsed: uniforms.uTime.value,
         initialize: uniforms.uInitialize.value,
         source: uniforms.uState.value,
         target: renderTarget,
@@ -63,23 +67,29 @@ test('simulation initializes coherent history and zero-delta renders preserve it
   assert.equal(simulation.currentTexture, renders[1].target.texture);
   assert.equal(simulation.generation, 0);
 
+  simulation.warmUp(2, 1 / 60, 5);
+  assert.equal(renders.length, 4);
+  assert.equal(renders[2].elapsed, 5 - (1 / 60));
+  assert.equal(renders[3].elapsed, 5);
+  assert.equal(simulation.generation, 0);
+
   const initializedState = {
     currentTexture: simulation.currentTexture,
     previousTexture: simulation.previousTexture,
   };
   assert.deepEqual(simulation.step(0, 0), initializedState);
-  assert.equal(renders.length, 2);
+  assert.equal(renders.length, 4);
   assert.equal(simulation.generation, 0);
 
   const advancedState = simulation.step(1 / 120, 1 / 120);
-  assert.equal(renders.length, 3);
-  assert.equal(renders[2].delta, 1 / 120);
-  assert.equal(renders[2].initialize, 0);
+  assert.equal(renders.length, 5);
+  assert.equal(renders[4].delta, 1 / 120);
+  assert.equal(renders[4].initialize, 0);
   assert.equal(advancedState.previousTexture, initializedState.currentTexture);
   assert.equal(simulation.generation, 1);
 
   assert.deepEqual(simulation.step(0, 1), advancedState);
-  assert.equal(renders.length, 3);
+  assert.equal(renders.length, 5);
   assert.equal(simulation.generation, 1);
   simulation.dispose();
 });
