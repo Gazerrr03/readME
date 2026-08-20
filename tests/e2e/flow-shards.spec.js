@@ -51,18 +51,37 @@ async function flowPixelCoverage(page, locator) {
     const context = canvas.getContext('2d');
     context.drawImage(bitmap, 0, 0);
     const pixels = context.getImageData(0, 0, bitmap.width, bitmap.height).data;
+    const background = [0x07, 0x14, 0x26];
+    let cool = 0;
     let hot = 0;
     let visible = 0;
+    let warm = 0;
     for (let offset = 0; offset < pixels.length; offset += 4) {
-      const maximum = Math.max(pixels[offset], pixels[offset + 1], pixels[offset + 2]);
+      const red = pixels[offset];
+      const green = pixels[offset + 1];
+      const blue = pixels[offset + 2];
+      const contrast = Math.max(
+        Math.abs(red - background[0]),
+        Math.abs(green - background[1]),
+        Math.abs(blue - background[2]),
+      );
       const luminance = (pixels[offset] * 0.2126)
         + (pixels[offset + 1] * 0.7152)
         + (pixels[offset + 2] * 0.0722);
-      if (maximum > 28) visible += 1;
+      if (contrast > 20) {
+        visible += 1;
+        if (blue - red > 20) cool += 1;
+        if (red - blue > 20) warm += 1;
+      }
       if (luminance > 120) hot += 1;
     }
     const pixelCount = pixels.length / 4;
-    return { hot: hot / pixelCount, visible: visible / pixelCount };
+    return {
+      cool: cool / pixelCount,
+      hot: hot / pixelCount,
+      visible: visible / pixelCount,
+      warm: warm / pixelCount,
+    };
   }, png.toString('base64'));
 }
 
@@ -150,6 +169,8 @@ test('reference Flow preserves dark breathing room around the shard field', asyn
   expect(coverage.visible).toBeLessThan(0.72);
   expect(coverage.hot).toBeGreaterThan(0.002);
   expect(coverage.hot).toBeLessThan(0.04);
+  expect(coverage.cool).toBeGreaterThan(0.04);
+  expect(coverage.cool).toBeGreaterThan(coverage.warm * 2);
 
   await page.evaluate(() => {
     globalThis.testFlowCoverage.renderer.destroy();

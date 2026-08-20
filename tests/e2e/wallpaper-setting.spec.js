@@ -369,8 +369,8 @@ test('copy fallback and downloads use the same normalized deterministic JSON', a
       glow: 58,
       shadow: 56,
       fog: 44,
-      backgroundColor: '#000000',
-      shardColor: '#FF3C3C',
+      backgroundColor: '#071426',
+      shardColor: '#748BFF',
     },
   });
   expect(firstText).not.toContain('timestamp');

@@ -22,8 +22,8 @@ export const FLOW_SHARDS_DEFAULT_CONFIG = Object.freeze({
   glow: 58,
   shadow: 56,
   fog: 44,
-  backgroundColor: '#000000',
-  shardColor: '#FF3C3C',
+  backgroundColor: '#071426',
+  shardColor: '#748BFF',
 });
 
 const preset = (config) => Object.freeze({ ...FLOW_SHARDS_DEFAULT_CONFIG, ...config });

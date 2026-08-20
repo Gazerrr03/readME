@@ -95,8 +95,8 @@ function setRawHex(color, value) {
 
 function setPalette(THREE, uniforms, primaryValue) {
   setRawHex(uniforms.uPrimaryColor.value, primaryValue);
-  if (primaryValue.toUpperCase() === '#FF3C3C') {
-    setRawHex(uniforms.uSecondaryColor.value, '#5A008C');
+  if (primaryValue.toUpperCase() === '#748BFF') {
+    setRawHex(uniforms.uSecondaryColor.value, '#40566A');
     return;
   }
   const secondary = new THREE.Color();
