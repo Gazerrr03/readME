@@ -39,20 +39,57 @@ function acquireStorage() {
 
 const storage = acquireStorage();
 const locale = loadPreferences(storage).locale;
-const applyMessages = {
+const LAB_COPY = {
   en: {
-    error: 'Changes were not applied. Local browser storage could not be verified, so prior homepage settings were restored.',
-    success: 'Applied to this browser’s local homepage.',
+    applyError: 'Changes were not applied. Local browser storage could not be verified. Restoration of prior homepage settings was attempted.',
+    applySuccess: 'Applied to this browser’s local homepage.',
+    copyFallback: 'Clipboard access was blocked. The configuration is selected below for manual copying.',
+    copySuccess: 'Configuration copied.',
+    downloadSuccess: 'Configuration downloaded.',
+    presetDraft: (label) => `${label} preset loaded as a draft.`,
+    presets: { calm: 'Calm', reference: 'Reference', intense: 'Intense', custom: 'Custom' },
+    previewConfigFailure: 'The live preview could not accept this configuration. Your controls and saved draft are still available.',
+    previewLoading: 'Preparing the live preview…',
+    previewReady: 'Live preview ready',
+    previewStartFailure: 'The live preview could not start. Your controls and saved draft are still available.',
+    previewStopped: 'The Flow Shards preview stopped and is no longer available. Your draft and export tools still work.',
+    resetDraft: 'Official default restored as a draft. The local homepage was not changed.',
+    warning: (id) => `“${id}” is not available in this author lab. Showing Flow Shards instead.`,
   },
   'zh-CN': {
-    error: '更改未应用。本地浏览器存储无法验证，已尝试恢复之前的主页设置。',
-    success: '已应用到此浏览器的本地主页。',
+    applyError: '更改未应用。本地浏览器存储无法验证，已尝试恢复之前的主页设置。',
+    applySuccess: '已应用到此浏览器的本地主页。',
+    copyFallback: '剪贴板访问受阻。下方已选中配置文本，可手动复制。',
+    copySuccess: '配置已复制。',
+    downloadSuccess: '配置已下载。',
+    presetDraft: (label) => `${label}预设已作为草稿加载。`,
+    presets: { calm: '安静', reference: '参考', intense: '强烈', custom: '自定义' },
+    previewConfigFailure: '实时预览无法应用此配置。控件和已保存的草稿仍可使用。',
+    previewLoading: '正在准备实时预览…',
+    previewReady: '实时预览已就绪',
+    previewStartFailure: '实时预览无法启动。控件和已保存的草稿仍可使用。',
+    previewStopped: 'Flow Shards 实时预览已停止且不可用。草稿和导出工具仍可使用。',
+    resetDraft: '已将正式默认值恢复为草稿。本地主页未更改。',
+    warning: (id) => `“${id}”无法在此作者调节页中使用，已改为显示 Flow Shards。`,
   },
   ja: {
-    error: '変更は適用されませんでした。ブラウザーのローカル保存を確認できなかったため、以前のホームページ設定を復元しました。',
-    success: 'このブラウザーのローカルホームページに適用しました。',
+    applyError: '変更は適用されませんでした。ブラウザーのローカル保存を確認できませんでした。以前のホームページ設定の復元を試みました。',
+    applySuccess: 'このブラウザーのローカルホームページに適用しました。',
+    copyFallback: 'クリップボードへのアクセスが拒否されました。手動でコピーできるよう、下の設定を選択しました。',
+    copySuccess: '設定をコピーしました。',
+    downloadSuccess: '設定をダウンロードしました。',
+    presetDraft: (label) => `${label}プリセットを下書きとして読み込みました。`,
+    presets: { calm: '穏やか', reference: '参考', intense: '強烈', custom: 'カスタム' },
+    previewConfigFailure: 'ライブプレビューにこの設定を適用できませんでした。コントロールと保存済みの下書きは引き続き使用できます。',
+    previewLoading: 'ライブプレビューを準備しています…',
+    previewReady: 'ライブプレビューの準備ができました',
+    previewStartFailure: 'ライブプレビューを開始できませんでした。コントロールと保存済みの下書きは引き続き使用できます。',
+    previewStopped: 'Flow Shards のライブプレビューが停止し、利用できなくなりました。下書きと書き出しツールは引き続き使用できます。',
+    resetDraft: '正式な初期設定を下書きとして復元しました。ローカルホームページは変更していません。',
+    warning: (id) => `“${id}”はこの作者ラボでは使用できないため、Flow Shards を表示しています。`,
   },
 };
+const copy = LAB_COPY[locale];
 
 const requestedId = new URLSearchParams(window.location.search).get('wallpaper');
 const requestedDescriptor = requestedId ? getWallpaperDescriptor(requestedId) : null;
@@ -60,11 +97,23 @@ const isAuthorable = requestedDescriptor?.controls?.length > 0;
 const wallpaperId = isAuthorable ? requestedDescriptor.id : FALLBACK_ID;
 const descriptor = getWallpaperDescriptor(wallpaperId);
 lab.dataset.wallpaperId = wallpaperId;
-document.querySelector('[data-wallpaper-name]').textContent = descriptor.title[locale];
+const wallpaperName = document.querySelector('[data-wallpaper-name]');
+wallpaperName.textContent = descriptor.title[locale];
+for (const element of [
+  wallpaperName,
+  controlsRoot,
+  warning,
+  previewStatus,
+  presetStatus,
+  actionStatus,
+]) {
+  element.lang = locale;
+}
+previewStatus.textContent = copy.previewLoading;
 
 if (requestedId && !isAuthorable) {
   warning.hidden = false;
-  warning.textContent = `“${requestedId}” is not available in this author lab. Showing Flow Shards instead.`;
+  warning.textContent = copy.warning(requestedId);
 }
 
 let currentConfig = loadWallpaperDraft(storage, wallpaperId) ?? descriptor.defaultConfig;
@@ -191,7 +240,7 @@ function syncControlValues() {
 
 function updatePresetState() {
   const match = matchFlowShardsPreset(currentConfig) ?? 'custom';
-  presetStatus.textContent = match;
+  presetStatus.textContent = copy.presets[match];
   for (const button of document.querySelectorAll('[data-wallpaper-preset]')) {
     const active = button.dataset.wallpaperPreset === match;
     button.setAttribute('aria-pressed', String(active));
@@ -255,66 +304,71 @@ previewManager.setMotionState(
   window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'static' : 'running',
 );
 
-previewManager.ready.then((result) => {
-  if (!result.ok || previewManager.currentId !== wallpaperId) {
-    setPreviewAvailability(
-      false,
-      'The live preview could not start. Your controls and saved draft are still available.',
-    );
-    return;
-  }
-  managerReady = true;
-  previewDensity = currentConfig.density;
-  const updateResult = previewManager.updateConfig(currentConfig);
-  if (!updateResult.ok) {
-    setPreviewAvailability(false, 'The live preview could not accept this configuration.');
-    return;
-  }
-  setPreviewAvailability(true, 'Live preview ready');
+function isPreviewHealthy() {
+  const activeSurface = previewManager.element.querySelector(
+    `[data-wallpaper-active="true"][data-background-id="${wallpaperId}"]`,
+  );
+  const rendererFailed = previewManager.element.querySelector(
+    '[data-wallpaper-context="lost"], [data-wallpaper-error]',
+  );
+  return previewManager.currentId === wallpaperId
+    && previewManager.element.dataset.backgroundId === wallpaperId
+    && previewManager.element.dataset.wallpaperState === 'ready'
+    && Boolean(activeSurface)
+    && !rendererFailed;
+}
+
+function startPreviewObserver() {
   previewObserver = new MutationObserver(() => {
-    if (!managerReady) return;
-    const rendererFailed = previewManager.element.querySelector(
-      '[data-wallpaper-context="lost"], [data-wallpaper-error]',
-    );
-    const stillRequested = previewManager.currentId === wallpaperId
-      && previewManager.element.dataset.backgroundId === wallpaperId
-      && previewManager.element.dataset.wallpaperState === 'ready'
-      && !rendererFailed;
-    if (!stillRequested) {
-      setPreviewAvailability(
-        false,
-        'The Flow Shards preview stopped and is no longer available. Your draft and export tools still work.',
-      );
+    if (managerReady && !isPreviewHealthy()) {
+      setPreviewAvailability(false, copy.previewStopped);
     }
   });
   previewObserver.observe(previewManager.element, {
     attributeFilter: [
       'data-background-id',
+      'data-wallpaper-active',
       'data-wallpaper-context',
       'data-wallpaper-error',
       'data-wallpaper-state',
     ],
+    childList: true,
     subtree: true,
   });
+}
+
+previewManager.ready.then((result) => {
+  if (!result.ok || previewManager.currentId !== wallpaperId) {
+    setPreviewAvailability(false, copy.previewStartFailure);
+    return;
+  }
+  startPreviewObserver();
+  previewDensity = currentConfig.density;
+  const updateResult = previewManager.updateConfig(currentConfig);
+  if (!updateResult.ok || !isPreviewHealthy()) {
+    setPreviewAvailability(false, copy.previewConfigFailure);
+    return;
+  }
+  setPreviewAvailability(true, copy.previewReady);
 }).catch(() => {
-  setPreviewAvailability(
-    false,
-    'The live preview could not start. Your controls and saved draft are still available.',
-  );
+  setPreviewAvailability(false, copy.previewStartFailure);
 });
 
 for (const button of document.querySelectorAll('[data-wallpaper-preset]')) {
+  const presetKey = button.dataset.wallpaperPreset;
+  button.textContent = copy.presets[presetKey];
+  button.lang = locale;
   button.addEventListener('click', () => {
-    const nextConfig = FLOW_SHARDS_PRESETS[button.dataset.wallpaperPreset];
+    const nextConfig = FLOW_SHARDS_PRESETS[presetKey];
     storeDraftAndPreview(nextConfig, { densityChanged: currentConfig.density !== nextConfig.density });
-    setActionStatus('draft', `${button.textContent} preset loaded as a draft.`);
+    setActionStatus('draft', copy.presetDraft(copy.presets[presetKey]));
   });
 }
 
 document.querySelector('[data-wallpaper-reset]').addEventListener('click', () => {
   const densityChanged = currentConfig.density !== descriptor.defaultConfig.density;
   storeDraftAndPreview(descriptor.defaultConfig, { densityChanged });
-  setActionStatus('draft', 'Official default restored as a draft. The local homepage was not changed.');
+  setActionStatus('draft', copy.resetDraft);
 });
 
 function readRawStorage(key) {
@@ -373,9 +427,9 @@ function applyToLocalHomepage() {
 applyLocalButton.addEventListener('click', () => {
   const applied = applyToLocalHomepage();
   if (applied) {
-    setActionStatus('success', applyMessages[locale].success);
+    setActionStatus('success', copy.applySuccess);
   } else {
-    setActionStatus('error', applyMessages[locale].error);
+    setActionStatus('error', copy.applyError);
   }
 });
 
@@ -389,16 +443,13 @@ document.querySelector('[data-wallpaper-copy]').addEventListener('click', async 
     if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
     await navigator.clipboard.writeText(serialized);
     copyFallback.hidden = true;
-    setActionStatus('success', 'Configuration copied.');
+    setActionStatus('success', copy.copySuccess);
   } catch {
     copyFallback.value = serialized;
     copyFallback.hidden = false;
     copyFallback.focus();
     copyFallback.select();
-    setActionStatus(
-      'warning',
-      'Clipboard access was blocked. The configuration is selected below for manual copying.',
-    );
+    setActionStatus('warning', copy.copyFallback);
   }
 });
 
@@ -410,7 +461,7 @@ document.querySelector('[data-wallpaper-download]').addEventListener('click', ()
   link.download = `${wallpaperId}.config.json`;
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
-  setActionStatus('success', 'Configuration downloaded.');
+  setActionStatus('success', copy.downloadSuccess);
 });
 
 window.addEventListener('beforeunload', () => {

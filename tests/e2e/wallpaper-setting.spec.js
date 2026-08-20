@@ -48,14 +48,33 @@ test('schema labels and options follow the saved supported locale', async ({ pag
       }
       return originalSetItem.call(this, key, value);
     };
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async () => {} },
+    });
   }, PREFERENCES_KEY);
   await page.goto('/setting/?wallpaper=flow-shards');
 
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('[data-wallpaper-name]')).toHaveText('流动晶片');
+  await expect(page.locator('[data-wallpaper-name]')).toHaveAttribute('lang', 'zh-CN');
+  await expect(page.locator('[data-wallpaper-controls]')).toHaveAttribute('lang', 'zh-CN');
   await expect(page.locator('[data-wallpaper-control="density"] select')).toHaveAccessibleName('晶片数量');
   await expect(page.locator('[data-wallpaper-control="density"] option[value="medium"]')).toHaveText('中');
   await expect(page.locator('[data-wallpaper-value="density"]')).toHaveText('中');
+  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('参考');
   await expect(page.locator('[data-wallpaper-apply-local]')).toBeEnabled({ timeout: 20_000 });
+  await page.locator('[data-wallpaper-preset="calm"]').click();
+  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('安静');
+  await expect(page.locator('[data-wallpaper-action-status]')).toContainText('草稿');
+  await page.locator('[data-wallpaper-reset]').click();
+  await expect(page.locator('[data-wallpaper-action-status]')).toContainText('本地主页未更改');
+  await page.locator('[data-wallpaper-copy]').click();
+  await expect(page.locator('[data-wallpaper-action-status]')).toHaveText('配置已复制。');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('[data-wallpaper-download]').click();
+  await downloadPromise;
+  await expect(page.locator('[data-wallpaper-action-status]')).toHaveText('配置已下载。');
   await page.evaluate((preferencesKey) => { window.blockedWallpaperStorageKey = preferencesKey; }, PREFERENCES_KEY);
   await page.locator('[data-wallpaper-apply-local]').click();
   await expect(page.locator('[data-wallpaper-action-status]')).toContainText('未应用');
@@ -216,16 +235,16 @@ test('presets become custom after editing and reset saves the official default w
     (preferencesKey) => localStorage.getItem(preferencesKey),
     PREFERENCES_KEY,
   );
-  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('reference');
+  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('Reference');
   await page.locator('[data-wallpaper-preset="calm"]').click();
-  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('calm');
+  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('Calm');
   await expect(page.locator('[data-wallpaper-control="density"] select')).toHaveValue('low');
   await expect(page.locator('[data-wallpaper-control="speed"] input')).toHaveValue('24');
   await page.locator('[data-wallpaper-control="speed"] input').fill('25');
-  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('custom');
+  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('Custom');
 
   await page.locator('[data-wallpaper-reset]').click();
-  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('reference');
+  await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('Reference');
   await expect(page.locator('[data-wallpaper-control="speed"] input')).toHaveValue('42');
   await expect.poll(() => page.evaluate((draftKey) => (
     JSON.parse(localStorage.getItem(draftKey)).drafts['flow-shards'].speed
@@ -388,6 +407,46 @@ test('preview initialization failure is readable and leaves the controls availab
   await expect(page.locator('[data-wallpaper-control]')).toHaveCount(12);
 });
 
+test('a failing saved draft is rejected before the lab can enable Apply', async ({ page }) => {
+  let releaseFallback;
+  await page.route('**/shader-background.js', async (route) => {
+    await new Promise((resolve) => { releaseFallback = resolve; });
+    await route.continue();
+  });
+  await page.addInitScript((draftKey) => {
+    localStorage.setItem(draftKey, JSON.stringify({
+      version: 1,
+      drafts: { 'flow-shards': { density: 'high' } },
+    }));
+    window.applyWasEnabled = false;
+    new MutationObserver(() => {
+      const apply = document.querySelector('[data-wallpaper-apply-local]');
+      if (apply && !apply.disabled) window.applyWasEnabled = true;
+    }).observe(document, { attributes: true, childList: true, subtree: true });
+    const originalGetError = WebGL2RenderingContext.prototype.getError;
+    let flowErrorChecks = 0;
+    WebGL2RenderingContext.prototype.getError = function failDraftUpdateOnce() {
+      flowErrorChecks += 1;
+      if (flowErrorChecks === 2) return 0x0502;
+      return originalGetError.call(this);
+    };
+  }, DRAFT_KEY);
+  await page.goto('/setting/?wallpaper=flow-shards');
+
+  await expect(page.locator('[data-wallpaper-preview] [data-wallpaper-error="config-update-failed"]'))
+    .toHaveCount(1, { timeout: 20_000 });
+  await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'error', {
+    timeout: 5_000,
+  });
+  await expect(page.locator('[data-wallpaper-apply-local]')).toBeDisabled();
+  expect(await page.evaluate(() => window.applyWasEnabled)).toBe(false);
+  await expect(page.locator('[data-wallpaper-preview] [data-environment-background]'))
+    .toHaveAttribute('data-background-id', 'flow-shards');
+  releaseFallback();
+  await expect(page.locator('[data-wallpaper-preview] [data-environment-background]'))
+    .not.toHaveAttribute('data-background-id', 'flow-shards', { timeout: 20_000 });
+});
+
 test('runtime preview loss disables only Apply while draft, reset, and export remain usable', async ({ page }) => {
   let releaseFallback;
   await page.route('**/shader-background.js', async (route) => {
@@ -435,6 +494,13 @@ test('narrow viewports keep the desktop document scrollable and unload destroys 
   }));
   expect(widths.documentWidth).toBeGreaterThan(widths.viewportWidth);
   await expect(page.locator('[data-wallpaper-preview] [data-environment-background]')).toHaveCount(1);
+  await page.evaluate(() => window.scrollTo({
+    behavior: 'instant',
+    left: document.documentElement.scrollWidth,
+    top: 0,
+  }));
+  await expect.poll(() => page.evaluate(() => window.scrollX)).toBeGreaterThan(0);
+  await expect(page.locator('.control-panel')).toBeInViewport();
 
   await page.evaluate(() => window.dispatchEvent(new Event('beforeunload')));
   await expect(page.locator('[data-wallpaper-preview] [data-environment-background]')).toHaveCount(0);
