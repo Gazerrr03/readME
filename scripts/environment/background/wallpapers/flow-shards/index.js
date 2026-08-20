@@ -5,6 +5,7 @@ import { createFlowSimulation } from './simulation.js';
 
 const MAX_DELTA_SECONDS = 1 / 20;
 const MAX_PIXEL_RATIO = 1.5;
+const WARM_UP_DELTA_SECONDS = 1 / 120;
 const MOTION_STATES = new Set(['running', 'focused', 'static']);
 
 function createCanvas(document, descriptor) {
@@ -13,6 +14,7 @@ function createCanvas(document, descriptor) {
   canvas.dataset.backgroundKind = descriptor.kind;
   canvas.dataset.wallpaperSurface = '';
   canvas.dataset.wallpaperRenderer = 'three-webgl2';
+  canvas.dataset.simulationGeneration = '0';
   canvas.dataset.simulationSize = '0';
   canvas.dataset.wallpaperFrame = '0';
   canvas.setAttribute('aria-hidden', 'true');
@@ -199,6 +201,7 @@ export function createWallpaperRenderer({
   const renderPipeline = (targetRuntime, pipeline, delta, bloomMapped = mapped) => {
     const nextState = pipeline.simulation.step(delta, simulationTime);
     pipeline.shards.updateState(nextState);
+    canvas.dataset.simulationGeneration = String(pipeline.simulation.generation);
     const bloomScale = motion === 'focused' ? 0.55 : 1;
     targetRuntime.bloom.render(targetRuntime.scene, targetRuntime.camera, {
       strength: bloomMapped.bloomStrength * bloomScale,
@@ -360,7 +363,8 @@ export function createWallpaperRenderer({
       document.addEventListener?.('visibilitychange', handleVisibility);
       resizeRuntime(nextRuntime);
       applySceneConfig(nextRuntime, mapped, normalized);
-      renderPipeline(nextRuntime, nextRuntime.pipeline, 0);
+      simulationTime += WARM_UP_DELTA_SECONDS;
+      renderPipeline(nextRuntime, nextRuntime.pipeline, WARM_UP_DELTA_SECONDS);
       canvas.dataset.simulationSize = String(mapped.simulationSize);
       settleReady();
       lastFrameTime = null;
@@ -405,15 +409,19 @@ export function createWallpaperRenderer({
         if (nextMapped.simulationSize !== runtime.pipeline.size) {
           const candidate = buildPipeline(runtime, nextMapped, nextNormalized);
           const previous = runtime.pipeline;
+          const previousSimulationTime = simulationTime;
           runtime.scene.remove(previous.shards.mesh);
           runtime.scene.add(candidate.shards.mesh);
           applySceneConfig(runtime, nextMapped, nextNormalized);
           try {
-            renderPipeline(runtime, candidate, 0, nextMapped);
+            simulationTime += WARM_UP_DELTA_SECONDS;
+            renderPipeline(runtime, candidate, WARM_UP_DELTA_SECONDS, nextMapped);
           } catch (error) {
+            simulationTime = previousSimulationTime;
             runtime.scene.remove(candidate.shards.mesh);
             runtime.scene.add(previous.shards.mesh);
             applySceneConfig(runtime, mapped, normalized);
+            canvas.dataset.simulationGeneration = String(previous.simulation.generation);
             disposePipeline(null, candidate);
             throw error;
           }

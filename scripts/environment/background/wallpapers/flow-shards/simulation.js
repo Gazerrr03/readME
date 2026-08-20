@@ -119,8 +119,49 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
   let currentTexture = originTexture;
   let previousTexture = originTexture;
   let writeIndex = 0;
-  let initialized = false;
+  let generation = 0;
   let disposed = false;
+
+  const state = () => ({ currentTexture, previousTexture });
+  const renderState = ({ delta, elapsed, initialize, source, target }) => {
+    uniforms.uState.value = source;
+    uniforms.uDelta.value = delta;
+    uniforms.uTime.value = elapsed;
+    uniforms.uInitialize.value = initialize;
+    const previousTarget = renderer.getRenderTarget();
+    try {
+      renderer.setRenderTarget(target);
+      renderer.render(scene, camera);
+    } finally {
+      renderer.setRenderTarget(previousTarget);
+    }
+  };
+
+  try {
+    renderState({
+      delta: 0,
+      elapsed: 0,
+      initialize: 1,
+      source: originTexture,
+      target: targets[0],
+    });
+    renderState({
+      delta: 0,
+      elapsed: 0,
+      initialize: 0,
+      source: targets[0].texture,
+      target: targets[1],
+    });
+    previousTexture = targets[0].texture;
+    currentTexture = targets[1].texture;
+  } catch (error) {
+    scene.remove(mesh);
+    geometry.dispose();
+    material.dispose();
+    originTexture.dispose();
+    targets.forEach((target) => target.dispose());
+    throw error;
+  }
 
   return {
     get currentTexture() {
@@ -129,24 +170,27 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
     get previousTexture() {
       return previousTexture;
     },
+    get generation() {
+      return generation;
+    },
     step(delta, elapsed) {
       if (disposed) throw new Error('Flow Shards simulation has been disposed');
       const safeDelta = Math.min(Math.max(Number.isFinite(delta) ? delta : 0, 0), 1 / 20);
-      uniforms.uState.value = currentTexture;
-      uniforms.uDelta.value = safeDelta;
-      uniforms.uTime.value = Number.isFinite(elapsed) ? elapsed : 0;
-      uniforms.uInitialize.value = initialized ? 0 : 1;
+      if (safeDelta === 0) return state();
 
-      const previousTarget = renderer.getRenderTarget();
-      renderer.setRenderTarget(targets[writeIndex]);
-      renderer.render(scene, camera);
-      renderer.setRenderTarget(previousTarget);
+      renderState({
+        delta: safeDelta,
+        elapsed: Number.isFinite(elapsed) ? elapsed : 0,
+        initialize: 0,
+        source: currentTexture,
+        target: targets[writeIndex],
+      });
 
       previousTexture = currentTexture;
       currentTexture = targets[writeIndex].texture;
       writeIndex = 1 - writeIndex;
-      initialized = true;
-      return { currentTexture, previousTexture };
+      generation += 1;
+      return state();
     },
     updateConfig(nextMapped) {
       uniforms.uTimeScale.value = nextMapped.timeScale;
