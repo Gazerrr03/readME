@@ -7,13 +7,14 @@ import { loadWallpaperPreview } from './wallpaper-storage.js';
 
 const defaultRegistry = { getWallpaperDescriptor, normalizeWallpaperConfig };
 
-function createHost(document, initialDescriptor) {
+function createHost(document, initialDescriptor, transitionMs) {
   const host = document.createElement('div');
   host.dataset.environmentBackground = '';
   host.dataset.backgroundId = initialDescriptor.id;
   host.dataset.backgroundKind = initialDescriptor.kind;
   host.dataset.wallpaperState = 'loading';
   host.setAttribute('aria-hidden', 'true');
+  host.style?.setProperty?.('--wallpaper-transition-duration', `${transitionMs}ms`);
   return host;
 }
 
@@ -40,7 +41,7 @@ export function createWallpaperManager({
 }) {
   const initialDescriptor = registry.getWallpaperDescriptor(initialId)
     ?? registry.getWallpaperDescriptor(DEFAULT_WALLPAPER_ID);
-  const element = createHost(document, initialDescriptor);
+  const element = createHost(document, initialDescriptor, transitionMs);
   const view = document.defaultView;
   let active = null;
   let pending = null;
@@ -50,10 +51,13 @@ export function createWallpaperManager({
   let requestToken = 0;
   let destroyed = false;
   let fallbackRunning = false;
+  const destroyedRenderers = new WeakSet();
 
   const destroyRenderer = (renderer) => {
+    if (!renderer || destroyedRenderers.has(renderer)) return;
+    destroyedRenderers.add(renderer);
     try {
-      renderer?.destroy?.();
+      renderer.destroy?.();
     } catch {
       // Renderer cleanup must never destabilize the desktop shell.
     }
@@ -67,6 +71,15 @@ export function createWallpaperManager({
   };
 
   const showCssFallback = () => {
+    const pendingRenderer = pending?.renderer;
+    const activeRenderer = active?.renderer;
+    requestToken += 1;
+    pending = null;
+    active = null;
+    currentId = null;
+    currentConfig = null;
+    destroyRenderer(pendingRenderer);
+    destroyRenderer(activeRenderer);
     element.dataset.wallpaperState = 'fallback';
     element.dataset.wallpaperFallback = 'renderer-unavailable';
   };
@@ -80,6 +93,10 @@ export function createWallpaperManager({
     const config = resolveConfig(descriptor, options);
     if (config === null) return fail(id, new Error(`Invalid wallpaper config: ${id}`));
     const token = ++requestToken;
+    if (pending) {
+      destroyRenderer(pending.renderer);
+      pending = null;
+    }
     let renderer = null;
 
     try {
@@ -129,7 +146,7 @@ export function createWallpaperManager({
       if (previous) {
         previous.renderer.element.dataset.wallpaperActive = 'false';
         previous.renderer.element.style.opacity = '0';
-        await wait(view, motionState === 'static' ? 0 : transitionMs);
+        await wait(view, transitionMs);
         if (previous !== active) destroyRenderer(previous.renderer);
       }
       return { ok: true, id: descriptor.id };

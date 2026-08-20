@@ -35,7 +35,7 @@
   overflow: hidden;
   pointer-events: none;
   position: absolute;
-  transition: opacity var(--ui-duration) var(--ease-out);
+  transition: opacity var(--wallpaper-transition-duration, var(--ui-duration)) var(--ease-out);
   user-select: none;
   width: 100%;
 }
@@ -57,7 +57,7 @@
   opacity: 0;
   pointer-events: none;
   position: absolute;
-  transition: opacity var(--ui-duration) var(--ease-out);
+  transition: opacity var(--wallpaper-transition-duration, var(--ui-duration)) var(--ease-out);
   user-select: none;
   width: 100%;
 }
@@ -263,6 +263,6 @@
   [data-wallpaper-surface],
   [data-environment-widgets],
   [data-environment-widgets] button {
-    transition-duration: 1ms;
+    transition-duration: 0ms;
   }
 }

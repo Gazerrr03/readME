@@ -6,7 +6,11 @@ class FakeElement {
   constructor(tagName) {
     this.tagName = tagName.toUpperCase();
     this.dataset = {};
-    this.style = {};
+    const values = new Map();
+    this.style = {
+      setProperty(name, value) { values.set(name, String(value)); },
+      getPropertyValue(name) { return values.get(name) ?? ''; },
+    };
     this.children = [];
     this.parentNode = null;
   }
@@ -60,16 +64,19 @@ function deferred() {
   return { promise, resolve, reject };
 }
 
-function createManagerHarness({ transitionMs = 0, previewConfig = null } = {}) {
+function createManagerHarness({ transitionMs = 0, previewConfig = null, fallbackBlueSettled = true } = {}) {
   const flow = deferred();
   const blue = deferred();
+  const fallbackBlue = deferred();
   blue.resolve();
+  if (fallbackBlueSettled) fallbackBlue.resolve();
+  let blueLoads = 0;
   const renderers = [];
   const document = {
     createElement: (tagName) => new FakeElement(tagName),
     defaultView: { setTimeout, clearTimeout },
   };
-  const createRenderer = (id, ready) => ({ document: rendererDocument, config }) => {
+  const createRenderer = (id, ready) => ({ document: rendererDocument, config, onError }) => {
     const element = rendererDocument.createElement('canvas');
     element.dataset.wallpaperSurface = '';
     const renderer = {
@@ -77,6 +84,7 @@ function createManagerHarness({ transitionMs = 0, previewConfig = null } = {}) {
       ready: ready.promise,
       motion: [],
       configs: [config],
+      onError,
       setMotionState(state) { this.motion.push(state); },
       updateConfig(next) { this.configs.push(next); },
       destroy() {
@@ -92,7 +100,9 @@ function createManagerHarness({ transitionMs = 0, previewConfig = null } = {}) {
       return {
         'blue-fluid-halftone': {
           id: 'blue-fluid-halftone', kind: 'shader', defaultConfig: {},
-          loadRenderer: async () => ({ createWallpaperRenderer: createRenderer('blue-fluid-halftone', blue) }),
+          loadRenderer: async () => ({ createWallpaperRenderer: createRenderer(
+            'blue-fluid-halftone', blueLoads++ === 0 ? blue : fallbackBlue,
+          ) }),
         },
         'flow-shards': {
           id: 'flow-shards', kind: 'three', defaultConfig: { speed: 42 },
@@ -121,6 +131,7 @@ function createManagerHarness({ transitionMs = 0, previewConfig = null } = {}) {
     renderers,
     resolveFlow: flow.resolve,
     rejectFlow: flow.reject,
+    rejectFallbackBlue: fallbackBlue.reject,
   };
 }
 
@@ -199,4 +210,51 @@ test('destroy tears down active and pending resources', async () => {
   assert.equal((await pending).ok, false);
   assert.equal(harness.renderers[0].renderer.element.dataset.destroyed, 'true');
   assert.equal(harness.renderers.at(-1).renderer.element.dataset.destroyed, 'true');
+});
+
+test('a newer request immediately tears down a stale candidate that never becomes ready', async () => {
+  const harness = createManagerHarness();
+  await harness.manager.ready;
+  void harness.manager.applyWallpaper('flow-shards');
+  await Promise.resolve();
+  const stale = harness.renderers.at(-1).renderer;
+  await harness.manager.applyWallpaper('blue-fluid-halftone');
+
+  assert.equal(stale.element.dataset.destroyed, 'true');
+  assert.equal(harness.manager.currentId, 'blue-fluid-halftone');
+});
+
+test('a runtime failure in the default renderer leaves a CSS-only host', async () => {
+  const harness = createManagerHarness();
+  await harness.manager.ready;
+  harness.renderers[0].renderer.onError(new Error('context lost'));
+
+  assert.equal(harness.manager.currentId, null);
+  assert.equal(harness.manager.element.dataset.wallpaperState, 'fallback');
+  assert.equal(harness.manager.element.querySelectorAll('[data-wallpaper-surface]').length, 0);
+});
+
+test('a failed default fallback removes the failed non-default surface', async () => {
+  const harness = createManagerHarness({ fallbackBlueSettled: false });
+  await harness.manager.ready;
+  const flow = harness.manager.applyWallpaper('flow-shards');
+  await Promise.resolve();
+  harness.resolveFlow();
+  await flow;
+  harness.renderers.at(-1).renderer.onError(new Error('context lost'));
+  await Promise.resolve();
+  harness.rejectFallbackBlue(new Error('default renderer failed'));
+  await Promise.resolve();
+  await Promise.resolve();
+
+  assert.equal(harness.manager.currentId, null);
+  assert.equal(harness.manager.element.dataset.wallpaperState, 'fallback');
+  assert.equal(harness.manager.element.querySelectorAll('[data-wallpaper-surface]').length, 0);
+});
+
+test('the host exposes the same transition duration used for candidate cleanup', async () => {
+  const harness = createManagerHarness({ transitionMs: 73 });
+  await harness.manager.ready;
+
+  assert.equal(harness.manager.element.style.getPropertyValue('--wallpaper-transition-duration'), '73ms');
 });

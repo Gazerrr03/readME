@@ -142,6 +142,7 @@ export function createDesktopEnvironmentController({
         initialWallpaperId,
         storage,
         registry,
+        transitionMs: motionQuery.matches ? 0 : undefined,
       });
       if (!nextBackground?.element || typeof nextBackground.setMotionState !== 'function') {
         throw new Error('Invalid desktop background');
