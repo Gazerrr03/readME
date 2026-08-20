@@ -14,13 +14,25 @@ function createFakeDocument({ context = null } = {}) {
   return {
     defaultView: view,
     createElement(tagName) {
-      assert.equal(tagName, 'canvas');
-      return {
+      const node = {
+        tagName: tagName.toUpperCase(),
         dataset: {},
         style: { setProperty() {} },
+        children: [],
         width: 0,
         height: 0,
         attributes: {},
+        append(...children) {
+          children.forEach((child) => {
+            child.parentNode = this;
+            this.children.push(child);
+          });
+        },
+        querySelector(selector) {
+          return this.children.find((child) => (
+            selector === '[data-wallpaper-surface]' && child.dataset.wallpaperSurface !== undefined
+          )) ?? null;
+        },
         getContext: () => context,
         setAttribute(name, value) {
           this.attributes[name] = String(value);
@@ -29,21 +41,26 @@ function createFakeDocument({ context = null } = {}) {
           this.removed = true;
         },
       };
+      return node;
     },
   };
 }
 
-test('desktop background mounts the active shader descriptor', () => {
+test('desktop background keeps a stable host around the active shader surface', async () => {
   const background = createDesktopBackground({
     document: createFakeDocument(),
   });
+  await background.ready;
 
   assert.equal(background.element.dataset.environmentBackground, '');
   assert.equal(background.element.dataset.backgroundId, DESKTOP_BACKGROUND.id);
   assert.equal(DESKTOP_BACKGROUND.kind, 'shader');
   assert.equal(background.element.dataset.backgroundKind, 'shader');
   assert.equal(background.element.attributes['aria-hidden'], 'true');
-  assert.equal(background.element.dataset.backgroundFallback, 'shader-unavailable');
+  assert.equal(background.element.tagName, 'DIV');
+  const surface = background.element.querySelector('[data-wallpaper-surface]');
+  assert.equal(surface.tagName, 'CANVAS');
+  assert.equal(surface.dataset.backgroundFallback, 'shader-unavailable');
 
   background.setMotionState('focused');
   assert.equal(background.element.dataset.backgroundMotion, 'focused');

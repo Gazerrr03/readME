@@ -37,6 +37,8 @@ const environment = createDesktopEnvironmentController({
   root: desktopRoot,
   i18n,
   onOpen: openApp,
+  initialWallpaperId: preferences.wallpaperId,
+  storage: localStorage,
 });
 export const desktop = createDesktopController({
   root: desktopRoot,
@@ -81,6 +83,11 @@ updatePreferences = (patch) => {
   if (patch.locale !== undefined) i18n.setLocale(preferences.locale);
   desktop.syncPreferences(patch);
   requestAnimationFrame(() => windowManager.reclamp());
+};
+const applyWallpaper = async (id) => {
+  const result = await environment.applyWallpaper(id);
+  if (result.ok) updatePreferences({ wallpaperId: result.id });
+  return result;
 };
 const revealDesktop = () => {
   if (!desktopRoot.dataset.desktopMode) desktop.render();

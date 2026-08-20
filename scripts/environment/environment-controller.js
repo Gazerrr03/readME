@@ -24,6 +24,9 @@ export function createDesktopEnvironmentController({
   onOpen = () => {},
   now = () => new Date(),
   backgroundFactory = createDesktopBackground,
+  initialWallpaperId,
+  storage,
+  registry,
 }) {
   const view = root.ownerDocument.defaultView;
   const document = root.ownerDocument;
@@ -136,6 +139,9 @@ export function createDesktopEnvironmentController({
       const nextBackground = backgroundFactory({
         document,
         asset: DESKTOP_BACKGROUND,
+        initialWallpaperId,
+        storage,
+        registry,
       });
       if (!nextBackground?.element || typeof nextBackground.setMotionState !== 'function') {
         throw new Error('Invalid desktop background');
@@ -196,6 +202,18 @@ export function createDesktopEnvironmentController({
 
   return {
     sync,
+    applyWallpaper(id) {
+      if (!background?.applyWallpaper) {
+        return Promise.resolve({ ok: false, id, error: new Error('Environment is not mounted') });
+      }
+      return background.applyWallpaper(id);
+    },
+    updateWallpaperConfig(config) {
+      if (!background?.updateConfig) {
+        return { ok: false, id: null, error: new Error('Environment is not mounted') };
+      }
+      return background.updateConfig(config);
+    },
     destroy() {
       unmount();
       observer.disconnect();

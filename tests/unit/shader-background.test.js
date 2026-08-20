@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   createShaderBackground,
+  createWallpaperRenderer,
   getMotionConfig,
 } from '../../scripts/environment/background/shader-background.js';
 
@@ -148,4 +149,17 @@ test('destroy cancels the active loop and removes listeners', () => {
   background.destroy();
   assert.equal(view.cancelledFrames, 1);
   assert.equal(view.removedListeners, view.addedListeners);
+});
+
+test('shader renderer exposes the wallpaper renderer readiness contract', async () => {
+  const view = createFakeView();
+  const renderer = createWallpaperRenderer({
+    document: createShaderDocument({ view, context: null }),
+    descriptor: SHADER_ASSET,
+  });
+
+  await renderer.ready;
+  assert.equal(renderer.element.dataset.wallpaperSurface, undefined);
+  assert.equal(typeof renderer.setMotionState, 'function');
+  assert.equal(typeof renderer.destroy, 'function');
 });

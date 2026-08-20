@@ -69,6 +69,35 @@ test('invalid background results retain semantic widgets', async ({ page }) => {
   ]);
 });
 
+test('controller keeps semantic widgets mounted when a wallpaper request fails', async ({ page }) => {
+  await page.goto('/?skipBoot=1');
+  const result = await page.evaluate(async () => {
+    const [{ createDesktopEnvironmentController }, { createI18n }] = await Promise.all([
+      import('/scripts/environment/environment-controller.js'),
+      import('/scripts/i18n/i18n.js'),
+    ]);
+    const root = document.createElement('section');
+    document.body.append(root);
+    const controller = createDesktopEnvironmentController({ root, i18n: createI18n('en') });
+    controller.sync({ mode: 'macos' });
+    const apply = await controller.applyWallpaper('missing');
+    const result = {
+      apply,
+      widgets: root.querySelectorAll('[data-environment-widgets]').length,
+      background: root.querySelector('[data-environment-background]')?.dataset.backgroundId ?? null,
+    };
+    controller.destroy();
+    root.remove();
+    return result;
+  });
+
+  expect(result).toEqual({
+    apply: { ok: false, id: 'missing', error: expect.any(Object) },
+    widgets: 1,
+    background: 'blue-fluid-halftone',
+  });
+});
+
 test('mounted controller refreshes compact labels when i18n changes', async ({ page }) => {
   await page.goto('/?skipBoot=1');
   const snapshots = await page.evaluate(async () => {
@@ -313,7 +342,8 @@ test('shader background mounts and remains adaptive while focus state changes', 
   await expect(background).toHaveAttribute('data-background-id', 'blue-fluid-halftone');
   await expect(background).toHaveAttribute('data-background-kind', 'shader');
   await expect(background).toHaveAttribute('aria-hidden', 'true');
-  await expect.poll(async () => background.evaluate((node) => (
+  await expect(background.locator('[data-wallpaper-surface]')).toHaveCount(1);
+  await expect.poll(async () => background.locator('[data-wallpaper-surface]').evaluate((node) => (
     node.tagName === 'CANVAS'
     && node.width > 0
     && node.height > 0

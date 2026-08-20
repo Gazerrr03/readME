@@ -32,6 +32,7 @@
   height: 100%;
   inset: 0;
   opacity: 1;
+  overflow: hidden;
   pointer-events: none;
   position: absolute;
   transition: opacity var(--ui-duration) var(--ease-out);
@@ -47,6 +48,22 @@
 
 [data-environment-background][data-background-kind='shader'] {
   background: var(--os-canvas);
+}
+
+[data-wallpaper-surface] {
+  display: block;
+  height: 100%;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity var(--ui-duration) var(--ease-out);
+  user-select: none;
+  width: 100%;
+}
+
+[data-wallpaper-surface][data-wallpaper-active='true'] {
+  opacity: 1;
 }
 
 [data-environment-widgets] {
@@ -243,6 +260,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   [data-environment-background],
+  [data-wallpaper-surface],
   [data-environment-widgets],
   [data-environment-widgets] button {
     transition-duration: 1ms;

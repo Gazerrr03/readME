@@ -14,7 +14,6 @@ export function getMotionConfig(motion) {
 
 function createCanvas(document, asset) {
   const canvas = document.createElement('canvas');
-  canvas.dataset.environmentBackground = '';
   canvas.dataset.backgroundId = asset.id;
   canvas.dataset.backgroundKind = 'shader';
   canvas.setAttribute('aria-hidden', 'true');
@@ -174,6 +173,7 @@ export function createShaderBackground({ document, asset }) {
 
   return {
     element: canvas,
+    ready: Promise.resolve(),
     setMotionState(nextMotion) {
       motion = nextMotion;
       canvas.dataset.backgroundMotion = nextMotion;
@@ -191,5 +191,12 @@ export function createShaderBackground({ document, asset }) {
       renderer?.destroy();
       canvas.remove();
     },
+    updateConfig() {
+      // Blue Fluid has no user-configurable controls.
+    },
   };
+}
+
+export function createWallpaperRenderer({ document, descriptor }) {
+  return createShaderBackground({ document, asset: descriptor });
 }
