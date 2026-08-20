@@ -22,6 +22,14 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
+function observeDisconnect(document, root, cleanup) {
+  const observer = new document.defaultView.MutationObserver(() => {
+    if (!root.isConnected) cleanup();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  return () => observer.disconnect();
+}
+
 function renderPhotoItem({ document, i18n, item }) {
   const art = createElement(document, 'span', {
     'data-folder-item-art': '',
@@ -177,8 +185,22 @@ export function renderPhotosApp({
   wallpaperPanel.append(wallpapersView);
   root.append(tabList, photoPanel, wallpaperPanel);
   updateTabs();
-  i18n.subscribe(() => {
+  let destroyed = false;
+  let unsubscribeI18n = () => {};
+  let stopObserving = () => {};
+  const destroy = () => {
+    if (destroyed) return;
+    destroyed = true;
+    listeners.delete(onExternalSelect);
+    unsubscribeI18n();
+    stopObserving();
+    wallpapersView.destroy?.();
+    photoBrowser.destroy?.();
+  };
+  root.destroy = destroy;
+  unsubscribeI18n = i18n.subscribe(() => {
     if (root.isConnected) updateTabs();
   });
+  stopObserving = observeDisconnect(document, root, destroy);
   return root;
 }

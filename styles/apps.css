@@ -665,6 +665,12 @@ a[data-contact-row] {
   min-height: 0;
 }
 
+[data-wallpaper-content] {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 [data-wallpaper-grid] {
   display: grid;
   gap: 12px;
