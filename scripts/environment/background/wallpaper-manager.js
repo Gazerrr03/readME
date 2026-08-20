@@ -6,6 +6,7 @@ import {
 import { loadWallpaperPreview } from './wallpaper-storage.js';
 
 const defaultRegistry = { getWallpaperDescriptor, normalizeWallpaperConfig };
+export const DEFAULT_WALLPAPER_TRANSITION_MS = 180;
 
 function createHost(document, initialDescriptor, transitionMs) {
   const host = document.createElement('div');
@@ -32,11 +33,19 @@ function wait(view, milliseconds) {
   return new Promise((resolve) => (view?.setTimeout ?? setTimeout)(resolve, milliseconds));
 }
 
+function createDeferred() {
+  let resolve;
+  const promise = new Promise((nextResolve) => {
+    resolve = nextResolve;
+  });
+  return { promise, resolve };
+}
+
 export function createWallpaperManager({
   document,
   initialId = DEFAULT_WALLPAPER_ID,
   storage = null,
-  transitionMs = 180,
+  transitionMs = DEFAULT_WALLPAPER_TRANSITION_MS,
   registry = defaultRegistry,
 }) {
   const initialDescriptor = registry.getWallpaperDescriptor(initialId)
@@ -51,16 +60,20 @@ export function createWallpaperManager({
   let requestToken = 0;
   let destroyed = false;
   let fallbackRunning = false;
+  let effectiveTransitionMs = transitionMs;
   const destroyedRenderers = new WeakSet();
 
   const destroyRenderer = (renderer) => {
-    if (!renderer || destroyedRenderers.has(renderer)) return;
-    destroyedRenderers.add(renderer);
-    try {
-      renderer.destroy?.();
-    } catch {
-      // Renderer cleanup must never destabilize the desktop shell.
+    if (!renderer) return;
+    if (!destroyedRenderers.has(renderer)) {
+      destroyedRenderers.add(renderer);
+      try {
+        renderer.destroy?.();
+      } catch {
+        // Renderer cleanup must never destabilize the desktop shell.
+      }
     }
+    renderer.element?.remove?.();
   };
 
   const resolveConfig = (descriptor, options = {}) => {
@@ -98,6 +111,7 @@ export function createWallpaperManager({
       pending = null;
     }
     let renderer = null;
+    let pendingFailure = null;
 
     try {
       const module = await descriptor.loadRenderer();
@@ -107,6 +121,14 @@ export function createWallpaperManager({
         descriptor,
         config,
         onError(error) {
+          if (renderer === pending?.renderer && token === requestToken) {
+            const failure = pending.failure;
+            pending = null;
+            requestToken += 1;
+            destroyRenderer(renderer);
+            failure?.resolve(error ?? new Error(`Wallpaper renderer failed: ${id}`));
+            return;
+          }
           if (destroyed || token !== requestToken || renderer !== active?.renderer) return;
           if (id === DEFAULT_WALLPAPER_ID || fallbackRunning) {
             showCssFallback();
@@ -119,13 +141,28 @@ export function createWallpaperManager({
         },
       });
       if (!isRenderer(renderer)) throw new Error(`Invalid wallpaper renderer: ${id}`);
-      pending = { renderer, token };
+      pendingFailure = createDeferred();
+      pending = { renderer, token, failure: pendingFailure };
       renderer.element.dataset.wallpaperSurface = '';
       renderer.element.dataset.wallpaperActive = 'false';
       renderer.element.style.opacity = '0';
       element.append(renderer.element);
       renderer.setMotionState(motionState);
-      await renderer.ready;
+      const readyResult = await Promise.race([
+        Promise.resolve(renderer.ready).then(
+          () => ({ status: 'ready' }),
+          (error) => ({ status: 'rejected', error }),
+        ),
+        pendingFailure.promise.then((error) => ({ status: 'failed', error })),
+      ]);
+      if (readyResult.status === 'rejected') throw readyResult.error;
+      if (readyResult.status === 'failed') {
+        if (options.initial && id !== DEFAULT_WALLPAPER_ID) {
+          return applyWallpaper(DEFAULT_WALLPAPER_ID, { initial: true, fallback: true });
+        }
+        if (id === DEFAULT_WALLPAPER_ID && (options.initial || options.fallback)) showCssFallback();
+        return fail(id, readyResult.error);
+      }
       if (destroyed || token !== requestToken) {
         destroyRenderer(renderer);
         if (pending?.renderer === renderer) pending = null;
@@ -146,7 +183,7 @@ export function createWallpaperManager({
       if (previous) {
         previous.renderer.element.dataset.wallpaperActive = 'false';
         previous.renderer.element.style.opacity = '0';
-        await wait(view, transitionMs);
+        await wait(view, effectiveTransitionMs);
         if (previous !== active) destroyRenderer(previous.renderer);
       }
       return { ok: true, id: descriptor.id };
@@ -184,6 +221,11 @@ export function createWallpaperManager({
       element.dataset.backgroundMotion = state;
       active?.renderer.setMotionState(state);
       if (pending?.renderer !== active?.renderer) pending?.renderer.setMotionState(state);
+    },
+    setTransitionDuration(milliseconds) {
+      if (!Number.isFinite(milliseconds) || milliseconds < 0) return;
+      effectiveTransitionMs = milliseconds;
+      element.style?.setProperty?.('--wallpaper-transition-duration', `${milliseconds}ms`);
     },
     destroy() {
       if (destroyed) return;

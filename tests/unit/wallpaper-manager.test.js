@@ -64,7 +64,12 @@ function deferred() {
   return { promise, resolve, reject };
 }
 
-function createManagerHarness({ transitionMs = 0, previewConfig = null, fallbackBlueSettled = true } = {}) {
+function createManagerHarness({
+  transitionMs = 0,
+  previewConfig = null,
+  fallbackBlueSettled = true,
+  rendererRemovesElement = true,
+} = {}) {
   const flow = deferred();
   const blue = deferred();
   const fallbackBlue = deferred();
@@ -72,9 +77,16 @@ function createManagerHarness({ transitionMs = 0, previewConfig = null, fallback
   if (fallbackBlueSettled) fallbackBlue.resolve();
   let blueLoads = 0;
   const renderers = [];
+  const timerDurations = [];
   const document = {
     createElement: (tagName) => new FakeElement(tagName),
-    defaultView: { setTimeout, clearTimeout },
+    defaultView: {
+      setTimeout(callback, duration) {
+        timerDurations.push(duration);
+        return setTimeout(callback, duration);
+      },
+      clearTimeout,
+    },
   };
   const createRenderer = (id, ready) => ({ document: rendererDocument, config, onError }) => {
     const element = rendererDocument.createElement('canvas');
@@ -89,7 +101,7 @@ function createManagerHarness({ transitionMs = 0, previewConfig = null, fallback
       updateConfig(next) { this.configs.push(next); },
       destroy() {
         element.dataset.destroyed = 'true';
-        element.remove();
+        if (rendererRemovesElement) element.remove();
       },
     };
     renderers.push({ id, renderer });
@@ -132,6 +144,7 @@ function createManagerHarness({ transitionMs = 0, previewConfig = null, fallback
     resolveFlow: flow.resolve,
     rejectFlow: flow.reject,
     rejectFallbackBlue: fallbackBlue.reject,
+    timerDurations,
   };
 }
 
@@ -242,10 +255,10 @@ test('a failed default fallback removes the failed non-default surface', async (
   harness.resolveFlow();
   await flow;
   harness.renderers.at(-1).renderer.onError(new Error('context lost'));
-  await Promise.resolve();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(harness.renderers.at(-1).id, 'blue-fluid-halftone');
   harness.rejectFallbackBlue(new Error('default renderer failed'));
-  await Promise.resolve();
-  await Promise.resolve();
+  await new Promise((resolve) => setTimeout(resolve, 0));
 
   assert.equal(harness.manager.currentId, null);
   assert.equal(harness.manager.element.dataset.wallpaperState, 'fallback');
@@ -257,4 +270,44 @@ test('the host exposes the same transition duration used for candidate cleanup',
   await harness.manager.ready;
 
   assert.equal(harness.manager.element.style.getPropertyValue('--wallpaper-transition-duration'), '73ms');
+});
+
+test('a pending renderer error settles its request and retains the active surface', async () => {
+  const harness = createManagerHarness();
+  await harness.manager.ready;
+  const oldElement = harness.manager.element.querySelector('[data-wallpaper-surface]');
+  const pending = harness.manager.applyWallpaper('flow-shards');
+  await Promise.resolve();
+  const candidate = harness.renderers.at(-1).renderer;
+  candidate.onError(new Error('initialization failed'));
+  const result = await Promise.race([
+    pending,
+    new Promise((resolve) => setTimeout(() => resolve({ timeout: true }), 20)),
+  ]);
+
+  assert.equal(result.ok, false);
+  assert.equal(candidate.element.dataset.destroyed, 'true');
+  assert.equal(candidate.element.removed, true);
+  assert.equal(harness.manager.currentId, 'blue-fluid-halftone');
+  assert.equal(oldElement.parentNode, harness.manager.element);
+});
+
+test('CSS fallback removes surfaces when a renderer destroy omits DOM cleanup', async () => {
+  const harness = createManagerHarness({ rendererRemovesElement: false });
+  await harness.manager.ready;
+  harness.renderers[0].renderer.onError(new Error('context lost'));
+
+  assert.equal(harness.manager.element.querySelectorAll('[data-wallpaper-surface]').length, 0);
+});
+
+test('updating transition duration to zero changes CSS and skips cleanup delay', async () => {
+  const harness = createManagerHarness({ transitionMs: 73 });
+  await harness.manager.ready;
+  harness.manager.setTransitionDuration(0);
+  const flow = harness.manager.applyWallpaper('flow-shards');
+  harness.resolveFlow();
+  await flow;
+
+  assert.equal(harness.manager.element.style.getPropertyValue('--wallpaper-transition-duration'), '0ms');
+  assert.deepEqual(harness.timerDurations, []);
 });

@@ -335,6 +335,20 @@ test('reduced motion renders static environment with widgets at desktop width', 
   await expect(page.locator('[data-environment-widgets]')).toHaveCount(1);
 });
 
+test('runtime reduced motion updates the mounted wallpaper transition duration', async ({ page }) => {
+  await seedLayout(page, 'macos');
+  await page.goto('/');
+  const background = page.locator('[data-environment-background]');
+  await expect.poll(() => background.evaluate((node) => (
+    node.style.getPropertyValue('--wallpaper-transition-duration')
+  ))).toBe('180ms');
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect.poll(() => background.evaluate((node) => (
+    node.style.getPropertyValue('--wallpaper-transition-duration')
+  ))).toBe('0ms');
+});
+
 test('shader background mounts and remains adaptive while focus state changes', async ({ page }) => {
   await seedLayout(page, 'macos');
   await page.goto('/');

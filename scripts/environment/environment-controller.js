@@ -7,6 +7,7 @@ import {
 } from './environment-state.js';
 import { DESKTOP_BACKGROUND } from './background/background-assets.js';
 import { createDesktopBackground } from './background/background-controller.js';
+import { DEFAULT_WALLPAPER_TRANSITION_MS } from './background/wallpaper-manager.js';
 import { createMusicDeck } from './music-deck.js';
 import { tracks } from '../../media/catalog.js';
 import { projects } from '../data/content.js';
@@ -115,6 +116,9 @@ export function createDesktopEnvironmentController({
     });
     mount.dataset.environmentCapability = capability;
     mount.dataset.environmentMotion = motion;
+    background?.setTransitionDuration?.(
+      motionQuery.matches ? 0 : DEFAULT_WALLPAPER_TRANSITION_MS,
+    );
     background?.setMotionState(motion);
   };
 
