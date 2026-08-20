@@ -13,6 +13,7 @@ import { renderSettingsApp } from '../modules/base-buttons/design/settings-app.j
 import { renderWritingApp } from '../modules/base-buttons/writing/writing-app.js';
 import { createDesktopController } from './desktop.js';
 import { createDesktopEnvironmentController } from './environment/environment-controller.js';
+import { listWallpaperMetadata } from './environment/background/wallpaper-registry.js';
 import { createI18n } from './i18n/i18n.js';
 import { readDesktopTarget } from './routing/content-routes.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
@@ -63,7 +64,12 @@ windowManager = createWindowManager({
     writing: renderWritingApp,
     about: renderAboutApp,
     contact: renderContactApp,
-    photos: renderPhotosApp,
+    photos: (context) => renderPhotosApp({
+      ...context,
+      wallpapers: listWallpaperMetadata(),
+      getCurrentWallpaperId: () => preferences.wallpaperId,
+      applyWallpaper,
+    }),
     albums: renderAlbumsApp,
     games: renderGamesApp,
     books: renderBooksApp,

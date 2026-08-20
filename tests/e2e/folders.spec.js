@@ -53,6 +53,10 @@ test('photos opens a centered folder view, then returns from the photo viewer', 
   await window.locator('[data-folder-back]').click();
   await expect(window.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'folder');
   await expect(window.locator('[data-folder-item="moonrise"]')).toHaveAttribute('data-selected', 'true');
+
+  await window.locator('[data-photos-tab="wallpapers"]').click();
+  await window.locator('[data-photos-tab="photos"]').click();
+  await expect(window.locator('[data-folder-item="moonrise"]')).toHaveAttribute('data-selected', 'true');
 });
 
 test('albums opens the player from the folder view and toggles playback', async ({ page }) => {
