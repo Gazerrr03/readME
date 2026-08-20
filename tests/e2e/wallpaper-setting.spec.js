@@ -31,6 +31,34 @@ test('author lab loads one Flow Shards preview with schema-driven plain-language
   });
   await expect(page.locator('[data-wallpaper-preview] [data-wallpaper-surface]')).toHaveCount(1);
   await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'ready');
+  await expect(page.locator('[data-wallpaper-apply-local]')).toBeEnabled();
+});
+
+test('schema labels and options follow the saved supported locale', async ({ page }) => {
+  await page.addInitScript((preferencesKey) => {
+    localStorage.setItem(preferencesKey, JSON.stringify({
+      version: 1,
+      locale: 'zh-CN',
+      wallpaperId: 'blue-fluid-halftone',
+    }));
+    const originalSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function localeFailureSetItem(key, value) {
+      if (key === window.blockedWallpaperStorageKey) {
+        throw new DOMException(`blocked ${key}`, 'SecurityError');
+      }
+      return originalSetItem.call(this, key, value);
+    };
+  }, PREFERENCES_KEY);
+  await page.goto('/setting/?wallpaper=flow-shards');
+
+  await expect(page.locator('[data-wallpaper-name]')).toHaveText('流动晶片');
+  await expect(page.locator('[data-wallpaper-control="density"] select')).toHaveAccessibleName('晶片数量');
+  await expect(page.locator('[data-wallpaper-control="density"] option[value="medium"]')).toHaveText('中');
+  await expect(page.locator('[data-wallpaper-value="density"]')).toHaveText('中');
+  await expect(page.locator('[data-wallpaper-apply-local]')).toBeEnabled({ timeout: 20_000 });
+  await page.evaluate((preferencesKey) => { window.blockedWallpaperStorageKey = preferencesKey; }, PREFERENCES_KEY);
+  await page.locator('[data-wallpaper-apply-local]').click();
+  await expect(page.locator('[data-wallpaper-action-status]')).toContainText('未应用');
 });
 
 test('missing and unknown wallpaper queries fall back visibly to Flow Shards', async ({ page }) => {
@@ -86,7 +114,86 @@ test('draft changes reload but only explicit Apply mutates homepage preview and 
     const preferences = JSON.parse(localStorage.getItem(preferencesKey));
     return { version: preferences.version, layout: preferences.layout, locale: preferences.locale };
   }, PREFERENCES_KEY)).toEqual({ version: 1, layout: 'windows', locale: 'ja' });
-  await expect(page.locator('[data-wallpaper-action-status]')).toContainText('local homepage');
+  await expect(page.locator('[data-wallpaper-action-status]')).toHaveAttribute('data-status', 'success');
+  await expect(page.locator('[data-wallpaper-action-status]')).toContainText('適用しました');
+});
+
+for (const blockedKey of [PREVIEW_KEY, PREFERENCES_KEY]) {
+  test(`Apply rolls both records back when ${blockedKey} cannot be written`, async ({ page }) => {
+    const priorPreview = '{ "version": 1, "wallpaperId": "flow-shards", "config": { "speed": 13 } }';
+    const priorPreferences = '{ "version": 1, "bootComplete": true, "locale": "en", "wallpaperId": "blue-fluid-halftone" }';
+    await page.addInitScript(({ preferencesKey, previewKey, preferencesRaw, previewRaw }) => {
+      localStorage.setItem(previewKey, previewRaw);
+      localStorage.setItem(preferencesKey, preferencesRaw);
+      const originalSetItem = Storage.prototype.setItem;
+      Storage.prototype.setItem = function selectivelyBlockedSetItem(key, value) {
+        if (key === window.blockedWallpaperStorageKey) {
+          throw new DOMException(`blocked ${key}`, 'SecurityError');
+        }
+        return originalSetItem.call(this, key, value);
+      };
+    }, {
+      preferencesKey: PREFERENCES_KEY,
+      previewKey: PREVIEW_KEY,
+      preferencesRaw: priorPreferences,
+      previewRaw: priorPreview,
+    });
+    await page.goto('/setting/?wallpaper=flow-shards');
+    await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'ready', {
+      timeout: 20_000,
+    });
+    await page.locator('[data-wallpaper-control="speed"] input').fill('77');
+    await page.evaluate((key) => { window.blockedWallpaperStorageKey = key; }, blockedKey);
+
+    await page.locator('[data-wallpaper-apply-local]').click();
+    await expect(page.locator('[data-wallpaper-action-status]')).toHaveAttribute('data-status', 'error');
+    await expect(page.locator('[data-wallpaper-action-status]')).toContainText('not applied');
+    await page.evaluate(() => { window.blockedWallpaperStorageKey = null; });
+    expect(await page.evaluate(({ preferencesKey, previewKey }) => ({
+      preferences: localStorage.getItem(preferencesKey),
+      preview: localStorage.getItem(previewKey),
+    }), { preferencesKey: PREFERENCES_KEY, previewKey: PREVIEW_KEY })).toEqual({
+      preferences: priorPreferences,
+      preview: priorPreview,
+    });
+  });
+}
+
+test('Apply does not mutate either record when storage reads are blocked', async ({ page }) => {
+  const priorPreview = '{"version":1,"wallpaperId":"flow-shards","config":{"speed":19}}';
+  const priorPreferences = '{"version":1,"locale":"en","wallpaperId":"blue-fluid-halftone"}';
+  await page.addInitScript(({ preferencesKey, previewKey, preferencesRaw, previewRaw }) => {
+    localStorage.setItem(previewKey, previewRaw);
+    localStorage.setItem(preferencesKey, preferencesRaw);
+    const originalGetItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function selectivelyBlockedGetItem(key) {
+      if (window.blockWallpaperStorageReads && [previewKey, preferencesKey].includes(key)) {
+        throw new DOMException(`blocked ${key}`, 'SecurityError');
+      }
+      return originalGetItem.call(this, key);
+    };
+  }, {
+    preferencesKey: PREFERENCES_KEY,
+    previewKey: PREVIEW_KEY,
+    preferencesRaw: priorPreferences,
+    previewRaw: priorPreview,
+  });
+  await page.goto('/setting/?wallpaper=flow-shards');
+  await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'ready', {
+    timeout: 20_000,
+  });
+  await page.evaluate(() => { window.blockWallpaperStorageReads = true; });
+
+  await page.locator('[data-wallpaper-apply-local]').click();
+  await expect(page.locator('[data-wallpaper-action-status]')).toHaveAttribute('data-status', 'error');
+  await page.evaluate(() => { window.blockWallpaperStorageReads = false; });
+  expect(await page.evaluate(({ preferencesKey, previewKey }) => ({
+    preferences: localStorage.getItem(preferencesKey),
+    preview: localStorage.getItem(previewKey),
+  }), { preferencesKey: PREFERENCES_KEY, previewKey: PREVIEW_KEY })).toEqual({
+    preferences: priorPreferences,
+    preview: priorPreview,
+  });
 });
 
 test('presets become custom after editing and reset saves the official default without applying it', async ({ page }) => {
@@ -135,15 +242,47 @@ test('density rebuild is debounced and keeps one live preview surface', async ({
   await expect(surface).toHaveAttribute('data-simulation-size', '96', { timeout: 20_000 });
 
   const density = page.locator('[data-wallpaper-control="density"] select');
-  const sizeBeforeDebounce = await density.evaluate((select) => {
+  const debounce = await density.evaluate((select) => {
+    const nativeSetTimeout = window.setTimeout.bind(window);
+    const nativeClearTimeout = window.clearTimeout.bind(window);
+    let nextId = 1000;
+    window.densityTimers = [];
+    window.densityTransitions = [];
+    new MutationObserver((records) => {
+      for (const record of records) {
+        window.densityTransitions.push(record.target.dataset.simulationSize);
+      }
+    }).observe(document.querySelector('[data-wallpaper-active="true"]'), {
+      attributeFilter: ['data-simulation-size'],
+    });
+    window.setTimeout = (callback, delay, ...args) => {
+      if (delay !== 120) return nativeSetTimeout(callback, delay, ...args);
+      const timer = { callback: () => callback(...args), cancelled: false, delay, id: nextId++ };
+      window.densityTimers.push(timer);
+      return timer.id;
+    };
+    window.clearTimeout = (id) => {
+      const timer = window.densityTimers.find((entry) => entry.id === id);
+      if (timer) timer.cancelled = true;
+      else nativeClearTimeout(id);
+    };
     select.value = 'low';
     select.dispatchEvent(new Event('change', { bubbles: true }));
     select.value = 'high';
     select.dispatchEvent(new Event('change', { bubbles: true }));
-    return document.querySelector('[data-wallpaper-active="true"]').dataset.simulationSize;
+    return {
+      activeTimers: window.densityTimers.filter((timer) => !timer.cancelled).length,
+      delays: window.densityTimers.map((timer) => timer.delay),
+      size: document.querySelector('[data-wallpaper-active="true"]').dataset.simulationSize,
+      transitions: [...window.densityTransitions],
+    };
   });
-  expect(sizeBeforeDebounce).toBe('96');
+  expect(debounce).toEqual({ activeTimers: 1, delays: [120, 120], size: '96', transitions: [] });
+  await page.evaluate(() => {
+    window.densityTimers.find((timer) => !timer.cancelled).callback();
+  });
   await expect(surface).toHaveAttribute('data-simulation-size', '128', { timeout: 20_000 });
+  await expect.poll(() => page.evaluate(() => window.densityTransitions)).toEqual(['128']);
   await expect(page.locator('[data-wallpaper-preview] [data-wallpaper-surface]')).toHaveCount(1);
 });
 
@@ -242,7 +381,63 @@ test('preview initialization failure is readable and leaves the controls availab
     timeout: 20_000,
   });
   await expect(page.locator('[data-wallpaper-status]')).toContainText('preview');
+  await expect(page.locator('[data-wallpaper-apply-local]')).toBeDisabled();
+  await expect(page.locator('[data-wallpaper-reset]')).toBeEnabled();
+  await expect(page.locator('[data-wallpaper-copy]')).toBeEnabled();
+  await expect(page.locator('[data-wallpaper-download]')).toBeEnabled();
   await expect(page.locator('[data-wallpaper-control]')).toHaveCount(12);
+});
+
+test('runtime preview loss disables only Apply while draft, reset, and export remain usable', async ({ page }) => {
+  let releaseFallback;
+  await page.route('**/shader-background.js', async (route) => {
+    await new Promise((resolve) => { releaseFallback = resolve; });
+    await route.continue();
+  });
+  await page.goto('/setting/?wallpaper=flow-shards');
+  const apply = page.locator('[data-wallpaper-apply-local]');
+  await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'ready', {
+    timeout: 20_000,
+  });
+  await expect(apply).toBeEnabled();
+
+  await page.locator('[data-wallpaper-preview] canvas[data-background-id="flow-shards"]')
+    .dispatchEvent('webglcontextlost');
+  await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'error', {
+    timeout: 5_000,
+  });
+  await expect(apply).toBeDisabled();
+  await expect(page.locator('[data-wallpaper-preview] [data-environment-background]'))
+    .toHaveAttribute('data-background-id', 'flow-shards');
+  releaseFallback();
+  await expect(page.locator('[data-wallpaper-preview] [data-environment-background]'))
+    .not.toHaveAttribute('data-background-id', 'flow-shards', { timeout: 20_000 });
+
+  await page.locator('[data-wallpaper-control="speed"] input').fill('73');
+  await expect(page.locator('[data-wallpaper-value="speed"]')).toHaveText('73');
+  await page.locator('[data-wallpaper-reset]').click();
+  await expect(page.locator('[data-wallpaper-control="speed"] input')).toHaveValue('42');
+  const downloadPromise = page.waitForEvent('download');
+  await page.locator('[data-wallpaper-download]').click();
+  expect((await downloadPromise).suggestedFilename()).toBe('flow-shards.config.json');
+  await expect(page.locator('[data-wallpaper-copy]')).toBeEnabled();
+});
+
+test('narrow viewports keep the desktop document scrollable and unload destroys the preview', async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 700 });
+  await page.goto('/setting/?wallpaper=flow-shards');
+  await expect(page.locator('[data-wallpaper-status]')).toHaveAttribute('data-status', 'ready', {
+    timeout: 20_000,
+  });
+  const widths = await page.evaluate(() => ({
+    documentWidth: document.documentElement.scrollWidth,
+    viewportWidth: window.innerWidth,
+  }));
+  expect(widths.documentWidth).toBeGreaterThan(widths.viewportWidth);
+  await expect(page.locator('[data-wallpaper-preview] [data-environment-background]')).toHaveCount(1);
+
+  await page.evaluate(() => window.dispatchEvent(new Event('beforeunload')));
+  await expect(page.locator('[data-wallpaper-preview] [data-environment-background]')).toHaveCount(0);
 });
 
 test('GitHub Pages project base resolves the lab and its relative imports', async ({ page }) => {

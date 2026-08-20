@@ -17,7 +17,8 @@ import { loadPreferences, savePreferences } from '../scripts/state/preferences.j
 
 const FALLBACK_ID = 'flow-shards';
 const DENSITY_DEBOUNCE_MS = 120;
-const locale = 'en';
+const PREVIEW_STORAGE_KEY = 'portfolio-os:wallpaper-preview:v1';
+const PREFERENCES_STORAGE_KEY = 'portfolio-os:preferences';
 const lab = document.querySelector('[data-wallpaper-lab]');
 const controlsRoot = document.querySelector('[data-wallpaper-controls]');
 const previewRoot = document.querySelector('[data-wallpaper-preview]');
@@ -26,6 +27,32 @@ const warning = document.querySelector('[data-wallpaper-warning]');
 const presetStatus = document.querySelector('[data-wallpaper-preset-status]');
 const actionStatus = document.querySelector('[data-wallpaper-action-status]');
 const copyFallback = document.querySelector('[data-wallpaper-copy-fallback]');
+const applyLocalButton = document.querySelector('[data-wallpaper-apply-local]');
+
+function acquireStorage() {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+const storage = acquireStorage();
+const locale = loadPreferences(storage).locale;
+const applyMessages = {
+  en: {
+    error: 'Changes were not applied. Local browser storage could not be verified, so prior homepage settings were restored.',
+    success: 'Applied to this browser’s local homepage.',
+  },
+  'zh-CN': {
+    error: '更改未应用。本地浏览器存储无法验证，已尝试恢复之前的主页设置。',
+    success: '已应用到此浏览器的本地主页。',
+  },
+  ja: {
+    error: '変更は適用されませんでした。ブラウザーのローカル保存を確認できなかったため、以前のホームページ設定を復元しました。',
+    success: 'このブラウザーのローカルホームページに適用しました。',
+  },
+};
 
 const requestedId = new URLSearchParams(window.location.search).get('wallpaper');
 const requestedDescriptor = requestedId ? getWallpaperDescriptor(requestedId) : null;
@@ -40,11 +67,12 @@ if (requestedId && !isAuthorable) {
   warning.textContent = `“${requestedId}” is not available in this author lab. Showing Flow Shards instead.`;
 }
 
-let currentConfig = loadWallpaperDraft(localStorage, wallpaperId) ?? descriptor.defaultConfig;
+let currentConfig = loadWallpaperDraft(storage, wallpaperId) ?? descriptor.defaultConfig;
 currentConfig = normalizeWallpaperConfig(wallpaperId, currentConfig);
 let previewDensity = descriptor.defaultConfig.density;
 let densityTimer = null;
 let managerReady = false;
+let previewObserver = null;
 
 const groups = [
   { title: 'Density', description: 'Choose how full the field feels.', keys: ['density'] },
@@ -62,6 +90,11 @@ function text(value) {
   return value?.[locale] ?? value?.en ?? '';
 }
 
+function controlValue(control, value) {
+  if (control.type !== 'select') return String(value);
+  return text(control.options.find((option) => option.value === value)?.label);
+}
+
 function createControl(control) {
   const field = document.createElement('div');
   field.className = `control-field control-field-${control.type}`;
@@ -76,7 +109,7 @@ function createControl(control) {
   const value = document.createElement('output');
   value.dataset.wallpaperValue = control.key;
   value.htmlFor = inputId;
-  value.textContent = String(currentConfig[control.key]);
+  value.textContent = controlValue(control, currentConfig[control.key]);
   heading.append(label, value);
 
   const description = document.createElement('p');
@@ -152,7 +185,7 @@ function syncControlValues() {
     const input = field?.querySelector('input, select');
     const output = field?.querySelector(`[data-wallpaper-value="${control.key}"]`);
     if (input) input.value = currentConfig[control.key];
-    if (output) output.textContent = String(currentConfig[control.key]);
+    if (output) output.textContent = controlValue(control, currentConfig[control.key]);
   }
 }
 
@@ -178,9 +211,25 @@ function updatePreview({ densityChanged = false } = {}) {
   }, DENSITY_DEBOUNCE_MS);
 }
 
+function setPreviewAvailability(available, message) {
+  managerReady = available;
+  applyLocalButton.disabled = !available;
+  previewStatus.dataset.status = available ? 'ready' : 'error';
+  previewStatus.textContent = message;
+  if (!available) {
+    window.clearTimeout(densityTimer);
+    densityTimer = null;
+  }
+}
+
+function setActionStatus(state, message) {
+  actionStatus.dataset.status = state;
+  actionStatus.textContent = message;
+}
+
 function storeDraftAndPreview(nextConfig, { densityChanged = false } = {}) {
   currentConfig = normalizeWallpaperConfig(wallpaperId, nextConfig);
-  saveWallpaperDraft(localStorage, wallpaperId, currentConfig);
+  saveWallpaperDraft(storage, wallpaperId, currentConfig);
   syncControlValues();
   updatePresetState();
   updatePreview({ densityChanged });
@@ -208,46 +257,126 @@ previewManager.setMotionState(
 
 previewManager.ready.then((result) => {
   if (!result.ok || previewManager.currentId !== wallpaperId) {
-    previewStatus.dataset.status = 'error';
-    previewStatus.textContent = 'The live preview could not start. Your controls and saved draft are still available.';
+    setPreviewAvailability(
+      false,
+      'The live preview could not start. Your controls and saved draft are still available.',
+    );
     return;
   }
   managerReady = true;
   previewDensity = currentConfig.density;
   const updateResult = previewManager.updateConfig(currentConfig);
   if (!updateResult.ok) {
-    previewStatus.dataset.status = 'error';
-    previewStatus.textContent = 'The live preview could not accept this configuration.';
+    setPreviewAvailability(false, 'The live preview could not accept this configuration.');
     return;
   }
-  previewStatus.dataset.status = 'ready';
-  previewStatus.textContent = 'Live preview ready';
+  setPreviewAvailability(true, 'Live preview ready');
+  previewObserver = new MutationObserver(() => {
+    if (!managerReady) return;
+    const rendererFailed = previewManager.element.querySelector(
+      '[data-wallpaper-context="lost"], [data-wallpaper-error]',
+    );
+    const stillRequested = previewManager.currentId === wallpaperId
+      && previewManager.element.dataset.backgroundId === wallpaperId
+      && previewManager.element.dataset.wallpaperState === 'ready'
+      && !rendererFailed;
+    if (!stillRequested) {
+      setPreviewAvailability(
+        false,
+        'The Flow Shards preview stopped and is no longer available. Your draft and export tools still work.',
+      );
+    }
+  });
+  previewObserver.observe(previewManager.element, {
+    attributeFilter: [
+      'data-background-id',
+      'data-wallpaper-context',
+      'data-wallpaper-error',
+      'data-wallpaper-state',
+    ],
+    subtree: true,
+  });
 }).catch(() => {
-  previewStatus.dataset.status = 'error';
-  previewStatus.textContent = 'The live preview could not start. Your controls and saved draft are still available.';
+  setPreviewAvailability(
+    false,
+    'The live preview could not start. Your controls and saved draft are still available.',
+  );
 });
 
 for (const button of document.querySelectorAll('[data-wallpaper-preset]')) {
   button.addEventListener('click', () => {
     const nextConfig = FLOW_SHARDS_PRESETS[button.dataset.wallpaperPreset];
     storeDraftAndPreview(nextConfig, { densityChanged: currentConfig.density !== nextConfig.density });
-    actionStatus.textContent = `${button.textContent} preset loaded as a draft.`;
+    setActionStatus('draft', `${button.textContent} preset loaded as a draft.`);
   });
 }
 
 document.querySelector('[data-wallpaper-reset]').addEventListener('click', () => {
   const densityChanged = currentConfig.density !== descriptor.defaultConfig.density;
   storeDraftAndPreview(descriptor.defaultConfig, { densityChanged });
-  actionStatus.textContent = 'Official default restored as a draft. The local homepage was not changed.';
+  setActionStatus('draft', 'Official default restored as a draft. The local homepage was not changed.');
 });
 
-document.querySelector('[data-wallpaper-apply-local]').addEventListener('click', () => {
-  const applied = saveWallpaperPreview(localStorage, wallpaperId, currentConfig);
-  const preferences = loadPreferences(localStorage);
-  savePreferences(localStorage, { ...preferences, wallpaperId });
-  actionStatus.textContent = applied
-    ? 'Applied to this browser’s local homepage.'
-    : 'The configuration could not be applied to the local homepage.';
+function readRawStorage(key) {
+  if (!storage) throw new Error('Local storage is unavailable');
+  return storage.getItem(key);
+}
+
+function restoreRawStorage(key, raw) {
+  try {
+    if (raw === null) storage?.removeItem(key);
+    else storage?.setItem(key, raw);
+  } catch {
+    // Rollback is best effort; a blocked key may already retain its prior value.
+  }
+}
+
+function applyToLocalHomepage() {
+  let snapshot = null;
+  try {
+    snapshot = {
+      preferences: readRawStorage(PREFERENCES_STORAGE_KEY),
+      preview: readRawStorage(PREVIEW_STORAGE_KEY),
+    };
+    const normalizedConfig = normalizeWallpaperConfig(wallpaperId, currentConfig);
+    const priorPreferences = loadPreferences({
+      getItem: () => snapshot.preferences,
+    });
+    const expectedPreferences = { ...priorPreferences, wallpaperId };
+    const savedPreview = saveWallpaperPreview(storage, wallpaperId, normalizedConfig);
+    const savedPreferences = savePreferences(storage, expectedPreferences);
+    const persistedPreview = readRawStorage(PREVIEW_STORAGE_KEY);
+    const persistedPreferences = readRawStorage(PREFERENCES_STORAGE_KEY);
+    const expectedPreview = JSON.stringify({
+      version: 1,
+      wallpaperId,
+      config: normalizedConfig,
+    });
+    if (
+      !savedPreview
+      || persistedPreview !== expectedPreview
+      || persistedPreferences !== JSON.stringify(savedPreferences)
+      || savedPreferences.wallpaperId !== wallpaperId
+    ) {
+      throw new Error('Local homepage records could not be verified');
+    }
+    return true;
+  } catch {
+    if (snapshot) {
+      restoreRawStorage(PREVIEW_STORAGE_KEY, snapshot.preview);
+      restoreRawStorage(PREFERENCES_STORAGE_KEY, snapshot.preferences);
+    }
+    return false;
+  }
+}
+
+applyLocalButton.addEventListener('click', () => {
+  const applied = applyToLocalHomepage();
+  if (applied) {
+    setActionStatus('success', applyMessages[locale].success);
+  } else {
+    setActionStatus('error', applyMessages[locale].error);
+  }
 });
 
 function serializedConfiguration() {
@@ -260,13 +389,16 @@ document.querySelector('[data-wallpaper-copy]').addEventListener('click', async 
     if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
     await navigator.clipboard.writeText(serialized);
     copyFallback.hidden = true;
-    actionStatus.textContent = 'Configuration copied.';
+    setActionStatus('success', 'Configuration copied.');
   } catch {
     copyFallback.value = serialized;
     copyFallback.hidden = false;
     copyFallback.focus();
     copyFallback.select();
-    actionStatus.textContent = 'Clipboard access was blocked. The configuration is selected below for manual copying.';
+    setActionStatus(
+      'warning',
+      'Clipboard access was blocked. The configuration is selected below for manual copying.',
+    );
   }
 });
 
@@ -278,10 +410,11 @@ document.querySelector('[data-wallpaper-download]').addEventListener('click', ()
   link.download = `${wallpaperId}.config.json`;
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
-  actionStatus.textContent = 'Configuration downloaded.';
+  setActionStatus('success', 'Configuration downloaded.');
 });
 
 window.addEventListener('beforeunload', () => {
   window.clearTimeout(densityTimer);
+  previewObserver?.disconnect();
   previewManager.destroy();
 }, { once: true });

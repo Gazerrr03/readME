@@ -234,6 +234,16 @@ button[aria-pressed="true"] {
   background: #174360;
 }
 
+button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  border-color: rgba(185, 226, 250, 0.25);
+  background: #10283a;
+}
+
 .control-field {
   padding: 18px 0;
   border-top: 1px solid rgba(178, 219, 244, 0.12);
@@ -323,4 +333,8 @@ input[type="color"] {
   color: #bde8ff;
   font-size: 13px;
   line-height: 1.5;
+}
+
+.action-status[data-status="error"] {
+  color: #ffb7a6;
 }
