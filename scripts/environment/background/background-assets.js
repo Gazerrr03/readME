@@ -1,5 +1,3 @@
-export const DESKTOP_BACKGROUND = Object.freeze({
-  id: 'blue-fluid-halftone',
-  kind: 'shader',
-  palette: 'blue-gray-fluid',
-});
+import { DEFAULT_WALLPAPER_ID, getWallpaperDescriptor } from './wallpaper-registry.js';
+
+export const DESKTOP_BACKGROUND = getWallpaperDescriptor(DEFAULT_WALLPAPER_ID);
