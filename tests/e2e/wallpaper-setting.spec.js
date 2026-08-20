@@ -58,8 +58,15 @@ test('schema labels and options follow the saved supported locale', async ({ pag
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('[data-wallpaper-name]')).toHaveText('流动晶片');
   await expect(page.locator('[data-wallpaper-name]')).toHaveAttribute('lang', 'zh-CN');
-  await expect(page.locator('[data-wallpaper-controls]')).toHaveAttribute('lang', 'zh-CN');
-  await expect(page.locator('[data-wallpaper-control="density"] select')).toHaveAccessibleName('晶片数量');
+  const controls = page.locator('[data-wallpaper-controls]');
+  const densityCard = controls.locator('.control-card').first();
+  const densityField = page.locator('[data-wallpaper-control="density"]');
+  await expect(controls).not.toHaveAttribute('lang', 'zh-CN');
+  await expect(densityCard).not.toHaveAttribute('lang', 'zh-CN');
+  await expect(densityCard.locator('.section-kicker')).toHaveText('Live controls');
+  await expect(densityCard.locator('h2')).toHaveText('Density');
+  await expect(densityField).toHaveAttribute('lang', 'zh-CN');
+  await expect(densityField.locator('select')).toHaveAccessibleName('晶片数量');
   await expect(page.locator('[data-wallpaper-control="density"] option[value="medium"]')).toHaveText('中');
   await expect(page.locator('[data-wallpaper-value="density"]')).toHaveText('中');
   await expect(page.locator('[data-wallpaper-preset-status]')).toHaveText('参考');

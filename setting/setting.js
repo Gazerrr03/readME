@@ -101,7 +101,6 @@ const wallpaperName = document.querySelector('[data-wallpaper-name]');
 wallpaperName.textContent = descriptor.title[locale];
 for (const element of [
   wallpaperName,
-  controlsRoot,
   warning,
   previewStatus,
   presetStatus,
@@ -148,6 +147,7 @@ function createControl(control) {
   const field = document.createElement('div');
   field.className = `control-field control-field-${control.type}`;
   field.dataset.wallpaperControl = control.key;
+  field.lang = locale;
 
   const heading = document.createElement('div');
   heading.className = 'control-heading';
