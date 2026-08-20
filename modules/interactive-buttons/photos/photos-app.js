@@ -83,6 +83,7 @@ export function renderPhotosApp({
   preferences,
   wallpapers = [],
   getCurrentWallpaperId = () => preferences?.wallpaperId ?? null,
+  subscribeCurrentWallpaper,
   applyWallpaper,
 }) {
   const document = mount.ownerDocument;
@@ -144,6 +145,7 @@ export function renderPhotosApp({
     i18n,
     wallpapers,
     currentId: getCurrentWallpaperId(),
+    subscribeCurrentWallpaper,
     applyWallpaper,
   });
   let activeTab = 'photos';

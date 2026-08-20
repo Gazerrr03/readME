@@ -666,6 +666,8 @@ a[data-contact-row] {
 }
 
 [data-wallpaper-content] {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -673,8 +675,10 @@ a[data-contact-row] {
 
 [data-wallpaper-grid] {
   display: grid;
+  flex: 1;
   gap: 12px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: 0;
   overflow: auto;
   padding: 2px;
 }

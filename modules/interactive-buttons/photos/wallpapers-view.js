@@ -26,6 +26,7 @@ export function createWallpapersView({
   i18n,
   wallpapers = [],
   currentId = null,
+  subscribeCurrentWallpaper = () => () => {},
   applyWallpaper = async () => ({ ok: false }),
 }) {
   const root = createElement(document, 'section', {
@@ -46,6 +47,7 @@ export function createWallpapersView({
   let detail = null;
   let destroyed = false;
   let unsubscribeI18n = () => {};
+  let unsubscribeCurrentWallpaper = () => {};
   let stopObserving = () => {};
 
   const getWallpaper = () => wallpapers.find((wallpaper) => wallpaper.id === selectedId) ?? null;
@@ -60,6 +62,21 @@ export function createWallpapersView({
     return createElement(document, 'span', { 'data-wallpaper-current-badge': '' }, i18n.t('photos.wallpapers.current'));
   };
 
+  const updateCard = (card, wallpaper) => {
+    const current = isCurrent(wallpaper);
+    card.dataset.wallpaperCurrent = String(current);
+    card.setAttribute('aria-current', String(current));
+    card.querySelector('[data-wallpaper-card-label]').textContent = localizedText(
+      wallpaper.title,
+      i18n.locale,
+      wallpaper.id,
+    );
+    const badge = card.querySelector('[data-wallpaper-current-slot]');
+    badge.replaceChildren();
+    const currentBadge = renderCurrentBadge(wallpaper);
+    if (currentBadge) badge.append(currentBadge);
+  };
+
   const updateDetail = () => {
     if (!detail) return;
     const wallpaper = getWallpaper();
@@ -68,6 +85,10 @@ export function createWallpapersView({
     detail.root.dataset.wallpaperCurrent = String(isCurrent(wallpaper));
     detail.apply.disabled = applying;
     detail.back.disabled = applying;
+    detail.back.textContent = `← ${i18n.t('photos.wallpapers.back')}`;
+    detail.heading.textContent = localizedText(wallpaper.title, i18n.locale, wallpaper.id);
+    detail.copy.textContent = localizedText(wallpaper.description, i18n.locale, '');
+    detail.apply.textContent = i18n.t('photos.wallpapers.apply');
     detail.badge.replaceChildren();
     const badge = renderCurrentBadge(wallpaper);
     if (badge) detail.badge.append(badge);
@@ -89,9 +110,9 @@ export function createWallpapersView({
       });
       const preview = createElement(document, 'img', { src: wallpaper.previewSrc, alt: '' });
       const label = createElement(document, 'span', { 'data-wallpaper-card-label': '' }, title);
-      card.append(preview, label);
-      const badge = renderCurrentBadge(wallpaper);
-      if (badge) card.append(badge);
+      const badge = createElement(document, 'span', { 'data-wallpaper-current-slot': '' });
+      card.append(preview, label, badge);
+      updateCard(card, wallpaper);
       card.addEventListener('click', () => openDetail(wallpaper.id));
       card.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
@@ -168,20 +189,29 @@ export function createWallpapersView({
     apply.addEventListener('click', applySelectedWallpaper);
     panel.append(back, preview, heading, copy, badge, apply);
     content.replaceChildren(panel);
-    detail = { root: panel, back, apply, badge };
+    detail = { root: panel, back, heading, copy, apply, badge };
     updateDetail();
     queueMicrotask(() => apply.focus({ preventScroll: true }));
   };
 
   const renderForLocale = () => {
     if (destroyed) return;
-    const focused = document.activeElement;
-    const focusApply = focused === detail?.apply;
-    const focusBack = focused === detail?.back;
-    if (selectedId) openDetail(selectedId);
-    else renderGrid();
-    if (focusApply) detail?.apply.focus({ preventScroll: true });
-    if (focusBack) detail?.back.focus({ preventScroll: true });
+    if (detail) updateDetail();
+    root.querySelectorAll('[data-wallpaper-card]').forEach((card) => {
+      const wallpaper = wallpapers.find((entry) => entry.id === card.dataset.wallpaperCard);
+      if (wallpaper) updateCard(card, wallpaper);
+    });
+    setStatus(status.dataset.wallpaperApplyStatus);
+  };
+
+  const syncCurrentWallpaper = (id) => {
+    if (destroyed || !wallpapers.some((wallpaper) => wallpaper.id === id)) return;
+    activeId = id;
+    updateDetail();
+    root.querySelectorAll('[data-wallpaper-card]').forEach((card) => {
+      const wallpaper = wallpapers.find((entry) => entry.id === card.dataset.wallpaperCard);
+      if (wallpaper) updateCard(card, wallpaper);
+    });
   };
 
   const destroy = () => {
@@ -190,12 +220,14 @@ export function createWallpapersView({
     requestToken += 1;
     pendingRequest = null;
     unsubscribeI18n();
+    unsubscribeCurrentWallpaper();
     stopObserving();
   };
 
   root.destroy = destroy;
   renderGrid();
   unsubscribeI18n = i18n.subscribe(renderForLocale);
+  unsubscribeCurrentWallpaper = subscribeCurrentWallpaper(syncCurrentWallpaper);
   stopObserving = observeDisconnect(document, root, destroy);
   return root;
 }

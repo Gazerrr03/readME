@@ -17,14 +17,14 @@ async function seedLayout(page, layout, locale = 'en') {
 const wallpaperFixture = [
   {
     id: 'blue-fluid-halftone',
-    title: { en: 'Blue Fluid' },
-    description: { en: 'A quiet blue current.' },
+    title: { en: 'Blue Fluid', 'zh-CN': '蓝色流体' },
+    description: { en: 'A quiet blue current.', 'zh-CN': '安静的蓝色流动。' },
     previewSrc: 'assets/background/previews/blue-fluid-halftone.png',
   },
   {
     id: 'flow-shards',
-    title: { en: 'Flow Shards' },
-    description: { en: 'Illuminated shards.' },
+    title: { en: 'Flow Shards', 'zh-CN': '流动晶片' },
+    description: { en: 'Illuminated shards.', 'zh-CN': '发光晶片。' },
     previewSrc: 'assets/background/previews/flow-shards.png',
   },
 ];
@@ -35,18 +35,30 @@ async function mountDeferredWallpaperView(page) {
     const { createWallpapersView } = await import('/modules/interactive-buttons/photos/wallpapers-view.js');
     const subscribers = new Set();
     const labels = {
-      'photos.wallpapers': 'Wallpapers',
-      'photos.wallpapers.back': 'Back to wallpapers',
-      'photos.wallpapers.current': 'Current wallpaper',
-      'photos.wallpapers.apply': 'Apply wallpaper',
-      'photos.wallpapers.idle': '',
-      'photos.wallpapers.applying': 'Applying wallpaper…',
-      'photos.wallpapers.success': 'Wallpaper applied.',
-      'photos.wallpapers.error': 'Could not apply wallpaper.',
+      en: {
+        'photos.wallpapers': 'Wallpapers',
+        'photos.wallpapers.back': 'Back to wallpapers',
+        'photos.wallpapers.current': 'Current wallpaper',
+        'photos.wallpapers.apply': 'Apply wallpaper',
+        'photos.wallpapers.idle': '',
+        'photos.wallpapers.applying': 'Applying wallpaper…',
+        'photos.wallpapers.success': 'Wallpaper applied.',
+        'photos.wallpapers.error': 'Could not apply wallpaper.',
+      },
+      'zh-CN': {
+        'photos.wallpapers': '壁纸',
+        'photos.wallpapers.back': '返回壁纸列表',
+        'photos.wallpapers.current': '当前壁纸',
+        'photos.wallpapers.apply': '设为壁纸',
+        'photos.wallpapers.idle': '',
+        'photos.wallpapers.applying': '正在应用壁纸…',
+        'photos.wallpapers.success': '壁纸已应用。',
+        'photos.wallpapers.error': '无法应用壁纸。',
+      },
     };
     const i18n = {
       locale: 'en',
-      t: (key) => labels[key] ?? key,
+      t: (key) => labels[i18n.locale][key] ?? key,
       subscribe(listener) {
         subscribers.add(listener);
         return () => subscribers.delete(listener);
@@ -61,7 +73,15 @@ async function mountDeferredWallpaperView(page) {
       applyWallpaper: (id) => new Promise((resolve, reject) => calls.push({ id, resolve, reject })),
     });
     document.body.append(root);
-    window.wallpaperViewTest = { calls, root, subscribers };
+    window.wallpaperViewTest = {
+      calls,
+      root,
+      subscribers,
+      setLocale(locale) {
+        i18n.locale = locale;
+        subscribers.forEach((listener) => listener(locale));
+      },
+    };
   }, wallpaperFixture);
 }
 
@@ -129,6 +149,7 @@ test('wallpaper apply keeps navigation, focus, and the live status stable while 
   await expect(blueCard).toHaveAttribute('aria-current', 'true');
   await expect(blueCard).toHaveAccessibleName('Blue Fluid Current wallpaper');
   await flowCard.click();
+  await expect.poll(() => page.evaluate(() => window.wallpaperViewTest.calls.length)).toBe(0);
   const apply = root.locator('[data-wallpaper-apply]');
   const back = root.locator('[data-wallpaper-back]');
   await apply.click();
@@ -184,6 +205,95 @@ test('wallpaper apply exposes an error and restores focus after a rejected appli
   await expect(root.locator('[data-wallpaper-apply-status]')).toHaveText('Could not apply wallpaper.');
   await expect(apply).toBeEnabled();
   await expect(apply).toBeFocused();
+});
+
+test('wallpaper detail keeps its localized state and focused Back control through locale changes', async ({ page }) => {
+  await mountDeferredWallpaperView(page);
+  const root = page.locator('[data-wallpapers-view]');
+  await root.locator('[data-wallpaper-card="flow-shards"]').click();
+  await root.locator('[data-wallpaper-apply]').click();
+  await page.evaluate(() => window.wallpaperViewTest.setLocale('zh-CN'));
+  await expect(root.locator('[data-wallpaper-title]')).toHaveText('流动晶片');
+  await expect(root.locator('[data-wallpaper-back]')).toHaveText('← 返回壁纸列表');
+  await expect(root.locator('[data-wallpaper-apply]')).toHaveText('设为壁纸');
+  await expect(root.locator('[data-wallpaper-apply-status]')).toHaveAttribute('data-wallpaper-apply-status', 'applying');
+  await expect(root.locator('[data-wallpaper-apply-status]')).toHaveText('正在应用壁纸…');
+
+  await settleWallpaperRequest(page, 0, { ok: false, id: 'flow-shards' });
+  const back = root.locator('[data-wallpaper-back]');
+  await back.focus();
+  await page.evaluate(() => window.wallpaperViewTest.setLocale('en'));
+  await expect(back).toBeFocused();
+  await expect(root.locator('[data-wallpaper-apply-status]')).toHaveAttribute('data-wallpaper-apply-status', 'error');
+  await expect(root.locator('[data-wallpaper-apply-status]')).toHaveText('Could not apply wallpaper.');
+});
+
+test('replacement wallpaper view synchronizes when a detached request updates the current preference', async ({ page }) => {
+  await page.goto('/?skipBoot=1');
+  await page.evaluate(async (wallpapers) => {
+    const { createWallpapersView } = await import('/modules/interactive-buttons/photos/wallpapers-view.js');
+    let currentId = 'blue-fluid-halftone';
+    const currentSubscribers = new Set();
+    const i18n = {
+      locale: 'en',
+      t: (key) => ({
+        'photos.wallpapers.current': 'Current wallpaper',
+        'photos.wallpapers.back': 'Back',
+        'photos.wallpapers.apply': 'Apply wallpaper',
+        'photos.wallpapers.idle': '',
+        'photos.wallpapers.applying': 'Applying…',
+        'photos.wallpapers.success': 'Applied.',
+        'photos.wallpapers.error': 'Failed.',
+      })[key] ?? key,
+      subscribe: () => () => {},
+    };
+    const calls = [];
+    const subscribeCurrentWallpaper = (listener) => {
+      currentSubscribers.add(listener);
+      return () => currentSubscribers.delete(listener);
+    };
+    const oldRoot = createWallpapersView({
+      document,
+      i18n,
+      wallpapers,
+      currentId,
+      subscribeCurrentWallpaper,
+      applyWallpaper: () => new Promise((resolve) => calls.push(resolve)),
+    });
+    document.body.append(oldRoot);
+    window.currentWallpaperSyncTest = {
+      calls,
+      oldRoot,
+      currentSubscribers,
+      mountReplacement() {
+        const replacement = createWallpapersView({
+          document,
+          i18n,
+          wallpapers,
+          currentId,
+          subscribeCurrentWallpaper,
+        });
+        document.body.append(replacement);
+        this.replacement = replacement;
+      },
+      settleOldRequest() {
+        currentId = 'flow-shards';
+        currentSubscribers.forEach((listener) => listener(currentId));
+        calls[0]({ ok: true, id: currentId });
+      },
+    };
+  }, wallpaperFixture);
+  const oldRoot = page.locator('[data-wallpapers-view]').first();
+  await oldRoot.locator('[data-wallpaper-card="flow-shards"]').click();
+  await oldRoot.locator('[data-wallpaper-apply]').click();
+  await page.evaluate(async () => {
+    window.currentWallpaperSyncTest.oldRoot.remove();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    window.currentWallpaperSyncTest.mountReplacement();
+  });
+  await expect(page.locator('[data-wallpapers-view]').last().locator('[data-wallpaper-card="blue-fluid-halftone"]')).toHaveAttribute('aria-current', 'true');
+  await page.evaluate(() => window.currentWallpaperSyncTest.settleOldRequest());
+  await expect(page.locator('[data-wallpapers-view]').last().locator('[data-wallpaper-card="flow-shards"]')).toHaveAttribute('aria-current', 'true');
 });
 
 test('detached Photos and wallpaper views release their locale subscriptions', async ({ page }) => {

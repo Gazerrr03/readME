@@ -26,6 +26,11 @@ const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
 const apps = getApps();
 const audio = createAudioService(preferences.audioEnabled);
+const wallpaperPreferenceListeners = new Set();
+const subscribeCurrentWallpaper = (listener) => {
+  wallpaperPreferenceListeners.add(listener);
+  return () => wallpaperPreferenceListeners.delete(listener);
+};
 let windowManager;
 let boot;
 let updatePreferences;
@@ -68,6 +73,7 @@ windowManager = createWindowManager({
       ...context,
       wallpapers: listWallpaperMetadata(),
       getCurrentWallpaperId: () => preferences.wallpaperId,
+      subscribeCurrentWallpaper,
       applyWallpaper,
     }),
     albums: renderAlbumsApp,
@@ -85,6 +91,9 @@ windowManager = createWindowManager({
 updatePreferences = (patch) => {
   Object.assign(preferences, patch);
   persistPreferences(preferences);
+  if (patch.wallpaperId !== undefined) {
+    wallpaperPreferenceListeners.forEach((listener) => listener(preferences.wallpaperId));
+  }
   if (patch.audioEnabled !== undefined) audio.setEnabled(preferences.audioEnabled);
   if (patch.locale !== undefined) i18n.setLocale(preferences.locale);
   desktop.syncPreferences(patch);
