@@ -267,3 +267,14 @@ test('generated pages and critical assets return successful responses', async ({
     expect(response.status(), path).toBe(200);
   }
 });
+
+test('the author lab has no link from the homepage or generated content pages', async ({ page }) => {
+  for (const path of [
+    '/',
+    `/writing/${firstArticle.slug}/`,
+    `/projects/${firstProject.slug}/`,
+  ]) {
+    await page.goto(path);
+    await expect(page.locator('a[href*="setting/"]')).toHaveCount(0);
+  }
+});

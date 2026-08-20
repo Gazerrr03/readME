@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Wallpaper tuning lab</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./setting.css" />
+  </head>
+  <body>
+    <main class="lab-layout" data-wallpaper-lab data-wallpaper-id="flow-shards">
+      <section class="preview-column" aria-labelledby="lab-title">
+        <header class="preview-header">
+          <div>
+            <p class="eyebrow">Author wallpaper lab</p>
+            <h1 id="lab-title" data-wallpaper-name>Flow Shards</h1>
+          </div>
+          <a class="home-link" href="../">Back to homepage</a>
+        </header>
+
+        <p class="route-warning" data-wallpaper-warning role="status" hidden></p>
+        <div class="preview-stage" data-wallpaper-preview>
+          <div class="preview-message" data-wallpaper-status data-status="loading" role="status">
+            Preparing the live preview…
+          </div>
+        </div>
+        <p class="preview-note">
+          Changes appear here and stay in this browser as a draft until you explicitly apply them.
+        </p>
+      </section>
+
+      <aside class="control-panel" aria-label="Wallpaper controls">
+        <section class="control-card preset-card" aria-labelledby="preset-title">
+          <div class="card-heading">
+            <div>
+              <p class="section-kicker">Starting point</p>
+              <h2 id="preset-title">Choose a mood</h2>
+            </div>
+            <output class="preset-status" data-wallpaper-preset-status>reference</output>
+          </div>
+          <p>Pick a complete look, then adjust any detail to make it custom.</p>
+          <div class="preset-buttons" aria-label="Flow Shards presets">
+            <button type="button" data-wallpaper-preset="calm">Calm</button>
+            <button type="button" data-wallpaper-preset="reference">Reference</button>
+            <button type="button" data-wallpaper-preset="intense">Intense</button>
+          </div>
+        </section>
+
+        <section class="control-card actions-card" aria-labelledby="actions-title">
+          <p class="section-kicker">Keep or share this look</p>
+          <h2 id="actions-title">Configuration actions</h2>
+          <p>Applying changes only this browser. Copying or downloading creates stable JSON for source control.</p>
+          <div class="action-buttons">
+            <button type="button" class="primary-action" data-wallpaper-apply-local>
+              Apply to local homepage
+            </button>
+            <button type="button" data-wallpaper-reset>Reset to official default</button>
+            <button type="button" data-wallpaper-copy>Copy configuration</button>
+            <button type="button" data-wallpaper-download>Download JSON</button>
+          </div>
+          <textarea
+            class="copy-fallback"
+            data-wallpaper-copy-fallback
+            aria-label="Configuration JSON"
+            readonly
+            hidden
+          ></textarea>
+          <p class="action-status" data-wallpaper-action-status role="status" aria-live="polite"></p>
+        </section>
+
+        <div data-wallpaper-controls></div>
+      </aside>
+    </main>
+    <script type="module" src="./setting.js"></script>
+  </body>
+</html>
