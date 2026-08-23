@@ -34,11 +34,16 @@ function readingBand(document, i18n) {
 function renderBody(document, body) {
   const container = createElement(document, 'div', { 'data-content-article-body': '' });
   let leadApplied = false;
-  let sectionCount = 0;
   body.forEach((item, itemIndex) => {
+    const blockAttributes = {
+      id: `section-${itemIndex}`,
+      'data-content-article-block': '',
+      'data-content-section-index': String(itemIndex),
+    };
     if (typeof item === 'string') {
-      const paragraph = createElement(document, 'p', leadApplied ? {} : {
-        'data-content-article-lead': '',
+      const paragraph = createElement(document, 'p', {
+        ...blockAttributes,
+        ...(leadApplied ? {} : { 'data-content-article-lead': '' }),
       }, item);
       leadApplied = true;
       container.append(paragraph);
@@ -46,21 +51,20 @@ function renderBody(document, body) {
     }
     if (item.h) {
       container.append(createElement(document, 'h2', {
-        id: `section-${itemIndex}`,
+        ...blockAttributes,
         'data-content-article-section': '',
-        'data-content-section-index': String(sectionCount),
       }, item.h));
-      sectionCount += 1;
       return;
     }
     if (item.q) {
       container.append(createElement(document, 'blockquote', {
+        ...blockAttributes,
         'data-content-quote': '',
       }, item.q));
       return;
     }
     if (item.a) {
-      const paragraph = createElement(document, 'p');
+      const paragraph = createElement(document, 'p', blockAttributes);
       const link = createElement(document, 'a', {
         href: item.href,
         target: '_blank',

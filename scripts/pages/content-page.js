@@ -22,6 +22,8 @@ const slug = documentRef.body.dataset.contentSlug;
 const mount = documentRef.querySelector('[data-content-page]');
 
 const SUPPORTED_LOCALES = new Set(['en', 'zh-CN', 'ja']);
+const READING_THEME_KEY = 'portfolio-os:reading-theme';
+const READING_THEMES = Object.freeze(['dark', 'light']);
 
 function readLocaleFromUrl() {
   const value = new URLSearchParams(window.location.search).get('lang');
@@ -36,8 +38,46 @@ function writeLocaleToUrl(locale) {
 
 const locale = readLocaleFromUrl() ?? resolvePreferredLocale(localStorage, navigator.languages);
 const i18n = createI18n(locale);
+let readingTheme = resolveReadingTheme();
 let focused = false;
 let disposePresentation = () => {};
+
+function resolveReadingTheme() {
+  try {
+    const stored = localStorage.getItem(READING_THEME_KEY);
+    if (READING_THEMES.includes(stored)) return stored;
+  } catch {
+    // The dark palette remains the safe fallback when storage is unavailable.
+  }
+  return 'dark';
+}
+
+function saveReadingTheme(theme) {
+  try {
+    localStorage.setItem(READING_THEME_KEY, theme);
+  } catch {
+    // The current page can still switch themes when persistence is blocked.
+  }
+}
+
+function applyReadingTheme() {
+  if (kind !== 'writing') {
+    documentRef.documentElement.removeAttribute('data-reading-theme');
+    return;
+  }
+  documentRef.documentElement.dataset.readingTheme = readingTheme;
+}
+
+function syncThemeButton(button) {
+  const isLight = readingTheme === 'light';
+  button.setAttribute('aria-pressed', String(isLight));
+  button.setAttribute('aria-label', i18n.t(
+    isLight ? 'content.themeToDark' : 'content.themeToLight',
+  ));
+  button.title = i18n.t(isLight ? 'content.themeToDark' : 'content.themeToLight');
+  const value = button.querySelector('[data-content-theme-value]');
+  if (value) value.textContent = i18n.t(isLight ? 'content.themeLight' : 'content.themeDark');
+}
 
 function supportedKind() {
   return kind === 'projects' ? 'projects' : 'writing';
@@ -45,6 +85,10 @@ function supportedKind() {
 
 function renderHeader() {
   const header = createElement(documentRef, 'header', { 'data-content-header': '' });
+  const returnLink = createElement(documentRef, 'a', {
+    href: desktopPath(supportedKind()),
+    'data-content-return': '',
+  }, `← ${i18n.t(kind === 'projects' ? 'content.returnProjects' : 'content.returnWriting')}`);
   const identity = createElement(documentRef, 'div', { 'data-content-identity': '' });
   identity.append(
     createElement(documentRef, 'strong', {}, 'QIZHI'),
@@ -52,12 +96,15 @@ function renderHeader() {
       i18n.t(kind === 'projects' ? 'content.project' : 'content.article')),
   );
   const controls = createElement(documentRef, 'div', { 'data-content-controls': '' });
-  const returnLink = createElement(documentRef, 'a', {
-    href: desktopPath(supportedKind()),
-    'data-content-return': '',
-  }, i18n.t(kind === 'projects' ? 'content.returnProjects' : 'content.returnWriting'));
+  const readingControls = createElement(documentRef, 'div', {
+    'data-content-reading-controls': '',
+    'aria-label': i18n.t('content.displayMode'),
+    role: 'group',
+  });
   const label = createElement(documentRef, 'label', { 'data-content-language-label': '' });
-  label.append(createElement(documentRef, 'span', {}, i18n.t('content.language')));
+  label.append(createElement(documentRef, 'span', {
+    'data-content-language-name': '',
+  }, i18n.t('content.language')));
   const select = createElement(documentRef, 'select', {
     'data-content-language': '',
     'aria-label': i18n.t('content.language'),
@@ -79,8 +126,30 @@ function renderHeader() {
     i18n.setLocale(select.value);
   });
   label.append(select);
-  controls.append(returnLink, label);
-  header.append(identity, controls);
+  readingControls.append(label);
+  if (kind === 'writing') {
+    const themeButton = createElement(documentRef, 'button', {
+      type: 'button',
+      'data-content-theme-toggle': '',
+      'aria-pressed': 'false',
+    });
+    themeButton.append(createElement(documentRef, 'span', {
+      'data-content-theme-prefix': '',
+      'aria-hidden': 'true',
+    }, 'MODE / '), createElement(documentRef, 'span', {
+      'data-content-theme-value': '',
+    }));
+    syncThemeButton(themeButton);
+    themeButton.addEventListener('click', () => {
+      readingTheme = readingTheme === 'dark' ? 'light' : 'dark';
+      saveReadingTheme(readingTheme);
+      applyReadingTheme();
+      syncThemeButton(themeButton);
+    });
+    readingControls.append(themeButton);
+  }
+  controls.append(readingControls);
+  header.append(returnLink, identity, controls);
   return header;
 }
 
@@ -96,6 +165,7 @@ function renderUnavailable() {
 }
 
 function render() {
+  applyReadingTheme();
   disposePresentation();
   const article = kind === 'writing'
     ? articles.find((entry) => entry.slug === slug)

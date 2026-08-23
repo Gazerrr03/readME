@@ -72,6 +72,7 @@ test('project URL loads a standalone detail with its live preview and actions', 
   await expect(project.locator('a', { hasText: 'OPEN' })).toHaveAttribute('target', '_blank');
   await expect(project.locator('a', { hasText: 'SOURCE' })).toHaveAttribute('target', '_blank');
   await expect(page.locator('[data-content-return]')).toHaveAttribute('href', '?open=projects');
+  await expect(page.locator('html[data-reading-theme]')).toHaveCount(0);
   await expect(page.locator('[data-desktop-root]')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -145,21 +146,33 @@ test('long-form articles render quotes, field notes and markdown editions', asyn
   }
 });
 
-test('timeline, share and notes tools operate on the article', async ({ page }) => {
+test('timeline rail, share and notes tools operate on the article', async ({ page }) => {
   const longForm = articles.find((article) => article.notes);
   await page.goto(`/writing/${longForm.slug}/?lang=en`);
 
-  // Timeline panel scrolls to a section anchor.
-  await page.locator('[data-tool-open="timeline"]').click();
-  await expect(page.locator('[data-tool-panel-timeline]')).toBeVisible();
-  const firstItem = page.locator('[data-tool-timeline-item]').first();
+  // The directory is a persistent paragraph rail, not another bottom-right button.
+  await expect(page.locator('[data-article-timeline]')).toBeVisible();
+  await expect(page.locator('[data-article-tools-dock] [data-tool-open]')).toHaveCount(2);
+  const blockCount = longForm.body.en.filter((item) => (
+    typeof item === 'string' || item?.h || item?.q || item?.a
+  )).length;
+  await expect(page.locator('[data-tool-timeline-item]')).toHaveCount(blockCount);
+  await expect(page.locator('[data-tool-timeline-kind="heading"]')).toHaveCount(
+    longForm.body.en.filter((item) => item?.h).length,
+  );
+  const firstItem = page.locator('[data-tool-timeline-kind="heading"]').first();
   await firstItem.click();
   await page.waitForTimeout(600);
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(100);
 
   // Share panel exposes the current URL, copy and email actions.
+  const dock = page.locator('[data-article-tools-dock]');
+  const dockBefore = await dock.boundingBox();
   await page.locator('[data-tool-open="share"]').click();
   await expect(page.locator('[data-tool-panel-share]')).toBeVisible();
+  const dockAfter = await dock.boundingBox();
+  expect(Math.abs(dockAfter.x - dockBefore.x)).toBeLessThan(1);
+  expect(Math.abs(dockAfter.y - dockBefore.y)).toBeLessThan(1);
   const shareUrl = await page.locator('[data-tool-share-url]').inputValue();
   expect(shareUrl).toContain(`/writing/${longForm.slug}/`);
   await expect(page.locator('[data-tool-share-email]')).toHaveAttribute('href', /^mailto:/);
@@ -169,36 +182,105 @@ test('timeline, share and notes tools operate on the article', async ({ page }) 
   await expect(page.locator('[data-article-tools-panel]')).toBeHidden();
 });
 
-test('selecting text saves a highlight that can be exported and removed', async ({ page }) => {
-  const longForm = articles.find((article) => article.notes);
-  await page.goto(`/writing/${longForm.slug}/?lang=en`);
+test('article display mode sits beside language and persists independently', async ({ page }) => {
+  await page.goto(`/writing/${firstArticle.slug}/`);
+  await page.evaluate(() => localStorage.removeItem('portfolio-os:reading-theme'));
+  await page.reload();
 
+  const themeButton = page.locator('[data-content-theme-toggle]');
+  await expect(themeButton).toBeVisible();
+  await expect(themeButton).toHaveAttribute('aria-label', 'Switch to light mode');
+  await expect(page.locator('[data-content-reading-controls] [data-content-language]')).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'dark');
+
+  await themeButton.click();
+  await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'light');
+  await expect(themeButton).toHaveAttribute('aria-label', 'Switch to dark mode');
+  expect(await page.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor))
+    .toBe('rgb(244, 239, 230)');
+
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'light');
+  await expect(page.locator('[data-content-theme-toggle]')).toHaveAttribute(
+    'aria-label', 'Switch to dark mode',
+  );
+});
+
+async function selectLeadText(page) {
   const lead = page.locator('[data-content-article-lead]');
   const box = await lead.boundingBox();
   await page.mouse.move(box.x + 10, box.y + 8);
   await page.mouse.down();
   await page.mouse.move(box.x + 180, box.y + 8, { steps: 8 });
   await page.mouse.up();
+  return lead;
+}
 
-  const highlightButton = page.locator('[data-tool-highlight]');
-  await expect(highlightButton).toBeVisible();
-  await highlightButton.click();
+test('selecting text can create an annotation topic and remove it', async ({ page }) => {
+  const longForm = articles.find((article) => article.notes);
+  await page.goto(`/writing/${longForm.slug}/?lang=en`);
+
+  const lead = await selectLeadText(page);
+  const selectionMenu = page.locator('[data-tool-selection]');
+  await expect(selectionMenu).toBeVisible();
+  await expect(selectionMenu.locator('[data-tool-selection-action]')).toHaveCount(3);
+  await expect(selectionMenu.locator('[data-tool-selection-action="annotate"]')).toHaveText('ANNOTATE');
+  await expect(selectionMenu.locator('[data-tool-selection-action="highlight"]')).toHaveText('HIGHLIGHT');
+  await expect(selectionMenu.locator('[data-tool-selection-action="copy"]')).toHaveText('COPY');
+
+  await selectionMenu.locator('[data-tool-selection-action="annotate"]').click();
 
   await expect(lead.locator('[data-note-mark]')).toHaveCount(1);
   await expect(page.locator('[data-tool-open="notes"]')).toContainText('[1]');
 
-  await page.locator('[data-tool-open="notes"]').click();
   await expect(page.locator('[data-tool-note-item]')).toHaveCount(1);
   await expect(page.locator('[data-tool-notes-export]')).toBeVisible();
+  await page.locator('[data-tool-note-text]').fill('This is my observation.');
 
   const stored = await page.evaluate((slug) => (
     JSON.parse(localStorage.getItem(`article-notes:${slug}`))
   ), longForm.slug);
   expect(stored).toHaveLength(1);
+  expect(stored[0].type).toBe('annotation');
+  expect(stored[0].note).toBe('This is my observation.');
 
   await page.locator('[data-tool-note-remove]').click();
   await expect(page.locator('[data-tool-note-item]')).toHaveCount(0);
   await expect(lead.locator('[data-note-mark]')).toHaveCount(0);
+});
+
+test('selecting text can highlight it separately or copy it', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__copiedText = '';
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async (text) => { window.__copiedText = text; } },
+    });
+  });
+  const longForm = articles.find((article) => article.notes);
+  await page.goto(`/writing/${longForm.slug}/?lang=en`);
+
+  const lead = await selectLeadText(page);
+  const selectionMenu = page.locator('[data-tool-selection]');
+  await selectionMenu.locator('[data-tool-selection-action="copy"]').click();
+  await expect.poll(() => page.evaluate(() => window.__copiedText)).not.toBe('');
+
+  await selectLeadText(page);
+  await selectionMenu.locator('[data-tool-selection-action="highlight"]').click();
+  const mark = lead.locator('[data-highlight-mark]');
+  await expect(mark).toHaveCount(1);
+  expect(await mark.evaluate((element) => ({
+    background: getComputedStyle(element).backgroundColor,
+    color: getComputedStyle(element).color,
+  }))).toEqual({ background: 'rgb(116, 139, 255)', color: 'rgb(7, 20, 38)' });
+  await expect(page.locator('[data-tool-open="notes"]')).not.toContainText('[1]');
+  expect(await page.evaluate((slug) => (
+    JSON.parse(localStorage.getItem(`article-highlights:${slug}`))
+  ), longForm.slug)).toHaveLength(1);
+
+  await page.reload();
+  await expect(page.locator('[data-content-article-lead] [data-highlight-mark]')).toHaveCount(1);
+  await expect(page.locator('[data-tool-open="notes"]')).not.toContainText('[1]');
 });
 
 test('browser Back returns from an article to the open desktop app', async ({ page }) => {
