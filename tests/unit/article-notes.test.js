@@ -1,9 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  addAnnotation,
+  addHighlight,
   addNote,
+  highlightsKey,
+  loadHighlights,
   loadNotes,
   notesKey,
+  removeHighlight,
   removeNote,
   renderNotesMarkdown,
   updateNote,
@@ -27,10 +32,25 @@ test('notes are stored per slug and survive reloads', () => {
 
   const entries = loadNotes(storage, 'alpha');
   assert.equal(entries.length, 2);
+  assert.equal(entries[0].type, 'annotation');
   assert.equal(entries[0].quote, 'first quote');
   assert.equal(entries[1].note, 'my comment');
   assert.ok(entries[0].createdAt);
   assert.ok(storage.getItem(notesKey('alpha')));
+});
+
+test('highlights are stored separately from annotations and can be toggled', () => {
+  const storage = memoryStorage();
+  addAnnotation(storage, 'alpha', 'annotated quote');
+  addHighlight(storage, 'alpha', 'highlighted quote');
+  addHighlight(storage, 'alpha', 'highlighted quote');
+
+  assert.equal(loadNotes(storage, 'alpha').length, 1);
+  assert.equal(loadHighlights(storage, 'alpha').length, 1);
+  assert.ok(storage.getItem(highlightsKey('alpha')));
+
+  removeHighlight(storage, 'alpha', 'highlighted quote');
+  assert.deepEqual(loadHighlights(storage, 'alpha'), []);
 });
 
 test('blank quotes are ignored and whitespace is trimmed', () => {
