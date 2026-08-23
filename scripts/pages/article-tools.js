@@ -199,7 +199,7 @@ function renderNotesPanel(document, i18n, {
     const header = createElement(document, 'div', { 'data-tool-panel-header': '' });
     header.append(
       createElement(document, 'p', { 'data-tool-panel-kicker': '' }, i18n.t('writing.notesTitle')),
-      createElement(document, 'h3', { 'data-tool-panel-title': '' }, i18n.t('writing.notesTool')),
+      createElement(document, 'h3', { 'data-tool-panel-title': '' }, i18n.t('writing.notesHeading')),
     );
     panel.append(
       header,

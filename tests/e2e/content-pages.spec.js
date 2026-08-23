@@ -191,7 +191,7 @@ test('timeline rail, share and notes tools operate on the article', async ({ pag
   expect(await panel.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
   await expect(page.locator('[data-tool-panel-notes] [data-tool-panel-kicker]'))
     .toHaveText('Highlights & annotations');
-  await expect(page.locator('[data-tool-panel-notes] [data-tool-panel-title]')).toHaveText('NOTES');
+  await expect(page.locator('[data-tool-panel-notes] [data-tool-panel-title]')).toHaveText('Notes');
   await expect(page.locator('[data-tool-panel-notes] [data-tool-panel-description]'))
     .toHaveText('Select any passage to highlight or annotate. Notes stay on your device.');
   await page.locator('[data-tool-close]').click();
