@@ -167,9 +167,12 @@ test('timeline rail, share and notes tools operate on the article', async ({ pag
 
   // Share panel exposes the current URL, copy and email actions.
   const dock = page.locator('[data-article-tools-dock]');
+  const panel = page.locator('[data-article-tools-panel]');
   const dockBefore = await dock.boundingBox();
   await page.locator('[data-tool-open="share"]').click();
   await expect(page.locator('[data-tool-panel-share]')).toBeVisible();
+  await expect(panel).toHaveAttribute('data-tool-active', 'share');
+  expect(await panel.evaluate((element) => getComputedStyle(element).position)).toBe('absolute');
   const dockAfter = await dock.boundingBox();
   expect(Math.abs(dockAfter.x - dockBefore.x)).toBeLessThan(1);
   expect(Math.abs(dockAfter.y - dockBefore.y)).toBeLessThan(1);
@@ -179,7 +182,20 @@ test('timeline rail, share and notes tools operate on the article', async ({ pag
 
   // Panels are mutually exclusive and closable.
   await page.locator('[data-tool-close]').click();
-  await expect(page.locator('[data-article-tools-panel]')).toBeHidden();
+  await expect(panel).toBeHidden();
+
+  // Notes use the full-height side panel; share stays a dock-anchored popover.
+  await page.locator('[data-tool-open="notes"]').click();
+  await expect(page.locator('[data-tool-panel-notes]')).toBeVisible();
+  await expect(panel).toHaveAttribute('data-tool-active', 'notes');
+  expect(await panel.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
+  await expect(page.locator('[data-tool-panel-notes] [data-tool-panel-kicker]'))
+    .toHaveText('Highlights & annotations');
+  await expect(page.locator('[data-tool-panel-notes] [data-tool-panel-title]')).toHaveText('NOTES');
+  await expect(page.locator('[data-tool-panel-notes] [data-tool-panel-description]'))
+    .toHaveText('Select any passage to highlight or annotate. Notes stay on your device.');
+  await page.locator('[data-tool-close]').click();
+  await expect(panel).toBeHidden();
 });
 
 test('article display mode sits beside language and persists independently', async ({ page }) => {
