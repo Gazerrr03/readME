@@ -73,7 +73,7 @@ test('writing archive uses real links to independent article pages', async ({ pa
   const appWindow = page.locator('[data-app-window="writing"]');
 
   await expect(appWindow.locator('[data-writing-kicker]')).toHaveText('ARCHIVE');
-  await expect(appWindow.locator('[data-writing-list] a')).toHaveCount(10);
+  await expect(appWindow.locator('[data-writing-list] a')).toHaveCount(11);
   await expect(appWindow.locator('[data-writing-open]').nth(2)).toHaveAttribute(
     'href',
     'writing/move-the-mountain/',
