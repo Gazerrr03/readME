@@ -7,6 +7,8 @@ If someone asks where I went this summer, I will probably say: I went to make an
 
 To the people around me, that answer sounds a little irresponsible. In the last summer before graduation, I did not build up an internship record for recruiting, nor did I add research experience for graduate school applications. I put the time into Flovvas instead—a product whose original idea is now a year old, but which still has not handed in an answer sheet that looks convincing.
 
+I made that choice without any halo around me: no internship record as proof, no research result as a guardrail, and no identity that had already been proven to work.
+
 I still have not organized a sufficiently clear answer to why I did it.
 
 Perhaps I wanted to bring an idea into the world with my own hands, to watch it move from nothing to something, from a bud to a birth. Perhaps I wanted to witness the acceleration of the Artificial Intelligence (AI) Agent era, when a few days can be enough to produce another moment that leaves you sitting back in your chair as if you had watched an atomic bomb go off. Perhaps I kept seeing corners of the world that had not yet been lit, problems that were still waiting to be solved, and felt— as someone who calls himself a designer—some responsibility to take part in changing them.
@@ -29,13 +31,17 @@ It waits with the confidence that its prey will arrive sooner or later. Most new
 
 Reality is cruel. There is no guaranteed way through uncertainty, so “making it safely to the other shore” is often just a name for a risk we cannot see yet. This is not an argument against internships, recruiting, graduate school, or research. It is an admission that no choice can remove the possibility of failure for us.
 
+In that sense, “making it safely to the other shore” is a lie—not because the shore does not exist, but because we cannot prove we are safe before we set out.
+
 The good thing is that we still have room for heat. Years from now, when I have left school and started arguing with life on its own terms, I may look back and ask whether I will regret not getting on this vehicle. Will I still remember the early sketches I made on paper when I was an AI beginner who had just started questioning ChatGPT’s product experience?
 
-Passion can make someone take the first step and claim a responsibility. It cannot guarantee that they know how to carry it through.
+Passion can make someone take the first step and claim a responsibility. Early on, their ability may not be large enough for the responsibility they have taken on. The answer is not to deny passion, but to train the ability that must follow the first step.
 
 ## What “making garbage” looked like at Adventure X
 
 At the end of July, I attended this year’s Adventure X hackathon. I met people with unusual ideas and serious energy. Some were genuinely practicing OPC (One Person Company), joking that they advocated producing a hundred pieces of garbage every month. Others were outstanding in a narrow field. I watched one design specialist work for two hours and had no trouble believing that he could deliver more, and more valuable work, than I could in the same time.
+
+I especially remember a designer who specialized in that craft. Even sitting behind him and watching him work for two hours was a pleasure. His eye for aesthetics and fluency with component libraries made something clear to me: once an ability has been formed, speed itself can become a kind of quality. I genuinely believed he could deliver more, and more valuable work, than I could in the same two hours.
 
 What stayed with me was not simply that they were fast. It was that they were willing to put unfinished things in front of reality and let reality decide what deserved another round.
 
@@ -91,7 +97,7 @@ But this is also dangerous. Learning without doing turns knowledge into fixed me
 
 I spent a long time in the second state: I did many things but did not record them carefully or test my mistakes against theory. This summer I began writing blogs and reading books. I can bring practice—especially wrong practice—to mature product-design methods. Reading then becomes a reinterpretation of my own experience rather than another thing to memorize.
 
-AI can compress materials, generate proposals, and connect viewpoints. It cannot give us first-hand experience or decide which experience actually came from reality.
+This is a little like the period before heliocentrism was proposed: people looked at the phenomena in front of them, arrived at geocentrism, and eventually treated it as doctrine. AI can compress materials, generate proposals, and connect viewpoints. It cannot give us first-hand experience or decide which experience actually came from reality. We still have to put learning and doing back into the same loop.
 
 ## Simple problems and complex problems
 
@@ -105,7 +111,7 @@ Whether a product should exist, whether users will stay, and whether a design wo
 
 攻略ing a heroine in a GalGame is usually a simple problem. Falling in love with a real person is complex. The former has designed variables, feedback, and rules. The latter is changed by weather, distance, bodies, accidents, and another person’s freedom.
 
-Design is complex too. It involves not only visual variables, but feelings, situations, cultural experience, and delayed feedback. Some problems are not waiting for a clever enough SOP. They contain variables that cannot be fully controlled.
+Design is complex too. It involves not only visual variables, but feelings, situations, cultural experience, and delayed feedback. Some problems are not waiting for a clever enough SOP (Standard Operating Procedure). They contain variables that cannot be fully controlled.
 
 A complex problem is a mountain in front of you, almost impossible to cross in one move. Complexity will not disappear, and there is no need to pretend that it has. We can move it to a place that is easier to observe, verify, and share.
 
@@ -115,33 +121,44 @@ Software is flexible enough to let us move the complexity of imagining a perfect
 
 What comes after passion? I increasingly think it is responsibility.
 
-In an AI-native team, the stronger the model becomes and the more it can output at once, the more important it is for someone to say: “I reviewed this result. I know what I checked, I know its boundaries, and if it causes trouble, I will come back and handle it.”
+In an AI-native team, as future models become more capable and can output more at once, someone needs to be willing to say: “I reviewed this content. It is sound. If something goes wrong, I will take responsibility and come back to handle it.” If everyone on the team has that potential, the team can travel much farther.
 
 Responsibility is not pretending to know everything. It is not an unconditional guarantee that a model’s output is correct. It is marking the range of your judgment clearly and accepting the consequences of that judgment.
 
-If everyone on a team can do that, AI will not merely make individuals faster. It will let the team travel farther.
+This does not mean asking everyone to pretend they cannot be wrong. It means placing each person’s judgment inside the structure the team is building together, and returning to correct it when that judgment fails.
 
 This also explains why making an independent product feels so “improper” to me. I may have been an early conceptual author of Flovvas, but I am still far from the person I think a Co-founder should be.
 
 I now understand that identity less mysteriously. A Co-founder is not a certificate that you first have to prove you deserve. It is a set of repeated behaviors: defining problems, making trade-offs, owning a result from definition through validation, and not pushing the responsibility back onto the model, the team, or the environment when the result is poor.
 
-I need to find the domain where I can contribute most brightly and take on more responsibility there. If that domain is design, I need to make refined design quickly and keep polishing user experience and frontend interaction taste. If it is product, I need to analyze the essence of a situation quickly and judge the value of a request quickly.
+I need to find the domain where I can contribute most brightly and take on more responsibility there. If that domain is design, I need to make refined design quickly and keep polishing user experience and frontend interaction taste. If it is product, I need to analyze the essence of a situation quickly and judge the value of a request quickly. A contribution domain is not a label I can assign myself; it is a territory I have to prove through results and expand through responsibility.
 
 These realizations do not discourage me. I used to wonder how I could become a qualified Co-founder. Now I am grateful that I tried hard, overreached, and made many mistakes. Mistakes showed me the boundary of my ability and what I need to train next.
 
-## I am willing to accept recoverable failure
+## To the Beast of Failure: I have not tamed you yet
+
+The preface to The Right It contains a line that may sound a little overdramatic, but which I think is genuinely cool:
+
+> To the Beast of Failure:
+You have taught me many lessons. Now it is my turn to tame you.
+
+My passion is pushing me to tame this Beast of Failure. It has left many scars on me, but those scars help me locate the abilities I still need to train.
+
+I have learned to turn that into a kind of mental reward. It feels like playing a Hidetaka Miyazaki game: being destroyed by a boss again and again, until you can read its moves, respond to them, and finally win. Failure is no longer only a verdict that I am not good enough. It can also be a map of where the attacks come from.
 
 I still feel guilty when I make more work for the team. But guilt should not only punish me. It can become a concrete wish: when I work with colleagues in the future, I want to rely less on guilt as a source of effort and actually carry more responsibility for them.
 
-I also want to expose myself more actively to real feedback. When people in the field praise pi Agent, someone who does not understand why it is good can learn and practice first, then understand its strengths through first-hand experience.
+I also want to expose myself more actively to real feedback. When people in the field praise pi Agent, someone who does not understand why it is good can learn and practice first, then understand its strengths through first-hand experience. The person who initially looks like a follower may, through practice, become the one who actually understands the essence of pi Agent.
 
-This is not an argument for blind following. The problem is that we should not mistake a pre-formed suspicion for judgment, or use commentary on other people as a substitute for making something ourselves and letting reality test it.
+This is not an argument for blind following. If someone decides in advance that pi Agent is only hype, then stands on the sidelines pointing and commenting without ever trying to understand why it works, they may miss not just a tool but a chance to correct their own judgment through practice.
 
-I want to run first, make something, let other people judge it, and not be afraid of their judgment. Deliberately accepting small, recoverable failures is more likely to produce experience than waiting safely on the sidelines for a conclusion that cannot hurt.
+That person is closer to a cynic: not necessarily someone with real literary sensibility or independent judgment, but someone stuck at the level of identifying with—or against—a symbol. Judgment should come from making something, letting reality test it, and accepting the possibility that other people may disagree.
+
+So I want to run first, make something, let other people judge it, and not be afraid of their judgment. I can let myself get hurt more actively and use that to grow. “Getting hurt” does not mean pursuing pain; it means exposing myself to real feedback while keeping the failure within a range I can recover from. Deliberately accepting small, recoverable failures is more likely to produce experience than waiting safely on the sidelines for a conclusion that cannot hurt.
 
 ## Keep going
 
-Passion gets me moving, mistakes show me the boundary, and responsibility keeps me going.
+Passion gets me started, mistakes show me the boundary, and responsibility keeps me going.
 
 I hope to absorb what this period taught me, stop being afraid of mistakes, and stop performing the role of the obedient person. I want to raise the threshold of responsibility I can carry within my ability, and keep growing on the way to becoming a geek.
 
