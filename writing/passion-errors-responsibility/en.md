@@ -11,7 +11,7 @@ I made that choice without any halo around me: no internship record as proof, no
 
 I still have not organized a sufficiently clear answer to why I did it.
 
-Perhaps I wanted to bring an idea into the world with my own hands, to watch it move from nothing to something, from a bud to a birth. Perhaps I wanted to witness the acceleration of the Artificial Intelligence (AI) Agent era, when a few days can be enough to produce another moment that leaves you sitting back in your chair as if you had watched an atomic bomb go off. Perhaps I kept seeing corners of the world that had not yet been lit, problems that were still waiting to be solved, and felt— as someone who calls himself a designer—some responsibility to take part in changing them.
+Perhaps I wanted to bring an idea into the world with my own hands, to watch it move from nothing to something, from a bud to a birth. Perhaps I wanted to witness the acceleration of the AI Agent era, when a few days can be enough to produce another moment that leaves you sitting back in your chair as if you had watched an atomic bomb go off. Perhaps I kept seeing corners of the world that had not yet been lit, problems that were still waiting to be solved, and felt— as someone who calls himself a designer—some responsibility to take part in changing them.
 
 These reasons sound different, but perhaps they point to the same thing: I wanted to enter an uncertain field with no guaranteed route and find out what I could actually do.
 
@@ -19,7 +19,7 @@ These reasons sound different, but perhaps they point to the same thing: I wante
 
 Flovvas is now a year away from its first idea. Looking back at the answer sheet, I can see all the erasures: calculations written down and crossed out, directions proposed and doubted, moments when we thought we were close to an answer only to realize that we had merely renamed the problem.
 
-We were excited by what AI (Artificial Intelligence) seemed to make possible. Many things that once felt nearly impossible could begin with a single sentence. I had wanted to build a personal website by graduation since my first year of university; now a coding agent can start a task like that from one line.
+We were excited by what AI seemed to make possible. Many things that once felt nearly impossible could begin with a single sentence. I had wanted to build a personal website by graduation since my first year of university; now a coding agent can start a task like that from one line.
 
 But making something from zero to one becoming easier does not make success easier. The difficult part is often not making a thing, but judging whether it deserves to exist, whether it changes a user’s behavior, and whether we can stop when it does not.
 
