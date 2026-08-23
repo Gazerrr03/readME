@@ -14,7 +14,7 @@ test('the OS accent resolves to the blue-gray lifecycle palette', () => {
     THREE,
     size: 1,
     state: { currentTexture: {}, previousTexture: {} },
-    mapped: { baseSize: 1, bloomStrength: 1.43, stretch: 1 },
+    mapped: { baseSize: 1, bloomStrength: 1.43, highlightStrength: 0.24, stretch: 1 },
     config: { shardColor: '#748BFF' },
   });
   const shader = {
@@ -31,5 +31,9 @@ test('the OS accent resolves to the blue-gray lifecycle palette', () => {
 
   assertRgb(shader.uniforms.uPrimaryColor.value, [0x74 / 255, 0x8B / 255, 1]);
   assertRgb(shader.uniforms.uSecondaryColor.value, [0x40 / 255, 0x56 / 255, 0x6A / 255]);
+  assert.ok(shader.fragmentShader.includes('vFlowHighlight'));
+  assert.ok(shader.fragmentShader.includes('uHighlightColor'));
+  assert.ok(shader.uniforms.uKeyLightDirection.value instanceof THREE.Vector3);
+  assert.equal(shader.uniforms.uHighlightStrength.value, 0.24);
   shards.dispose();
 });

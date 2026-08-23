@@ -229,7 +229,7 @@
 
 [data-workstation-environment][data-environment-motion='focused'] [data-environment-background],
 [data-macos-environment][data-environment-motion='focused'] [data-environment-background] {
-  opacity: 0.28;
+  opacity: 0.42;
 }
 
 [data-workstation-environment][data-environment-motion='focused'] [data-environment-widgets] > button,

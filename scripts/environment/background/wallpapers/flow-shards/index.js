@@ -1,4 +1,8 @@
-import { mapFlowShardsConfig, normalizeFlowShardsConfig } from './config.js';
+import {
+  FLOW_SHARDS_LIGHTING,
+  mapFlowShardsConfig,
+  normalizeFlowShardsConfig,
+} from './config.js';
 import { createBloomPipeline } from './bloom.js';
 import { createShardMaterials } from './materials.js';
 import { createFlowSimulation } from './simulation.js';
@@ -197,8 +201,9 @@ export function createWallpaperRenderer({
     targetRuntime.scene.fog.near = nextFog.near;
     targetRuntime.scene.fog.far = nextFog.far;
     targetRuntime.planeMaterial.opacity = 0;
-    targetRuntime.directional.intensity = 0.45 + (nextMapped.shadowOpacity * 0.9);
-    targetRuntime.ambient.intensity = 0.18 - (nextMapped.shadowOpacity * 0.14);
+    targetRuntime.directional.intensity = 0.62 + (nextMapped.shadowOpacity * 0.72);
+    targetRuntime.fill.intensity = 0.08 + ((1 - nextMapped.shadowOpacity) * 0.08);
+    targetRuntime.ambient.intensity = 0.14 + ((1 - nextMapped.shadowOpacity) * 0.06);
   };
 
   const buildPipeline = (targetRuntime, nextMapped, nextConfig) => {
@@ -373,9 +378,9 @@ export function createWallpaperRenderer({
       positionReferenceCamera(camera, 0);
       nextRuntime.camera = camera;
 
-      const ambient = new THREE.AmbientLight(0xFFFFFF, 0.1);
-      const directional = new THREE.DirectionalLight(0xFFFFFF, 0.95);
-      directional.position.set(0, 250, 0);
+      const ambient = new THREE.AmbientLight(FLOW_SHARDS_LIGHTING.ambientColor, 0.14);
+      const directional = new THREE.DirectionalLight(FLOW_SHARDS_LIGHTING.keyColor, 1.1);
+      directional.position.set(...FLOW_SHARDS_LIGHTING.keyPosition);
       directional.castShadow = true;
       directional.shadow.mapSize.set(2048, 2048);
       directional.shadow.camera.left = -80;
@@ -386,9 +391,12 @@ export function createWallpaperRenderer({
       directional.shadow.camera.far = 500;
       directional.shadow.camera.updateProjectionMatrix();
       directional.shadow.bias = 0.0001;
-      scene.add(ambient, directional, directional.target);
+      const fill = new THREE.DirectionalLight(FLOW_SHARDS_LIGHTING.fillColor, 0.12);
+      fill.position.set(150, 90, 120);
+      scene.add(ambient, directional, directional.target, fill, fill.target);
       nextRuntime.ambient = ambient;
       nextRuntime.directional = directional;
+      nextRuntime.fill = fill;
 
       const planeGeometry = new THREE.PlaneGeometry(400, 400);
       const planeMaterial = new THREE.ShadowMaterial({

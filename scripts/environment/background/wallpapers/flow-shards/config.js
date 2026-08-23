@@ -19,11 +19,19 @@ export const FLOW_SHARDS_DEFAULT_CONFIG = Object.freeze({
   motionRange: 55,
   shardSize: 46,
   trailLength: 62,
-  glow: 58,
-  shadow: 56,
-  fog: 44,
+  glow: 64,
+  shadow: 58,
+  fog: 38,
   backgroundColor: '#071426',
-  shardColor: '#748BFF',
+  shardColor: '#8099A6',
+});
+
+export const FLOW_SHARDS_LIGHTING = Object.freeze({
+  keyDirection: Object.freeze([-0.28, 0.82, 0.52]),
+  keyPosition: Object.freeze([-70, 205, 130]),
+  keyColor: '#EFFBFC',
+  fillColor: '#7EA8B6',
+  ambientColor: '#B2CED6',
 });
 
 const preset = (config) => Object.freeze({ ...FLOW_SHARDS_DEFAULT_CONFIG, ...config });
@@ -156,7 +164,8 @@ export function mapFlowShardsConfig(input) {
     baseSize: lerp(0.55, 1.94, config.shardSize / 100),
     stretch: lerp(0.35, 1.47, config.trailLength / 100),
     bloomStrength: lerp(0.1, 2.4, config.glow / 100),
-    bloomThreshold: lerp(0.72, 0.065, config.glow / 100),
+    bloomThreshold: lerp(0.78, 0.42, config.glow / 100),
+    highlightStrength: lerp(0.06, 0.18, config.glow / 100),
     shadowOpacity: config.shadow / 100,
     fogAmount: config.fog / 100,
   };

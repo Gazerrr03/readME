@@ -33,7 +33,7 @@ test('density tiers and semantic endpoints map to bounded renderer values', () =
 test('reference preset uses the OS palette while preserving the source motion profile', () => {
   assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.density, 'high');
   assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.backgroundColor, '#071426');
-  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.shardColor, '#748BFF');
+  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.shardColor, '#8099A6');
 
   const mapped = mapFlowShardsConfig(FLOW_SHARDS_DEFAULT_CONFIG);
   assert.equal(mapped.simulationSize, 128);
@@ -44,8 +44,9 @@ test('reference preset uses the OS palette while preserving the source motion pr
   assert.ok(Math.abs(mapped.spawnRadius - 1) < 0.06);
   assert.ok(Math.abs(mapped.baseSize - 1.15) < 0.05);
   assert.ok(Math.abs(mapped.stretch - 1) < 0.06);
-  assert.ok(Math.abs(mapped.bloomStrength - 1.43) < 0.02);
-  assert.ok(Math.abs(mapped.bloomThreshold - 0.34) < 0.02);
+  assert.ok(Math.abs(mapped.bloomStrength - 1.572) < 0.02);
+  assert.ok(Math.abs(mapped.bloomThreshold - 0.5496) < 0.02);
+  assert.ok(Math.abs(mapped.highlightStrength - 0.1368) < 0.02);
 });
 
 test('wallpaper export is deterministic and excludes unknown fields', () => {

@@ -1,3 +1,4 @@
+import { FLOW_SHARDS_LIGHTING } from './config.js';
 import { stateUvForIndex } from './simulation.js';
 import {
   FLOW_DEFORMATION_CHUNK,
@@ -64,7 +65,7 @@ function patchBeautyShader(shader) {
   shader.fragmentShader = shader.fragmentShader
     .replace(
       '#include <common>',
-      '#include <common>\nvarying vec3 vFlowColor;\nvarying float vFlowOcclusion;\nvarying float vFlowOcclusionColor;',
+      '#include <common>\nvarying vec3 vFlowColor;\nvarying float vFlowOcclusion;\nvarying float vFlowOcclusionColor;\nvarying float vFlowHighlight;\nuniform vec3 uHighlightColor;\nuniform float uHighlightStrength;',
     )
     .replace(
       'vec4 diffuseColor = vec4( diffuse, opacity );',
@@ -72,7 +73,7 @@ function patchBeautyShader(shader) {
     )
     .replace(
       '#include <opaque_fragment>',
-      '#include <opaque_fragment>\ngl_FragColor.rgb = mix(vec3(vFlowOcclusionColor), gl_FragColor.rgb, vFlowOcclusion);',
+      '#include <opaque_fragment>\ngl_FragColor.rgb = mix(vec3(vFlowOcclusionColor), gl_FragColor.rgb, vFlowOcclusion);\ngl_FragColor.rgb = min(gl_FragColor.rgb + (uHighlightColor * vFlowHighlight * uHighlightStrength), vec3(1.0));',
     );
 }
 
@@ -81,7 +82,7 @@ function bindFlowUniforms(material, uniforms, patch) {
     Object.assign(shader.uniforms, uniforms);
     patch(shader);
   };
-  material.customProgramCacheKey = () => 'flow-shards-reference-deformation-v2';
+  material.customProgramCacheKey = () => 'flow-shards-reference-deformation-v3';
 }
 
 function setRawHex(color, value) {
@@ -93,8 +94,22 @@ function setRawHex(color, value) {
   );
 }
 
+function setHighlightColor(THREE, uniforms, primaryValue) {
+  const highlight = new THREE.Color();
+  setRawHex(highlight, primaryValue);
+  const hsl = {};
+  highlight.getHSL(hsl);
+  highlight.setHSL(
+    hsl.h,
+    Math.min(hsl.s * 0.45, 0.42),
+    Math.min(hsl.l + 0.25, 0.94),
+  );
+  uniforms.uHighlightColor.value.copy(highlight);
+}
+
 function setPalette(THREE, uniforms, primaryValue) {
   setRawHex(uniforms.uPrimaryColor.value, primaryValue);
+  setHighlightColor(THREE, uniforms, primaryValue);
   if (primaryValue.toUpperCase() === '#748BFF') {
     setRawHex(uniforms.uSecondaryColor.value, '#40566A');
     return;
@@ -112,14 +127,19 @@ export function createShardMaterials({ THREE, size, state, mapped, config }) {
     uPreviousState: { value: state.previousTexture },
     uBaseSize: { value: mapped.baseSize },
     uStretch: { value: mapped.stretch },
+    uKeyLightDirection: {
+      value: new THREE.Vector3(...FLOW_SHARDS_LIGHTING.keyDirection).normalize(),
+    },
     uPrimaryColor: { value: new THREE.Color() },
     uSecondaryColor: { value: new THREE.Color() },
+    uHighlightColor: { value: new THREE.Color() },
+    uHighlightStrength: { value: mapped.highlightStrength ?? 0.24 },
   };
   setPalette(THREE, uniforms, config.shardColor);
   const material = new THREE.MeshPhongMaterial({
     color: 0xFFFFFF,
-    shininess: 30,
-    specular: 0x111111,
+    shininess: 48,
+    specular: 0x718B96,
   });
   material.name = 'Flow Shards beauty';
   bindFlowUniforms(material, uniforms, patchBeautyShader);
@@ -149,6 +169,7 @@ export function createShardMaterials({ THREE, size, state, mapped, config }) {
     updateConfig(nextMapped, nextConfig) {
       uniforms.uBaseSize.value = nextMapped.baseSize;
       uniforms.uStretch.value = nextMapped.stretch;
+      uniforms.uHighlightStrength.value = nextMapped.highlightStrength ?? 0.24;
       setPalette(THREE, uniforms, nextConfig.shardColor);
     },
     dispose() {

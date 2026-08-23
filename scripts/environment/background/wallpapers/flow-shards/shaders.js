@@ -193,9 +193,11 @@ uniform float uBaseSize;
 uniform float uStretch;
 uniform vec3 uPrimaryColor;
 uniform vec3 uSecondaryColor;
+uniform vec3 uKeyLightDirection;
 varying vec3 vFlowColor;
 varying float vFlowOcclusion;
 varying float vFlowOcclusionColor;
+varying float vFlowHighlight;
 
 vec3 flowHueShift(vec3 color, float amount) {
   const vec3 rgbToY = vec3(0.299, 0.587, 0.114);
@@ -255,7 +257,12 @@ vec3 flowDeformNormal(vec3 localNormal) {
   vec3 center;
   vec3 scale;
   flowBasis(basis, center, scale);
-  return normalize(basis * localNormal);
+  vec3 transformedNormal = normalize(basis * localNormal);
+  vFlowHighlight = pow(
+    max(dot(transformedNormal, normalize(uKeyLightDirection)), 0.0),
+    4.0
+  );
+  return transformedNormal;
 }
 `;
 
@@ -274,8 +281,8 @@ varying vec2 vUv;
 void main() {
   vec3 color = texture2D(uTexture, vUv).rgb;
   float brightness = dot(color, vec3(0.299, 0.587, 0.114));
-  float threshold = uThreshold * 0.6;
-  float contribution = smoothstep(threshold, threshold + 0.01, brightness);
+  float threshold = uThreshold;
+  float contribution = smoothstep(threshold - 0.04, threshold + 0.04, brightness);
   gl_FragColor = vec4(color * contribution, 1.0);
 }
 `;

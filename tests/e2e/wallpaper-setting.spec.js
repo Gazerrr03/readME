@@ -366,11 +366,11 @@ test('copy fallback and downloads use the same normalized deterministic JSON', a
       motionRange: 55,
       shardSize: 46,
       trailLength: 62,
-      glow: 58,
-      shadow: 56,
-      fog: 44,
+      glow: 64,
+      shadow: 58,
+      fog: 38,
       backgroundColor: '#071426',
-      shardColor: '#748BFF',
+      shardColor: '#8099A6',
     },
   });
   expect(firstText).not.toContain('timestamp');

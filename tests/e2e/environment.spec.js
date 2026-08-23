@@ -283,7 +283,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
   await expect(environment).toHaveAttribute('data-environment-motion', 'focused');
   await expect.poll(async () => Number(await background.evaluate(
     (node) => getComputedStyle(node).opacity,
-  ))).toBeCloseTo(0.28, 2);
+  ))).toBeCloseTo(0.42, 2);
   await expect.poll(async () => projects.evaluate(
     (node) => getComputedStyle(node).boxShadow,
   )).toBe('rgb(2, 8, 17) 1px 1px 0px 0px');
@@ -367,7 +367,7 @@ test('shader background mounts and remains adaptive while focus state changes', 
 
   await page.locator('[data-environment-open="projects"]').click();
   await expect(page.locator('[data-macos-environment]')).toHaveAttribute('data-environment-motion', 'focused');
-  await expect(background).toHaveCSS('opacity', '0.28');
+  await expect(background).toHaveCSS('opacity', '0.42');
 });
 
 test('phone dock stays fully visible and contains all application icons', async ({ page }) => {
