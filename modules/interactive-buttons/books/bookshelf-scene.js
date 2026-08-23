@@ -2,6 +2,7 @@ const THREE_URL = '../../../vendor/three.module.min.js';
 const MAX_DPR = 1.5;
 const INK = 0x183b9b;
 const PAPER = 0xffffff;
+const BACKGROUND = 0x0e2340;
 const STROKE = 0x111111;
 const SHELF_X = -1.75;
 const SHELF_Y = -0.35;
@@ -273,7 +274,7 @@ export function createBookshelfScene(canvas, {
       return;
     }
 
-    renderer.setClearColor(0xffffff, 1);
+    renderer.setClearColor(BACKGROUND, 1);
     renderer.setPixelRatio(Math.min(view.devicePixelRatio || 1, MAX_DPR));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = true;
