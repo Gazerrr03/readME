@@ -26,6 +26,9 @@ AI が創造にもたらした繁栄に、私たちは興奮した。かつて�
 それでも不確実性の波へ乗るのか。その問いは、熱狂だけでは答えられない。波の中には失敗の獣が潜んでいる。
 
 > It waits. Patient.
+Confident that it will soon get its prey—it always does.
+Few escape its bite, none its tentacles.
+One way or another, the Beast of Failure gets us all.
 
 獣は辛抱強く待っている。獲物はいつか必ず現れると信じている。多くの新しいプロダクトは噛みつかれる。経験や能力や準備が、永久の免疫証明書になることはない。
 

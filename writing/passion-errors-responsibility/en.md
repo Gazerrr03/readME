@@ -26,6 +26,9 @@ But making something from zero to one becoming easier does not make success easi
 Should we surf into that uncertainty anyway? The question cannot be answered by excitement alone. The Beast of Failure is crouching in the waves.
 
 > It waits. Patient.
+Confident that it will soon get its prey—it always does.
+Few escape its bite, none its tentacles.
+One way or another, the Beast of Failure gets us all.
 
 It waits with the confidence that its prey will arrive sooner or later. Most new products may be bitten. Experience, ability, and preparation do not give anyone permanent immunity.
 

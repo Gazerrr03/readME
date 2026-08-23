@@ -12,7 +12,10 @@ const bodyZh = Object.freeze([
   `我们兴奋地迎接 AI 为创造带来的一片欣欣向荣。它让很多过去几乎不可能完成的事情变得可能：我大一时就想在毕业时搭建一个个人网站，而现在，有了 coding agent，类似的任务甚至可以从一句话开始。`,
   `但从零到一变得容易，并不等于成功变得容易。真正困难的，往往不是把一个东西做出来，而是判断它是否值得被做出来，是否真的改变了某个用户的行为，以及在它没有价值时能不能及时停下来。`,
   `既然如此，我们要不要选择去这片不确定性里冲浪？这个问题不能只靠热血沸腾来回答。因为失败之兽就蹲伏在浪潮里。`,
-  { q: `It waits. Patient.` },
+  { q: `It waits. Patient.
+Confident that it will soon get its prey—it always does.
+Few escape its bite, none its tentacles.
+One way or another, the Beast of Failure gets us all.` },
   `它耐心地等待，自信地相信猎物迟早会出现。大多数新产品都可能被它咬住；经验、能力和准备并不能让任何人获得一张永久免疫的通行证。`,
   `现实自然是残酷的。不确定性里不存在必胜之法，所以“上岸”本身很多时候只是一种暂时看不见风险的说法。这里的意思不是反对实习、秋招、考研或保研，而是承认：任何一种选择都不能替我们彻底消除失败的可能。`,
   `甚至可以说，“上岸”本身是一句谎话——不是说岸不存在，而是我们无法在出发之前证明自己已经安全。`,
@@ -97,7 +100,10 @@ const bodyEn = Object.freeze([
   `We were excited by what AI seemed to make possible. Many things that once felt nearly impossible could begin with a single sentence. I had wanted to build a personal website by graduation since my first year of university; now a coding agent can start a task like that from one line.`,
   `But making something from zero to one becoming easier does not make success easier. The difficult part is often not making a thing, but judging whether it deserves to exist, whether it changes a user’s behavior, and whether we can stop when it does not.`,
   `Should we surf into that uncertainty anyway? The question cannot be answered by excitement alone. The Beast of Failure is crouching in the waves.`,
-  { q: `It waits. Patient.` },
+  { q: `It waits. Patient.
+Confident that it will soon get its prey—it always does.
+Few escape its bite, none its tentacles.
+One way or another, the Beast of Failure gets us all.` },
   `It waits with the confidence that its prey will arrive sooner or later. Most new products may be bitten. Experience, ability, and preparation do not give anyone permanent immunity.`,
   `Reality is cruel. There is no guaranteed way through uncertainty, so “making it safely to the other shore” is often just a name for a risk we cannot see yet. This is not an argument against internships, recruiting, graduate school, or research. It is an admission that no choice can remove the possibility of failure for us.`,
   `In that sense, “making it safely to the other shore” is a lie—not because the shore does not exist, but because we cannot prove we are safe before we set out.`,
@@ -182,7 +188,10 @@ const bodyJa = Object.freeze([
   `AI が創造にもたらした繁栄に、私たちは興奮した。かつてはほとんど不可能だったことが、一つの文章から始められるようになった。大学一年のころから、卒業までに自分のウェブサイトを作りたいと思っていた。いまなら coding agent に一言伝えるだけで始められる。`,
   `しかし、ゼロから一を作ることが簡単になったからといって、成功が簡単になったわけではない。本当に難しいのは、何かを作ることよりも、それが作る価値のあるものか、ユーザーの行動を変えるのか、価値がないときに止まれるのかを判断することだ。`,
   `それでも不確実性の波へ乗るのか。その問いは、熱狂だけでは答えられない。波の中には失敗の獣が潜んでいる。`,
-  { q: `It waits. Patient.` },
+  { q: `It waits. Patient.
+Confident that it will soon get its prey—it always does.
+Few escape its bite, none its tentacles.
+One way or another, the Beast of Failure gets us all.` },
   `獣は辛抱強く待っている。獲物はいつか必ず現れると信じている。多くの新しいプロダクトは噛みつかれる。経験や能力や準備が、永久の免疫証明書になることはない。`,
   `現実は残酷だ。不確実性に必勝法はない。「上岸」、つまり安全な岸へたどり着いたという感覚も、まだ見えていないリスクに名前をつけただけかもしれない。これは就職、大学院、研究を否定する話ではない。どの選択も、失敗の可能性を私たちの代わりに消してくれるわけではない、という話だ。`,
   `そういう意味では、「上岸」そのものが一つの嘘なのかもしれない。岸が存在しないのではなく、出発する前に自分が安全だと証明することはできないからだ。`,
