@@ -390,6 +390,22 @@ function renderTimelineRail(document, i18n, sections) {
   };
 }
 
+function selectionFocusRect(document, selection, range) {
+  if (selection.focusNode) {
+    try {
+      const focusRange = document.createRange();
+      focusRange.setStart(selection.focusNode, selection.focusOffset);
+      focusRange.collapse(true);
+      const focusRect = focusRange.getBoundingClientRect();
+      if (focusRect.height > 0) return focusRect;
+    } catch {
+      // Fall back to the complete range when the browser cannot resolve the
+      // focus endpoint, for example while the selection is being updated.
+    }
+  }
+  return range.getBoundingClientRect();
+}
+
 function selectionInsideBody(document, bodyContainer) {
   const selection = document.getSelection();
   if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return null;
@@ -401,7 +417,7 @@ function selectionInsideBody(document, bodyContainer) {
   return {
     text,
     range: range.cloneRange(),
-    rect: range.getBoundingClientRect(),
+    rect: selectionFocusRect(document, selection, range),
   };
 }
 
@@ -564,14 +580,23 @@ export function renderArticleTools({ document, i18n, article, body, bodyContaine
     selectionMenu.hidden = false;
     const menuRect = selectionMenu.getBoundingClientRect();
     const horizontalPadding = 8;
+    const bodyRect = bodyContainer.getBoundingClientRect();
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    const minLeft = Math.max(horizontalPadding, bodyRect.left);
+    const maxLeft = Math.max(
+      minLeft,
+      Math.min(viewportWidth - menuRect.width - horizontalPadding, bodyRect.right - menuRect.width),
+    );
     const left = Math.min(
-      Math.max(horizontalPadding, selected.rect.left + (selected.rect.width - menuRect.width) / 2),
-      Math.max(horizontalPadding, window.innerWidth - menuRect.width - horizontalPadding),
+      Math.max(minLeft, selected.rect.left + (selected.rect.width - menuRect.width) / 2),
+      maxLeft,
     );
     const above = selected.rect.top - menuRect.height - 8;
+    const maxTop = Math.max(horizontalPadding, viewportHeight - menuRect.height - horizontalPadding);
     const top = above >= horizontalPadding
-      ? above
-      : Math.min(window.innerHeight - menuRect.height - horizontalPadding, selected.rect.bottom + 8);
+      ? Math.min(above, maxTop)
+      : Math.min(Math.max(horizontalPadding, selected.rect.bottom + 8), maxTop);
     selectionMenu.style.left = `${left}px`;
     selectionMenu.style.top = `${Math.max(horizontalPadding, top)}px`;
     const isHighlighted = loadHighlights(localStorage, article.slug)

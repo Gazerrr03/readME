@@ -346,6 +346,51 @@ async function selectLeadText(page) {
   return lead;
 }
 
+async function selectAcrossArticleBlocks(page) {
+  await page.evaluate(() => {
+    const paragraphs = document.querySelectorAll('[data-content-article-body] > p');
+    const start = paragraphs[0]?.firstChild;
+    const end = paragraphs[1]?.firstChild;
+    if (!start || !end) return;
+    const range = document.createRange();
+    range.setStart(start, 0);
+    range.setEnd(end, Math.min(20, end.textContent.length));
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  });
+}
+
+test('selection toolbar stays near the selected text across article blocks', async ({ page }) => {
+  const longForm = articles.find((article) => article.notes);
+  await page.goto(`/writing/${longForm.slug}/?lang=en`);
+
+  await selectAcrossArticleBlocks(page);
+  await expect(page.locator('[data-tool-selection]')).toBeVisible();
+  const geometry = await page.evaluate(() => {
+    const selection = document.getSelection();
+    const menu = document.querySelector('[data-tool-selection]')?.getBoundingClientRect();
+    const body = document.querySelector('[data-content-article-body]')?.getBoundingClientRect();
+    if (!selection || !selection.focusNode || !menu || !body) return null;
+    const focusRange = document.createRange();
+    focusRange.setStart(selection.focusNode, selection.focusOffset);
+    focusRange.collapse(true);
+    const focus = focusRange.getBoundingClientRect();
+    return {
+      textLength: selection.toString().length,
+      menu: { left: menu.left, right: menu.right, center: menu.left + menu.width / 2 },
+      body: { left: body.left, right: body.right },
+      focus: { left: focus.left, right: focus.right },
+    };
+  });
+
+  expect(geometry).not.toBeNull();
+  expect(geometry.textLength).toBeGreaterThan(40);
+  expect(geometry.menu.left).toBeGreaterThanOrEqual(geometry.body.left - 1);
+  expect(geometry.menu.right).toBeLessThanOrEqual(geometry.body.right + 1);
+  expect(Math.abs(geometry.menu.center - geometry.focus.left)).toBeLessThan(90);
+});
+
 test('selecting text can create an annotation topic and remove it', async ({ page }) => {
   const longForm = articles.find((article) => article.notes);
   await page.goto(`/writing/${longForm.slug}/?lang=en`);
