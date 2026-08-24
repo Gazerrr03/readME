@@ -135,6 +135,7 @@ test('long-form articles render quotes, field notes and markdown editions', asyn
   const longForm = articles.find((article) => article.notes);
   await page.goto(`/writing/${longForm.slug}/`);
 
+  await expect(page.locator('[data-content-reading-band]')).toHaveCount(0);
   await expect(page.locator('[data-content-quote]').first()).toBeVisible();
   await expect(page.locator('[data-content-field-notes-rule]')).toBeAttached();
   await expect(page.locator('[data-content-field-notes]')).toContainText('FIELD NOTES');
