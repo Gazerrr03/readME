@@ -37,6 +37,15 @@ test('mobile review mode switches between editor and preview without overflow', 
   expect(overflow).toBe(false);
 });
 
+test('tablet review mode keeps the preview reachable', async ({ page }) => {
+  await page.setViewportSize({ width: 834, height: 1194 });
+  await page.goto('/writing/');
+  await page.getByRole('tab', { name: '预览' }).click();
+  await expect(page.locator('iframe[title="站点交互预览"]')).toBeVisible();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+  expect(overflow).toBe(false);
+});
+
 test('live preview updates an open reader without losing site interactions', async ({ page }) => {
   await page.setViewportSize({ width: 1800, height: 1000 });
   await page.addInitScript(() => localStorage.setItem('portfolio-os:preferences', JSON.stringify({

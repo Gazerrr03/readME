@@ -100,9 +100,11 @@ const revealDesktop = () => {
 
 document.documentElement.lang = i18n.locale;
 document.title = i18n.t('site.title');
+desktopRoot.setAttribute('aria-label', i18n.t('site.title'));
 i18n.subscribe(() => {
   document.documentElement.lang = i18n.locale;
   document.title = i18n.t('site.title');
+  desktopRoot.setAttribute('aria-label', i18n.t('site.title'));
 });
 
 boot = createBootController({
