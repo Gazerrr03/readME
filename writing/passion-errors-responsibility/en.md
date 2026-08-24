@@ -7,7 +7,7 @@ If someone asks where I went this summer, I will probably say: I went to make an
 
 To the people around me, that answer sounds a little irresponsible. In the last summer before graduation, I did not build up an internship record for recruiting, nor did I add research experience for graduate school applications. I put the time into Flovvas instead—a product whose original idea is now a year old, but which still has not handed in an answer sheet that looks convincing.
 
-I made that choice without any halo around me: no internship record as proof, no research result as a guardrail, and no identity that had already been proven to work.
+After returning from my internship at Tencent, I slowly realized that I was still relying on a certain halo: the credibility that experience gave me, the recognition it brought from others, and an identity that seemed already validated. Now I want to take all of that out of the equation and do this without relying on any halo, to see whether I can actually make it work.
 
 I still have not organized a sufficiently clear answer to why I did it.
 
