@@ -54,8 +54,19 @@ export function renderAboutApp({ i18n, mount }) {
     about.works.forEach((entry) => {
       const row = createElement(document, 'li', { 'data-about-work': '' });
       const heading = createElement(document, 'div', { 'data-about-work-heading': '' });
+      const name = createElement(document, 'h4', { 'data-about-work-name': '' });
+      if (entry.url) {
+        name.append(createElement(document, 'a', {
+          'data-about-work-link': '',
+          href: entry.url,
+          target: '_blank',
+          rel: 'noreferrer',
+        }, entry.name));
+      } else {
+        name.textContent = entry.name;
+      }
       heading.append(
-        createElement(document, 'h4', { 'data-about-work-name': '' }, entry.name),
+        name,
         createElement(document, 'span', { 'data-about-work-meta': '' }, pick(entry.meta, locale)),
       );
       row.append(

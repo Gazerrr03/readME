@@ -1,25 +1,12 @@
 const AVATAR_URL = new URL('./assets/ryo.jpg', import.meta.url).href;
 const ASCII_GLYPHS = ' .,:;irsXA253hMHGS#9B&@';
 const MONO_FONT = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
-let avatarImagePromise;
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
   Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
   element.textContent = text;
   return element;
-}
-
-function getAvatarImage(document) {
-  if (!avatarImagePromise) {
-    avatarImagePromise = new Promise((resolve, reject) => {
-      const image = new document.defaultView.Image();
-      image.addEventListener('load', () => resolve(image), { once: true });
-      image.addEventListener('error', () => reject(new Error('About avatar failed to load')), { once: true });
-      image.src = AVATAR_URL;
-    });
-  }
-  return avatarImagePromise;
 }
 
 function drawBanner(canvas) {
@@ -99,44 +86,6 @@ function drawBanner(canvas) {
   }
 }
 
-function drawAvatar(canvas, image) {
-  const columns = 24;
-  const rows = 24;
-  const cellSize = 10;
-  const sampleCanvas = canvas.ownerDocument.createElement('canvas');
-  sampleCanvas.width = columns;
-  sampleCanvas.height = rows;
-  const sampleContext = sampleCanvas.getContext('2d', { willReadFrequently: true });
-  const context = canvas.getContext('2d');
-  if (!sampleContext || !context) return;
-
-  sampleContext.drawImage(image, 0, 0, columns, rows);
-  const pixels = sampleContext.getImageData(0, 0, columns, rows).data;
-  canvas.width = columns * cellSize;
-  canvas.height = rows * cellSize;
-  context.fillStyle = '#FFFFFF';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.font = `10px ${MONO_FONT}`;
-  context.textBaseline = 'top';
-
-  for (let row = 0; row < rows; row += 1) {
-    for (let column = 0; column < columns; column += 1) {
-      const pixel = (row * columns + column) * 4;
-      const luminance = (
-        pixels[pixel] * 0.2126
-        + pixels[pixel + 1] * 0.7152
-        + pixels[pixel + 2] * 0.0722
-      );
-      const glyphIndex = Math.round(((255 - luminance) / 255) * (ASCII_GLYPHS.length - 1));
-      const glyph = ASCII_GLYPHS[glyphIndex];
-      if (glyph === ' ') continue;
-      const opacity = 0.2 + (glyphIndex / (ASCII_GLYPHS.length - 1)) * 0.8;
-      context.fillStyle = `rgba(24, 59, 155, ${opacity})`;
-      context.fillText(glyph, column * cellSize, row * cellSize);
-    }
-  }
-}
-
 function observeBanner(canvas) {
   const view = canvas.ownerDocument.defaultView;
   const redraw = () => {
@@ -177,35 +126,34 @@ export function createAboutBanner({ document, i18n }) {
 export function createAboutAvatar({ document, i18n }) {
   const root = createElement(document, 'div', { 'data-about-avatar-frame': '' });
   const label = createElement(document, 'span', { 'data-about-avatar-label': '' });
-  const canvas = createElement(document, 'canvas', {
+  const image = createElement(document, 'img', {
     'data-about-avatar': '',
-    role: 'img',
-  });
-  const fallback = createElement(document, 'img', {
-    'data-about-avatar-fallback': '',
-    src: AVATAR_URL,
     alt: '',
   });
-  root.append(label, canvas, fallback);
+  root.append(label, image);
 
   const render = () => {
     label.textContent = i18n.t('about.avatarLabel');
-    canvas.setAttribute('aria-label', i18n.t('about.avatarAlt'));
-    fallback.setAttribute('alt', i18n.t('about.avatarAlt'));
+    image.setAttribute('aria-label', i18n.t('about.avatarAlt'));
+    image.setAttribute('alt', i18n.t('about.avatarAlt'));
   };
   render();
   root.dataset.aboutAvatarState = 'loading';
-  canvas.dataset.aboutAvatarState = 'loading';
-  getAvatarImage(document)
-    .then((image) => {
-      if (!canvas.isConnected) return;
-      drawAvatar(canvas, image);
-      root.dataset.aboutAvatarState = 'ready';
-      canvas.dataset.aboutAvatarState = 'ready';
-    })
-    .catch(() => {
-      root.dataset.aboutAvatarState = 'fallback';
-      canvas.dataset.aboutAvatarState = 'fallback';
-    });
+  image.dataset.aboutAvatarState = 'loading';
+  const markReady = () => {
+    root.dataset.aboutAvatarState = 'ready';
+    image.dataset.aboutAvatarState = 'ready';
+  };
+  const markError = () => {
+    root.dataset.aboutAvatarState = 'error';
+    image.dataset.aboutAvatarState = 'error';
+  };
+  image.addEventListener('load', markReady, { once: true });
+  image.addEventListener('error', markError, { once: true });
+  image.setAttribute('src', AVATAR_URL);
+  if (image.complete) {
+    if (image.naturalWidth > 0) markReady();
+    else markError();
+  }
   return root;
 }

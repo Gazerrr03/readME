@@ -92,16 +92,31 @@ test('about renders personal identity, experience, works, toolbox, and now secti
   await expect(appWindow.locator('[data-about-banner-canvas]')).toHaveCount(1);
   await expect(appWindow.locator('[data-about-banner-kicker]')).toHaveText('GAZERRR / 03');
   await expect(appWindow.locator('[data-about-banner-trail]')).toHaveText('IDEAS → SYSTEMS → EXPERIMENTS → ITERATION');
-  await expect(appWindow.locator('[data-about-avatar]')).toHaveAttribute('data-about-avatar-state', 'ready');
-  await expect(appWindow.locator('[data-about-avatar]')).toHaveAttribute('aria-label', 'Qizhi’s GitHub avatar');
+  const avatar = appWindow.locator('[data-about-avatar]');
+  await expect(avatar).toHaveAttribute('data-about-avatar-state', 'ready');
+  await expect(avatar).toHaveAttribute('aria-label', 'Qizhi’s GitHub avatar');
+  await expect(avatar).toHaveAttribute('alt', 'Qizhi’s GitHub avatar');
+  await expect(avatar).toHaveAttribute('src', /ryo\.jpg$/);
+  const avatarDimensions = await avatar.evaluate((element) => ({
+    tagName: element.tagName,
+    naturalWidth: element.naturalWidth,
+    naturalHeight: element.naturalHeight,
+  }));
+  expect(avatarDimensions.tagName).toBe('IMG');
+  expect(avatarDimensions.naturalWidth).toBeGreaterThan(0);
+  expect(avatarDimensions.naturalHeight).toBeGreaterThan(0);
   await expect(appWindow.locator('[data-about-masthead] h3')).toHaveText('Qizhi（Gazerrr）');
   await expect(appWindow.locator('[data-about-kicker]')).toHaveText(['BIO', 'EXPERIENCE', 'WORKS', 'TOOLBOX', 'NOW']);
   await expect(appWindow.locator('[data-about-experience] li')).toHaveCount(1);
   await expect(appWindow.locator('[data-about-experience]')).toContainText('Tencent IEG');
   await expect(appWindow.locator('[data-about-work]')).toHaveCount(2);
-  await expect(appWindow.locator('[data-about-work-name]')).toHaveText(['Flovvas', 'Skillcraft']);
+  await expect(appWindow.locator('[data-about-work-name]')).toHaveText(['Flovvas', 'Loom']);
+  const loomLink = appWindow.locator('[data-about-work]').nth(1).locator('[data-about-work-link]');
+  await expect(loomLink).toHaveAttribute('href', 'https://github.com/Gazerrr03/loom.git');
+  await expect(loomLink).toHaveAttribute('target', '_blank');
   await expect(appWindow.locator('[data-about-work-meta]').first()).toHaveText('CO-BUILDER / PRIVATE WORK');
   await expect(appWindow.locator('[data-about-now] dt').first()).toHaveText('FOCUS');
+  await expect(appWindow.locator('[data-about-now] dd').nth(1)).toHaveText('LOOM');
 });
 
 test('contact lists four channels with working links', async ({ page }) => {

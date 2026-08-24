@@ -22,12 +22,13 @@ export const about = Object.freeze({
       ),
     }),
     Object.freeze({
-      name: 'Skillcraft',
-      meta: L('CURRENT PROJECT / PRIVATE WORK', '当前项目 / 闭源作品', '現在のプロジェクト / 非公開作品'),
+      name: 'Loom',
+      url: 'https://github.com/Gazerrr03/loom.git',
+      meta: L('CURRENT PROJECT / OPEN SOURCE', '当前项目 / 开源作品', '現在のプロジェクト / オープンソース作品'),
       description: L(
-        'A local-first skill manager for organising Personas and Skills, and shaping how they become a usable working set for local agent workflows.',
-        '一个本地优先的 Skill manager，用来整理 Persona 与 Skill，并把它们组织成可用于本地 Agent 工作流的工作集。',
-        'PersonaとSkillを整理し、ローカルのエージェントワークフローで使える作業セットへ組み立てる、ローカルファーストのSkillマネージャー。',
+        'An AI-native 2.5D diagram workspace where Codex shapes semantic diagrams and people refine them into portfolio-ready compositions.',
+        '一个 AI-native 2.5D Diagram 工作区：用 Codex 组织语义，再由人调整构图，做出可以进入作品集的图像。',
+        'Codexで意味のあるDiagramを組み立て、人が構図を磨いてポートフォリオ向けの作品に仕上げる、AIネイティブな2.5D Diagramワークスペース。',
       ),
     }),
   ]),
@@ -41,7 +42,7 @@ export const about = Object.freeze({
   ]),
   now: Object.freeze([
     Object.freeze({ key: L('FOCUS', '关注', '関心'), value: L('AI-NATIVE PRODUCTS / AGENT SYSTEMS', 'AI-NATIVE 产品 / Agent 系统', 'AI-NATIVE プロダクト / エージェントシステム') }),
-    Object.freeze({ key: L('BUILDING', '正在构建', '構築中'), value: L('SKILLCRAFT', 'SKILLCRAFT', 'SKILLCRAFT') }),
+    Object.freeze({ key: L('BUILDING', '正在构建', '構築中'), value: L('LOOM', 'LOOM', 'LOOM') }),
     Object.freeze({ key: L('EXPLORING', '正在探索', '探究中'), value: L('CONVERSATIONAL INTERFACES / INTERACTIVE SYSTEMS', '对话式界面 / 交互系统', '対話型インターフェース / インタラクティブシステム') }),
     Object.freeze({ key: L('METHOD', '方法', '方法'), value: L('TURN VAGUE IDEAS INTO USABLE, TESTABLE SYSTEMS', '把模糊想法变成可使用、可测试的系统', '曖昧なアイデアを、使えて試せるシステムへ') }),
   ]),

@@ -89,7 +89,8 @@ test('about and contact content is complete', () => {
   }
   assert.equal(about.name, 'Qizhi（Gazerrr）');
   assert.deepEqual(about.experience.map(({ name }) => name), ['Tencent IEG']);
-  assert.deepEqual(about.works.map(({ name }) => name), ['Flovvas', 'Skillcraft']);
+  assert.deepEqual(about.works.map(({ name }) => name), ['Flovvas', 'Loom']);
+  assert.equal(about.now.find(({ key }) => key.en === 'BUILDING').value.en, 'LOOM');
   assert.deepEqual(channels.map(({ id }) => id), ['email', 'github', 'x', 'rss']);
   for (const channel of channels) assert.ok(channel.address && channel.href);
   assert.equal(channels.find(({ id }) => id === 'rss').href, 'feed.xml');

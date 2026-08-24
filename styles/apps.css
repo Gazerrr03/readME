@@ -404,29 +404,11 @@
 }
 
 [data-about-avatar] {
-  background: repeating-linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--blue) 8%, var(--white)),
-    color-mix(in srgb, var(--blue) 8%, var(--white)) 4px,
-    var(--white) 4px,
-    var(--white) 8px
-  );
   display: block;
-  height: 126px;
-  width: 100%;
-}
-
-[data-about-avatar][data-about-avatar-state='ready'] { background: var(--white); }
-
-[data-about-avatar-fallback] {
-  display: none;
   height: 126px;
   object-fit: cover;
   width: 100%;
 }
-
-[data-about-avatar-frame][data-about-avatar-state='fallback'] [data-about-avatar] { display: none; }
-[data-about-avatar-frame][data-about-avatar-state='fallback'] [data-about-avatar-fallback] { display: block; }
 
 [data-about-masthead] h3 {
   font-family: var(--serif);
@@ -477,6 +459,18 @@
   font-weight: 400;
   line-height: 1;
   margin: 0;
+}
+
+[data-about-work-link] {
+  color: inherit;
+  text-decoration: none;
+}
+
+[data-about-work-link]:hover {
+  color: var(--os-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 [data-about-work-meta] {
@@ -579,6 +573,7 @@ a[data-contact-row] {
 [data-projects-card]:focus-visible,
 [data-projects-ring]:focus-visible,
 [data-writing-app] a:focus-visible,
+[data-about-app] a:focus-visible,
 [data-contact-app] a:focus-visible {
   outline: var(--os-focus-width) solid var(--os-accent-bright);
   outline-offset: 2px;
@@ -597,8 +592,7 @@ a[data-contact-row] {
   [data-about-banner-kicker],
   [data-about-banner-trail] { font-size: 9px; }
   [data-about-identity] { gap: 14px; grid-template-columns: 120px minmax(0, 1fr); }
-  [data-about-avatar],
-  [data-about-avatar-fallback] { height: 112px; }
+  [data-about-avatar] { height: 112px; }
   [data-about-masthead] h3 { font-size: 32px; }
   [data-contact-row] { grid-template-columns: 64px minmax(0, 1fr) 40px; }
 }
