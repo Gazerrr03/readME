@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { DESKTOP_BACKGROUND } from '../../scripts/environment/background/background-assets.js';
+import { getWallpaperDescriptor } from '../../scripts/environment/background/wallpaper-registry.js';
 import { createDesktopBackground } from '../../scripts/environment/background/background-controller.js';
 
 function createFakeDocument({ context = null } = {}) {
@@ -47,14 +47,16 @@ function createFakeDocument({ context = null } = {}) {
 }
 
 test('desktop background keeps a stable host around the active shader surface', async () => {
+  const shaderDescriptor = getWallpaperDescriptor('blue-fluid-halftone');
   const background = createDesktopBackground({
     document: createFakeDocument(),
+    asset: shaderDescriptor,
   });
   await background.ready;
 
   assert.equal(background.element.dataset.environmentBackground, '');
-  assert.equal(background.element.dataset.backgroundId, DESKTOP_BACKGROUND.id);
-  assert.equal(DESKTOP_BACKGROUND.kind, 'shader');
+  assert.equal(background.element.dataset.backgroundId, shaderDescriptor.id);
+  assert.equal(shaderDescriptor.kind, 'shader');
   assert.equal(background.element.dataset.backgroundKind, 'shader');
   assert.equal(background.element.attributes['aria-hidden'], 'true');
   assert.equal(background.element.tagName, 'DIV');

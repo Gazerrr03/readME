@@ -243,6 +243,9 @@ test('vibe menu pins the music player beside the article and follows the theme',
   const menu = page.locator('[data-content-vibe-menu]');
   const player = page.locator('[data-vibe-player]');
   await expect(vibeToggle).toHaveText('VIBE');
+  await expect(player).toBeVisible();
+  await expect(player).toHaveAttribute('data-vibe-open', 'true');
+  await expect(vibeToggle).toHaveAttribute('aria-pressed', 'true');
   await expect(menu).toBeHidden();
 
   await vibeToggle.click();

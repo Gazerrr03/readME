@@ -11,6 +11,7 @@ async function seedLayout(page, layout, locale = 'en') {
     layout,
     locale,
     audioEnabled: false,
+    wallpaperId: 'blue-fluid-halftone',
   });
 }
 

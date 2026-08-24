@@ -40,6 +40,7 @@ const locale = readLocaleFromUrl() ?? resolvePreferredLocale(localStorage, navig
 const i18n = createI18n(locale);
 let readingTheme = resolveReadingTheme();
 let focused = false;
+let hasRendered = false;
 let disposePresentation = () => {};
 let disposeHeader = () => {};
 
@@ -264,6 +265,8 @@ function render() {
   const header = renderHeader({ vibe: presentation.vibe });
   disposeHeader = header.dispose;
   mount.replaceChildren(header.element, main);
+  if (article && !hasRendered) presentation.vibe?.open();
+  hasRendered = true;
   documentRef.documentElement.lang = i18n.locale;
   const item = article ?? project;
   documentRef.title = item

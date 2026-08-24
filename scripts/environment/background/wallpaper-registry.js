@@ -4,11 +4,11 @@ import {
   normalizeFlowShardsConfig,
 } from './wallpapers/flow-shards/config.js';
 
-export const DEFAULT_WALLPAPER_ID = 'blue-fluid-halftone';
+export const DEFAULT_WALLPAPER_ID = 'flow-shards';
 
 const descriptors = Object.freeze([
   Object.freeze({
-    id: DEFAULT_WALLPAPER_ID,
+    id: 'blue-fluid-halftone',
     kind: 'shader',
     title: Object.freeze({ en: 'Blue Fluid', 'zh-CN': '蓝色流体', ja: 'ブルーフルイド' }),
     description: Object.freeze({

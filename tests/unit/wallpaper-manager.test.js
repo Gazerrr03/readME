@@ -69,10 +69,12 @@ function createManagerHarness({
   previewConfig = null,
   fallbackBlueSettled = true,
   rendererRemovesElement = true,
+  initialId = 'blue-fluid-halftone',
 } = {}) {
   const flow = deferred();
   const blue = deferred();
   const fallbackBlue = deferred();
+  if (initialId === 'flow-shards') flow.resolve();
   blue.resolve();
   if (fallbackBlueSettled) fallbackBlue.resolve();
   let blueLoads = 0;
@@ -133,7 +135,7 @@ function createManagerHarness({
   };
   const manager = createWallpaperManager({
     document,
-    initialId: 'blue-fluid-halftone',
+    initialId,
     storage,
     transitionMs,
     registry,
@@ -238,7 +240,7 @@ test('a newer request immediately tears down a stale candidate that never become
 });
 
 test('a runtime failure in the default renderer leaves a CSS-only host', async () => {
-  const harness = createManagerHarness();
+  const harness = createManagerHarness({ initialId: 'flow-shards' });
   await harness.manager.ready;
   harness.renderers[0].renderer.onError(new Error('context lost'));
 
@@ -247,22 +249,16 @@ test('a runtime failure in the default renderer leaves a CSS-only host', async (
   assert.equal(harness.manager.element.querySelectorAll('[data-wallpaper-surface]').length, 0);
 });
 
-test('a failed default fallback removes the failed non-default surface', async () => {
-  const harness = createManagerHarness({ fallbackBlueSettled: false });
+test('a failed non-default renderer falls back to Flow Shards', async () => {
+  const harness = createManagerHarness({ initialId: 'flow-shards' });
   await harness.manager.ready;
-  const flow = harness.manager.applyWallpaper('flow-shards');
-  await Promise.resolve();
-  harness.resolveFlow();
-  await flow;
+  await harness.manager.applyWallpaper('blue-fluid-halftone');
   harness.renderers.at(-1).renderer.onError(new Error('context lost'));
   await new Promise((resolve) => setTimeout(resolve, 0));
-  assert.equal(harness.renderers.at(-1).id, 'blue-fluid-halftone');
-  harness.rejectFallbackBlue(new Error('default renderer failed'));
-  await new Promise((resolve) => setTimeout(resolve, 0));
-
-  assert.equal(harness.manager.currentId, null);
-  assert.equal(harness.manager.element.dataset.wallpaperState, 'fallback');
-  assert.equal(harness.manager.element.querySelectorAll('[data-wallpaper-surface]').length, 0);
+  assert.equal(harness.renderers.at(-1).id, 'flow-shards');
+  assert.equal(harness.manager.currentId, 'flow-shards');
+  assert.equal(harness.manager.element.dataset.wallpaperState, 'ready');
+  assert.equal(harness.manager.element.querySelectorAll('[data-wallpaper-surface]').length, 1);
 });
 
 test('the host exposes the same transition duration used for candidate cleanup', async () => {
@@ -293,7 +289,7 @@ test('a pending renderer error settles its request and retains the active surfac
 });
 
 test('CSS fallback removes surfaces when a renderer destroy omits DOM cleanup', async () => {
-  const harness = createManagerHarness({ rendererRemovesElement: false });
+  const harness = createManagerHarness({ initialId: 'flow-shards', rendererRemovesElement: false });
   await harness.manager.ready;
   harness.renderers[0].renderer.onError(new Error('context lost'));
 

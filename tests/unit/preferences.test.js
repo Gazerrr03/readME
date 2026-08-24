@@ -41,7 +41,7 @@ test('preferences preserve known wallpaper ids and repair unknown ids', () => {
   assert.equal(loadPreferences(memoryStorage(JSON.stringify({
     ...DEFAULT_PREFERENCES,
     wallpaperId: 'unknown',
-  }))).wallpaperId, 'blue-fluid-halftone');
+  }))).wallpaperId, 'flow-shards');
 });
 
 test('repairs invalid fields while preserving valid fields', () => {

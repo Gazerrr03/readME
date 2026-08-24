@@ -7,6 +7,7 @@ test('deep indigo tokens are exposed and blueprint overlays are inactive', async
     layout: 'windows',
     locale: 'en',
     audioEnabled: false,
+    wallpaperId: 'blue-fluid-halftone',
   })));
   await page.goto('/?skipBoot=1');
 
@@ -64,6 +65,7 @@ test('windows and selected icons use retro hardware surfaces', async ({ page }) 
     layout: 'windows',
     locale: 'en',
     audioEnabled: false,
+    wallpaperId: 'blue-fluid-halftone',
   })));
   await page.goto('/?skipBoot=1');
   await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();

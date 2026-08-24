@@ -8,9 +8,19 @@ async function seedLayout(page, layout, locale = 'en') {
       layout: selectedLayout,
       locale: selectedLocale,
       audioEnabled: false,
+      wallpaperId: 'blue-fluid-halftone',
     }));
   }, { layout, locale });
 }
+
+test('new preferences default to the Flow Shards background', async ({ page }) => {
+  await page.addInitScript(() => localStorage.removeItem('portfolio-os:preferences'));
+  await page.goto('/?skipBoot=1');
+
+  const background = page.locator('[data-environment-background]');
+  await expect(background).toHaveAttribute('data-background-id', 'flow-shards');
+  await expect(background).toHaveAttribute('data-background-kind', 'three');
+});
 
 test('both macOS and Windows mount the environment', async ({ page }) => {
   await seedLayout(page, 'macos');
@@ -94,7 +104,7 @@ test('controller keeps semantic widgets mounted when a wallpaper request fails',
   expect(result).toEqual({
     apply: { ok: false, id: 'missing', error: expect.any(Object) },
     widgets: 1,
-    background: 'blue-fluid-halftone',
+    background: 'flow-shards',
   });
 });
 
