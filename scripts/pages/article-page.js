@@ -23,14 +23,6 @@ function estimateMinutes(body) {
   return Math.max(1, Math.round(cjk / 400 + words / 200));
 }
 
-function readingBand(document, i18n) {
-  const word = i18n.t('writing.band');
-  return createElement(document, 'p', {
-    'data-content-reading-band': '',
-    'aria-hidden': 'true',
-  }, Array.from({ length: 24 }, () => word).join(' / '));
-}
-
 function renderBody(document, body) {
   const container = createElement(document, 'div', { 'data-content-article-body': '' });
   let leadApplied = false;
@@ -163,7 +155,6 @@ export function renderArticlePage({ document, i18n, article, articles }) {
   const fieldNotes = renderFieldNotes(document, i18n, article);
   element.append(
     renderMasthead(document, i18n, article, body, index, articles.length),
-    readingBand(document, i18n),
     bodyContainer,
   );
   if (fieldNotes) {
@@ -173,7 +164,6 @@ export function renderArticlePage({ document, i18n, article, articles }) {
     );
   }
   element.append(
-    readingBand(document, i18n),
     navigation,
     renderFooter(document, i18n),
   );

@@ -2,6 +2,7 @@ import { photos } from '../../../media/catalog.js';
 import { pick } from '../../../scripts/data/content.js';
 import { createPixelSvg } from '../shared/pixel-art.js';
 import { createFolderBrowser } from '../shared/folder-browser.js';
+import { createWallpapersView } from './wallpapers-view.js';
 
 let selectedSlug = photos[0].slug;
 const listeners = new Set();
@@ -19,6 +20,14 @@ function createElement(document, tagName, attributes = {}, text = '') {
   Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
   element.textContent = text;
   return element;
+}
+
+function observeDisconnect(document, root, cleanup) {
+  const observer = new document.defaultView.MutationObserver(() => {
+    if (!root.isConnected) cleanup();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  return () => observer.disconnect();
 }
 
 function renderPhotoItem({ document, i18n, item }) {
@@ -68,9 +77,17 @@ function renderPhotoViewer({ document, i18n, item, index, total, previous, next 
   return viewer;
 }
 
-export function renderPhotosApp({ i18n, mount, preferences }) {
+export function renderPhotosApp({
+  i18n,
+  mount,
+  preferences,
+  wallpapers = [],
+  getCurrentWallpaperId = () => preferences?.wallpaperId ?? null,
+  subscribeCurrentWallpaper,
+  applyWallpaper,
+}) {
   const document = mount.ownerDocument;
-  const root = createFolderBrowser({
+  const photoBrowser = createFolderBrowser({
     document,
     i18n,
     appId: 'photos',
@@ -87,8 +104,105 @@ export function renderPhotosApp({ i18n, mount, preferences }) {
   });
 
   const onExternalSelect = () => {
-    if (!root.isConnected) listeners.delete(onExternalSelect);
+    if (!photoBrowser.isConnected) listeners.delete(onExternalSelect);
   };
   listeners.add(onExternalSelect);
+
+  const root = createElement(document, 'section', { 'data-photos-shell': '' });
+  const tabList = createElement(document, 'div', {
+    'data-photos-tabs': '',
+    role: 'tablist',
+    'aria-label': i18n.t('apps.photos'),
+  });
+  const photoTab = createElement(document, 'button', {
+    type: 'button',
+    id: 'photos-tab-photos',
+    role: 'tab',
+    'data-photos-tab': 'photos',
+    'aria-controls': 'photos-panel-photos',
+  });
+  const wallpaperTab = createElement(document, 'button', {
+    type: 'button',
+    id: 'photos-tab-wallpapers',
+    role: 'tab',
+    'data-photos-tab': 'wallpapers',
+    'aria-controls': 'photos-panel-wallpapers',
+  });
+  const photoPanel = createElement(document, 'section', {
+    id: 'photos-panel-photos',
+    role: 'tabpanel',
+    'data-photos-panel': 'photos',
+    'aria-labelledby': 'photos-tab-photos',
+  });
+  const wallpaperPanel = createElement(document, 'section', {
+    id: 'photos-panel-wallpapers',
+    role: 'tabpanel',
+    'data-photos-panel': 'wallpapers',
+    'aria-labelledby': 'photos-tab-wallpapers',
+  });
+  const wallpapersView = createWallpapersView({
+    document,
+    i18n,
+    wallpapers,
+    currentId: getCurrentWallpaperId(),
+    subscribeCurrentWallpaper,
+    applyWallpaper,
+  });
+  let activeTab = 'photos';
+
+  const updateTabs = () => {
+    photoTab.textContent = i18n.t('apps.photos');
+    wallpaperTab.textContent = i18n.t('photos.wallpapers');
+    [photoTab, wallpaperTab].forEach((tab) => {
+      const selected = tab.dataset.photosTab === activeTab;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+    });
+    photoPanel.hidden = activeTab !== 'photos';
+    wallpaperPanel.hidden = activeTab !== 'wallpapers';
+  };
+  const selectTab = (tab) => {
+    activeTab = tab;
+    updateTabs();
+  };
+  [photoTab, wallpaperTab].forEach((tab) => {
+    tab.addEventListener('click', () => selectTab(tab.dataset.photosTab));
+    tab.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const next = event.key === 'Home'
+        ? photoTab
+        : event.key === 'End'
+          ? wallpaperTab
+          : tab === photoTab
+            ? wallpaperTab
+            : photoTab;
+      selectTab(next.dataset.photosTab);
+      next.focus();
+    });
+  });
+
+  tabList.append(photoTab, wallpaperTab);
+  photoPanel.append(photoBrowser);
+  wallpaperPanel.append(wallpapersView);
+  root.append(tabList, photoPanel, wallpaperPanel);
+  updateTabs();
+  let destroyed = false;
+  let unsubscribeI18n = () => {};
+  let stopObserving = () => {};
+  const destroy = () => {
+    if (destroyed) return;
+    destroyed = true;
+    listeners.delete(onExternalSelect);
+    unsubscribeI18n();
+    stopObserving();
+    wallpapersView.destroy?.();
+    photoBrowser.destroy?.();
+  };
+  root.destroy = destroy;
+  unsubscribeI18n = i18n.subscribe(() => {
+    if (root.isConnected) updateTabs();
+  });
+  stopObserving = observeDisconnect(document, root, destroy);
   return root;
 }

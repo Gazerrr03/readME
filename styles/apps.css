@@ -605,6 +605,155 @@ a[data-contact-row] {
 
 /* ── Photos viewer (desktop folder) ───────────────────────── */
 
+[data-photos-shell] {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--mono);
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+}
+
+[data-photos-tabs] {
+  border-bottom: 1px solid var(--os-surface-highlight);
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+}
+
+[data-photos-tabs] button,
+[data-wallpaper-card],
+[data-wallpaper-back],
+[data-wallpaper-apply] {
+  background: var(--os-surface-raised);
+  border: 1px solid var(--os-surface-highlight);
+  border-radius: 0;
+  color: var(--os-ink);
+  font-family: var(--mono);
+  transition:
+    transform var(--press-duration) var(--ease-out),
+    background-color var(--ui-duration) ease,
+    color var(--ui-duration) ease;
+}
+
+[data-photos-tabs] button {
+  border-bottom: 0;
+  font-size: 10px;
+  min-height: 30px;
+  padding: 6px 10px;
+}
+
+[data-photos-tabs] button[aria-selected='true'] {
+  background: var(--os-accent);
+  color: var(--os-canvas);
+}
+
+[data-photos-panel] {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+[data-photos-panel][hidden] { display: none; }
+
+[data-photos-shell] [data-folder-browser] { height: 100%; }
+
+[data-wallpapers-view] {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+[data-wallpaper-content] {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+[data-wallpaper-grid] {
+  display: grid;
+  flex: 1;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-height: 0;
+  overflow: auto;
+  padding: 2px;
+}
+
+[data-wallpaper-card] {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px;
+  text-align: left;
+}
+
+[data-wallpaper-card] img,
+[data-wallpaper-detail] > img {
+  aspect-ratio: 16 / 9;
+  background: var(--os-surface);
+  border: 1px solid var(--os-surface-highlight);
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+[data-wallpaper-card-label] {
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+[data-wallpaper-current-badge] {
+  background: var(--os-accent);
+  color: var(--os-canvas);
+  font-size: 9px;
+  justify-self: start;
+  padding: 3px 5px;
+  text-transform: uppercase;
+}
+
+[data-wallpaper-detail] {
+  display: grid;
+  gap: 12px;
+  height: 100%;
+  overflow: auto;
+  padding: 2px;
+}
+
+[data-wallpaper-detail] h3 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 400;
+}
+
+[data-wallpaper-description] { line-height: 1.55; }
+
+[data-wallpaper-back],
+[data-wallpaper-apply] {
+  font-size: 10px;
+  justify-self: start;
+  min-height: 30px;
+  padding: 6px 10px;
+}
+
+[data-wallpaper-apply] { background: var(--os-accent); color: var(--os-canvas); }
+[data-wallpaper-apply]:disabled { cursor: wait; opacity: 0.7; }
+[data-wallpaper-apply-status] { font-size: 10px; min-height: 1.2em; }
+
+[data-photos-shell] button:focus-visible,
+[data-wallpaper-card]:focus-visible,
+[data-wallpaper-back]:focus-visible,
+[data-wallpaper-apply]:focus-visible {
+  outline: var(--os-focus-width) solid var(--os-accent-bright);
+  outline-offset: 2px;
+}
+
 [data-photos-app] {
   display: flex;
   flex-direction: column;
@@ -754,6 +903,10 @@ a[data-contact-row] {
 }
 
 @media (hover: hover) and (pointer: fine) {
+  [data-photos-tabs] button:hover,
+  [data-wallpaper-card]:hover,
+  [data-wallpaper-back]:hover { background: color-mix(in srgb, var(--os-accent) 18%, var(--os-surface)); }
+
   [data-photos-nav] button:hover,
   [data-player-controls] button:hover { background: var(--os-accent); color: var(--os-canvas); }
 }
@@ -765,6 +918,10 @@ a[data-contact-row] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  [data-photos-tabs] button,
+  [data-wallpaper-card],
+  [data-wallpaper-back],
+  [data-wallpaper-apply],
   [data-photos-nav] button,
   [data-player-controls] button { transition-duration: 1ms; }
 }

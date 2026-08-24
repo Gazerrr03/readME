@@ -13,6 +13,7 @@ import { renderSettingsApp } from '../modules/base-buttons/design/settings-app.j
 import { renderWritingApp } from '../modules/base-buttons/writing/writing-app.js';
 import { createDesktopController } from './desktop.js';
 import { createDesktopEnvironmentController } from './environment/environment-controller.js';
+import { listWallpaperMetadata } from './environment/background/wallpaper-registry.js';
 import { createI18n } from './i18n/i18n.js';
 import { readDesktopTarget } from './routing/content-routes.js';
 import { loadPreferences, savePreferences } from './state/preferences.js';
@@ -25,6 +26,11 @@ const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
 const apps = getApps();
 const audio = createAudioService(preferences.audioEnabled);
+const wallpaperPreferenceListeners = new Set();
+const subscribeCurrentWallpaper = (listener) => {
+  wallpaperPreferenceListeners.add(listener);
+  return () => wallpaperPreferenceListeners.delete(listener);
+};
 let windowManager;
 let boot;
 let updatePreferences;
@@ -37,6 +43,8 @@ const environment = createDesktopEnvironmentController({
   root: desktopRoot,
   i18n,
   onOpen: openApp,
+  initialWallpaperId: preferences.wallpaperId,
+  storage: localStorage,
 });
 export const desktop = createDesktopController({
   root: desktopRoot,
@@ -61,7 +69,13 @@ windowManager = createWindowManager({
     writing: renderWritingApp,
     about: renderAboutApp,
     contact: renderContactApp,
-    photos: renderPhotosApp,
+    photos: (context) => renderPhotosApp({
+      ...context,
+      wallpapers: listWallpaperMetadata(),
+      getCurrentWallpaperId: () => preferences.wallpaperId,
+      subscribeCurrentWallpaper,
+      applyWallpaper,
+    }),
     albums: renderAlbumsApp,
     games: renderGamesApp,
     books: renderBooksApp,
@@ -77,10 +91,18 @@ windowManager = createWindowManager({
 updatePreferences = (patch) => {
   Object.assign(preferences, patch);
   persistPreferences(preferences);
+  if (patch.wallpaperId !== undefined) {
+    wallpaperPreferenceListeners.forEach((listener) => listener(preferences.wallpaperId));
+  }
   if (patch.audioEnabled !== undefined) audio.setEnabled(preferences.audioEnabled);
   if (patch.locale !== undefined) i18n.setLocale(preferences.locale);
   desktop.syncPreferences(patch);
   requestAnimationFrame(() => windowManager.reclamp());
+};
+const applyWallpaper = async (id) => {
+  const result = await environment.applyWallpaper(id);
+  if (result.ok) updatePreferences({ wallpaperId: result.id });
+  return result;
 };
 const revealDesktop = () => {
   if (!desktopRoot.dataset.desktopMode) desktop.render();

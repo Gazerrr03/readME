@@ -1,4 +1,5 @@
 import { moveTheMountain } from './move-the-mountain.js';
+import { passionErrorsResponsibility } from './passion-errors-responsibility.js';
 
 const L = (en, zhCN, ja) => Object.freeze({ en, 'zh-CN': zhCN, ja });
 
@@ -646,6 +647,7 @@ export const articles = Object.freeze([
     ),
   }),
   moveTheMountain,
+  passionErrorsResponsibility,
   Object.freeze({
     slug: 'notes-on-information-overload',
     date: '2026-05-18',

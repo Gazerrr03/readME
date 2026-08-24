@@ -31,14 +31,39 @@
   display: block;
   height: 100%;
   inset: 0;
-  image-rendering: pixelated;
   opacity: 1;
-  object-fit: var(--background-fit, cover);
-  object-position: var(--background-position, center center);
+  overflow: hidden;
+  pointer-events: none;
   position: absolute;
-  transition: opacity var(--ui-duration) var(--ease-out);
+  transition: opacity var(--wallpaper-transition-duration, var(--ui-duration)) var(--ease-out);
   user-select: none;
   width: 100%;
+}
+
+[data-environment-background][data-background-kind='image'] {
+  image-rendering: pixelated;
+  object-fit: var(--background-fit, cover);
+  object-position: var(--background-position, center center);
+}
+
+[data-environment-background][data-background-kind='shader'] {
+  background: var(--os-canvas);
+}
+
+[data-wallpaper-surface] {
+  display: block;
+  height: 100%;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity var(--wallpaper-transition-duration, var(--ui-duration)) var(--ease-out);
+  user-select: none;
+  width: 100%;
+}
+
+[data-wallpaper-surface][data-wallpaper-active='true'] {
+  opacity: 1;
 }
 
 [data-environment-widgets] {
@@ -204,7 +229,7 @@
 
 [data-workstation-environment][data-environment-motion='focused'] [data-environment-background],
 [data-macos-environment][data-environment-motion='focused'] [data-environment-background] {
-  opacity: 0.28;
+  opacity: 0.42;
 }
 
 [data-workstation-environment][data-environment-motion='focused'] [data-environment-widgets] > button,
@@ -235,8 +260,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   [data-environment-background],
+  [data-wallpaper-surface],
   [data-environment-widgets],
   [data-environment-widgets] button {
-    transition-duration: 1ms;
+    transition-duration: 0ms;
   }
 }

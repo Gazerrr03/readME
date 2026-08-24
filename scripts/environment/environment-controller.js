@@ -7,6 +7,7 @@ import {
 } from './environment-state.js';
 import { DESKTOP_BACKGROUND } from './background/background-assets.js';
 import { createDesktopBackground } from './background/background-controller.js';
+import { DEFAULT_WALLPAPER_TRANSITION_MS } from './background/wallpaper-manager.js';
 import { createMusicDeck } from './music-deck.js';
 import { tracks } from '../../media/catalog.js';
 import { projects } from '../data/content.js';
@@ -24,6 +25,9 @@ export function createDesktopEnvironmentController({
   onOpen = () => {},
   now = () => new Date(),
   backgroundFactory = createDesktopBackground,
+  initialWallpaperId,
+  storage,
+  registry,
 }) {
   const view = root.ownerDocument.defaultView;
   const document = root.ownerDocument;
@@ -112,6 +116,9 @@ export function createDesktopEnvironmentController({
     });
     mount.dataset.environmentCapability = capability;
     mount.dataset.environmentMotion = motion;
+    background?.setTransitionDuration?.(
+      motionQuery.matches ? 0 : DEFAULT_WALLPAPER_TRANSITION_MS,
+    );
     background?.setMotionState(motion);
   };
 
@@ -136,6 +143,10 @@ export function createDesktopEnvironmentController({
       const nextBackground = backgroundFactory({
         document,
         asset: DESKTOP_BACKGROUND,
+        initialWallpaperId,
+        storage,
+        registry,
+        transitionMs: motionQuery.matches ? 0 : undefined,
       });
       if (!nextBackground?.element || typeof nextBackground.setMotionState !== 'function') {
         throw new Error('Invalid desktop background');
@@ -196,6 +207,18 @@ export function createDesktopEnvironmentController({
 
   return {
     sync,
+    applyWallpaper(id) {
+      if (!background?.applyWallpaper) {
+        return Promise.resolve({ ok: false, id, error: new Error('Environment is not mounted') });
+      }
+      return background.applyWallpaper(id);
+    },
+    updateWallpaperConfig(config) {
+      if (!background?.updateConfig) {
+        return { ok: false, id: null, error: new Error('Environment is not mounted') };
+      }
+      return background.updateConfig(config);
+    },
     destroy() {
       unmount();
       observer.disconnect();

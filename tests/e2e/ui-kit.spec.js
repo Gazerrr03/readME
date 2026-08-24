@@ -206,8 +206,10 @@ test('Pen Pen stays an independent white foreground object above the background'
       pet: mount?.dataset.botPet,
       spriteOpacity: getComputedStyle(sprite).opacity,
       spriteImage: getComputedStyle(sprite).backgroundImage,
+      backgroundTag: background?.tagName,
       backgroundId: background?.dataset.backgroundId,
-      backgroundPosition: backgroundStyle.objectPosition,
+      backgroundKind: background?.dataset.backgroundKind,
+      backgroundFill: backgroundStyle.backgroundColor,
       mountZIndex: getComputedStyle(mount).zIndex,
     };
   });
@@ -215,8 +217,10 @@ test('Pen Pen stays an independent white foreground object above the background'
   expect(result.pet).toBe('pen-pen');
   expect(result.spriteOpacity).toBe('1');
   expect(result.spriteImage).toContain('spritesheet-white.webp');
-  expect(result.backgroundId).toBe('storm-clouds-pixel');
-  expect(result.backgroundPosition).toBe('50% 50%');
+  expect(result.backgroundTag).toBe('DIV');
+  expect(result.backgroundId).toBe('blue-fluid-halftone');
+  expect(result.backgroundKind).toBe('shader');
+  expect(result.backgroundFill).toBe('rgb(7, 20, 38)');
   expect(Number(result.mountZIndex)).toBeGreaterThan(10);
 });
 
@@ -231,11 +235,26 @@ test('Pen Pen hover deconstructs into the bright OS accent', async ({ page }) =>
   await page.goto('/?skipBoot=1');
 
   const bot = page.locator('[data-bot-standby]');
+  await bot.evaluate((element) => {
+    globalThis.penPenGlitchAppearance = new Promise((resolve) => {
+      const observer = new MutationObserver(() => {
+        if (element.dataset.botGlitch !== 'contour') return;
+        const layer = element.querySelector('[data-bot-glitch-layer]');
+        observer.disconnect();
+        resolve({
+          color: getComputedStyle(layer).borderTopColor,
+          mode: element.dataset.botGlitch,
+        });
+      });
+      observer.observe(element, { attributeFilter: ['data-bot-glitch'], attributes: true });
+    });
+  });
   await bot.hover();
-  await expect(bot).toHaveAttribute('data-bot-glitch', 'contour');
-  await expect.poll(() => bot.locator('[data-bot-glitch-layer]').evaluate((element) => (
-    getComputedStyle(element).borderTopColor
-  ))).toBe('rgb(185, 215, 255)');
+  const glitchAppearance = await page.evaluate(() => globalThis.penPenGlitchAppearance);
+  expect(glitchAppearance).toEqual({
+    color: 'rgb(185, 215, 255)',
+    mode: 'contour',
+  });
 });
 
 test('the final OS kit keeps the four approved decisions visible in the rendered system', async ({ page }) => {

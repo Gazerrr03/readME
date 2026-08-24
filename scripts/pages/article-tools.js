@@ -196,14 +196,16 @@ function renderNotesPanel(document, i18n, {
   function refresh() {
     const entries = loadNotes(localStorage, slug);
     panel.replaceChildren();
-    panel.append(
-      createElement(document, 'p', { 'data-tool-panel-kicker': '' }, i18n.t('writing.notesTool')),
-      createElement(document, 'h2', { 'data-tool-panel-title': '' }, i18n.t('writing.notesTitle')),
+    const header = createElement(document, 'div', { 'data-tool-panel-header': '' });
+    header.append(
+      createElement(document, 'p', { 'data-tool-panel-kicker': '' }, i18n.t('writing.notesTitle')),
+      createElement(document, 'h3', { 'data-tool-panel-title': '' }, i18n.t('writing.notesHeading')),
     );
-    if (!entries.length) {
-      panel.append(createElement(document, 'p', { 'data-tool-notes-empty': '' },
-        i18n.t('writing.noNotes')));
-    }
+    panel.append(
+      header,
+      createElement(document, 'p', { 'data-tool-panel-description': '' },
+        i18n.t('writing.notesDescription')),
+    );
     entries.forEach((entry, index) => {
       const item = createElement(document, 'div', {
         'data-tool-note-item': '',

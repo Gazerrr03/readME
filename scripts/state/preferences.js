@@ -1,3 +1,5 @@
+import { DEFAULT_WALLPAPER_ID, isWallpaperId } from '../environment/background/wallpaper-registry.js';
+
 const STORAGE_KEY = 'portfolio-os:preferences';
 
 export const DEFAULT_PREFERENCES = Object.freeze({
@@ -15,6 +17,7 @@ export const DEFAULT_PREFERENCES = Object.freeze({
   packetDitherRate: 50,
   protocolArchitecture: 'TCP/IP',
   encryptionLevel: true,
+  wallpaperId: DEFAULT_WALLPAPER_ID,
 });
 
 const layouts = new Set(['auto', 'windows', 'macos']);
@@ -60,6 +63,8 @@ export function loadPreferences(storage) {
         ? parsed.protocolArchitecture : DEFAULT_PREFERENCES.protocolArchitecture,
       encryptionLevel: typeof parsed.encryptionLevel === 'boolean'
         ? parsed.encryptionLevel : DEFAULT_PREFERENCES.encryptionLevel,
+      wallpaperId: isWallpaperId(parsed.wallpaperId)
+        ? parsed.wallpaperId : DEFAULT_PREFERENCES.wallpaperId,
     };
   } catch {
     return { ...DEFAULT_PREFERENCES };

@@ -33,6 +33,17 @@ test('uses defaults without saved preferences', () => {
   assert.deepEqual(loadPreferences(memoryStorage()), DEFAULT_PREFERENCES);
 });
 
+test('preferences preserve known wallpaper ids and repair unknown ids', () => {
+  assert.equal(loadPreferences(memoryStorage(JSON.stringify({
+    ...DEFAULT_PREFERENCES,
+    wallpaperId: 'flow-shards',
+  }))).wallpaperId, 'flow-shards');
+  assert.equal(loadPreferences(memoryStorage(JSON.stringify({
+    ...DEFAULT_PREFERENCES,
+    wallpaperId: 'unknown',
+  }))).wallpaperId, 'blue-fluid-halftone');
+});
+
 test('repairs invalid fields while preserving valid fields', () => {
   const storage = memoryStorage(JSON.stringify({
     version: 1,

@@ -21,6 +21,14 @@ function focusSelectedItem(root, selectedId) {
   item?.focus({ preventScroll: true });
 }
 
+function observeDisconnect(document, root, cleanup) {
+  const observer = new document.defaultView.MutationObserver(() => {
+    if (!root.isConnected) cleanup();
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  return () => observer.disconnect();
+}
+
 /**
  * Shared two-state collection shell for photos, records, games, and books.
  * The OS window remains outside this node; this module only owns the
@@ -231,9 +239,20 @@ export function createFolderBrowser({
   root.selectItem = (slug) => setSelection(slug);
   root.openItem = openItem;
 
+  let destroyed = false;
+  let unsubscribeI18n = () => {};
+  let stopObserving = () => {};
+  const destroy = () => {
+    if (destroyed) return;
+    destroyed = true;
+    unsubscribeI18n();
+    stopObserving();
+  };
+  root.destroy = destroy;
   render();
-  i18n.subscribe(() => {
+  unsubscribeI18n = i18n.subscribe(() => {
     if (root.isConnected) render();
   });
+  stopObserving = observeDisconnect(document, root, destroy);
   return root;
 }

@@ -53,6 +53,10 @@ test('photos opens a centered folder view, then returns from the photo viewer', 
   await window.locator('[data-folder-back]').click();
   await expect(window.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'folder');
   await expect(window.locator('[data-folder-item="moonrise"]')).toHaveAttribute('data-selected', 'true');
+
+  await window.locator('[data-photos-tab="wallpapers"]').click();
+  await window.locator('[data-photos-tab="photos"]').click();
+  await expect(window.locator('[data-folder-item="moonrise"]')).toHaveAttribute('data-selected', 'true');
 });
 
 test('albums opens the player from the folder view and toggles playback', async ({ page }) => {
@@ -104,6 +108,28 @@ test('games and books expose their own collection windows', async ({ page }) => 
   await expect(books.locator('[data-bookshelf-stage]')).toBeVisible();
   await expect(books.locator('[data-bookshelf-canvas]')).toBeVisible();
   await expect(books.locator('[data-bookshelf-empty]')).toHaveCount(0);
+});
+
+test('bookshelf canvas uses the dark surface as its backdrop', async ({ page }) => {
+  await seedLayout(page, 'macos');
+  await page.goto('/');
+
+  await page.locator('[data-folder-toggle="books"]').click();
+  const canvas = page.locator('[data-app-window="books"] [data-bookshelf-canvas]');
+  await expect(canvas).toHaveAttribute('data-bookshelf-scene', 'ready');
+
+  const screenshot = (await canvas.screenshot()).toString('base64');
+  const pixel = await page.evaluate(async (encoded) => {
+    const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+    const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
+    const probe = document.createElement('canvas');
+    probe.width = bitmap.width;
+    probe.height = bitmap.height;
+    probe.getContext('2d').drawImage(bitmap, 0, 0);
+    return [...probe.getContext('2d').getImageData(bitmap.width - 8, 8, 1, 1).data];
+  }, screenshot);
+
+  expect(pixel).toEqual([14, 35, 64, 255]);
 });
 
 test('collection labels and viewer titles follow the locale', async ({ page }) => {
