@@ -837,11 +837,17 @@ a[data-contact-row] {
 }
 
 [data-player-cover] {
+  align-items: center;
   background: var(--os-surface);
   border: 1px solid var(--os-surface-highlight);
   box-shadow: 8px 8px 0 var(--os-shadow);
+  display: flex;
+  height: 150px;
+  justify-content: center;
   line-height: 0;
-  padding: 10px;
+  overflow: hidden;
+  padding: 0;
+  width: 150px;
 }
 
 [data-player-cover] svg {
@@ -853,10 +859,10 @@ a[data-contact-row] {
 
 [data-player-cover] img {
   display: block;
-  height: 128px;
+  height: 100%;
   image-rendering: pixelated;
   object-fit: cover;
-  width: 128px;
+  width: 100%;
 }
 
 [data-player-title] {

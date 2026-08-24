@@ -74,11 +74,20 @@ test('albums opens the player from the folder view and toggles playback', async 
   const episodeCoverBox = await episodeCover.boundingBox();
   expect(episodeCoverBox.width).toBeGreaterThan(albumArtBox.width * 0.95);
   expect(episodeCoverBox.height).toBeGreaterThan(albumArtBox.height * 0.95);
-  await window.locator('[data-folder-item="tide-study-0200"]').dblclick();
+  await episodeItem.dblclick();
   await expect(window.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'viewer');
-  await expect(window.locator('[data-player-track]')).toHaveText('TRK 02/04');
+  await expect(window.locator('[data-player-track]')).toHaveText('TRK 01/04');
+  const viewerCover = window.locator('[data-player-cover]');
+  const viewerCoverImage = viewerCover.locator('[data-album-cover-image]');
+  await expect(viewerCoverImage).toHaveAttribute('src', 'media/covers/episode-33-pixel.png');
+  const viewerCoverBox = await viewerCover.boundingBox();
+  const viewerCoverImageBox = await viewerCoverImage.boundingBox();
+  expect(viewerCoverImageBox.width).toBeGreaterThan(viewerCoverBox.width * 0.95);
+  expect(viewerCoverImageBox.height).toBeGreaterThan(viewerCoverBox.height * 0.95);
   await expect(window.locator('[data-albums-app]')).toHaveAttribute('data-player-status', 'playing');
 
+  await window.locator('[data-player-next]').click();
+  await expect(window.locator('[data-player-track]')).toHaveText('TRK 02/04');
   await window.locator('[data-player-toggle]').click();
   await expect(window.locator('[data-albums-app]')).toHaveAttribute('data-player-status', 'paused');
   await window.locator('[data-player-next]').click();
