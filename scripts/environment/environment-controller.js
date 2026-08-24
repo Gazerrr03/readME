@@ -9,8 +9,8 @@ import { DESKTOP_BACKGROUND } from './background/background-assets.js';
 import { createDesktopBackground } from './background/background-controller.js';
 import { DEFAULT_WALLPAPER_TRANSITION_MS } from './background/wallpaper-manager.js';
 import { createMusicDeck } from './music-deck.js';
-import { tracks } from '../../media/catalog.js';
-import { projects } from '../data/content.js';
+import { tracks as baseTracks } from '../../media/catalog.js';
+import { projects as baseProjects } from '../data/content.js';
 
 function element(document, tagName, attributes = {}, text = '') {
   const node = document.createElement(tagName);
@@ -22,6 +22,7 @@ function element(document, tagName, attributes = {}, text = '') {
 export function createDesktopEnvironmentController({
   root,
   i18n,
+  content = () => ({ projects: baseProjects, tracks: baseTracks }),
   onOpen = () => {},
   now = () => new Date(),
   backgroundFactory = createDesktopBackground,
@@ -94,13 +95,13 @@ export function createDesktopEnvironmentController({
     const nowButton = element(document, 'button', {
       type: 'button', 'data-environment-open': 'projects', 'aria-label': i18n.t('environment.openProjects'),
     });
-    const latestYear = String(Math.max(...projects.map((project) => project.year)));
+    const latestYear = String(Math.max(...content().projects.map((project) => project.year)));
     nowButton.append(element(document, 'span', {}, i18n.t('environment.now')), element(document, 'strong', {}, latestYear));
     destroyDeck();
     deck = createMusicDeck({
       document,
       i18n,
-      tracks,
+      tracks: () => content().tracks,
       shouldAnimate: () => mount?.dataset.environmentMotion === 'running',
     });
     widgets.append(primary, nowButton, deck.element);

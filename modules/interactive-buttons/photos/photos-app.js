@@ -1,14 +1,14 @@
-import { photos } from '../../../media/catalog.js';
+import { photos as basePhotos } from '../../../media/catalog.js';
 import { pick } from '../../../scripts/data/content.js';
 import { createPixelSvg } from '../shared/pixel-art.js';
 import { createFolderBrowser } from '../shared/folder-browser.js';
 import { createWallpapersView } from './wallpapers-view.js';
 
-let selectedSlug = photos[0].slug;
+let selectedSlug = basePhotos[0].slug;
 const listeners = new Set();
 
 export function selectPhoto(slug) {
-  if (!photos.some((photo) => photo.slug === slug) || slug === selectedSlug) return;
+  if (!basePhotos.some((photo) => photo.slug === slug) || slug === selectedSlug) return;
   selectedSlug = slug;
   listeners.forEach((listener) => listener());
 }
@@ -40,7 +40,7 @@ function renderPhotoItem({ document, i18n, item }) {
   return [
     art,
     createElement(document, 'span', { 'data-folder-item-title': '' }, pick(item.title, i18n.locale)),
-    createElement(document, 'span', { 'data-folder-item-meta': '' }, item.date),
+    createElement(document, 'span', { 'data-folder-item-meta': '' }, pick(item.dateLabel ?? item.date, i18n.locale)),
   ];
 }
 
@@ -59,7 +59,7 @@ function renderPhotoViewer({ document, i18n, item, index, total, previous, next 
   const caption = createElement(document, 'div', { 'data-photos-caption': '' });
   caption.append(
     createElement(document, 'h3', { 'data-photos-title': '' }, pick(item.title, i18n.locale)),
-    createElement(document, 'span', { 'data-photos-date': '' }, item.date),
+    createElement(document, 'span', { 'data-photos-date': '' }, pick(item.dateLabel ?? item.date, i18n.locale)),
   );
 
   const nav = createElement(document, 'div', { 'data-photos-nav': '' });
@@ -79,6 +79,7 @@ function renderPhotoViewer({ document, i18n, item, index, total, previous, next 
 
 export function renderPhotosApp({
   i18n,
+  content = () => ({ photos: basePhotos }),
   mount,
   preferences,
   wallpapers = [],
@@ -92,7 +93,7 @@ export function renderPhotosApp({
     i18n,
     appId: 'photos',
     titleKey: 'apps.photos',
-    items: photos,
+    items: () => content().photos,
     initialItemId: selectedSlug,
     renderItem: renderPhotoItem,
     renderViewer: renderPhotoViewer,

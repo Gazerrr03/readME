@@ -49,23 +49,25 @@ export function createFolderBrowser({
   onBeforeBack = () => {},
   onSelectionChange = () => {},
 }) {
+  const resolveItems = () => (typeof items === 'function' ? items() : items);
+  let itemList = resolveItems();
   const root = createElement(document, 'section', {
     'data-folder-browser': '',
     'data-content-container': appId,
     'data-content-view': 'folder',
-    'data-content-status': items.length ? 'ready' : 'empty',
+    'data-content-status': itemList.length ? 'ready' : 'empty',
     tabindex: '-1',
   });
   let view = 'folder';
-  let selectedId = items.some((item) => item.slug === initialItemId)
+  let selectedId = itemList.some((item) => item.slug === initialItemId)
     ? initialItemId
-    : items[0]?.slug ?? null;
+    : itemList[0]?.slug ?? null;
   let pendingOpen = false;
   let lastItemClick = null;
 
-  const getItem = () => items.find((item) => item.slug === selectedId) ?? null;
+  const getItem = () => itemList.find((item) => item.slug === selectedId) ?? null;
   const setSelection = (slug) => {
-    if (!items.some((item) => item.slug === slug)) return;
+    if (!itemList.some((item) => item.slug === slug)) return;
     selectedId = slug;
     onSelectionChange(slug);
     root.querySelectorAll('[data-folder-item]').forEach((item) => {
@@ -76,16 +78,16 @@ export function createFolderBrowser({
   };
 
   const navigate = (direction) => {
-    if (!items.length) return;
-    const index = Math.max(0, items.findIndex((item) => item.slug === selectedId));
-    selectedId = items[(index + direction + items.length) % items.length].slug;
+    if (!itemList.length) return;
+    const index = Math.max(0, itemList.findIndex((item) => item.slug === selectedId));
+    selectedId = itemList[(index + direction + itemList.length) % itemList.length].slug;
     onSelectionChange(selectedId);
     pendingOpen = true;
     render();
   };
 
   const openItem = (slug) => {
-    if (!items.some((item) => item.slug === slug)) return;
+    if (!itemList.some((item) => item.slug === slug)) return;
     lastItemClick = null;
     setSelection(slug);
     pendingOpen = true;
@@ -109,7 +111,7 @@ export function createFolderBrowser({
       createElement(document, 'p', { 'data-folder-kicker': '' }, i18n.t('folders.folder')),
       createElement(document, 'h3', { 'data-folder-title': '' }, i18n.t(titleKey)),
       createElement(document, 'span', { 'data-folder-count': '' }, replaceCount(
-        i18n.t('folders.items'), items.length,
+        i18n.t('folders.items'), itemList.length,
       )),
     );
     header.append(heading);
@@ -135,7 +137,7 @@ export function createFolderBrowser({
       role: 'list',
       'aria-label': i18n.t(titleKey),
     });
-    if (!items.length) {
+    if (!itemList.length) {
       const empty = createElement(document, 'p', {
         'data-folder-empty': '',
         role: 'status',
@@ -146,7 +148,7 @@ export function createFolderBrowser({
       return list;
     }
 
-    items.forEach((item, index) => {
+    itemList.forEach((item, index) => {
       const button = createElement(document, 'button', {
         type: 'button',
         'data-folder-item': item.slug,
@@ -196,6 +198,9 @@ export function createFolderBrowser({
   };
 
   const render = () => {
+    itemList = resolveItems();
+    if (!itemList.some((item) => item.slug === selectedId)) selectedId = itemList[0]?.slug ?? null;
+    root.dataset.contentStatus = itemList.length ? 'ready' : 'empty';
     root.dataset.contentView = view;
     root.dataset.folderView = view;
     root.replaceChildren(renderHeader());
@@ -216,8 +221,8 @@ export function createFolderBrowser({
       document,
       i18n,
       item,
-      index: items.indexOf(item),
-      total: items.length,
+      index: itemList.indexOf(item),
+      total: itemList.length,
       back: goBack,
       previous: () => navigate(-1),
       next: () => navigate(1),

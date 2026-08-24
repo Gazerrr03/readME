@@ -1,14 +1,14 @@
-import { tracks } from '../../../media/catalog.js';
+import { tracks as baseTracks } from '../../../media/catalog.js';
 import { pick } from '../../../scripts/data/content.js';
 import { createPixelSvg } from '../shared/pixel-art.js';
 import { formatDeckTimecode } from '../../../scripts/environment/music-deck.js';
 import { createFolderBrowser } from '../shared/folder-browser.js';
 
-let selectedSlug = tracks[0].slug;
+let selectedSlug = baseTracks[0].slug;
 const listeners = new Set();
 
 export function selectAlbum(slug) {
-  if (!tracks.some((track) => track.slug === slug) || slug === selectedSlug) return;
+  if (!baseTracks.some((track) => track.slug === slug) || slug === selectedSlug) return;
   selectedSlug = slug;
   listeners.forEach((listener) => listener());
 }
@@ -33,11 +33,11 @@ function renderAlbumItem({ document, i18n, item }) {
     art,
     createElement(document, 'span', { 'data-folder-item-title': '' }, pick(item.title, i18n.locale)),
     createElement(document, 'span', { 'data-folder-item-meta': '' },
-      `${item.format} · ${formatDeckTimecode(item.seconds)}`),
+      `${pick(item.formatLabel ?? item.format, i18n.locale)} · ${formatDeckTimecode(item.seconds)}`),
   ];
 }
 
-export function renderAlbumsApp({ i18n, mount, preferences }) {
+export function renderAlbumsApp({ i18n, content = () => ({ tracks: baseTracks }), mount, preferences }) {
   const document = mount.ownerDocument;
   const view = document.defaultView;
   const audio = new view.Audio();
@@ -46,6 +46,7 @@ export function renderAlbumsApp({ i18n, mount, preferences }) {
   let status = 'idle';
   let frameId = null;
   let activeViewer = null;
+  const tracks = () => content().tracks;
 
   const stopTick = () => {
     if (frameId !== null) view.cancelAnimationFrame(frameId);
@@ -89,10 +90,10 @@ export function renderAlbumsApp({ i18n, mount, preferences }) {
 
   const loadTrack = (viewer, track, { autoplay = false } = {}) => {
     viewer.querySelector('[data-player-track]').textContent = `TRK ${pad2(
-      tracks.indexOf(track) + 1,
-    )}/${pad2(tracks.length)}`;
+      tracks().indexOf(track) + 1,
+    )}/${pad2(tracks().length)}`;
     viewer.querySelector('[data-player-title]').textContent = pick(track.title, i18n.locale);
-    viewer.querySelector('[data-player-format]').textContent = `${track.format} · ${formatDeckTimecode(
+    viewer.querySelector('[data-player-format]').textContent = `${pick(track.formatLabel ?? track.format, i18n.locale)} · ${formatDeckTimecode(
       track.seconds,
     )}`;
     viewer.querySelector('[data-player-cover]').replaceChildren(
@@ -165,7 +166,7 @@ export function renderAlbumsApp({ i18n, mount, preferences }) {
     i18n,
     appId: 'albums',
     titleKey: 'apps.albums',
-    items: tracks,
+    items: () => tracks(),
     initialItemId: selectedSlug,
     renderItem: renderAlbumItem,
     renderViewer: renderAlbumViewer,

@@ -1,4 +1,4 @@
-import { about } from './data.js';
+import { about as baseAbout } from './data.js';
 import { pick } from '../../../scripts/data/content.js';
 import { createAboutAvatar, createAboutBanner } from './about-graphics.js';
 
@@ -13,17 +13,18 @@ function sectionKicker(document, label) {
   return createElement(document, 'p', { 'data-about-kicker': '' }, label);
 }
 
-export function renderAboutApp({ i18n, mount }) {
+export function renderAboutApp({ i18n, content = () => ({ about: baseAbout }), mount }) {
   const document = mount.ownerDocument;
   const root = createElement(document, 'section', { 'data-about-app': '' });
 
   const render = () => {
     const locale = i18n.locale;
+    const { about } = content();
     const banner = createAboutBanner({ document, i18n });
 
     const masthead = createElement(document, 'header', { 'data-about-masthead': '' });
     masthead.append(
-      createElement(document, 'h3', {}, about.name),
+      createElement(document, 'h3', {}, pick(about.nameLabel ?? about.name, locale)),
       createElement(document, 'p', { 'data-about-role': '' }, pick(about.role, locale)),
     );
     const identity = createElement(document, 'div', { 'data-about-identity': '' });
@@ -61,9 +62,9 @@ export function renderAboutApp({ i18n, mount }) {
           href: entry.url,
           target: '_blank',
           rel: 'noreferrer',
-        }, entry.name));
+        }, pick(entry.nameLabel ?? entry.name, locale)));
       } else {
-        name.textContent = entry.name;
+        name.textContent = pick(entry.nameLabel ?? entry.name, locale);
       }
       heading.append(
         name,

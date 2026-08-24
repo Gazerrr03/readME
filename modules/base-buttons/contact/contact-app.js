@@ -1,4 +1,5 @@
-import { channels } from './data.js';
+import { channels as baseChannels } from './data.js';
+import { pick } from '../../../scripts/data/content.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -7,11 +8,12 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
-export function renderContactApp({ i18n, mount }) {
+export function renderContactApp({ i18n, content = () => ({ channels: baseChannels }), mount }) {
   const document = mount.ownerDocument;
   const root = createElement(document, 'section', { 'data-contact-app': '' });
 
   const render = () => {
+    const { channels } = content();
     const directory = createElement(document, 'div', { 'data-contact-directory': '' });
     directory.append(createElement(document, 'p', { 'data-contact-kicker': '' },
       i18n.t('contact.directory')));
@@ -34,9 +36,9 @@ export function renderContactApp({ i18n, mount }) {
         row.setAttribute('rel', 'noreferrer');
       }
       row.append(
-        createElement(document, 'span', { 'data-contact-channel': '' }, entry.channel),
-        createElement(document, 'span', { 'data-contact-address': '' }, entry.address),
-        createElement(document, 'span', { 'data-contact-status': '' }, entry.status),
+        createElement(document, 'span', { 'data-contact-channel': '' }, pick(entry.channelLabel ?? entry.channel, i18n.locale)),
+        createElement(document, 'span', { 'data-contact-address': '' }, pick(entry.addressLabel ?? entry.address, i18n.locale)),
+        createElement(document, 'span', { 'data-contact-status': '' }, pick(entry.statusLabel ?? entry.status, i18n.locale)),
       );
       directory.append(row);
     });
