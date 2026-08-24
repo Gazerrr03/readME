@@ -101,6 +101,30 @@ test('writing opens a fullscreen reader and returns to the archive', async ({ pa
   await expect(cover.locator('[data-writing-scroll-cue]')).toHaveAttribute('aria-hidden', 'true');
   await expect(article.locator('[data-writing-lead]')).toContainText('August of last year');
 
+  const geometry = await appWindow.evaluate((windowElement) => {
+    const scrollport = windowElement.querySelector('[data-window-content]');
+    const coverElement = windowElement.querySelector('[data-writing-cover]');
+    const articleElement = windowElement.querySelector('[data-writing-article]');
+    const titleElement = coverElement.querySelector('h3');
+    const metaElement = coverElement.querySelector('[data-writing-meta]');
+    const title = titleElement.getBoundingClientRect();
+    const meta = metaElement.getBoundingClientRect();
+    return {
+      coverHeight: coverElement.getBoundingClientRect().height,
+      scrollportHeight: scrollport.clientHeight,
+      articleTop: articleElement.offsetTop,
+      horizontalOverflow: scrollport.scrollWidth > scrollport.clientWidth,
+      titleMetaOverlap: !(
+        title.right <= meta.left || title.left >= meta.right ||
+        title.bottom <= meta.top || title.top >= meta.bottom
+      ),
+    };
+  });
+  expect(geometry.coverHeight).toBeGreaterThanOrEqual(geometry.scrollportHeight - 1);
+  expect(geometry.articleTop).toBeGreaterThanOrEqual(geometry.scrollportHeight - 1);
+  expect(geometry.horizontalOverflow).toBe(false);
+  expect(geometry.titleMetaOverlap).toBe(false);
+
   await expect(appWindow.locator('[data-writing-reader] h3')).toHaveText('When Information Starts Thinking for Me');
   await expect(appWindow.locator('[data-writing-lead]')).toContainText('August of last year');
   await expect(appWindow.locator('[data-writing-section]')).toHaveCount(13);
