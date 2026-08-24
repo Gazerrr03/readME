@@ -14,7 +14,7 @@ function deterministicScalar(index) {
 }
 
 function createInstancedShardGeometry(THREE, size) {
-  const sourceGeometry = new THREE.BoxGeometry(2, 2, 2, 1, 1, 4);
+  const sourceGeometry = new THREE.BoxGeometry(2, 2, 2, 1, 1, 8);
   const geometry = new THREE.InstancedBufferGeometry();
   geometry.setIndex(sourceGeometry.index.clone());
   for (const [name, attribute] of Object.entries(sourceGeometry.attributes)) {
