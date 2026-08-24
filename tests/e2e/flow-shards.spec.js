@@ -168,7 +168,8 @@ test('reference Flow preserves dark breathing room around the shard field', asyn
   expect(coverage.visible).toBeGreaterThan(0.18);
   expect(coverage.visible).toBeLessThan(0.72);
   expect(coverage.hot).toBeGreaterThan(0.002);
-  expect(coverage.hot).toBeLessThan(0.04);
+  // Eight longitudinal segments fill the curved silhouette slightly more.
+  expect(coverage.hot).toBeLessThan(0.041);
   expect(coverage.cool).toBeGreaterThan(0.04);
   expect(coverage.cool).toBeGreaterThan(coverage.warm * 2);
 
