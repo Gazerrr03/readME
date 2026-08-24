@@ -371,6 +371,15 @@ test('selection toolbar stays near the selected text across article blocks', asy
     const selection = document.getSelection();
     const menu = document.querySelector('[data-tool-selection]')?.getBoundingClientRect();
     const body = document.querySelector('[data-content-article-body]')?.getBoundingClientRect();
+    const selectionRects = [...document.querySelectorAll('[data-tool-selection-highlight-rect]')]
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, height: rect.height };
+      });
+    const nativeSelectionBackground = getComputedStyle(
+      document.querySelector('[data-content-article-body] > p'),
+      '::selection',
+    ).backgroundColor;
     if (!selection || !selection.focusNode || !menu || !body) return null;
     const focusRange = document.createRange();
     focusRange.setStart(selection.focusNode, selection.focusOffset);
@@ -381,6 +390,8 @@ test('selection toolbar stays near the selected text across article blocks', asy
       menu: { left: menu.left, right: menu.right, center: menu.left + menu.width / 2 },
       body: { left: body.left, right: body.right },
       focus: { left: focus.left, right: focus.right },
+      selectionRects,
+      nativeSelectionBackground,
     };
   });
 
@@ -389,6 +400,13 @@ test('selection toolbar stays near the selected text across article blocks', asy
   expect(geometry.menu.left).toBeGreaterThanOrEqual(geometry.body.left - 1);
   expect(geometry.menu.right).toBeLessThanOrEqual(geometry.body.right + 1);
   expect(Math.abs(geometry.menu.center - geometry.focus.left)).toBeLessThan(90);
+  expect(geometry.selectionRects.length).toBeGreaterThan(0);
+  expect(geometry.selectionRects.every((rect) => (
+    rect.left >= geometry.body.left - 1
+      && rect.right <= geometry.body.right + 1
+      && rect.height < 80
+  ))).toBe(true);
+  expect(geometry.nativeSelectionBackground).toMatch(/rgba?\(0, 0, 0(?:, 0)?\)/);
 });
 
 test('selecting text can create an annotation topic and remove it', async ({ page }) => {

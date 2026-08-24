@@ -390,7 +390,34 @@ function renderTimelineRail(document, i18n, sections) {
   };
 }
 
+function selectionClientRects(range) {
+  const rects = Array.from(range.getClientRects())
+    .filter((rect) => rect.width > 0 && rect.height > 0);
+  if (rects.length < 2) return rects;
+
+  // Chromium can include a block-level rectangle alongside the individual
+  // line rectangles. Keep only the smallest visible text fragments so the
+  // custom selection paint does not grow to the whole paragraph.
+  const lineRects = rects.filter((rect) => !rects.some((candidate) => (
+    candidate !== rect
+      && candidate.left >= rect.left - 1
+      && candidate.right <= rect.right + 1
+      && candidate.top >= rect.top - 1
+      && candidate.bottom <= rect.bottom + 1
+      && candidate.width < rect.width - 1
+      && candidate.height < rect.height - 1
+  )));
+  return lineRects.length ? lineRects : rects;
+}
+
 function selectionFocusRect(document, selection, range) {
+  const lineRects = selectionClientRects(range);
+  if (lineRects.length) {
+    const isForward = selection.anchorNode === range.startContainer
+      && selection.anchorOffset === range.startOffset;
+    return isForward ? lineRects[lineRects.length - 1] : lineRects[0];
+  }
+
   if (selection.focusNode) {
     try {
       const focusRange = document.createRange();
@@ -442,6 +469,11 @@ export function renderArticleTools({ document, i18n, article, body, bodyContaine
     'aria-label': i18n.t('writing.selectionTools'),
     hidden: '',
   });
+  const selectionHighlight = createElement(document, 'div', {
+    'data-tool-selection-highlight': '',
+    'aria-hidden': 'true',
+  });
+  bodyContainer.append(selectionHighlight);
   let activeTool = null;
   let notesCount = 0;
   let notesButton = null;
@@ -570,9 +602,27 @@ export function renderArticleTools({ document, i18n, article, body, bodyContaine
   function hideSelectionMenu() {
     selectionMenu.hidden = true;
     pendingSelection = null;
+    selectionHighlight.replaceChildren();
     selectionMenu.querySelectorAll('[data-tool-selection-action]').forEach((button) => {
       button.textContent = button.getAttribute('data-tool-selection-label');
     });
+  }
+
+  function renderSelectionHighlight(selected) {
+    selectionHighlight.replaceChildren();
+    const viewportHeight = document.documentElement.clientHeight;
+    selectionClientRects(selected.range)
+      .filter((rect) => rect.bottom > 0 && rect.top < viewportHeight)
+      .forEach((rect) => {
+        const highlight = createElement(document, 'span', {
+          'data-tool-selection-highlight-rect': '',
+        });
+        highlight.style.left = `${rect.left}px`;
+        highlight.style.top = `${rect.top}px`;
+        highlight.style.width = `${rect.width}px`;
+        highlight.style.height = `${rect.height}px`;
+        selectionHighlight.append(highlight);
+      });
   }
 
   function showSelectionMenu(selected) {
@@ -608,10 +658,15 @@ export function renderArticleTools({ document, i18n, article, body, bodyContaine
   const onSelectionChange = () => {
     const selected = selectionInsideBody(document, bodyContainer);
     if (selected) {
+      renderSelectionHighlight(selected);
       showSelectionMenu(selected);
     } else if (!selectionMenu.matches(':hover')) {
       hideSelectionMenu();
     }
+  };
+
+  const onViewportChange = () => {
+    if (pendingSelection) onSelectionChange();
   };
 
   const onDocumentMouseDown = (event) => {
@@ -625,6 +680,8 @@ export function renderArticleTools({ document, i18n, article, body, bodyContaine
   });
   document.addEventListener('selectionchange', onSelectionChange);
   document.addEventListener('mousedown', onDocumentMouseDown);
+  document.defaultView?.addEventListener('resize', onViewportChange);
+  document.defaultView?.addEventListener('scroll', onViewportChange, true);
 
   notesCount = loadNotes(localStorage, article.slug).length;
   notesButton.textContent = notesButtonLabel();
@@ -639,10 +696,13 @@ export function renderArticleTools({ document, i18n, article, body, bodyContaine
     dispose() {
       document.removeEventListener('selectionchange', onSelectionChange);
       document.removeEventListener('mousedown', onDocumentMouseDown);
+      document.defaultView?.removeEventListener('resize', onViewportChange);
+      document.defaultView?.removeEventListener('scroll', onViewportChange, true);
       clearTimeout(copyFeedbackTimer);
       timelineRail?.dispose();
       closePanel();
       hideSelectionMenu();
+      selectionHighlight.remove();
     },
   };
 }

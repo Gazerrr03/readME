@@ -271,7 +271,11 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   overflow-wrap: anywhere;
 }
 
-[data-content-article-body] { padding: 18px 0 10px; }
+[data-content-article-body] {
+  isolation: isolate;
+  padding: 18px 0 10px;
+  position: relative;
+}
 
 [data-content-article-body] > p {
   font-size: 20px;
@@ -867,6 +871,18 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   z-index: 70;
 }
 
+[data-tool-selection-highlight] {
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  z-index: -1;
+}
+
+[data-tool-selection-highlight-rect] {
+  background: var(--os-accent);
+  position: absolute;
+}
+
 [data-tool-selection-action] {
   background: transparent;
   border: 0;
@@ -902,7 +918,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 }
 
 [data-content-article-body] ::selection {
-  background: var(--os-accent);
+  background: transparent;
   color: var(--os-canvas);
 }
 
