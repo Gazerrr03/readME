@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:dcterms="http://purl.org/dc/terms/">
+  <channel>
+    <title>QIZHI / Writing</title>
+    <link>https://gazerrr03.github.io/readME/</link>
+    <description>Qizhi's writing archive, generated from the Portfolio OS article source.</description>
+    <language>zh-CN</language>
+    <atom:link href="https://gazerrr03.github.io/readME/feed.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 24 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <generator>Portfolio OS static generator</generator>
+    <item>
+      <title>热情让我出发，错误让我看见边界，责任让我继续</title>
+      <link>https://gazerrr03.github.io/readME/writing/passion-errors-responsibility/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/passion-errors-responsibility/</guid>
+      <pubDate>Mon, 24 Aug 2026 00:00:00 GMT</pubDate>
+      <description>如果有人问我，今年暑假去了哪里，我大概会说：我去做了一个独立产品。</description>
+      <category>AI</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2026-08-24T00:00:00Z</dcterms:created>
+      <dcterms:modified>2026-08-24T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>把山搬到别处</title>
+      <link>https://gazerrr03.github.io/readME/writing/move-the-mountain/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/move-the-mountain/</guid>
+      <pubDate>Sat, 15 Aug 2026 00:00:00 GMT</pubDate>
+      <description>面前有一座山，我们为什么一定要翻过去？</description>
+      <category>AI</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2026-08-15T00:00:00Z</dcterms:created>
+      <dcterms:modified>2026-08-15T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>仿生 Agent 会梦见范斯沃斯吗</title>
+      <link>https://gazerrr03.github.io/readME/writing/do-agents-dream-of-farnsworth/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/do-agents-dream-of-farnsworth/</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 GMT</pubDate>
+      <description>我读《人月神话》的时候，总觉得哪里眼熟。不是眼熟书里的道理——「加人更慢」这句话我听过太多次，耳朵都起茧了——是眼熟我自己干过的蠢事。1975 年，Brooks 在书里写，任务是任意不可切的，「人月」是个神话：往一个已经延误的项目里加人，只会让它更延误。分配九个女人，也生不出一个孩子。</description>
+      <category>AI</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2026-08-13T00:00:00Z</dcterms:created>
+      <dcterms:modified>2026-08-13T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>当信息开始替我思考</title>
+      <link>https://gazerrr03.github.io/readME/writing/flow-canvas-information-overload/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/flow-canvas-information-overload/</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 GMT</pubDate>
+      <description>没记错的话是在去年的八月，或许至今我都不会忘记那时每天依赖着 ChatGPT 学习的经历，因为那让我构思起了一件事：一个画布上的多分支对话，也许可以取代传统 LUI 的线性对话。</description>
+      <category>设计</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2026-08-09T00:00:00Z</dcterms:created>
+      <dcterms:modified>2026-08-13T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>信息过载笔记</title>
+      <link>https://gazerrr03.github.io/readME/writing/notes-on-information-overload/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/notes-on-information-overload/</guid>
+      <pubDate>Mon, 18 May 2026 00:00:00 GMT</pubDate>
+      <description>信息流没有尽头，有尽头的是注意力。这个不对称就是问题的全部。任何假装信息能读完的工具，在第一屏就在撒谎。</description>
+      <category>NOTES</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2026-05-18T00:00:00Z</dcterms:created>
+      <dcterms:modified>2026-05-18T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>书架即相机</title>
+      <link>https://gazerrr03.github.io/readME/writing/the-shelf-is-a-camera/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/the-shelf-is-a-camera/</guid>
+      <pubDate>Sun, 30 Nov 2025 00:00:00 GMT</pubDate>
+      <description>轴测书架本身从不移动，移动的是相机。接受这一点之后，很多界面问题会悄悄改名成摄影问题。</description>
+      <category>ESSAY</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2025-11-30T00:00:00Z</dcterms:created>
+      <dcterms:modified>2025-11-30T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>蓝白足矣</title>
+      <link>https://gazerrr03.github.io/readME/writing/blue-and-white-are-enough/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/blue-and-white-are-enough/</guid>
+      <pubDate>Sat, 12 Jul 2025 00:00:00 GMT</pubDate>
+      <description>两种颜色不是限制，而是一种压缩算法。界面的每一种状态都必须能被描述成&quot;墨&quot;或&quot;纸&quot;，于是任何含糊的东西都活不到屏幕上。</description>
+      <category>ESSAY</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2025-07-12T00:00:00Z</dcterms:created>
+      <dcterms:modified>2025-07-12T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>抖动做决定</title>
+      <link>https://gazerrr03.github.io/readME/writing/the-dither-decides/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/the-dither-decides/</guid>
+      <pubDate>Sun, 09 Mar 2025 00:00:00 GMT</pubDate>
+      <description>两种颜色之间没有第三种。渐变想在这块屏幕上活下来，就得交给抖动处理，而抖动不做调和，它投票：每个像素都要站起来声明自己是墨还是纸。</description>
+      <category>LOG</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2025-03-09T00:00:00Z</dcterms:created>
+      <dcterms:modified>2025-03-09T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>窗口是一个承诺</title>
+      <link>https://gazerrr03.github.io/readME/writing/a-window-is-a-promise/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/a-window-is-a-promise/</guid>
+      <pubDate>Sat, 21 Sep 2024 00:00:00 GMT</pubDate>
+      <description>窗口是一个承诺：里面的东西可以被拖动、关闭、再打开，且不丢失任何东西。这个承诺守起来比看起来难。每一次拖拽都是一份小合同——内容必须活着抵达。</description>
+      <category>ESSAY</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2024-09-21T00:00:00Z</dcterms:created>
+      <dcterms:modified>2024-09-21T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>信噪之间</title>
+      <link>https://gazerrr03.github.io/readME/writing/signal-to-noise-to-signal/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/signal-to-noise-to-signal/</guid>
+      <pubDate>Sat, 16 Mar 2024 00:00:00 GMT</pubDate>
+      <description>噪音的名声是它不该得的。雪花不过是来自一个大到无法命名的信号源：整片天空同时在你能听到的每一个频率上播音。</description>
+      <category>NOTES</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2024-03-16T00:00:00Z</dcterms:created>
+      <dcterms:modified>2024-03-16T00:00:00Z</dcterms:modified>
+    </item>
+    <item>
+      <title>光标先眨眼</title>
+      <link>https://gazerrr03.github.io/readME/writing/the-cursor-blinks-first/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/the-cursor-blinks-first/</guid>
+      <pubDate>Sat, 02 Dec 2023 00:00:00 GMT</pubDate>
+      <description>在任何窗口打开之前、在网格淡入之前，光标已经在了：一块光，以无人配置过的频率搏动。整台机器里只有它，在被要求之前就开始呼吸。</description>
+      <category>LOG</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2023-12-02T00:00:00Z</dcterms:created>
+      <dcterms:modified>2023-12-02T00:00:00Z</dcterms:modified>
+    </item>
+  </channel>
+</rss>

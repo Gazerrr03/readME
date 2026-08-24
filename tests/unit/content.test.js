@@ -92,6 +92,8 @@ test('about and contact content is complete', () => {
   assert.deepEqual(about.works.map(({ name }) => name), ['Flovvas', 'Skillcraft']);
   assert.deepEqual(channels.map(({ id }) => id), ['email', 'github', 'x', 'rss']);
   for (const channel of channels) assert.ok(channel.address && channel.href);
+  assert.equal(channels.find(({ id }) => id === 'rss').href, 'feed.xml');
+  assert.equal(channels.find(({ id }) => id === 'rss').address, 'feed.xml');
 });
 
 test('every deck track points at a real audio file and is fully localized', async () => {

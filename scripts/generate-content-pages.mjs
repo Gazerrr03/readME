@@ -10,7 +10,10 @@ import { articles, projects } from './data/content.js';
 import { contentPath } from './routing/content-routes.js';
 
 const MANIFEST = 'content-pages.manifest.json';
-const OWNED_PATH = /^(writing|projects)\/[a-z0-9]+(?:-[a-z0-9]+)*\/(index\.html|en\.md|zh\.md|ja\.md)$/;
+const FEED_PATH = 'feed.xml';
+const SITE_BASE_URL = 'https://gazerrr03.github.io/readME/';
+const FEED_LOCALE = 'zh-CN';
+const OWNED_PATH = /^(?:feed\.xml|(writing|projects)\/[a-z0-9]+(?:-[a-z0-9]+)*\/(index\.html|en\.md|zh\.md|ja\.md))$/;
 const PROJECT_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const MARKDOWN_LOCALES = Object.freeze([
   ['en', 'en'],
@@ -27,10 +30,80 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+function escapeXml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
+}
+
 function excerpt(value, length = 180) {
   const normalized = String(value ?? '').replace(/\s+/g, ' ').trim();
   if (normalized.length <= length) return normalized;
   return `${normalized.slice(0, length - 1).trimEnd()}…`;
+}
+
+function isoDate(date) {
+  return `${date}T00:00:00Z`;
+}
+
+function rfc822Date(date) {
+  return new Date(isoDate(date)).toUTCString();
+}
+
+function articleSummary(article, localeKey) {
+  return excerpt(article.body[localeKey]?.find((item) => typeof item === 'string'));
+}
+
+function articleFeedEntries() {
+  return [...articles].sort((left, right) => (
+    right.edited.localeCompare(left.edited) || right.date.localeCompare(left.date)
+  ));
+}
+
+export function renderFeed() {
+  const latestEdited = articles.reduce(
+    (latest, article) => (article.edited > latest ? article.edited : latest),
+    articles[0]?.edited ?? '1970-01-01',
+  );
+  const items = articleFeedEntries().map((article) => {
+    const canonicalUrl = `${SITE_BASE_URL}${contentPath('writing', article.slug)}`;
+    const localizedUrl = `${canonicalUrl}?lang=${encodeURIComponent(FEED_LOCALE)}`;
+    const title = localizedValue(article.title, FEED_LOCALE);
+    const summary = articleSummary(article, FEED_LOCALE);
+    const modified = article.edited ?? article.date;
+    return `    <item>
+      <title>${escapeXml(title)}</title>
+      <link>${escapeXml(localizedUrl)}</link>
+      <guid isPermaLink="true">${escapeXml(canonicalUrl)}</guid>
+      <pubDate>${rfc822Date(modified)}</pubDate>
+      <description>${escapeXml(summary)}</description>
+      <category>${escapeXml(article.tag)}</category>
+      <dc:language>${escapeXml(FEED_LOCALE)}</dc:language>
+      <dcterms:created>${isoDate(article.date)}</dcterms:created>
+      <dcterms:modified>${isoDate(modified)}</dcterms:modified>
+    </item>`;
+  });
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:dcterms="http://purl.org/dc/terms/">
+  <channel>
+    <title>QIZHI / Writing</title>
+    <link>${escapeXml(SITE_BASE_URL)}</link>
+    <description>Qizhi's writing archive, generated from the Portfolio OS article source.</description>
+    <language>${escapeXml(FEED_LOCALE)}</language>
+    <atom:link href="${escapeXml(`${SITE_BASE_URL}${FEED_PATH}`)}" rel="self" type="application/rss+xml" />
+    <lastBuildDate>${rfc822Date(latestEdited)}</lastBuildDate>
+    <generator>Portfolio OS static generator</generator>
+${items.join('\n')}
+  </channel>
+</rss>
+`;
 }
 
 export function buildContentEntries() {
@@ -146,6 +219,7 @@ async function readOrMissing(file) {
 export async function generateContentPages({ root = PROJECT_ROOT, check = false } = {}) {
   const entries = buildContentEntries();
   const expected = new Map(entries.map((entry) => [outputFor(entry), renderEntryPage(entry)]));
+  expected.set(FEED_PATH, renderFeed());
   for (const article of articles) {
     for (const [localeKey, fileName] of MARKDOWN_LOCALES) {
       expected.set(
@@ -173,7 +247,12 @@ export async function generateContentPages({ root = PROJECT_ROOT, check = false 
 
   for (const stale of previousFiles.filter((file) => !expected.has(file))) {
     if (!OWNED_PATH.test(stale)) throw new Error(`Refusing to remove unowned path: ${stale}`);
-    await rm(dirname(join(root, stale)), { recursive: true, force: true });
+    const target = join(root, stale);
+    if (stale === FEED_PATH) {
+      await rm(target, { force: true });
+    } else {
+      await rm(dirname(target), { recursive: true, force: true });
+    }
   }
   for (const [relativePath, source] of expected) {
     const target = join(root, relativePath);
