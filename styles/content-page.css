@@ -159,7 +159,6 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 }
 
 [data-content-article-masthead] {
-  border-bottom: 4px double var(--os-accent);
   margin-bottom: 8px;
   padding-bottom: 24px;
 }
@@ -202,16 +201,6 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   line-height: 1.04;
   margin-bottom: 16px;
   overflow-wrap: anywhere;
-}
-
-[data-content-reading-band] {
-  font-family: var(--mono);
-  font-size: 9px;
-  opacity: 0.42;
-  overflow: hidden;
-  padding: 8px 0;
-  text-transform: uppercase;
-  white-space: nowrap;
 }
 
 [data-content-article-body] { padding: 18px 0 10px; }
