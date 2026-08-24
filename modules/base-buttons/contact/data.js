@@ -16,9 +16,9 @@ export const channels = Object.freeze([
   Object.freeze({
     id: 'x',
     channel: 'X',
-    address: '@two_am_qz',
+    address: '@gazerrr21716',
     status: '[--]',
-    href: 'https://x.example.net/two_am_qz',
+    href: 'https://x.com/gazerrr21716',
   }),
   Object.freeze({
     id: 'rss',
