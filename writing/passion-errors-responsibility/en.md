@@ -21,17 +21,14 @@ Flovvas is now a year away from its first idea. Looking back at the answer sheet
 
 We were excited by what AI seemed to make possible. Many things that once felt nearly impossible could begin with a single sentence. I had wanted to build a personal website by graduation since my first year of university; now a coding agent can start a task like that from one line.
 
-But making something from zero to one becoming easier does not make success easier. The difficult part is often not making a thing, but judging whether it deserves to exist, whether it changes a user’s behavior, and whether we can stop when it does not.
-
-Should we surf into that uncertainty anyway? The question cannot be answered by excitement alone. The Beast of Failure is crouching in the waves.
+Making something from zero to one has become easier, but success still seems extremely difficult. The difficult part is often not making a thing, but judging whether it deserves to exist, whether it changes a user’s behavior, and whether we can stop when it does not. If that is true, should we surf into this uncertainty? This choice cannot be solved by heat alone—the Beast of Failure is crouching in these waves. It is a fictional, merciless, never-satisfied “creature”: it devours most new product ideas and “bites” the people who pursue them without validation. More painfully, failure does not only come for those who lack experience, ability, or preparation.
 
 > It waits. Patient.
+Confident that it will soon get its prey—it always does.
+Few escape its bite, none its tentacles.
+One way or another, the Beast of Failure gets us all.
 
-It waits with the confidence that its prey will arrive sooner or later. Most new products may be bitten. Experience, ability, and preparation do not give anyone permanent immunity.
-
-Reality is cruel. There is no guaranteed way through uncertainty, so “making it safely to the other shore” is often just a name for a risk we cannot see yet. This is not an argument against internships, recruiting, graduate school, or research. It is an admission that no choice can remove the possibility of failure for us.
-
-In that sense, “making it safely to the other shore” is a lie—not because the shore does not exist, but because we cannot prove we are safe before we set out.
+Reality is cruel, because uncertainty offers no guaranteed path. In other words, “making it safely to the other shore” is a lie.
 
 The good thing is that we still have room for heat. Years from now, when I have left school and started arguing with life on its own terms, I may look back and ask whether I will regret not getting on this vehicle. Will I still remember the early sketches I made on paper when I was an AI beginner who had just started questioning ChatGPT’s product experience?
 
