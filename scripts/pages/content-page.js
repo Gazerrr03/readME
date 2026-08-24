@@ -41,6 +41,7 @@ const i18n = createI18n(locale);
 let readingTheme = resolveReadingTheme();
 let focused = false;
 let disposePresentation = () => {};
+let disposeHeader = () => {};
 
 function resolveReadingTheme() {
   try {
@@ -83,7 +84,74 @@ function supportedKind() {
   return kind === 'projects' ? 'projects' : 'writing';
 }
 
-function renderHeader() {
+function renderVibeControl(vibe) {
+  if (!vibe) return { element: null, dispose() {} };
+
+  const wrapper = createElement(documentRef, 'div', { 'data-content-vibe': '' });
+  const toggle = createElement(documentRef, 'button', {
+    type: 'button',
+    'data-content-vibe-toggle': '',
+    'aria-expanded': 'false',
+    'aria-haspopup': 'menu',
+    'aria-pressed': 'false',
+  }, i18n.t('content.vibe'));
+  const menu = createElement(documentRef, 'div', {
+    'data-content-vibe-menu': '',
+    role: 'menu',
+    hidden: '',
+  });
+  const option = createElement(documentRef, 'button', {
+    type: 'button',
+    'data-content-vibe-option': 'music',
+    role: 'menuitem',
+  }, i18n.t('content.vibeMusic'));
+  menu.append(option);
+  wrapper.append(toggle, menu);
+
+  let menuOpen = false;
+  const setMenuOpen = (nextOpen) => {
+    menuOpen = Boolean(nextOpen);
+    menu.hidden = !menuOpen;
+    toggle.setAttribute('aria-expanded', String(menuOpen));
+  };
+  const syncPlayerState = (open) => {
+    toggle.setAttribute('aria-pressed', String(open));
+    wrapper.toggleAttribute('data-vibe-active', open);
+  };
+  const onToggle = () => setMenuOpen(!menuOpen);
+  const onOption = () => {
+    setMenuOpen(false);
+    vibe.open();
+  };
+  const onPointerDown = (event) => {
+    if (!wrapper.contains(event.target)) setMenuOpen(false);
+  };
+  const onKeyDown = (event) => {
+    if (event.key === 'Escape' && menuOpen) {
+      setMenuOpen(false);
+      toggle.focus();
+    }
+  };
+
+  toggle.addEventListener('click', onToggle);
+  option.addEventListener('click', onOption);
+  documentRef.addEventListener('pointerdown', onPointerDown);
+  documentRef.addEventListener('keydown', onKeyDown);
+  const unsubscribe = vibe.subscribe(syncPlayerState);
+
+  return {
+    element: wrapper,
+    dispose() {
+      toggle.removeEventListener('click', onToggle);
+      option.removeEventListener('click', onOption);
+      documentRef.removeEventListener('pointerdown', onPointerDown);
+      documentRef.removeEventListener('keydown', onKeyDown);
+      unsubscribe();
+    },
+  };
+}
+
+function renderHeader({ vibe = null } = {}) {
   const header = createElement(documentRef, 'header', { 'data-content-header': '' });
   const returnLink = createElement(documentRef, 'a', {
     href: desktopPath(supportedKind()),
@@ -145,12 +213,20 @@ function renderHeader() {
       saveReadingTheme(readingTheme);
       applyReadingTheme();
       syncThemeButton(themeButton);
+      vibe?.refresh?.();
     });
     readingControls.append(themeButton);
   }
+  const vibeControl = kind === 'writing' ? renderVibeControl(vibe) : null;
+  if (vibeControl?.element) readingControls.append(vibeControl.element);
   controls.append(readingControls);
   header.append(returnLink, identity, controls);
-  return header;
+  return {
+    element: header,
+    dispose() {
+      vibeControl?.dispose();
+    },
+  };
 }
 
 function renderUnavailable() {
@@ -166,6 +242,7 @@ function renderUnavailable() {
 
 function render() {
   applyReadingTheme();
+  disposeHeader();
   disposePresentation();
   const article = kind === 'writing'
     ? articles.find((entry) => entry.slug === slug)
@@ -184,7 +261,9 @@ function render() {
   }
   disposePresentation = presentation.dispose;
   main.append(presentation.element);
-  mount.replaceChildren(renderHeader(), main);
+  const header = renderHeader({ vibe: presentation.vibe });
+  disposeHeader = header.dispose;
+  mount.replaceChildren(header.element, main);
   documentRef.documentElement.lang = i18n.locale;
   const item = article ?? project;
   documentRef.title = item
@@ -197,5 +276,8 @@ function render() {
 }
 
 i18n.subscribe(render);
-window.addEventListener('pagehide', () => disposePresentation(), { once: true });
+window.addEventListener('pagehide', () => {
+  disposeHeader();
+  disposePresentation();
+}, { once: true });
 render();

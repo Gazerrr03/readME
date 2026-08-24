@@ -236,6 +236,59 @@ test('article display mode sits beside language and persists independently', asy
   );
 });
 
+test('vibe menu pins the music player beside the article and follows the theme', async ({ page }) => {
+  await page.goto(`/writing/${firstArticle.slug}/`);
+
+  const vibeToggle = page.locator('[data-content-vibe-toggle]');
+  const menu = page.locator('[data-content-vibe-menu]');
+  const player = page.locator('[data-vibe-player]');
+  await expect(vibeToggle).toHaveText('VIBE');
+  await expect(menu).toBeHidden();
+
+  await vibeToggle.click();
+  await expect(menu).toBeVisible();
+  await expect(menu.locator('[data-content-vibe-option]')).toHaveCount(1);
+  await expect(menu.locator('[data-content-vibe-option]')).toHaveText('MUSIC PLAYER');
+
+  await menu.locator('[data-content-vibe-option]').click();
+  await expect(menu).toBeHidden();
+  await expect(player).toBeVisible();
+  await expect(player).toHaveAttribute('data-vibe-status', 'idle');
+  expect(await player.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
+  const articleBox = await page.locator('[data-content-article]').boundingBox();
+  const playerBox = await player.boundingBox();
+  expect(playerBox.x).toBeGreaterThanOrEqual(articleBox.x + articleBox.width - 1);
+
+  await player.locator('[data-vibe-play]').click();
+  await expect(player).toHaveAttribute('data-vibe-status', 'playing');
+  await expect(player.locator('[data-vibe-play]')).toHaveAccessibleName('Pause music');
+
+  await page.locator('[data-content-theme-toggle]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'light');
+  expect(await player.evaluate((element) => getComputedStyle(element).backgroundColor))
+    .toBe('rgb(251, 248, 241)');
+
+  await player.locator('[data-vibe-close]').click();
+  await expect(player).toBeHidden();
+  await expect(vibeToggle).toHaveAttribute('aria-pressed', 'false');
+
+  await page.setViewportSize({ width: 1200, height: 800 });
+  await vibeToggle.click();
+  await menu.locator('[data-content-vibe-option]').click();
+  await expect(player).toBeVisible();
+  const mediumArticleBox = await page.locator('[data-content-article]').boundingBox();
+  const mediumPlayerBox = await player.boundingBox();
+  expect(mediumPlayerBox.x).toBeGreaterThanOrEqual(mediumArticleBox.x + mediumArticleBox.width - 1);
+  await player.locator('[data-vibe-close]').click();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await vibeToggle.click();
+  await menu.locator('[data-content-vibe-option]').click();
+  await expect(player).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  expect((await player.boundingBox()).x).toBe(10);
+});
+
 async function selectLeadText(page) {
   const lead = page.locator('[data-content-article-lead]');
   const box = await lead.boundingBox();

@@ -1,6 +1,7 @@
 import { pick } from '../data/content.js';
 import { contentPath, desktopPath } from '../routing/content-routes.js';
 import { markdownEditionLinks, renderArticleTools } from './article-tools.js';
+import { renderArticleVibe } from './article-vibe.js';
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -170,9 +171,14 @@ export function renderArticlePage({ document, i18n, article, articles }) {
   const tools = renderArticleTools({
     document, i18n, article, body, bodyContainer,
   });
-  element.append(tools.element);
+  const vibe = renderArticleVibe({ document, i18n });
+  element.append(tools.element, vibe.element);
   return {
     element,
-    dispose: tools.dispose,
+    vibe,
+    dispose() {
+      tools.dispose();
+      vibe.dispose();
+    },
   };
 }
