@@ -76,6 +76,32 @@ export const tracks = Object.freeze([
       '################',
     ]),
   }),
+  Object.freeze({
+    slug: 'episode-33',
+    file: 'media/music/episode33.m4a',
+    format: '44.1K AAC',
+    seconds: 24.08,
+    title: localized('episode 33？', 'episode 33？', 'episode 33？'),
+    coverImage: 'media/covers/episode-33-pixel.png',
+    cover: Object.freeze([
+      '################',
+      '#..............#',
+      '#..##########..#',
+      '#..#........#..#',
+      '#..#..####..#..#',
+      '#..#..#..#..#..#',
+      '#..#..####..#..#',
+      '#..#........#..#',
+      '#..##########..#',
+      '#..............#',
+      '#....########..#',
+      '#....#......#..#',
+      '#....########..#',
+      '#..............#',
+      '#..............#',
+      '################',
+    ]),
+  }),
 ]);
 
 export const photos = Object.freeze([

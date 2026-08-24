@@ -102,8 +102,9 @@ test('next advances through tracks and wraps around', () => {
   find('data-deck-next').click();
   assert.equal(deck.getState().index, 1);
   assert.equal(audio.src, tracks[1].file);
-  find('data-deck-next').click();
-  find('data-deck-next').click();
+  for (let index = 1; index < tracks.length; index += 1) {
+    find('data-deck-next').click();
+  }
   assert.equal(deck.getState().index, 0);
   assert.equal(find('data-deck-title').textContent, tracks[0].title.en);
 });

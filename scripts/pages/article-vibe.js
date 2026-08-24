@@ -1,9 +1,9 @@
 import { pick } from '../data/content.js';
 import { tracks } from '../../media/catalog.js';
 
-const VIBE_TRACK = tracks[0];
 const CANVAS_SIZE = 248;
 const FRAME_RATE = 30;
+const DEFAULT_VOLUME = 0.78;
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -39,13 +39,15 @@ export function renderArticleVibe({ document, i18n }) {
   const windowRef = document.defaultView;
   const audio = document.createElement('audio');
   audio.preload = 'metadata';
-  audio.src = VIBE_TRACK.file;
+  audio.volume = DEFAULT_VOLUME;
   audio.setAttribute('data-vibe-audio', '');
   audio.setAttribute('aria-hidden', 'true');
   audio.hidden = true;
 
+  let currentTrackIndex = 0;
   let status = 'idle';
   let isOpen = false;
+  let view = 'expanded';
   let frameId = null;
   let destroyed = false;
   const subscribers = new Set();
@@ -54,20 +56,28 @@ export function renderArticleVibe({ document, i18n }) {
     'data-vibe-player': '',
     'data-vibe-status': status,
     'data-vibe-open': 'false',
+    'data-vibe-view': view,
     'aria-label': i18n.t('content.vibePlayer'),
     hidden: '',
   });
   const header = createElement(document, 'header', { 'data-vibe-player-header': '' });
   const headerMeta = createElement(document, 'div', { 'data-vibe-player-header-meta': '' });
+  const headerActions = createElement(document, 'div', { 'data-vibe-player-header-actions': '' });
   const reference = createElement(document, 'span', { 'data-vibe-reference': '' });
   const source = createElement(document, 'span', { 'data-vibe-source': '' });
+  const collapseButton = createElement(document, 'button', {
+    type: 'button',
+    'data-vibe-collapse': '',
+    'aria-label': i18n.t('content.vibeCollapse'),
+  }, '−');
   const closeButton = createElement(document, 'button', {
     type: 'button',
     'data-vibe-close': '',
     'aria-label': i18n.t('content.vibeClose'),
   }, '×');
   headerMeta.append(reference, source);
-  header.append(headerMeta, closeButton);
+  headerActions.append(collapseButton, closeButton);
+  header.append(headerMeta, headerActions);
 
   const stage = createElement(document, 'div', { 'data-vibe-stage': '' });
   const hud = createElement(document, 'div', { 'data-vibe-radial-hud': '' });
@@ -91,6 +101,7 @@ export function renderArticleVibe({ document, i18n }) {
     'data-vibe-play': '',
     'aria-pressed': 'false',
     'aria-label': i18n.t('content.vibePlay'),
+    draggable: 'false',
   });
   const playGlyph = createElement(document, 'span', {
     'data-vibe-play-glyph': '',
@@ -107,15 +118,82 @@ export function renderArticleVibe({ document, i18n }) {
   const statusText = createElement(document, 'span', { 'data-vibe-status-text': '' });
   const trackRow = createElement(document, 'div', { 'data-vibe-track-row': '' });
   const trackLabel = createElement(document, 'span', { 'data-vibe-track-label': '' });
-  const trackTitle = createElement(document, 'span', { 'data-vibe-track-title': '' });
+  const trackControls = createElement(document, 'div', { 'data-vibe-track-controls': '' });
+  const previousButton = createElement(document, 'button', {
+    type: 'button',
+    'data-vibe-prev': '',
+    'aria-label': i18n.t('content.vibePrevious'),
+  }, '‹');
+  const trackSelect = createElement(document, 'select', {
+    'data-vibe-track-select': '',
+    'data-vibe-track-title': '',
+    'aria-label': i18n.t('content.vibeTrackSelect'),
+  });
+  const nextButton = createElement(document, 'button', {
+    type: 'button',
+    'data-vibe-next': '',
+    'aria-label': i18n.t('content.vibeNext'),
+  }, '›');
+  tracks.forEach((track, index) => {
+    trackSelect.append(createElement(document, 'option', {
+      value: String(index),
+    }, pick(track.title, i18n.locale)));
+  });
+  trackControls.append(previousButton, trackSelect, nextButton);
   const timerRow = createElement(document, 'div', { 'data-vibe-timer': '' });
   const timeCode = createElement(document, 'span', { 'data-vibe-timecode': '' });
   const format = createElement(document, 'span', { 'data-vibe-format': '' });
+  const volumeRow = createElement(document, 'div', { 'data-vibe-volume-row': '' });
+  const volumeLabel = createElement(document, 'label', {
+    'data-vibe-volume-label': '',
+    for: 'vibe-volume',
+  });
+  const volumeRange = createElement(document, 'input', {
+    id: 'vibe-volume',
+    type: 'range',
+    min: '0',
+    max: '1',
+    step: '0.01',
+    value: String(DEFAULT_VOLUME),
+    'data-vibe-volume': '',
+    'aria-label': i18n.t('content.vibeVolume'),
+  });
+  const volumeValue = createElement(document, 'output', { 'data-vibe-volume-value': '' });
   statusRow.append(statusLabel, statusText);
-  trackRow.append(trackLabel, trackTitle);
+  trackRow.append(trackLabel, trackControls);
   timerRow.append(timeCode, format);
-  footer.append(statusRow, trackRow, timerRow);
-  player.append(header, stage, footer, audio);
+  volumeRow.append(volumeLabel, volumeRange, volumeValue);
+  footer.append(statusRow, trackRow, volumeRow, timerRow);
+
+  const compactView = createElement(document, 'div', {
+    'data-vibe-compact-view': '',
+    'aria-label': i18n.t('content.vibePlayer'),
+  });
+  const compactPlayButton = createElement(document, 'button', {
+    type: 'button',
+    'data-vibe-compact-play': '',
+    'aria-pressed': 'false',
+    'aria-label': i18n.t('content.vibePlay'),
+    draggable: 'false',
+  });
+  const compactPlayGlyph = createElement(document, 'span', {
+    'data-vibe-compact-play-glyph': '',
+    'aria-hidden': 'true',
+  });
+  const compactTrack = createElement(document, 'span', {
+    'data-vibe-compact-track': '',
+    'aria-hidden': 'true',
+  });
+  const expandButton = createElement(document, 'button', {
+    type: 'button',
+    'data-vibe-expand': '',
+    'aria-label': i18n.t('content.vibeExpand'),
+  }, '↗');
+  compactPlayButton.append(compactPlayGlyph);
+  compactView.append(compactPlayButton, compactTrack, expandButton);
+
+  player.append(header, stage, footer, compactView, audio);
+  audio.src = tracks[0]?.file ?? '';
 
   const context = canvas.getContext?.('2d') ?? null;
   const shouldAnimate = () => !windowRef?.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -129,6 +207,10 @@ export function renderArticleVibe({ document, i18n }) {
 
   function color(name, fallback) {
     return windowRef?.getComputedStyle(player).getPropertyValue(name).trim() || fallback;
+  }
+
+  function currentTrack() {
+    return tracks[currentTrackIndex] ?? tracks[0];
   }
 
   function drawRadialTicks(time = 0) {
@@ -179,14 +261,32 @@ export function renderArticleVibe({ document, i18n }) {
     timeCode.textContent = formatTimecode(audio.currentTime);
   }
 
+  function renderVolume() {
+    const percentage = Math.round(audio.volume * 100);
+    volumeRange.value = String(audio.volume);
+    volumeValue.textContent = `${percentage}%`;
+  }
+
+  function renderTrack() {
+    const track = currentTrack();
+    if (!track) return;
+    trackSelect.value = String(currentTrackIndex);
+    compactTrack.textContent = `${pad2(currentTrackIndex + 1)} / ${pad2(tracks.length)}`;
+    format.textContent = track.format;
+  }
+
   function renderStatus() {
     player.dataset.vibeStatus = status;
     statusText.textContent = i18n.t(statusKey(status));
-    playGlyph.textContent = status === 'playing' ? '■' : '▶';
-    playButton.setAttribute('aria-pressed', String(status === 'playing'));
-    playButton.setAttribute('aria-label', i18n.t(
-      status === 'playing' ? 'content.vibePause' : 'content.vibePlay',
-    ));
+    const glyph = status === 'playing' ? '■' : '▶';
+    playGlyph.textContent = glyph;
+    compactPlayGlyph.textContent = glyph;
+    const isPlaying = status === 'playing';
+    playButton.setAttribute('aria-pressed', String(isPlaying));
+    compactPlayButton.setAttribute('aria-pressed', String(isPlaying));
+    const label = i18n.t(isPlaying ? 'content.vibePause' : 'content.vibePlay');
+    playButton.setAttribute('aria-label', label);
+    compactPlayButton.setAttribute('aria-label', label);
     renderTimecode();
   }
 
@@ -226,10 +326,29 @@ export function renderArticleVibe({ document, i18n }) {
     notifyOpenState();
   }
 
+  function setView(nextView) {
+    view = nextView === 'compact' ? 'compact' : 'expanded';
+    player.dataset.vibeView = view;
+  }
+
   function open() {
     if (destroyed) return;
+    setView('expanded');
     setOpen(true);
     drawRadialTicks(0);
+  }
+
+  function expand() {
+    if (destroyed) return;
+    setView('expanded');
+    setOpen(true);
+    drawRadialTicks(0);
+  }
+
+  function collapse() {
+    if (destroyed) return;
+    setView('compact');
+    setOpen(true);
   }
 
   function close() {
@@ -237,6 +356,7 @@ export function renderArticleVibe({ document, i18n }) {
       audio.pause();
       setStatus('paused');
     }
+    setView('expanded');
     setOpen(false);
   }
 
@@ -251,40 +371,91 @@ export function renderArticleVibe({ document, i18n }) {
       setStatus('idle');
     }
     Promise.resolve(audio.play()).then(() => {
-      if (!destroyed && isOpen) setStatus('playing');
+      if (!destroyed) setStatus('playing');
     }).catch(() => {
       if (!destroyed) setStatus('unavailable');
     });
   }
 
+  function selectTrack(nextIndex, { autoplay = false } = {}) {
+    if (!tracks.length) return;
+    const wasPlaying = status === 'playing';
+    audio.pause();
+    currentTrackIndex = ((nextIndex % tracks.length) + tracks.length) % tracks.length;
+    audio.currentTime = 0;
+    audio.src = currentTrack().file;
+    try {
+      audio.load();
+    } catch {
+      // The browser can still load the source on the next play call.
+    }
+    setStatus('idle');
+    renderTrack();
+    if (autoplay || wasPlaying) {
+      Promise.resolve(audio.play()).then(() => {
+        if (!destroyed) setStatus('playing');
+      }).catch(() => {
+        if (!destroyed) setStatus('unavailable');
+      });
+    }
+  }
+
   function syncLocale() {
     player.setAttribute('aria-label', i18n.t('content.vibePlayer'));
+    compactView.setAttribute('aria-label', i18n.t('content.vibePlayer'));
     reference.textContent = 'V - 01';
     source.textContent = i18n.t('content.vibeAudioInput');
+    collapseButton.setAttribute('aria-label', i18n.t('content.vibeCollapse'));
     closeButton.setAttribute('aria-label', i18n.t('content.vibeClose'));
+    expandButton.setAttribute('aria-label', i18n.t('content.vibeExpand'));
+    previousButton.setAttribute('aria-label', i18n.t('content.vibePrevious'));
+    nextButton.setAttribute('aria-label', i18n.t('content.vibeNext'));
+    trackSelect.setAttribute('aria-label', i18n.t('content.vibeTrackSelect'));
+    volumeLabel.textContent = i18n.t('content.vibeVolume');
+    volumeRange.setAttribute('aria-label', i18n.t('content.vibeVolume'));
+    tracks.forEach((track, index) => {
+      const option = trackSelect.options[index];
+      if (option) option.textContent = pick(track.title, i18n.locale);
+    });
     statusLabel.textContent = i18n.t('content.vibeStatusLabel');
     trackLabel.textContent = i18n.t('content.vibeTrackLabel');
-    trackTitle.textContent = pick(VIBE_TRACK.title, i18n.locale);
-    format.textContent = VIBE_TRACK.format;
+    renderTrack();
+    renderVolume();
     renderStatus();
   }
 
   const onEnded = () => setStatus('ended');
   const onError = () => {
-    if (status === 'playing') setStatus('unavailable');
+    if (!destroyed) setStatus('unavailable');
   };
   const onTimeUpdate = () => renderTimecode();
+  const onVolumeInput = () => {
+    audio.volume = Number(volumeRange.value);
+    renderVolume();
+  };
+  const onTrackChange = () => selectTrack(Number(trackSelect.value));
+  const onPrevious = () => selectTrack(currentTrackIndex - 1);
+  const onNext = () => selectTrack(currentTrackIndex + 1);
   audio.addEventListener('ended', onEnded);
   audio.addEventListener('error', onError);
   audio.addEventListener('timeupdate', onTimeUpdate);
   playButton.addEventListener('click', togglePlayback);
+  compactPlayButton.addEventListener('click', togglePlayback);
+  collapseButton.addEventListener('click', collapse);
+  expandButton.addEventListener('click', expand);
   closeButton.addEventListener('click', close);
+  previousButton.addEventListener('click', onPrevious);
+  nextButton.addEventListener('click', onNext);
+  trackSelect.addEventListener('change', onTrackChange);
+  volumeRange.addEventListener('input', onVolumeInput);
 
   syncLocale();
 
   return {
     element: player,
     open,
+    expand,
+    collapse,
     close,
     isOpen() { return isOpen; },
     refresh() { drawRadialTicks(0); },
@@ -301,6 +472,15 @@ export function renderArticleVibe({ document, i18n }) {
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('error', onError);
       audio.removeEventListener('timeupdate', onTimeUpdate);
+      playButton.removeEventListener('click', togglePlayback);
+      compactPlayButton.removeEventListener('click', togglePlayback);
+      collapseButton.removeEventListener('click', collapse);
+      expandButton.removeEventListener('click', expand);
+      closeButton.removeEventListener('click', close);
+      previousButton.removeEventListener('click', onPrevious);
+      nextButton.removeEventListener('click', onNext);
+      trackSelect.removeEventListener('change', onTrackChange);
+      volumeRange.removeEventListener('input', onVolumeInput);
       audio.src = '';
       subscribers.clear();
     },

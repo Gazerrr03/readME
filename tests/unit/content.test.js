@@ -102,8 +102,12 @@ test('every deck track points at a real audio file and is fully localized', asyn
   for (const track of tracks) {
     assert.ok(!slugs.has(track.slug), `${track.slug} unique`);
     slugs.add(track.slug);
-    assert.match(track.file, /^media\/music\/.+\.wav$/);
+    assert.match(track.file, /^media\/music\/.+\.(wav|m4a)$/);
     await access(new URL(`../../${track.file}`, import.meta.url));
+    if (track.coverImage) {
+      assert.match(track.coverImage, /^media\/covers\/.+\.png$/);
+      await access(new URL(`../../${track.coverImage}`, import.meta.url));
+    }
     assert.ok(Number.isFinite(track.seconds) && track.seconds > 0, `${track.slug} seconds`);
     assert.ok(track.format, `${track.slug} format`);
     for (const locale of LOCALES) {

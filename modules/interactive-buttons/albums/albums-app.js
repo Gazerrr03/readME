@@ -22,13 +22,25 @@ function createElement(document, tagName, attributes = {}, text = '') {
   return element;
 }
 
+function createAlbumCover(document, track, attributes = {}) {
+  if (track.coverImage) {
+    return createElement(document, 'img', {
+      src: track.coverImage,
+      alt: '',
+      'data-album-cover-image': '',
+      ...attributes,
+    });
+  }
+  return createPixelSvg(document, track.cover, attributes);
+}
+
 function renderAlbumItem({ document, i18n, item }) {
   const art = createElement(document, 'span', {
     'data-folder-item-art': '',
     'data-album-item-art': '',
     'aria-hidden': 'true',
   });
-  art.append(createPixelSvg(document, item.cover));
+  art.append(createAlbumCover(document, item));
   return [
     art,
     createElement(document, 'span', { 'data-folder-item-title': '' }, pick(item.title, i18n.locale)),
@@ -96,7 +108,7 @@ export function renderAlbumsApp({ i18n, mount, preferences }) {
       track.seconds,
     )}`;
     viewer.querySelector('[data-player-cover]').replaceChildren(
-      createPixelSvg(document, track.cover, { 'aria-hidden': 'true' }),
+      createAlbumCover(document, track, { 'aria-hidden': 'true' }),
     );
     if (!audio.src.endsWith(track.file)) {
       audio.src = track.file;

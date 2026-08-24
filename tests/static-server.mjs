@@ -16,6 +16,7 @@ const MIME_TYPES = new Map([
   ['.json', 'application/json; charset=utf-8'],
   ['.xml', 'application/rss+xml; charset=utf-8'],
   ['.wav', 'audio/wav'],
+  ['.m4a', 'audio/mp4'],
   ['.jpg', 'image/jpeg'],
   ['.jpeg', 'image/jpeg'],
   ['.png', 'image/png'],

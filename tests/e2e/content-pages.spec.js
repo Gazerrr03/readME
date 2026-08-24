@@ -255,13 +255,38 @@ test('vibe menu pins the music player beside the article and follows the theme',
   await expect(player).toBeVisible();
   await expect(player).toHaveAttribute('data-vibe-status', 'idle');
   expect(await player.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
+  expect(await player.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThan(480);
   const articleBox = await page.locator('[data-content-article]').boundingBox();
   const playerBox = await player.boundingBox();
   expect(playerBox.x).toBeGreaterThanOrEqual(articleBox.x + articleBox.width - 1);
 
+  const playButton = player.locator('[data-vibe-play]');
+  await expect(playButton).toHaveAttribute('draggable', 'false');
+  expect(await playButton.evaluate((element) => element.tagName)).toBe('BUTTON');
+  await player.locator('[data-vibe-next]').click();
+  await expect(player.locator('[data-vibe-track-select]')).toHaveValue('1');
+  await player.locator('[data-vibe-prev]').click();
+  await expect(player.locator('[data-vibe-track-select]')).toHaveValue('0');
+  await player.locator('[data-vibe-track-select]').selectOption('3');
+  await expect(player.locator('[data-vibe-track-select]')).toHaveValue('3');
+  await expect(player.locator('[data-vibe-track-select]')).toContainText('episode 33？');
+  await player.locator('[data-vibe-volume]').fill('0.42');
+  await expect(player.locator('[data-vibe-volume-value]')).toHaveText('42%');
+
   await player.locator('[data-vibe-play]').click();
   await expect(player).toHaveAttribute('data-vibe-status', 'playing');
   await expect(player.locator('[data-vibe-play]')).toHaveAccessibleName('Pause music');
+
+  await player.locator('[data-vibe-collapse]').click();
+  await expect(player).toHaveAttribute('data-vibe-view', 'compact');
+  await expect(player.locator('[data-vibe-compact-view]')).toBeVisible();
+  expect((await player.boundingBox()).x).toBeGreaterThanOrEqual(
+    (await page.evaluate(() => window.innerWidth)) - 48 - 1,
+  );
+  await player.locator('[data-vibe-compact-play]').click();
+  await expect(player).toHaveAttribute('data-vibe-status', 'paused');
+  await player.locator('[data-vibe-expand]').click();
+  await expect(player).toHaveAttribute('data-vibe-view', 'expanded');
 
   await page.locator('[data-content-theme-toggle]').click();
   await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'light');
@@ -427,6 +452,8 @@ test('generated pages and critical assets return successful responses', async ({
     '/styles/content-page.css',
     '/scripts/pages/content-page.js',
     '/media/music/tide-study-0200.wav',
+    '/media/music/episode33.m4a',
+    '/media/covers/episode-33-pixel.png',
   ]) {
     const response = await request.get(path);
     expect(response.status(), path).toBe(200);

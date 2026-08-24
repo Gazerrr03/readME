@@ -851,6 +851,14 @@ a[data-contact-row] {
   width: 128px;
 }
 
+[data-player-cover] img {
+  display: block;
+  height: 128px;
+  image-rendering: pixelated;
+  object-fit: cover;
+  width: 128px;
+}
+
 [data-player-title] {
   font-family: var(--serif);
   font-size: 22px;
@@ -1035,6 +1043,16 @@ a[data-contact-row] {
   image-rendering: pixelated;
   max-height: 100%;
   max-width: 100%;
+  width: auto;
+}
+
+[data-folder-item-art] img {
+  display: block;
+  height: auto;
+  image-rendering: pixelated;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: cover;
   width: auto;
 }
 
