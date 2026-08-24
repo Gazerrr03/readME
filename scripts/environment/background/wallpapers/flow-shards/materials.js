@@ -14,7 +14,7 @@ function deterministicScalar(index) {
 }
 
 function createInstancedShardGeometry(THREE, size) {
-  const sourceGeometry = new THREE.BoxGeometry(2, 2, 2);
+  const sourceGeometry = new THREE.BoxGeometry(2, 2, 2, 1, 1, 4);
   const geometry = new THREE.InstancedBufferGeometry();
   geometry.setIndex(sourceGeometry.index.clone());
   for (const [name, attribute] of Object.entries(sourceGeometry.attributes)) {
@@ -60,7 +60,7 @@ function patchBeautyShader(shader) {
   patchPositionShader(shader);
   shader.vertexShader = shader.vertexShader.replace(
     '#include <beginnormal_vertex>',
-    '#include <beginnormal_vertex>\nobjectNormal = flowDeformNormal(objectNormal);',
+    '#include <beginnormal_vertex>\nobjectNormal = flowDeformNormal(objectNormal, position);',
   );
   shader.fragmentShader = shader.fragmentShader
     .replace(
@@ -123,6 +123,7 @@ function setPalette(THREE, uniforms, primaryValue) {
 export function createShardMaterials({ THREE, size, state, mapped, config }) {
   const { geometry, sourceGeometry } = createInstancedShardGeometry(THREE, size);
   const uniforms = {
+    uOlderState: { value: state.olderTexture ?? state.previousTexture },
     uCurrentState: { value: state.currentTexture },
     uPreviousState: { value: state.previousTexture },
     uBaseSize: { value: mapped.baseSize },
@@ -163,6 +164,7 @@ export function createShardMaterials({ THREE, size, state, mapped, config }) {
     mesh,
     sourceGeometry,
     updateState(nextState) {
+      uniforms.uOlderState.value = nextState.olderTexture ?? nextState.previousTexture;
       uniforms.uCurrentState.value = nextState.currentTexture;
       uniforms.uPreviousState.value = nextState.previousTexture;
     },

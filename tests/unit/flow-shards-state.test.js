@@ -74,6 +74,7 @@ test('simulation initializes coherent history and zero-delta renders preserve it
   assert.equal(simulation.generation, 0);
 
   const initializedState = {
+    olderTexture: simulation.olderTexture,
     currentTexture: simulation.currentTexture,
     previousTexture: simulation.previousTexture,
   };
@@ -85,6 +86,7 @@ test('simulation initializes coherent history and zero-delta renders preserve it
   assert.equal(renders.length, 5);
   assert.equal(renders[4].delta, 1 / 120);
   assert.equal(renders[4].initialize, 0);
+  assert.equal(advancedState.olderTexture, initializedState.previousTexture);
   assert.equal(advancedState.previousTexture, initializedState.currentTexture);
   assert.equal(simulation.generation, 1);
 

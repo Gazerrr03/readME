@@ -83,7 +83,11 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
   originTexture.needsUpdate = true;
   originTexture.name = 'Flow Shards origins';
 
-  const targets = [createStateTarget(THREE, size), createStateTarget(THREE, size)];
+  const targets = [
+    createStateTarget(THREE, size),
+    createStateTarget(THREE, size),
+    createStateTarget(THREE, size),
+  ];
   const uniforms = {
     uState: { value: originTexture },
     uOrigin: { value: originTexture },
@@ -112,13 +116,14 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
   mesh.frustumCulled = false;
   scene.add(mesh);
 
+  let olderTexture = originTexture;
   let currentTexture = originTexture;
   let previousTexture = originTexture;
-  let writeIndex = 0;
+  let writeIndex = 2;
   let generation = 0;
   let disposed = false;
 
-  const state = () => ({ currentTexture, previousTexture });
+  const state = () => ({ olderTexture, currentTexture, previousTexture });
   const renderState = ({ delta, elapsed, initialize, source, target }) => {
     uniforms.uState.value = source;
     uniforms.uDelta.value = delta;
@@ -134,16 +139,18 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
   };
 
   const advance = (delta, elapsed, countGeneration) => {
+    const target = targets[writeIndex];
     renderState({
       delta,
       elapsed,
       initialize: 0,
       source: currentTexture,
-      target: targets[writeIndex],
+      target,
     });
+    olderTexture = previousTexture;
     previousTexture = currentTexture;
-    currentTexture = targets[writeIndex].texture;
-    writeIndex = 1 - writeIndex;
+    currentTexture = target.texture;
+    writeIndex = (writeIndex + 1) % targets.length;
     if (countGeneration) generation += 1;
     return state();
   };
@@ -163,6 +170,7 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
       source: targets[0].texture,
       target: targets[1],
     });
+    olderTexture = originTexture;
     previousTexture = targets[0].texture;
     currentTexture = targets[1].texture;
   } catch (error) {
@@ -175,6 +183,9 @@ export function createFlowSimulation({ THREE, renderer, size, mapped, seed = 882
   }
 
   return {
+    get olderTexture() {
+      return olderTexture;
+    },
     get currentTexture() {
       return currentTexture;
     },

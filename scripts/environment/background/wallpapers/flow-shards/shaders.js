@@ -187,6 +187,7 @@ attribute float aRandom;
 attribute vec3 aDecals;
 attribute float aOcclusion;
 attribute float aOcclusionColor;
+uniform sampler2D uOlderState;
 uniform sampler2D uCurrentState;
 uniform sampler2D uPreviousState;
 uniform float uBaseSize;
@@ -215,19 +216,49 @@ vec3 flowHueShift(vec3 color, float amount) {
   return vec3(dot(yiq, yiqToR), dot(yiq, yiqToG), dot(yiq, yiqToB));
 }
 
-void flowBasis(out mat3 basis, out vec3 center, out vec3 scale) {
-  vec4 currentState = texture2D(uCurrentState, aStateUv);
-  vec3 previous = texture2D(uPreviousState, aStateUv).rgb;
-  vec3 velocity = currentState.rgb - previous;
+vec3 flowDirection(vec3 velocity, vec3 fallback) {
   float speed = length(velocity);
-  vec3 forward = speed < 0.00001 ? vec3(0.0, 0.0, 1.0) : -velocity / speed;
+  return speed < 0.00001 ? fallback : -velocity / speed;
+}
+
+vec3 flowBlendDirection(vec3 first, vec3 second, float amount) {
+  vec3 blended = mix(first, second, amount);
+  float magnitude = length(blended);
+  return magnitude < 0.00001 ? first : blended / magnitude;
+}
+
+mat3 flowFrame(vec3 forward) {
   vec3 stableUp = abs(dot(forward, vec3(0.0, 1.0, 0.0))) > 0.96
     ? vec3(1.0, 0.0, 0.0)
     : vec3(0.0, 1.0, 0.0);
   vec3 right = normalize(cross(stableUp, forward));
   vec3 up = normalize(cross(forward, right));
-  basis = mat3(right, up, forward);
-  center = previous * 100.0;
+  return mat3(right, up, forward);
+}
+
+vec3 flowCurvePoint(vec3 start, vec3 control, vec3 end, float amount) {
+  float inverseAmount = 1.0 - amount;
+  return (inverseAmount * inverseAmount * start)
+    + (2.0 * inverseAmount * amount * control)
+    + (amount * amount * end);
+}
+
+void flowBasis(vec3 localPosition, out mat3 basis, out vec3 center, out vec3 scale) {
+  vec4 currentState = texture2D(uCurrentState, aStateUv);
+  vec4 previousState = texture2D(uPreviousState, aStateUv);
+  vec3 older = texture2D(uOlderState, aStateUv).rgb;
+  vec3 previous = previousState.rgb;
+  vec3 currentVelocity = currentState.rgb - previous;
+  vec3 previousVelocity = previous - older;
+  float speed = length(currentVelocity);
+  float previousSpeed = length(previousVelocity);
+  vec3 forward = flowDirection(currentVelocity, vec3(0.0, 0.0, 1.0));
+  vec3 previousForward = flowDirection(previousVelocity, forward);
+  bool respawning = currentState.a > (previousState.a + 0.2);
+  if (respawning) {
+    forward = previousForward;
+    speed = previousSpeed;
+  }
 
   float scaleX = 1.0 - abs(aDecals.z * 3.0);
   float scaleY = 0.5 - abs(aDecals.y * 2.0);
@@ -236,6 +267,13 @@ void flowBasis(out mat3 basis, out vec3 center, out vec3 scale) {
   float decalScale = abs(aDecals.z) * 35.0;
   scale = vec3(scaleX, scaleY, scaleZ)
     * uBaseSize * decalScale * lifeScale;
+
+  float trailAmount = clamp((localPosition.z * 0.5) + 0.5, 0.0, 1.0);
+  vec3 baseCenter = previous * 100.0;
+  vec3 start = baseCenter - (previousForward * scale.z);
+  vec3 end = baseCenter + (forward * scale.z);
+  center = flowCurvePoint(start, baseCenter, end, trailAmount);
+  basis = flowFrame(flowBlendDirection(previousForward, forward, trailAmount));
 
   vec3 lifeColor = mix(uPrimaryColor, uSecondaryColor, currentState.a + 0.2);
   lifeColor += vec3(aDecals.x);
@@ -248,15 +286,16 @@ vec3 flowDeformPosition(vec3 localPosition) {
   mat3 basis;
   vec3 center;
   vec3 scale;
-  flowBasis(basis, center, scale);
-  return center + (basis * (localPosition * scale));
+  flowBasis(localPosition, basis, center, scale);
+  vec3 crossSection = vec3(localPosition.x * scale.x, localPosition.y * scale.y, 0.0);
+  return center + (basis * crossSection);
 }
 
-vec3 flowDeformNormal(vec3 localNormal) {
+vec3 flowDeformNormal(vec3 localNormal, vec3 localPosition) {
   mat3 basis;
   vec3 center;
   vec3 scale;
-  flowBasis(basis, center, scale);
+  flowBasis(localPosition, basis, center, scale);
   vec3 transformedNormal = normalize(basis * localNormal);
   vFlowHighlight = pow(
     max(dot(transformedNormal, normalize(uKeyLightDirection)), 0.0),
