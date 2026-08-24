@@ -100,7 +100,18 @@ export function renderArticleVibe({ document, i18n }) {
   pulse.append(pulseCircle);
   playButton.append(playGlyph);
   hud.append(radialTrack, canvas, pulse, playButton);
-  stage.append(hud);
+
+  const coverBand = createElement(document, 'div', {
+    'data-vibe-cover-band': '',
+    'data-vibe-cover': 'empty',
+    'aria-hidden': 'true',
+  });
+  const coverImage = createElement(document, 'img', {
+    'data-vibe-cover-image': '',
+    alt: '',
+  });
+  coverBand.append(coverImage);
+  stage.append(coverBand, hud);
 
   const footer = createElement(document, 'footer', { 'data-vibe-player-footer': '' });
   const trackRow = createElement(document, 'div', { 'data-vibe-track-row': '' });
@@ -214,7 +225,6 @@ export function renderArticleVibe({ document, i18n }) {
     const center = CANVAS_SIZE / 2;
     const baseRadius = 91;
     const tickCount = 112;
-    const ink = color('--vibe-ink', '#f2f6ff');
     const muted = color('--vibe-muted', '#8296b8');
     const accent = color('--vibe-accent', '#748bff');
     context.strokeStyle = status === 'playing' ? accent : muted;
@@ -235,11 +245,6 @@ export function renderArticleVibe({ document, i18n }) {
       context.restore();
     }
 
-    context.globalAlpha = 0.48;
-    context.strokeStyle = ink;
-    context.beginPath();
-    context.arc(center, center, 7, 0, Math.PI * 2);
-    context.stroke();
     context.globalAlpha = 1;
   }
 
@@ -259,13 +264,23 @@ export function renderArticleVibe({ document, i18n }) {
     trackSelect.value = String(currentTrackIndex);
     compactTrack.textContent = `${pad2(currentTrackIndex + 1)} / ${pad2(tracks.length)}`;
     format.textContent = track.format;
+    if (track.coverImage) {
+      coverImage.src = track.coverImage;
+      coverBand.dataset.vibeCover = 'image';
+    } else {
+      coverImage.removeAttribute('src');
+      coverBand.dataset.vibeCover = 'empty';
+    }
   }
 
   function renderStatus() {
     player.dataset.vibeStatus = status;
     const glyph = status === 'playing' ? '■' : '▶';
+    const icon = status === 'playing' ? 'pause' : 'play';
     playGlyph.textContent = glyph;
     compactPlayGlyph.textContent = glyph;
+    playGlyph.dataset.vibeGlyph = icon;
+    compactPlayGlyph.dataset.vibeGlyph = icon;
     const isPlaying = status === 'playing';
     playButton.setAttribute('aria-pressed', String(isPlaying));
     compactPlayButton.setAttribute('aria-pressed', String(isPlaying));

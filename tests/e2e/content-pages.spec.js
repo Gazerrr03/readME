@@ -257,11 +257,23 @@ test('vibe menu pins the music player beside the article and follows the theme',
   await expect(player.locator('[data-vibe-status-row]')).toHaveCount(0);
   await expect(player.locator('[data-vibe-volume]')).toHaveValue('0.2');
   await expect(player.locator('[data-vibe-volume-value]')).toHaveText('20%');
+  const coverBand = player.locator('[data-vibe-cover-band]');
+  await expect(coverBand).toBeVisible();
+  await expect(coverBand).toHaveAttribute('data-vibe-cover', 'image');
+  await expect(coverBand.locator('[data-vibe-cover-image]')).toHaveAttribute(
+    'src',
+    'media/covers/episode-33-pixel.png',
+  );
+  expect(await coverBand.evaluate((element) => element.parentElement.matches('[data-vibe-stage]'))).toBe(true);
+  expect(await coverBand.evaluate((element) => getComputedStyle(element).position)).toBe('absolute');
   expect(await player.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
   expect(await player.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThan(380);
   const radialRingBox = await player.locator('[data-vibe-radial-track]').boundingBox();
   const playButtonBox = await player.locator('[data-vibe-play]').boundingBox();
   expect(playButtonBox.width / radialRingBox.width).toBeGreaterThan(0.42);
+  const playGlyphBox = await player.locator('[data-vibe-play-glyph]').boundingBox();
+  expect(playGlyphBox.width).toBeGreaterThan(10);
+  expect(playGlyphBox.height).toBeGreaterThan(14);
   const articleBox = await page.locator('[data-content-article]').boundingBox();
   const playerBox = await player.boundingBox();
   expect(playerBox.x).toBeGreaterThanOrEqual(articleBox.x + articleBox.width - 1);
@@ -286,6 +298,7 @@ test('vibe menu pins the music player beside the article and follows the theme',
   await player.locator('[data-vibe-collapse]').click();
   await expect(player).toHaveAttribute('data-vibe-view', 'compact');
   await expect(player.locator('[data-vibe-compact-view]')).toBeVisible();
+  await expect(coverBand).toBeHidden();
   expect((await player.boundingBox()).x).toBeGreaterThanOrEqual(
     (await page.evaluate(() => window.innerWidth)) - 48 - 1,
   );

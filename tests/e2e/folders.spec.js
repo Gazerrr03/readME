@@ -70,6 +70,10 @@ test('albums opens the player from the folder view and toggles playback', async 
   const episodeCover = episodeItem.locator('[data-album-cover-image]');
   await expect(episodeCover).toHaveAttribute('src', 'media/covers/episode-33-pixel.png');
   expect(await episodeCover.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+  const albumArtBox = await episodeItem.locator('[data-album-item-art]').boundingBox();
+  const episodeCoverBox = await episodeCover.boundingBox();
+  expect(episodeCoverBox.width).toBeGreaterThan(albumArtBox.width * 0.95);
+  expect(episodeCoverBox.height).toBeGreaterThan(albumArtBox.height * 0.95);
   await window.locator('[data-folder-item="tide-study-0200"]').dblclick();
   await expect(window.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'viewer');
   await expect(window.locator('[data-player-track]')).toHaveText('TRK 02/04');
