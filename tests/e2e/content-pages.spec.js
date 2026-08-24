@@ -238,7 +238,6 @@ test('article display mode sits beside language and persists independently', asy
 
 async function selectLeadText(page) {
   const lead = page.locator('[data-content-article-lead]');
-  await lead.scrollIntoViewIfNeeded();
   const box = await lead.boundingBox();
   await page.mouse.move(box.x + 10, box.y + 8);
   await page.mouse.down();

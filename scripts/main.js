@@ -13,9 +13,6 @@ import { renderSettingsApp } from '../modules/base-buttons/design/settings-app.j
 import { renderWritingApp } from '../modules/base-buttons/writing/writing-app.js';
 import { createDesktopController } from './desktop.js';
 import { createDesktopEnvironmentController } from './environment/environment-controller.js';
-import { createContentStore } from './content/content-store.js';
-import { defaultContentDocument } from './content/default-document.js';
-import { connectReviewPreview } from './content/review-preview.js';
 import { listWallpaperMetadata } from './environment/background/wallpaper-registry.js';
 import { createI18n } from './i18n/i18n.js';
 import { readDesktopTarget } from './routing/content-routes.js';
@@ -23,12 +20,7 @@ import { loadPreferences, savePreferences } from './state/preferences.js';
 import { createWindowManager } from './window-manager.js';
 
 const preferences = loadPreferences(localStorage);
-export const contentStore = createContentStore({ defaultDocument: defaultContentDocument });
-void contentStore.loadPublished(new URL('content/content.json', document.baseURI).href);
-const disconnectReviewPreview = connectReviewPreview({ location, contentStore });
-window.addEventListener('pagehide', disconnectReviewPreview, { once: true });
-export const i18n = createI18n(preferences.locale, undefined, contentStore);
-const content = () => contentStore.snapshot;
+export const i18n = createI18n(preferences.locale);
 const bootRoot = document.querySelector('[data-boot-root]');
 const desktopRoot = document.querySelector('[data-desktop-root]');
 const persistPreferences = (next) => savePreferences(localStorage, next);
@@ -50,7 +42,6 @@ const openApp = (appId) => {
 const environment = createDesktopEnvironmentController({
   root: desktopRoot,
   i18n,
-  content,
   onOpen: openApp,
   initialWallpaperId: preferences.wallpaperId,
   storage: localStorage,
@@ -71,7 +62,6 @@ windowManager = createWindowManager({
   taskSurface: desktopRoot,
   registry: apps,
   i18n,
-  content,
   preferences,
   renderers: {
     placeholder: renderPlaceholderApp,
@@ -126,11 +116,9 @@ const revealDesktop = () => {
 
 document.documentElement.lang = i18n.locale;
 document.title = i18n.t('site.title');
-desktopRoot.setAttribute('aria-label', i18n.t('site.title'));
 i18n.subscribe(() => {
   document.documentElement.lang = i18n.locale;
   document.title = i18n.t('site.title');
-  desktopRoot.setAttribute('aria-label', i18n.t('site.title'));
 });
 
 boot = createBootController({

@@ -1,7 +1,4 @@
-import { pick } from '../data/content.js';
-import { createContentStore } from '../content/content-store.js';
-import { defaultContentDocument } from '../content/default-document.js';
-import { connectReviewPreview } from '../content/review-preview.js';
+import { articles, pick, projects } from '../data/content.js';
 import { createI18n } from '../i18n/i18n.js';
 import { desktopPath } from '../routing/content-routes.js';
 import {
@@ -24,13 +21,6 @@ const kind = documentRef.body.dataset.contentKind;
 const slug = documentRef.body.dataset.contentSlug;
 const mount = documentRef.querySelector('[data-content-page]');
 
-const contentStore = createContentStore({ defaultDocument: defaultContentDocument });
-await contentStore.loadPublished(new URL('content/content.json', documentRef.baseURI).href);
-const disconnectReviewPreview = connectReviewPreview({
-  location: window.location,
-  contentStore,
-});
-
 const SUPPORTED_LOCALES = new Set(['en', 'zh-CN', 'ja']);
 const READING_THEME_KEY = 'portfolio-os:reading-theme';
 const READING_THEMES = Object.freeze(['dark', 'light']);
@@ -46,14 +36,8 @@ function writeLocaleToUrl(locale) {
   window.history.replaceState(null, '', url);
 }
 
-function reviewPreviewPath(path) {
-  const parameters = new URLSearchParams(window.location.search);
-  if (parameters.get('reviewPreview') !== '1' || !parameters.get('channel')) return path;
-  return `${path}&skipBoot=1&reviewPreview=1&channel=${encodeURIComponent(parameters.get('channel'))}`;
-}
-
 const locale = readLocaleFromUrl() ?? resolvePreferredLocale(localStorage, navigator.languages);
-const i18n = createI18n(locale, undefined, contentStore);
+const i18n = createI18n(locale);
 let readingTheme = resolveReadingTheme();
 let focused = false;
 let disposePresentation = () => {};
@@ -102,7 +86,7 @@ function supportedKind() {
 function renderHeader() {
   const header = createElement(documentRef, 'header', { 'data-content-header': '' });
   const returnLink = createElement(documentRef, 'a', {
-    href: reviewPreviewPath(desktopPath(supportedKind())),
+    href: desktopPath(supportedKind()),
     'data-content-return': '',
   }, `← ${i18n.t(kind === 'projects' ? 'content.returnProjects' : 'content.returnWriting')}`);
   const identity = createElement(documentRef, 'div', { 'data-content-identity': '' });
@@ -174,7 +158,7 @@ function renderUnavailable() {
   section.append(
     createElement(documentRef, 'h1', { tabindex: '-1' }, i18n.t('content.unavailable')),
     createElement(documentRef, 'a', {
-      href: reviewPreviewPath(desktopPath(supportedKind())),
+      href: desktopPath(supportedKind()),
     }, i18n.t(kind === 'projects' ? 'content.returnProjects' : 'content.returnWriting')),
   );
   return section;
@@ -183,7 +167,6 @@ function renderUnavailable() {
 function render() {
   applyReadingTheme();
   disposePresentation();
-  const { articles, projects } = contentStore.snapshot;
   const article = kind === 'writing'
     ? articles.find((entry) => entry.slug === slug)
     : null;
@@ -214,8 +197,5 @@ function render() {
 }
 
 i18n.subscribe(render);
-window.addEventListener('pagehide', () => {
-  disposePresentation();
-  disconnectReviewPreview();
-}, { once: true });
+window.addEventListener('pagehide', () => disposePresentation(), { once: true });
 render();

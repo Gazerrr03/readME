@@ -83,8 +83,7 @@ export function createMusicDeck({
 
   const context = canvas.getContext?.('2d') ?? null;
 
-  const trackList = () => (typeof tracks === 'function' ? tracks() : tracks);
-  const currentTrack = () => trackList()[index];
+  const currentTrack = () => tracks[index];
 
   const drawRing = (levels) => {
     if (!context) return;
@@ -189,12 +188,11 @@ export function createMusicDeck({
   };
 
   const selectTrack = (nextIndex, { autoplay = false } = {}) => {
-    const items = trackList();
-    index = ((nextIndex % items.length) + items.length) % items.length;
+    index = ((nextIndex % tracks.length) + tracks.length) % tracks.length;
     const track = currentTrack();
-    nextButton.textContent = `TRK ${pad2(index + 1)}/${pad2(items.length)} ›`;
+    nextButton.textContent = `TRK ${pad2(index + 1)}/${pad2(tracks.length)} ›`;
     title.textContent = pick(track.title, i18n.locale);
-    format.textContent = track.formatLabel ? pick(track.formatLabel, i18n.locale) : track.format;
+    format.textContent = track.format;
     audio.src = track.file;
     if (status !== 'playing') renderTimecode();
     if (autoplay) {

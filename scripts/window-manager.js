@@ -41,7 +41,6 @@ export function createWindowManager({
   taskSurface = root,
   registry,
   i18n,
-  content = () => ({}),
   preferences = {},
   renderers = {},
 }) {
@@ -102,9 +101,9 @@ export function createWindowManager({
       maximize: () => manager.maximize(app.id),
       unmaximize: () => manager.unmaximize(app.id),
     };
-    const rendered = renderer({ app, i18n, content, mount, host, preferences });
-    if (rendered instanceof root.ownerDocument.defaultView.Node) mount.append(rendered);
-    else if (typeof rendered === 'string') mount.textContent = rendered;
+    const content = renderer({ app, i18n, mount, host, preferences });
+    if (content instanceof root.ownerDocument.defaultView.Node) mount.append(content);
+    else if (typeof content === 'string') mount.textContent = content;
   };
 
   const createWindowElement = (app) => {

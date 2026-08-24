@@ -21,14 +21,20 @@ Flovvas is now a year away from its first idea. Looking back at the answer sheet
 
 We were excited by what AI seemed to make possible. Many things that once felt nearly impossible could begin with a single sentence. I had wanted to build a personal website by graduation since my first year of university; now a coding agent can start a task like that from one line.
 
-Making something from zero to one has become easier, but success still seems extremely difficult. The difficult part is often not making a thing, but judging whether it deserves to exist, whether it changes a user’s behavior, and whether we can stop when it does not. If that is true, should we surf into this uncertainty? This choice cannot be solved by heat alone—the Beast of Failure is crouching in these waves. It is a fictional, merciless, never-satisfied “creature”: it devours most new product ideas and “bites” the people who pursue them without validation. More painfully, failure does not only come for those who lack experience, ability, or preparation.
+But making something from zero to one becoming easier does not make success easier. The difficult part is often not making a thing, but judging whether it deserves to exist, whether it changes a user’s behavior, and whether we can stop when it does not.
+
+Should we surf into that uncertainty anyway? The question cannot be answered by excitement alone. The Beast of Failure is crouching in the waves.
 
 > It waits. Patient.\
 > Confident that it will soon get its prey—it always does.\
 > Few escape its bite, none its tentacles.\
 > One way or another, the Beast of Failure gets us all.
 
-Reality is cruel, because uncertainty offers no guaranteed path. In other words, “making it safely to the other shore” is a lie.
+It waits with the confidence that its prey will arrive sooner or later. Most new products may be bitten. Experience, ability, and preparation do not give anyone permanent immunity.
+
+Reality is cruel. There is no guaranteed way through uncertainty, so “making it safely to the other shore” is often just a name for a risk we cannot see yet. This is not an argument against internships, recruiting, graduate school, or research. It is an admission that no choice can remove the possibility of failure for us.
+
+In that sense, “making it safely to the other shore” is a lie—not because the shore does not exist, but because we cannot prove we are safe before we set out.
 
 The good thing is that we still have room for heat. Years from now, when I have left school and started arguing with life on its own terms, I may look back and ask whether I will regret not getting on this vehicle. Will I still remember the early sketches I made on paper when I was an AI beginner who had just started questioning ChatGPT’s product experience?
 
@@ -161,9 +167,29 @@ I hope to absorb what this period taught me, stop being afraid of mistakes, and 
 
 I have not tamed it yet. But I know where it might bite, and I am beginning to know what I need to train.
 
-## Reference
+## References and further reading
 
-[The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed](https://www.albertosavoia.com/therightit.html) — Alberto Savoia. The image of the Beast of Failure comes from this book.
+## Books and methods
+
+[The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed](https://www.albertosavoia.com/therightit.html) — Alberto Savoia. On market failure, testing ideas, and the image of the Beast of Failure.
+
+[The Mythical Man-Month: Essays on Software Engineering, Anniversary Edition](https://www.pearson.com/en-us/subject-catalog/p/mythical-man-month-the-essays-on-software-engineering-anniversary-edition/P200000000149/9780201835953) — Fred Brooks. On the man-month myth, the second-system effect, the Tower of Babel, no silver bullet, conceptual integrity, and the idea of a team building one cathedral together.
+
+[The Almanack of Naval Ravikant: A Guide to Wealth and Happiness](https://www.navalmanack.com/home) — edited by Eric Jorgenson from Naval Ravikant's ideas. On taking risks deliberately, claiming outcomes in your own name, and autonomy.
+
+## Architecture and design
+
+[Farnsworth House](https://www.moma.org/collection/works/784) — Ludwig Mies van der Rohe. On “Less is more,” and on carrying a design principle into software engineering and Agent engineering.
+
+[Reims Cathedral](https://whc.unesco.org/en/list/601/) — UNESCO World Heritage Centre. On shared grammar, long collaboration, and each person holding a clear domain of contribution.
+
+## AI agents and the practice field
+
+[AdventureX 2026](https://adventure-x.org/en) — official hackathon site. The observations about OPC (One Person Company), making a hundred pieces of garbage each month, and the people I met came from this event.
+
+[DeepSeek Harness](https://deepseek.com/harness/en/) — DeepSeek. On “Agent = Model + Harness,” plugin-based composition, and the ability to operate on an agent's context lifecycle.
+
+[Pi Coding Agent](https://pi.dev/) — a minimal, extensible agent harness. It informed the passage about practicing first and forming judgment through direct experience.
 
 ---
 

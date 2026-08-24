@@ -25,7 +25,10 @@ AI が創造にもたらした繁栄に、私たちは興奮した。かつて�
 
 それでも不確実性の波へ乗るのか。その問いは、熱狂だけでは答えられない。波の中には失敗の獣が潜んでいる。
 
-> It waits. Patient.
+> It waits. Patient.\
+> Confident that it will soon get its prey—it always does.\
+> Few escape its bite, none its tentacles.\
+> One way or another, the Beast of Failure gets us all.
 
 獣は辛抱強く待っている。獲物はいつか必ず現れると信じている。多くの新しいプロダクトは噛みつかれる。経験や能力や準備が、永久の免疫証明書になることはない。
 
@@ -164,9 +167,29 @@ AI-native なチームでは、これからモデルの能力が高まり、一�
 
 私はまだそれを飼いならしていない。でも、どこから噛みついてくるかもしれないのかはわかり始めた。そして、自分が何を鍛える必要があるのかもわかり始めた。
 
-## 参考
+## 参考と関連資料
 
-[The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed](https://www.albertosavoia.com/therightit.html) — Alberto Savoia。「失敗の獣」というイメージはこの本に由来する。
+## 書籍と方法
+
+[『正しいものを正しくつくる』（The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed）](https://www.albertosavoia.com/therightit.html) — Alberto Savoia。市場での失敗、アイデアの検証、そして「失敗の獣」というイメージについて。
+
+[『人月の神話』（The Mythical Man-Month: Essays on Software Engineering, Anniversary Edition）](https://www.pearson.com/en-us/subject-catalog/p/mythical-man-month-the-essays-on-software-engineering-anniversary-edition/P200000000149/9780201835953) — Fred Brooks。人月の神話、第二システム効果、バベルの塔、銀の弾丸はないという議論、概念の完全性、そしてチームが一つの大聖堂を建てるという比喩について。
+
+[The Almanack of Naval Ravikant: A Guide to Wealth and Happiness](https://www.navalmanack.com/home) — Eric Jorgenson 編、Naval Ravikant の思想を収録。意識的にリスクを引き受け、自分の名前で結果を背負うこと、そして自律性について。
+
+## 建築とデザイン
+
+[ファンズワース邸（Farnsworth House）](https://www.moma.org/collection/works/784) — Ludwig Mies van der Rohe。「Less is more」と、設計原則をソフトウェア工学や Agent engineering に移すことについて。
+
+[ランス大聖堂（Reims Cathedral）](https://whc.unesco.org/en/list/601/) — UNESCO World Heritage Centre。共有された文法、長期的な協働、そして一人ひとりが自分の貢献領域を守ることについて。
+
+## AI Agent と実践の現場
+
+[AdventureX 2026](https://adventure-x.org/en) — ハッカソンの公式サイト。OPC（One Person Company）、「毎月百個のゴミを作る」という考え方、そしてそこで出会った極客たちへの観察はこのイベントから生まれた。
+
+[DeepSeek Harness](https://deepseek.com/harness/en/) — DeepSeek。「Agent = Model + Harness」、プラグインによる構成、Agent のコンテキスト・ライフサイクルを操作することについて。
+
+[Pi Coding Agent](https://pi.dev/) — 最小のコアと拡張性を重視する Agent harness。まず実践し、一次経験から判断を形成するという段落に影響を与えた。
 
 ---
 

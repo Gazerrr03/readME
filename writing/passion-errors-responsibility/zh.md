@@ -21,14 +21,20 @@ Flovvas 距离最初的想法已经一年了。回头看这份答卷，能看出
 
 我们兴奋地迎接 AI 为创造带来的一片欣欣向荣。它让很多过去几乎不可能完成的事情变得可能：我大一时就想在毕业时搭建一个个人网站，而现在，有了 coding agent，类似的任务甚至可以从一句话开始。
 
-从零到一开始变得容易了，但似乎一到成功，仍然是一件极其困难的事。真正困难的也往往不是把一个东西做出来，而是判断它是否值得被做出来，是否真的改变了某个用户的行为，以及在它没有价值时能不能及时停下来。既然这样，我们要选择去这片不确定性里冲浪吗？这个选择并不是一件可以被热血沸腾所解决的事情——失败之兽就蹲伏在这片浪潮里。它是一种虚构的、无情且永不知足的“生物”：它会吞噬大多数新产品创意，“撕咬”那些未经验证便去追逐这些创意的人们。更令人伤心的是，失败并不只会降临在那些经验、能力和准备都不足的人身上。
+但从零到一变得容易，并不等于成功变得容易。真正困难的，往往不是把一个东西做出来，而是判断它是否值得被做出来，是否真的改变了某个用户的行为，以及在它没有价值时能不能及时停下来。
+
+既然如此，我们要不要选择去这片不确定性里冲浪？这个问题不能只靠热血沸腾来回答。因为失败之兽就蹲伏在浪潮里。
 
 > It waits. Patient.\
 > Confident that it will soon get its prey—it always does.\
 > Few escape its bite, none its tentacles.\
 > One way or another, the Beast of Failure gets us all.
 
-现实自然是残酷的，因为不确定性里不存在必胜之法。也就是说，“上岸”本身是一句谎话。
+它耐心地等待，自信地相信猎物迟早会出现。大多数新产品都可能被它咬住；经验、能力和准备并不能让任何人获得一张永久免疫的通行证。
+
+现实自然是残酷的。不确定性里不存在必胜之法，所以“上岸”本身很多时候只是一种暂时看不见风险的说法。这里的意思不是反对实习、秋招、考研或保研，而是承认：任何一种选择都不能替我们彻底消除失败的可能。
+
+甚至可以说，“上岸”本身是一句谎话——不是说岸不存在，而是我们无法在出发之前证明自己已经安全。
 
 好在现实还有另一个角度。面对这个选择，我们仍然保有热情沸腾的余地。多年以后，当我正式从学校走到社会，开始成为一个真正要和生活对线的人，我可能会回望今天，问自己：我会不会后悔当初没有登上这辆车？我还能不能想起，自己作为一个 AI 小白，开始质疑 ChatGPT 的产品体验时，曾经在纸上勾勒过哪些早期构思？
 
@@ -161,9 +167,29 @@ Agent engineering 也有相当一部分属于这类问题。用一个公式表�
 
 我还没有驯服它，但我已经知道它可能会从哪里咬过来，也开始知道自己需要训练什么。
 
-## 参考
+## 参考与延伸阅读
 
-[The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed](https://www.albertosavoia.com/therightit.html) — Alberto Savoia。文中“失败之兽”的意象来自这本书。
+## 书籍与方法
+
+[《做对产品》（The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed）](https://www.albertosavoia.com/therightit.html) — Alberto Savoia。关于市场失败、验证想法，以及“失败之兽”的意象。
+
+[《人月神话》（The Mythical Man-Month: Essays on Software Engineering, Anniversary Edition）](https://www.pearson.com/en-us/subject-catalog/p/mythical-man-month-the-essays-on-software-engineering-anniversary-edition/P200000000149/9780201835953) — Fred Brooks。关于人月神话、第二系统效应、巴别塔、没有银弹、概念完整性，以及把团队想象成共同建造一座大教堂。
+
+[《纳瓦尔宝典》（The Almanack of Naval Ravikant: A Guide to Wealth and Happiness）](https://www.navalmanack.com/home) — Eric Jorgenson 编，Naval Ravikant 提供原始思想。关于主动承担风险、以个人名义承担结果，以及自主权。
+
+## 建筑与设计
+
+[范斯沃斯住宅（Farnsworth House）](https://www.moma.org/collection/works/784) — Ludwig Mies van der Rohe。关于“Less is more”以及如何把一种设计原则迁移到软件工程和 Agent engineering。
+
+[兰斯大教堂（Reims Cathedral）](https://whc.unesco.org/en/list/601/) — UNESCO World Heritage Centre。关于共同语法、长期协作，以及每个人守住自己的贡献域。
+
+## AI Agent 与实践现场
+
+[AdventureX 2026](https://adventure-x.org/en) — 黑客松官方页面。文中关于 OPC（One Person Company）、“每月生产一百件垃圾”和极客现场的观察来自这次活动。
+
+[DeepSeek Harness](https://deepseek.com/harness/en/) — DeepSeek。关于“Agent = Model + Harness”、插件化能力，以及上下文生命周期可被操作和替换。
+
+[Pi Coding Agent](https://pi.dev/) — 一个强调最小核心和可扩展性的 Agent harness。文中关于先实践、再形成判断的段落受它启发。
 
 ---
 

@@ -1,9 +1,9 @@
-import { projects as baseProjects } from './data.js';
+import { projects } from './data.js';
 import { pick } from '../../../scripts/data/content.js';
 import { contentPath } from '../../../scripts/routing/content-routes.js';
 import { createWireframePreview } from './wireframe-preview.js';
 
-const SLOT_COUNT = baseProjects.length * 2; // ring shows each project twice so the loop closes seamlessly
+const SLOT_COUNT = projects.length * 2; // ring shows each project twice so the loop closes seamlessly
 const STEP_DEG = 360 / SLOT_COUNT;
 const DRAG_DEG_PER_PX = 0.25;
 const INERTIA_MS = 380; // fling distance = smoothed angular velocity × this
@@ -25,7 +25,7 @@ const snap = (degrees) => Math.round(degrees / STEP_DEG) * STEP_DEG;
 const shortestDelta = (degrees) => mod(degrees + 180, 360) - 180;
 const pad = (value) => String(value).padStart(2, '0');
 
-export function renderProjectsApp({ i18n, content = () => ({ projects: baseProjects }), mount }) {
+export function renderProjectsApp({ i18n, mount }) {
   const document = mount.ownerDocument;
   const view = document.defaultView;
   const reducedMotion = view.matchMedia('(prefers-reduced-motion: reduce)');
@@ -40,7 +40,6 @@ export function renderProjectsApp({ i18n, content = () => ({ projects: baseProje
   let rafId = null;
   let cards = [];
   let radius = 460;
-  let projects = baseProjects;
 
   // u: front position in slot units (fractional while easing)
   const slotUnits = () => -current / STEP_DEG;
@@ -183,7 +182,6 @@ export function renderProjectsApp({ i18n, content = () => ({ projects: baseProje
   };
 
   const render = () => {
-    projects = content().projects ?? baseProjects;
     disposePreviews();
     const locale = i18n.locale;
 
