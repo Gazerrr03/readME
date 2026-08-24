@@ -218,11 +218,11 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 
 [data-content-article-section] {
   border-top: 1px solid var(--os-surface-highlight);
-  font-size: 21px;
+  font-size: 28px;
   font-weight: 400;
   line-height: 1.35;
-  margin: 32px 0 12px;
-  padding-top: 16px;
+  margin: 48px 0 16px;
+  padding-top: 18px;
 }
 
 [data-content-article-body] a {
@@ -389,6 +389,11 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   [data-content-theme-toggle] { padding-inline: 7px; }
   [data-content-article] h1 { font-size: 32px; }
   [data-content-article-body] > p { font-size: 20px; }
+  [data-content-article-section] {
+    font-size: 26px;
+    margin: 40px 0 14px;
+    padding-top: 16px;
+  }
   [data-content-article-lead]::first-letter { font-size: 40px; }
   [data-content-pagination] { grid-template-columns: 1fr; }
   [data-content-next] { text-align: left; }
