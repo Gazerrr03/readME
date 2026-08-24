@@ -201,27 +201,27 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 [data-content-position] { margin-bottom: 20px; }
 
 [data-content-article] h1 {
-  font-size: clamp(34px, 7vw, 64px);
+  font-size: clamp(32px, 6vw, 52px);
   font-weight: 400;
   line-height: 1.04;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   overflow-wrap: anywhere;
 }
 
 [data-content-article-body] { padding: 18px 0 10px; }
 
 [data-content-article-body] > p {
-  font-size: 25.5px;
+  font-size: 20px;
   line-height: 1.78;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 [data-content-article-section] {
   border-top: 1px solid var(--os-surface-highlight);
-  font-size: 23px;
+  font-size: 28px;
   font-weight: 400;
   line-height: 1.35;
-  margin: 40px 0 14px;
+  margin: 48px 0 16px;
   padding-top: 18px;
 }
 
@@ -237,8 +237,8 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   float: left;
   font-size: 46px;
   line-height: 0.82;
-  margin: 5px 9px 0 0;
-  padding: 7px 9px;
+  margin: 4px 8px 0 0;
+  padding: 6px 8px;
 }
 
 [data-content-pagination] {
@@ -261,7 +261,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 
 [data-content-next] { text-align: right; }
 [data-content-nav-label] { font-family: var(--mono); font-size: 10px; opacity: 0.7; }
-[data-content-nav-title] { font-size: 17px; line-height: 1.25; overflow-wrap: anywhere; }
+[data-content-nav-title] { font-size: 15px; line-height: 1.25; overflow-wrap: anywhere; }
 
 [data-content-unavailable] {
   background: var(--os-surface);
@@ -387,8 +387,14 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   [data-content-language-name] { position: absolute; clip-path: inset(50%); }
   [data-content-language-label] { padding-left: 6px; }
   [data-content-theme-toggle] { padding-inline: 7px; }
-  [data-content-article] h1 { font-size: 34px; }
-  [data-content-article-body] > p { font-size: 24px; }
+  [data-content-article] h1 { font-size: 32px; }
+  [data-content-article-body] > p { font-size: 20px; }
+  [data-content-article-section] {
+    font-size: 26px;
+    margin: 40px 0 14px;
+    padding-top: 16px;
+  }
+  [data-content-article-lead]::first-letter { font-size: 40px; }
   [data-content-pagination] { grid-template-columns: 1fr; }
   [data-content-next] { text-align: left; }
 }
@@ -403,10 +409,12 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   background: var(--os-surface);
   border: 1px solid var(--os-surface-highlight);
   box-shadow: 4px 4px 0 var(--os-shadow);
-  font-size: 19px;
-  line-height: 1.7;
-  margin: 30px 0;
-  padding: 20px 24px;
+  font-family: "Bradley Hand", "Kaiti SC", "STKaiti", "KaiTi", "Segoe Print", cursive;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.65;
+  margin: 26px 0;
+  padding: 18px 22px;
   white-space: pre-line;
 }
 
@@ -426,7 +434,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 }
 
 [data-content-field-notes-text] {
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.7;
   max-width: 62ch;
   opacity: 0.8;
@@ -443,7 +451,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 }
 
 [data-content-rights] {
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.7;
   opacity: 0.72;
 }
@@ -830,7 +838,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   padding: 0 0.08em;
 }
 
-::selection {
+[data-content-article-body] ::selection {
   background: var(--os-accent);
   color: var(--os-canvas);
 }
@@ -857,7 +865,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
     width: min(360px, calc(100vw - 12px));
   }
   [data-tool-selection-action] { font-size: 9px; padding-inline: 6px; }
-  [data-content-quote] { font-size: 17px; padding: 16px 18px; }
+  [data-content-quote] { font-size: 18px; padding: 15px 17px; }
 }
 
 [data-content-page] button:focus-visible,

@@ -167,9 +167,29 @@ Agent engineering 也有相当一部分属于这类问题。用一个公式表�
 
 我还没有驯服它，但我已经知道它可能会从哪里咬过来，也开始知道自己需要训练什么。
 
-## 参考
+## 参考与延伸阅读
 
-[The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed](https://www.albertosavoia.com/therightit.html) — Alberto Savoia。文中“失败之兽”的意象来自这本书。
+## 书籍与方法
+
+[《做对产品》（The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed）](https://www.albertosavoia.com/therightit.html) — Alberto Savoia。关于市场失败、验证想法，以及“失败之兽”的意象。
+
+[《人月神话》（The Mythical Man-Month: Essays on Software Engineering, Anniversary Edition）](https://www.pearson.com/en-us/subject-catalog/p/mythical-man-month-the-essays-on-software-engineering-anniversary-edition/P200000000149/9780201835953) — Fred Brooks。关于人月神话、第二系统效应、巴别塔、没有银弹、概念完整性，以及把团队想象成共同建造一座大教堂。
+
+[《纳瓦尔宝典》（The Almanack of Naval Ravikant: A Guide to Wealth and Happiness）](https://www.navalmanack.com/home) — Eric Jorgenson 编，Naval Ravikant 提供原始思想。关于主动承担风险、以个人名义承担结果，以及自主权。
+
+## 建筑与设计
+
+[范斯沃斯住宅（Farnsworth House）](https://www.moma.org/collection/works/784) — Ludwig Mies van der Rohe。关于“Less is more”以及如何把一种设计原则迁移到软件工程和 Agent engineering。
+
+[兰斯大教堂（Reims Cathedral）](https://whc.unesco.org/en/list/601/) — UNESCO World Heritage Centre。关于共同语法、长期协作，以及每个人守住自己的贡献域。
+
+## AI Agent 与实践现场
+
+[AdventureX 2026](https://adventure-x.org/en) — 黑客松官方页面。文中关于 OPC（One Person Company）、“每月生产一百件垃圾”和极客现场的观察来自这次活动。
+
+[DeepSeek Harness](https://deepseek.com/harness/en/) — DeepSeek。关于“Agent = Model + Harness”、插件化能力，以及上下文生命周期可被操作和替换。
+
+[Pi Coding Agent](https://pi.dev/) — 一个强调最小核心和可扩展性的 Agent harness。文中关于先实践、再形成判断的段落受它启发。
 
 ---
 

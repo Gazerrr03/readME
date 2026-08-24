@@ -167,9 +167,29 @@ I hope to absorb what this period taught me, stop being afraid of mistakes, and 
 
 I have not tamed it yet. But I know where it might bite, and I am beginning to know what I need to train.
 
-## Reference
+## References and further reading
 
-[The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed](https://www.albertosavoia.com/therightit.html) — Alberto Savoia. The image of the Beast of Failure comes from this book.
+## Books and methods
+
+[The Right It: Why So Many Ideas Fail and How to Make Sure Yours Succeed](https://www.albertosavoia.com/therightit.html) — Alberto Savoia. On market failure, testing ideas, and the image of the Beast of Failure.
+
+[The Mythical Man-Month: Essays on Software Engineering, Anniversary Edition](https://www.pearson.com/en-us/subject-catalog/p/mythical-man-month-the-essays-on-software-engineering-anniversary-edition/P200000000149/9780201835953) — Fred Brooks. On the man-month myth, the second-system effect, the Tower of Babel, no silver bullet, conceptual integrity, and the idea of a team building one cathedral together.
+
+[The Almanack of Naval Ravikant: A Guide to Wealth and Happiness](https://www.navalmanack.com/home) — edited by Eric Jorgenson from Naval Ravikant's ideas. On taking risks deliberately, claiming outcomes in your own name, and autonomy.
+
+## Architecture and design
+
+[Farnsworth House](https://www.moma.org/collection/works/784) — Ludwig Mies van der Rohe. On “Less is more,” and on carrying a design principle into software engineering and Agent engineering.
+
+[Reims Cathedral](https://whc.unesco.org/en/list/601/) — UNESCO World Heritage Centre. On shared grammar, long collaboration, and each person holding a clear domain of contribution.
+
+## AI agents and the practice field
+
+[AdventureX 2026](https://adventure-x.org/en) — official hackathon site. The observations about OPC (One Person Company), making a hundred pieces of garbage each month, and the people I met came from this event.
+
+[DeepSeek Harness](https://deepseek.com/harness/en/) — DeepSeek. On “Agent = Model + Harness,” plugin-based composition, and the ability to operate on an agent's context lifecycle.
+
+[Pi Coding Agent](https://pi.dev/) — a minimal, extensible agent harness. It informed the passage about practicing first and forming judgment through direct experience.
 
 ---
 
