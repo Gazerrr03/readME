@@ -206,7 +206,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 [data-content-article-body] { padding: 18px 0 10px; }
 
 [data-content-article-body] > p {
-  font-size: 17px;
+  font-size: 25.5px;
   line-height: 1.78;
   margin-bottom: 22px;
 }
@@ -383,7 +383,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   [data-content-language-label] { padding-left: 6px; }
   [data-content-theme-toggle] { padding-inline: 7px; }
   [data-content-article] h1 { font-size: 34px; }
-  [data-content-article-body] > p { font-size: 16px; }
+  [data-content-article-body] > p { font-size: 24px; }
   [data-content-pagination] { grid-template-columns: 1fr; }
   [data-content-next] { text-align: left; }
 }
