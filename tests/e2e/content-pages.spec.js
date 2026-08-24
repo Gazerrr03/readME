@@ -4,6 +4,19 @@ import { articles, projects } from '../../scripts/data/content.js';
 const firstArticle = articles[0];
 const firstProject = projects[0];
 
+test('RSS feed is served below the GitHub Pages project path', async ({ request }) => {
+  const response = await request.get('/readME/feed.xml');
+  expect(response.status()).toBe(200);
+  expect(response.headers()['content-type']).toContain('application/rss+xml');
+
+  const feed = await response.text();
+  expect(feed).toContain('<rss version="2.0"');
+  expect((feed.match(/<item>/g) ?? []).length).toBe(articles.length);
+  expect(feed).toContain(
+    `https://gazerrr03.github.io/readME/writing/${firstArticle.slug}/?lang=zh-CN`,
+  );
+});
+
 test('article URL loads and reloads as an independent document', async ({ page }) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));

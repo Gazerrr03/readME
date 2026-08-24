@@ -23,8 +23,8 @@ export const channels = Object.freeze([
   Object.freeze({
     id: 'rss',
     channel: 'RSS',
-    address: '/feed.xml',
+    address: 'feed.xml',
     status: '[OK]',
-    href: '/feed.xml',
+    href: 'feed.xml',
   }),
 ]);

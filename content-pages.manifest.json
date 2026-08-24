@@ -1,5 +1,6 @@
 {
   "files": [
+    "feed.xml",
     "projects/drift-protocol/index.html",
     "projects/flovvas/index.html",
     "projects/midnight-static/index.html",

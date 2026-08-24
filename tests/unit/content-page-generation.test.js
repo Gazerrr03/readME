@@ -14,7 +14,7 @@ test('generates one metadata-rich physical page per content item', async () => {
   const root = await temporaryRoot();
   const result = await generateContentPages({ root, check: false });
 
-  assert.equal(result.files.length, articles.length * 4 + projects.length);
+  assert.equal(result.files.length, articles.length * 4 + projects.length + 1);
   const file = join(root, 'writing', articles[0].slug, 'index.html');
   const html = await readFile(file, 'utf8');
   assert.match(html, /<base href="\.\.\/\.\.\/">/);
@@ -24,6 +24,25 @@ test('generates one metadata-rich physical page per content item', async () => {
 
   const manifest = JSON.parse(await readFile(join(root, 'content-pages.manifest.json'), 'utf8'));
   assert.deepEqual(manifest.files, [...result.files].sort());
+  await generateContentPages({ root, check: true });
+});
+
+test('generates one stable, localized RSS item per article', async () => {
+  const root = await temporaryRoot();
+  await generateContentPages({ root, check: false });
+
+  const feed = await readFile(join(root, 'feed.xml'), 'utf8');
+  assert.match(feed, /<rss version="2\.0"/);
+  assert.match(feed, /<language>zh-CN<\/language>/);
+  assert.match(feed, /https:\/\/gazerrr03\.github\.io\/readME\/feed\.xml/);
+  assert.equal((feed.match(/<item>/g) ?? []).length, articles.length);
+  assert.match(feed, new RegExp(`<title>${articles[0].title['zh-CN']}</title>`));
+  assert.match(feed, new RegExp(
+    `https://gazerrr03\\.github\\.io/readME/writing/${articles[0].slug}/\\?lang=zh-CN`,
+  ));
+  assert.match(feed, new RegExp(
+    `<guid isPermaLink="true">https://gazerrr03\\.github\\.io/readME/writing/${articles[0].slug}/</guid>`,
+  ));
   await generateContentPages({ root, check: true });
 });
 
