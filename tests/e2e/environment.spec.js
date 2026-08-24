@@ -300,7 +300,7 @@ test('music deck toggles playback and advances tracks', async ({ page }) => {
   const deck = page.locator('[data-environment-deck]');
   await expect(deck).toHaveAttribute('data-deck-status', 'idle');
   await expect(deck.locator('[data-deck-next]')).toHaveText('TRK 01/04 ›');
-  await expect(deck.locator('[data-deck-title]')).toHaveText('TIDE STUDY 0200');
+  await expect(deck.locator('[data-deck-title]')).toHaveText('episode 33？');
 
   await deck.locator('[data-deck-toggle]').click();
   await expect(deck).toHaveAttribute('data-deck-status', 'playing');
@@ -312,6 +312,9 @@ test('music deck toggles playback and advances tracks', async ({ page }) => {
 
   await deck.locator('[data-deck-next]').click();
   await expect(deck.locator('[data-deck-next]')).toHaveText('TRK 02/04 ›');
+  await expect(deck.locator('[data-deck-title]')).toHaveText('TIDE STUDY 0200');
+  await deck.locator('[data-deck-next]').click();
+  await expect(deck.locator('[data-deck-next]')).toHaveText('TRK 03/04 ›');
   await expect(deck.locator('[data-deck-title]')).toHaveText('PAPER CHANNELS');
   await expect(deck).toHaveAttribute('data-deck-status', 'idle');
 });

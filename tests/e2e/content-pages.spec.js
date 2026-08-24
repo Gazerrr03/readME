@@ -254,8 +254,14 @@ test('vibe menu pins the music player beside the article and follows the theme',
   await expect(menu).toBeHidden();
   await expect(player).toBeVisible();
   await expect(player).toHaveAttribute('data-vibe-status', 'idle');
+  await expect(player.locator('[data-vibe-status-row]')).toHaveCount(0);
+  await expect(player.locator('[data-vibe-volume]')).toHaveValue('0.2');
+  await expect(player.locator('[data-vibe-volume-value]')).toHaveText('20%');
   expect(await player.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
-  expect(await player.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThan(480);
+  expect(await player.evaluate((element) => element.getBoundingClientRect().height)).toBeLessThan(380);
+  const radialRingBox = await player.locator('[data-vibe-radial-track]').boundingBox();
+  const playButtonBox = await player.locator('[data-vibe-play]').boundingBox();
+  expect(playButtonBox.width / radialRingBox.width).toBeGreaterThan(0.42);
   const articleBox = await page.locator('[data-content-article]').boundingBox();
   const playerBox = await player.boundingBox();
   expect(playerBox.x).toBeGreaterThanOrEqual(articleBox.x + articleBox.width - 1);
@@ -267,9 +273,9 @@ test('vibe menu pins the music player beside the article and follows the theme',
   await expect(player.locator('[data-vibe-track-select]')).toHaveValue('1');
   await player.locator('[data-vibe-prev]').click();
   await expect(player.locator('[data-vibe-track-select]')).toHaveValue('0');
-  await player.locator('[data-vibe-track-select]').selectOption('3');
-  await expect(player.locator('[data-vibe-track-select]')).toHaveValue('3');
-  await expect(player.locator('[data-vibe-track-select]')).toContainText('episode 33？');
+  await player.locator('[data-vibe-track-select]').selectOption('0');
+  await expect(player.locator('[data-vibe-track-select]')).toHaveValue('0');
+  await expect(player.locator('[data-vibe-track-select] option:checked')).toHaveText('episode 33？');
   await player.locator('[data-vibe-volume]').fill('0.42');
   await expect(player.locator('[data-vibe-volume-value]')).toHaveText('42%');
 

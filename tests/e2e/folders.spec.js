@@ -72,13 +72,13 @@ test('albums opens the player from the folder view and toggles playback', async 
   expect(await episodeCover.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
   await window.locator('[data-folder-item="tide-study-0200"]').dblclick();
   await expect(window.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'viewer');
-  await expect(window.locator('[data-player-track]')).toHaveText('TRK 01/04');
+  await expect(window.locator('[data-player-track]')).toHaveText('TRK 02/04');
   await expect(window.locator('[data-albums-app]')).toHaveAttribute('data-player-status', 'playing');
 
   await window.locator('[data-player-toggle]').click();
   await expect(window.locator('[data-albums-app]')).toHaveAttribute('data-player-status', 'paused');
   await window.locator('[data-player-next]').click();
-  await expect(window.locator('[data-player-track]')).toHaveText('TRK 02/04');
+  await expect(window.locator('[data-player-track]')).toHaveText('TRK 03/04');
 });
 
 test('mobile content items open with a single tap', async ({ page }) => {

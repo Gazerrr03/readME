@@ -3,7 +3,7 @@ import { tracks } from '../../media/catalog.js';
 
 const CANVAS_SIZE = 248;
 const FRAME_RATE = 30;
-const DEFAULT_VOLUME = 0.78;
+const DEFAULT_VOLUME = 0.2;
 
 function createElement(document, tagName, attributes = {}, text = '') {
   const element = document.createElement(tagName);
@@ -23,16 +23,6 @@ function formatTimecode(seconds) {
   const wholeSeconds = Math.floor(safe % 60);
   const frames = Math.floor((safe % 1) * FRAME_RATE);
   return `${pad2(hours)}:${pad2(minutes)}:${pad2(wholeSeconds)}:${pad2(frames)}`;
-}
-
-function statusKey(status) {
-  return {
-    idle: 'content.vibeStatusIdle',
-    playing: 'content.vibeStatusPlaying',
-    paused: 'content.vibeStatusPaused',
-    ended: 'content.vibeStatusEnded',
-    unavailable: 'content.vibeStatusUnavailable',
-  }[status] ?? 'content.vibeStatusIdle';
 }
 
 export function renderArticleVibe({ document, i18n }) {
@@ -113,9 +103,6 @@ export function renderArticleVibe({ document, i18n }) {
   stage.append(hud);
 
   const footer = createElement(document, 'footer', { 'data-vibe-player-footer': '' });
-  const statusRow = createElement(document, 'div', { 'data-vibe-status-row': '' });
-  const statusLabel = createElement(document, 'span', { 'data-vibe-status-label': '' });
-  const statusText = createElement(document, 'span', { 'data-vibe-status-text': '' });
   const trackRow = createElement(document, 'div', { 'data-vibe-track-row': '' });
   const trackLabel = createElement(document, 'span', { 'data-vibe-track-label': '' });
   const trackControls = createElement(document, 'div', { 'data-vibe-track-controls': '' });
@@ -159,11 +146,10 @@ export function renderArticleVibe({ document, i18n }) {
     'aria-label': i18n.t('content.vibeVolume'),
   });
   const volumeValue = createElement(document, 'output', { 'data-vibe-volume-value': '' });
-  statusRow.append(statusLabel, statusText);
   trackRow.append(trackLabel, trackControls);
   timerRow.append(timeCode, format);
   volumeRow.append(volumeLabel, volumeRange, volumeValue);
-  footer.append(statusRow, trackRow, volumeRow, timerRow);
+  footer.append(trackRow, volumeRow, timerRow);
 
   const compactView = createElement(document, 'div', {
     'data-vibe-compact-view': '',
@@ -277,7 +263,6 @@ export function renderArticleVibe({ document, i18n }) {
 
   function renderStatus() {
     player.dataset.vibeStatus = status;
-    statusText.textContent = i18n.t(statusKey(status));
     const glyph = status === 'playing' ? '■' : '▶';
     playGlyph.textContent = glyph;
     compactPlayGlyph.textContent = glyph;
@@ -417,7 +402,6 @@ export function renderArticleVibe({ document, i18n }) {
       const option = trackSelect.options[index];
       if (option) option.textContent = pick(track.title, i18n.locale);
     });
-    statusLabel.textContent = i18n.t('content.vibeStatusLabel');
     trackLabel.textContent = i18n.t('content.vibeTrackLabel');
     renderTrack();
     renderVolume();
