@@ -25,10 +25,10 @@ Flovvas 距离最初的想法已经一年了。回头看这份答卷，能看出
 
 既然如此，我们要不要选择去这片不确定性里冲浪？这个问题不能只靠热血沸腾来回答。因为失败之兽就蹲伏在浪潮里。
 
-> It waits. Patient.
-Confident that it will soon get its prey—it always does.
-Few escape its bite, none its tentacles.
-One way or another, the Beast of Failure gets us all.
+> It waits. Patient.\
+> Confident that it will soon get its prey—it always does.\
+> Few escape its bite, none its tentacles.\
+> One way or another, the Beast of Failure gets us all.
 
 它耐心地等待，自信地相信猎物迟早会出现。大多数新产品都可能被它咬住；经验、能力和准备并不能让任何人获得一张永久免疫的通行证。
 
@@ -142,8 +142,8 @@ Agent engineering 也有相当一部分属于这类问题。用一个公式表�
 
 在《做对产品》的前言里，有一句听起来可能有点中二，但我觉得真的很帅的话：
 
-> 致失败之兽：
-你教会我不少经验教训，现在换我来驯服你了。
+> 致失败之兽：\
+> 你教会我不少经验教训，现在换我来驯服你了。
 
 我的热情正在推动我去驯服这头失败之兽。它虽然在我身上留下了很多疤痕，但借助这些疤痕，我反而能更好地找到自己需要训练的能力。
 

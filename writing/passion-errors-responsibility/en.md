@@ -25,10 +25,10 @@ But making something from zero to one becoming easier does not make success easi
 
 Should we surf into that uncertainty anyway? The question cannot be answered by excitement alone. The Beast of Failure is crouching in the waves.
 
-> It waits. Patient.
-Confident that it will soon get its prey—it always does.
-Few escape its bite, none its tentacles.
-One way or another, the Beast of Failure gets us all.
+> It waits. Patient.\
+> Confident that it will soon get its prey—it always does.\
+> Few escape its bite, none its tentacles.\
+> One way or another, the Beast of Failure gets us all.
 
 It waits with the confidence that its prey will arrive sooner or later. Most new products may be bitten. Experience, ability, and preparation do not give anyone permanent immunity.
 
@@ -142,8 +142,8 @@ These realizations do not discourage me. I used to wonder how I could become a q
 
 The preface to The Right It contains a line that may sound a little overdramatic, but which I think is genuinely cool:
 
-> To the Beast of Failure:
-You have taught me many lessons. Now it is my turn to tame you.
+> To the Beast of Failure:\
+> You have taught me many lessons. Now it is my turn to tame you.
 
 My passion is pushing me to tame this Beast of Failure. It has left many scars on me, but those scars help me locate the abilities I still need to train.
 
