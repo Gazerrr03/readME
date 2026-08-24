@@ -25,10 +25,10 @@ AI が創造にもたらした繁栄に、私たちは興奮した。かつて�
 
 それでも不確実性の波へ乗るのか。その問いは、熱狂だけでは答えられない。波の中には失敗の獣が潜んでいる。
 
-> It waits. Patient.
-Confident that it will soon get its prey—it always does.
-Few escape its bite, none its tentacles.
-One way or another, the Beast of Failure gets us all.
+> It waits. Patient.\
+> Confident that it will soon get its prey—it always does.\
+> Few escape its bite, none its tentacles.\
+> One way or another, the Beast of Failure gets us all.
 
 獣は辛抱強く待っている。獲物はいつか必ず現れると信じている。多くの新しいプロダクトは噛みつかれる。経験や能力や準備が、永久の免疫証明書になることはない。
 
@@ -142,8 +142,8 @@ AI-native なチームでは、これからモデルの能力が高まり、一�
 
 『正しいものを正しくつくる』の序文には、少し中二病的に聞こえるかもしれないが、本当にかっこいいと思う一文がある。
 
-> 失敗の獣へ：
-あなたは私に多くの教訓を教えた。今度は私があなたを飼いならす番だ。
+> 失敗の獣へ：\
+> あなたは私に多くの教訓を教えた。今度は私があなたを飼いならす番だ。
 
 私の情熱は、この失敗の獣を飼いならそうと私を動かしている。獣は私に多くの傷跡を残した。でもその傷跡を手がかりにして、自分がまだ何を鍛える必要があるのかを見つけられる。
 

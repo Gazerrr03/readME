@@ -110,7 +110,11 @@ export function renderArticleMarkdown(article, localeKey) {
     } else if (item.h) {
       lines.push(`## ${item.h}`, '');
     } else if (item.q) {
-      lines.push(`> ${item.q}`, '');
+      const quoteLines = item.q.split('\n');
+      const quote = quoteLines
+        .map((line, index) => `> ${line}${index < quoteLines.length - 1 ? '\\' : ''}`)
+        .join('\n');
+      lines.push(quote, '');
     } else if (item.a) {
       lines.push(`[${item.a}](${item.href})${item.rest ?? ''}`, '');
     }

@@ -413,6 +413,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   line-height: 1.7;
   margin: 30px 0;
   padding: 20px 24px;
+  white-space: pre-line;
 }
 
 /* --- Field notes (optional layer after the body) --- */
