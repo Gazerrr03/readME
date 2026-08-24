@@ -39,10 +39,10 @@ h1:focus { outline: none; }
 h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright); }
 
 [data-content-page] {
-  margin: 0 auto;
-  max-width: 1120px;
+  margin: 0;
+  max-width: none;
   min-height: 100vh;
-  padding: 24px clamp(16px, 4vw, 56px) 64px;
+  padding: 0 0 64px;
 }
 
 [data-content-header] {
@@ -55,7 +55,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   margin-bottom: clamp(36px, 7vw, 88px);
   min-height: 56px;
-  padding: 8px 0 12px;
+  padding: 8px max(16px, calc((100vw - 1120px) / 2 + clamp(16px, 4vw, 56px))) 12px;
   position: sticky;
   top: 0;
   z-index: 40;
@@ -151,7 +151,12 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
   color: var(--os-canvas);
 }
 
-[data-content-main] { min-width: 0; }
+[data-content-main] {
+  margin: 0 auto;
+  max-width: 1120px;
+  min-width: 0;
+  padding: 24px clamp(16px, 4vw, 56px) 0;
+}
 
 [data-content-article] {
   margin: 0 auto;
@@ -366,7 +371,7 @@ h1:focus-visible { outline: var(--os-focus-width) solid var(--os-accent-bright);
 }
 
 @media (max-width: 680px) {
-  [data-content-page] { padding-top: 12px; }
+  [data-content-main] { padding-top: 12px; }
   [data-content-header] {
     align-items: center;
     gap: 8px 12px;
