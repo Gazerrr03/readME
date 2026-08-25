@@ -29,8 +29,10 @@ export function renderArticleVibe({ document, i18n }) {
   const windowRef = document.defaultView;
   const audio = document.createElement('audio');
   audio.preload = 'metadata';
+  audio.loop = true;
   audio.volume = DEFAULT_VOLUME;
   audio.setAttribute('data-vibe-audio', '');
+  audio.setAttribute('loop', '');
   audio.setAttribute('aria-hidden', 'true');
   audio.hidden = true;
 
@@ -366,7 +368,7 @@ export function renderArticleVibe({ document, i18n }) {
       setStatus('paused');
       return;
     }
-    if (status === 'ended' || status === 'unavailable') {
+    if (status === 'unavailable') {
       audio.currentTime = 0;
       setStatus('idle');
     }
@@ -423,7 +425,6 @@ export function renderArticleVibe({ document, i18n }) {
     renderStatus();
   }
 
-  const onEnded = () => setStatus('ended');
   const onError = () => {
     if (!destroyed) setStatus('unavailable');
   };
@@ -435,7 +436,6 @@ export function renderArticleVibe({ document, i18n }) {
   const onTrackChange = () => selectTrack(Number(trackSelect.value));
   const onPrevious = () => selectTrack(currentTrackIndex - 1);
   const onNext = () => selectTrack(currentTrackIndex + 1);
-  audio.addEventListener('ended', onEnded);
   audio.addEventListener('error', onError);
   audio.addEventListener('timeupdate', onTimeUpdate);
   playButton.addEventListener('click', togglePlayback);
@@ -468,7 +468,6 @@ export function renderArticleVibe({ document, i18n }) {
       destroyed = true;
       stopFrameLoop();
       audio.pause();
-      audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('error', onError);
       audio.removeEventListener('timeupdate', onTimeUpdate);
       playButton.removeEventListener('click', togglePlayback);

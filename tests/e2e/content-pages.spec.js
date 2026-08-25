@@ -260,6 +260,8 @@ test('vibe menu pins the music player beside the article and follows the theme',
   await expect(player.locator('[data-vibe-status-row]')).toHaveCount(0);
   await expect(player.locator('[data-vibe-volume]')).toHaveValue('0.2');
   await expect(player.locator('[data-vibe-volume-value]')).toHaveText('20%');
+  await expect(player.locator('[data-vibe-audio]')).toHaveAttribute('loop', '');
+  expect(await player.locator('[data-vibe-audio]').evaluate((audio) => audio.loop)).toBe(true);
   const coverBand = player.locator('[data-vibe-cover-band]');
   await expect(coverBand).toBeVisible();
   await expect(coverBand).toHaveAttribute('data-vibe-cover', 'image');
