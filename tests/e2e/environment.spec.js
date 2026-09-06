@@ -22,6 +22,33 @@ test('new preferences default to the Flow Shards background', async ({ page }) =
   await expect(background).toHaveAttribute('data-background-kind', 'three');
 });
 
+test('a fresh phone renders the fully developed Flow Shards composition once', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/?skipBoot=1');
+  const canvas = page.locator('canvas[data-background-id="flow-shards"]');
+  await expect(canvas).toHaveAttribute('data-background-motion', 'static');
+  await expect(canvas).toHaveAttribute('data-wallpaper-frame', /[1-9]\d*/);
+  const screenshot = (await canvas.screenshot()).toString('base64');
+  const illuminatedPixels = await page.evaluate(async encoded => {
+    const blob = await fetch(`data:image/png;base64,${encoded}`).then(response => response.blob());
+    const bitmap = await createImageBitmap(blob);
+    const probe = document.createElement('canvas');
+    probe.width = 64;
+    probe.height = 128;
+    const context = probe.getContext('2d');
+    context.drawImage(bitmap, 0, 0, 64, 128);
+    const { data } = context.getImageData(0, 32, 52, 76);
+    let count = 0;
+    for (let i = 0; i < data.length; i += 4) if (data[i] + data[i + 1] + data[i + 2] > 480) count++;
+    bitmap.close();
+    return count;
+  }, screenshot);
+  expect(illuminatedPixels).toBeGreaterThan(150);
+  const frame = await canvas.getAttribute('data-wallpaper-frame');
+  await page.waitForTimeout(180);
+  await expect(canvas).toHaveAttribute('data-wallpaper-frame', frame);
+});
+
 test('both macOS and Windows mount the environment', async ({ page }) => {
   await seedLayout(page, 'macos');
   await page.goto('/');

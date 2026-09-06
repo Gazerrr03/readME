@@ -201,9 +201,9 @@ export function createWallpaperRenderer({
     targetRuntime.scene.fog.near = nextFog.near;
     targetRuntime.scene.fog.far = nextFog.far;
     targetRuntime.planeMaterial.opacity = 0;
-    targetRuntime.directional.intensity = 0.62 + (nextMapped.shadowOpacity * 0.72);
-    targetRuntime.fill.intensity = 0.08 + ((1 - nextMapped.shadowOpacity) * 0.08);
-    targetRuntime.ambient.intensity = 0.14 + ((1 - nextMapped.shadowOpacity) * 0.06);
+    targetRuntime.directional.intensity = 0.95 + (nextMapped.shadowOpacity * 0.72);
+    targetRuntime.fill.intensity = 0.42 + ((1 - nextMapped.shadowOpacity) * 0.16);
+    targetRuntime.ambient.intensity = 0.48 + ((1 - nextMapped.shadowOpacity) * 0.12);
   };
 
   const buildPipeline = (targetRuntime, nextMapped, nextConfig) => {
@@ -239,10 +239,10 @@ export function createWallpaperRenderer({
   };
 
   const renderPipeline = (targetRuntime, pipeline, delta, bloomMapped = mapped) => {
-    if (frameCount > 0 && delta > 0 && pipeline.warmUpRemaining > 0) {
+    if (pipeline.warmUpRemaining > 0 && (motion === 'static' || (frameCount > 0 && delta > 0))) {
       const warmUpSteps = Math.min(
         pipeline.warmUpRemaining,
-        REFERENCE_WARM_UP_STEPS_PER_FRAME,
+        motion === 'static' ? REFERENCE_WARM_UP_STEPS : REFERENCE_WARM_UP_STEPS_PER_FRAME,
       );
       simulationTime += warmUpSteps * REFERENCE_WARM_UP_DELTA_SECONDS;
       pipeline.simulation.warmUp(

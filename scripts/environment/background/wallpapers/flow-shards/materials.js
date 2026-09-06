@@ -114,9 +114,13 @@ function setPalette(THREE, uniforms, primaryValue) {
     setRawHex(uniforms.uSecondaryColor.value, '#40566A');
     return;
   }
+  if (primaryValue.toUpperCase() === '#4AE0CC') {
+    setRawHex(uniforms.uSecondaryColor.value, '#FF937A');
+    return;
+  }
   const secondary = new THREE.Color();
   setRawHex(secondary, primaryValue);
-  secondary.offsetHSL(-0.225, 0, -0.34);
+  secondary.offsetHSL(-0.225, 0, -0.08);
   uniforms.uSecondaryColor.value.copy(secondary);
 }
 

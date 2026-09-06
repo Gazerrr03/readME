@@ -32,8 +32,8 @@ test('density tiers and semantic endpoints map to bounded renderer values', () =
 
 test('reference preset uses the OS palette while preserving the source motion profile', () => {
   assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.density, 'high');
-  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.backgroundColor, '#071426');
-  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.shardColor, '#8099A6');
+  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.backgroundColor, '#385D68');
+  assert.equal(FLOW_SHARDS_DEFAULT_CONFIG.shardColor, '#4AE0CC');
 
   const mapped = mapFlowShardsConfig(FLOW_SHARDS_DEFAULT_CONFIG);
   assert.equal(mapped.simulationSize, 128);
