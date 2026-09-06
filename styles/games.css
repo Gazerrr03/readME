@@ -1,0 +1,17 @@
+[data-games-app] { height: 100%; min-height: 0; }
+[data-games-app] [data-folder-list] { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 280px)); align-content: start; gap: 24px; }
+[data-games-app] [data-folder-item] { display: flex; flex-direction: column; align-items: stretch; padding: 8px 8px 18px; text-align: left; gap: 8px; border-radius: 6px; }
+[data-games-app] [data-game-cover] { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; border-radius: 3px; image-rendering: pixelated; margin-bottom: 8px; }
+[data-games-app] [data-folder-item] strong { font-size: 20px; line-height: 1.3; font-weight: 600; }
+[data-games-app] [data-folder-item] small { color: var(--os-accent); font-size: 9px; }
+[data-games-app] [data-folder-item] span { color: var(--os-muted); font-size: 12px; }
+[data-games-app][data-content-view='viewer'] { display: flex; flex-direction: column; padding: 0; gap: 0; overflow: hidden; }
+[data-games-app][data-content-view='viewer'] [data-folder-header] { flex: 0 0 auto; padding: 8px 14px; margin: 0; min-height: 42px; border-bottom: 1px solid var(--os-surface-highlight); }
+[data-games-app][data-content-view='viewer'] [data-folder-heading] { display: flex; align-items: center; gap: 10px; }
+[data-games-app][data-content-view='viewer'] [data-folder-title] { font-size: 12px; margin: 0; }
+[data-games-app][data-content-view='viewer'] [data-folder-kicker],
+[data-games-app][data-content-view='viewer'] [data-folder-count] { display: none; }
+[data-game-frame] { flex: 1 1 0; display: block; width: 100%; min-height: 0; border: 0; background: #8dccd3; }
+[data-app-window='games'] [data-window-content] { overflow: hidden; }
+[data-app-window='games'] [data-window-content]:has([data-content-view='viewer']) { padding: 0; background: none; }
+[data-desktop-root]:has([data-app-window='games']:not([hidden])) [data-bot-mount] { z-index: 3; }

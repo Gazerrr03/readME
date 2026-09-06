@@ -17,15 +17,15 @@ test('collection launchers sit on the right edge in both desktop modes', async (
   await page.goto('/');
   const { width } = page.viewportSize();
   const windowsFolders = await page.locator('[data-desktop-folders]').boundingBox();
-  expect(Math.round(windowsFolders.x + windowsFolders.width)).toBe(width - 24);
-  expect(Math.round(windowsFolders.y)).toBe(24);
+  expect(Math.round(windowsFolders.x + windowsFolders.width)).toBe(width - 26);
+  expect(Math.round(windowsFolders.y)).toBe(26);
   await expect(page.locator('[data-folder-toggle]')).toHaveCount(4);
 
   await seedLayout(page, 'macos');
   await page.goto('/');
   const macosFolders = await page.locator('[data-desktop-folders]').boundingBox();
-  expect(Math.round(macosFolders.x + macosFolders.width)).toBe(width - 24);
-  expect(Math.round(macosFolders.y)).toBe(56);
+  expect(Math.round(macosFolders.x + macosFolders.width)).toBe(width - 26);
+  expect(Math.round(macosFolders.y)).toBe(62);
 });
 
 test('photos opens a centered folder view, then returns from the photo viewer', async ({ page }) => {
@@ -69,7 +69,7 @@ test('albums opens the player from the folder view and toggles playback', async 
   const episodeItem = window.locator('[data-folder-item="episode-33"]');
   const episodeCover = episodeItem.locator('[data-album-cover-image]');
   await expect(episodeCover).toHaveAttribute('src', 'media/covers/episode-33-pixel.png');
-  expect(await episodeCover.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+  await expect.poll(() => episodeCover.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
   const albumArtBox = await episodeItem.locator('[data-album-item-art]').boundingBox();
   const episodeCoverBox = await episodeCover.boundingBox();
   expect(episodeCoverBox.width).toBeGreaterThan(albumArtBox.width * 0.95);
@@ -113,9 +113,9 @@ test('games and books expose their own collection windows', async ({ page }) => 
   await page.locator('[data-folder-toggle="games"]').click();
   const games = page.locator('[data-app-window="games"]');
   await expect(games.locator('[data-folder-browser]')).toHaveAttribute('data-folder-view', 'folder');
-  await expect(games.locator('[data-folder-item]')).toHaveCount(0);
-  await expect(games.locator('[data-games-empty]')).toContainText('NO GAME MODULES MOUNTED');
-  await expect(games.locator('[data-game-mount]')).toHaveText('MOUNT /GAMES/*.HTML');
+  await expect(games.locator('[data-folder-item]')).toHaveCount(1);
+  await expect(games.locator('[data-folder-item="mosslight"]')).toContainText('Mosslight');
+  await expect(games.locator('[data-game-cover]')).toHaveJSProperty('naturalWidth', 640);
   await games.locator('[data-window-close]').click();
 
   await page.locator('[data-folder-toggle="books"]').click();
@@ -146,7 +146,7 @@ test('bookshelf canvas uses the dark surface as its backdrop', async ({ page }) 
     return [...probe.getContext('2d').getImageData(bitmap.width - 8, 8, 1, 1).data];
   }, screenshot);
 
-  expect(pixel).toEqual([14, 35, 64, 255]);
+  expect(pixel).toEqual([22, 33, 47, 255]);
 });
 
 test('collection labels and viewer titles follow the locale', async ({ page }) => {

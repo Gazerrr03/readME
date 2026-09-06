@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#34766b">
+  <title>Mosslight / QIZHI</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./game.css">
+</head>
+<body>
+  <main id="game" data-game-state="loading">
+    <canvas id="world" tabindex="0" aria-label="Mosslight island"></canvas>
+    <header class="hud">
+      <div class="identity"><span class="edition">Q / PLAY 01</span><h1>MOSSLIGHT</h1><span id="place"></span></div>
+      <nav id="tools"></nav>
+    </header>
+    <div class="quest"><span class="quest-light"></span><span id="quest"></span><strong id="count">0 / 3</strong></div>
+    <div id="journal" hidden></div>
+    <div id="notice" role="status" aria-live="polite"></div>
+    <div id="encounter" hidden></div>
+    <div id="dialog" role="dialog" aria-modal="true" hidden></div>
+    <footer class="play-controls">
+      <div id="direction-pad" aria-label="Movement"></div>
+      <div class="traveler"><span class="companion-dot"></span><div><strong id="companion"></strong><span id="health-label"></span><meter id="health" min="0" max="18" value="18"></meter></div></div>
+      <button id="interact" class="action" type="button"></button>
+    </footer>
+  </main>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>

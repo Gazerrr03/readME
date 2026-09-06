@@ -22,7 +22,7 @@ Content-container entries:
 
 - `interactive-buttons/photos/` — photo collection and viewer.
 - `interactive-buttons/albums/` — record collection, player, and viewer.
-- `interactive-buttons/games/` — mounted game collection and viewer placeholder.
+- `interactive-buttons/games/` — game collection and lifecycle-aware Mosslight viewer; the standalone game lives in `games/mosslight/`.
 - `interactive-buttons/books/` — book collection, bookshelf, and viewer.
 - `interactive-buttons/shared/` — the common folder-to-viewer shell, launcher, and pixel-art helpers.
 

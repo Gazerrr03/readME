@@ -98,6 +98,7 @@ export function createWindowManager({
     if (typeof renderer !== 'function') return;
 
     const host = {
+      focus: () => manager.focus(app.id),
       maximize: () => manager.maximize(app.id),
       unmaximize: () => manager.unmaximize(app.id),
     };
