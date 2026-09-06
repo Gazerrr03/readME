@@ -29,7 +29,7 @@ test('a fresh phone renders the fully developed Flow Shards composition once', a
   await expect(canvas).toHaveAttribute('data-background-motion', 'static');
   await expect(canvas).toHaveAttribute('data-wallpaper-frame', /[1-9]\d*/);
   const screenshot = (await canvas.screenshot()).toString('base64');
-  const illuminatedPixels = await page.evaluate(async encoded => {
+  const shardPixels = await page.evaluate(async encoded => {
     const blob = await fetch(`data:image/png;base64,${encoded}`).then(response => response.blob());
     const bitmap = await createImageBitmap(blob);
     const probe = document.createElement('canvas');
@@ -37,13 +37,16 @@ test('a fresh phone renders the fully developed Flow Shards composition once', a
     probe.height = 128;
     const context = probe.getContext('2d');
     context.drawImage(bitmap, 0, 0, 64, 128);
+    const background = context.getImageData(2, 32, 1, 1).data;
     const { data } = context.getImageData(0, 32, 52, 76);
     let count = 0;
-    for (let i = 0; i < data.length; i += 4) if (data[i] + data[i + 1] + data[i + 2] > 480) count++;
+    for (let i = 0; i < data.length; i += 4) {
+      if (Math.max(...[0, 1, 2].map(channel => Math.abs(data[i + channel] - background[channel]))) > 35) count++;
+    }
     bitmap.close();
     return count;
   }, screenshot);
-  expect(illuminatedPixels).toBeGreaterThan(150);
+  expect(shardPixels).toBeGreaterThan(150);
   const frame = await canvas.getAttribute('data-wallpaper-frame');
   await page.waitForTimeout(180);
   await expect(canvas).toHaveAttribute('data-wallpaper-frame', frame);

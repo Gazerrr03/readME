@@ -275,8 +275,7 @@ void flowBasis(vec3 localPosition, out mat3 basis, out vec3 center, out vec3 sca
   center = flowCurvePoint(start, baseCenter, end, trailAmount);
   basis = flowFrame(flowBlendDirection(previousForward, forward, trailAmount));
 
-  float palettePhase = fract(aRandom + currentState.a * 0.18);
-  vec3 lifeColor = mix(uPrimaryColor, uSecondaryColor, smoothstep(0.58, 0.72, palettePhase));
+  vec3 lifeColor = mix(uPrimaryColor, uSecondaryColor, currentState.a + 0.2);
   lifeColor += vec3(aDecals.x);
   vFlowColor = flowHueShift(lifeColor, aDecals.x * 10.0);
   vFlowOcclusion = aOcclusion;
@@ -371,9 +370,10 @@ void main() {
     + (texture2D(uBloom2, vUv).rgb * 0.6)
     + (texture2D(uBloom3, vUv).rgb * 0.8)
     + texture2D(uBloom4, vUv).rgb;
-  vec3 combined = min(sceneColor + (bloom * uStrength), vec3(1.0));
+  // Half a stop of exposure lifts the original palette without changing its hues.
+  vec3 combined = min((sceneColor + (bloom * uStrength)) * 1.45, vec3(1.0));
   float grainSeed = mod(dot(vUv, vec2(12.9898, 78.233)), 3.14);
-  float grain = fract(sin(grainSeed) * 43758.5453) * 0.012 * uDevicePixelRatio;
+  float grain = fract(sin(grainSeed) * 43758.5453) * 0.04 * uDevicePixelRatio;
   gl_FragColor = vec4(combined, 1.0);
   #include <tonemapping_fragment>
   #include <colorspace_fragment>

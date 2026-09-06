@@ -201,9 +201,9 @@ export function createWallpaperRenderer({
     targetRuntime.scene.fog.near = nextFog.near;
     targetRuntime.scene.fog.far = nextFog.far;
     targetRuntime.planeMaterial.opacity = 0;
-    targetRuntime.directional.intensity = 0.95 + (nextMapped.shadowOpacity * 0.72);
-    targetRuntime.fill.intensity = 0.42 + ((1 - nextMapped.shadowOpacity) * 0.16);
-    targetRuntime.ambient.intensity = 0.48 + ((1 - nextMapped.shadowOpacity) * 0.12);
+    targetRuntime.directional.intensity = 0.62 + (nextMapped.shadowOpacity * 0.72);
+    targetRuntime.fill.intensity = 0.08 + ((1 - nextMapped.shadowOpacity) * 0.08);
+    targetRuntime.ambient.intensity = 0.14 + ((1 - nextMapped.shadowOpacity) * 0.06);
   };
 
   const buildPipeline = (targetRuntime, nextMapped, nextConfig) => {
