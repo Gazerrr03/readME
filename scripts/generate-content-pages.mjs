@@ -151,6 +151,7 @@ export function renderEntryPage(entry) {
   <meta property="og:description" content="${description}">
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/content-page.css">
+  <link rel="stylesheet" href="styles/content-finish.css">
 </head>
 <body data-content-kind="${entry.kind}" data-content-slug="${entry.slug}">
   <div data-content-page></div>

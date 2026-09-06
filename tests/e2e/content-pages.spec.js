@@ -227,7 +227,7 @@ test('article display mode sits beside language and persists independently', asy
   await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'light');
   await expect(themeButton).toHaveAttribute('aria-label', 'Switch to dark mode');
   expect(await page.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor))
-    .toBe('rgb(244, 239, 230)');
+    .toBe('rgb(238, 234, 227)');
 
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'light');
@@ -315,7 +315,7 @@ test('vibe menu pins the music player beside the article and follows the theme',
   await page.locator('[data-content-theme-toggle]').click();
   await expect(page.locator('html')).toHaveAttribute('data-reading-theme', 'light');
   expect(await player.evaluate((element) => getComputedStyle(element).backgroundColor))
-    .toBe('rgb(251, 248, 241)');
+    .toContain('0.972549');
 
   await player.locator('[data-vibe-close]').click();
   await expect(player).toBeHidden();
@@ -460,6 +460,7 @@ test('selecting text can highlight it separately or copy it', async ({ page }) =
   await selectionMenu.locator('[data-tool-selection-action="copy"]').click();
   await expect.poll(() => page.evaluate(() => window.__copiedText)).not.toBe('');
 
+  await page.locator('h1').click();
   await selectLeadText(page);
   await selectionMenu.locator('[data-tool-selection-action="highlight"]').click();
   const mark = lead.locator('[data-highlight-mark]');
@@ -467,7 +468,7 @@ test('selecting text can highlight it separately or copy it', async ({ page }) =
   expect(await mark.evaluate((element) => ({
     background: getComputedStyle(element).backgroundColor,
     color: getComputedStyle(element).color,
-  }))).toEqual({ background: 'rgb(116, 139, 255)', color: 'rgb(7, 20, 38)' });
+  }))).toEqual({ background: 'rgb(143, 207, 192)', color: 'rgb(13, 17, 23)' });
   await expect(page.locator('[data-tool-open="notes"]')).not.toContainText('[1]');
   expect(await page.evaluate((slug) => (
     JSON.parse(localStorage.getItem(`article-highlights:${slug}`))

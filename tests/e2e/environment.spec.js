@@ -282,7 +282,7 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
     };
   })).toEqual({
     focusVisible: true,
-    outlineColor: 'rgb(185, 215, 255)',
+    outlineColor: 'rgb(214, 241, 233)',
     outlineOffset: '3px',
     outlineStyle: 'solid',
     outlineWidth: '2px',
@@ -293,10 +293,10 @@ test('widget launches apps and visible windows activate focus mode', async ({ pa
   await expect(environment).toHaveAttribute('data-environment-motion', 'focused');
   await expect.poll(async () => Number(await background.evaluate(
     (node) => getComputedStyle(node).opacity,
-  ))).toBeCloseTo(0.42, 2);
+  ))).toBeCloseTo(0.78, 2);
   await expect.poll(async () => projects.evaluate(
     (node) => getComputedStyle(node).boxShadow,
-  )).toBe('rgb(2, 8, 17) 1px 1px 0px 0px');
+  )).toBe('rgb(6, 9, 11) 1px 1px 0px 0px');
   await expect.poll(async () => Number(await secondaryLabel.evaluate(
     (node) => getComputedStyle(node).opacity,
   ))).toBeCloseTo(0.7, 2);
@@ -380,7 +380,7 @@ test('shader background mounts and remains adaptive while focus state changes', 
 
   await page.locator('[data-environment-open="projects"]').click();
   await expect(page.locator('[data-macos-environment]')).toHaveAttribute('data-environment-motion', 'focused');
-  await expect(background).toHaveCSS('opacity', '0.42');
+  await expect(background).toHaveCSS('opacity', '0.78');
 });
 
 test('phone dock stays fully visible and contains all application icons', async ({ page }) => {

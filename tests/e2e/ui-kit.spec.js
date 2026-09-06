@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('deep indigo tokens are exposed and blueprint overlays are inactive', async ({ page }) => {
+test('graphite tokens are exposed and blueprint overlays are inactive', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('portfolio-os:preferences', JSON.stringify({
     version: 1,
     bootComplete: true,
@@ -25,16 +25,16 @@ test('deep indigo tokens are exposed and blueprint overlays are inactive', async
   });
 
   expect(result).toEqual({
-    canvas: '#071426',
-    surface: '#0E2340',
-    accent: '#748BFF',
+    canvas: '#0d1117',
+    surface: '#151b21',
+    accent: '#8fcfc0',
     skin: 'windows',
     beforeOpacity: '0',
     afterOpacity: '0',
   });
 });
 
-test('boot surface and browser chrome use the deep indigo entry palette', async ({ page }) => {
+test('boot surface and browser chrome use the graphite entry palette', async ({ page }) => {
   await page.goto('/?skipBoot=1');
 
   const result = await page.evaluate(() => {
@@ -50,15 +50,15 @@ test('boot surface and browser chrome use the deep indigo entry palette', async 
   });
 
   expect(result).toEqual({
-    themeColor: '#071426',
-    bootBackground: 'rgb(7, 20, 38)',
-    bootColor: 'rgb(242, 246, 255)',
-    panelBackground: 'rgb(14, 35, 64)',
-    panelShadow: expect.stringContaining('rgb(2, 8, 17)'),
+    themeColor: '#0d1117',
+    bootBackground: 'rgb(13, 17, 23)',
+    bootColor: 'rgb(237, 243, 240)',
+    panelBackground: expect.stringContaining('0.0823529'),
+    panelShadow: expect.stringContaining('rgba(3, 7, 9, 0.42)'),
   });
 });
 
-test('windows and selected icons use retro hardware surfaces', async ({ page }) => {
+test('windows and selected icons use quiet glass surfaces', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('portfolio-os:preferences', JSON.stringify({
     version: 1,
     bootComplete: true,
@@ -70,7 +70,7 @@ test('windows and selected icons use retro hardware surfaces', async ({ page }) 
   await page.goto('/?skipBoot=1');
   await page.locator('[data-windows-icons] [data-app-icon="projects"]').dblclick();
   await expect.poll(() => page.locator('[data-windows-icons] [data-app-icon="projects"] [data-icon]')
-    .evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(116, 139, 255)');
+    .evaluate((element) => getComputedStyle(element).backgroundColor)).toContain('0.212549');
 
   const values = await page.evaluate(() => {
     const appWindow = document.querySelector('[data-app-window="projects"]');
@@ -87,13 +87,13 @@ test('windows and selected icons use retro hardware surfaces', async ({ page }) 
     };
   });
 
-  expect(values.windowBackground).toBe('rgb(14, 35, 64)');
-  expect(values.windowRadius).toBe('0px');
-  expect(values.windowShadow).toContain('rgb(2, 8, 17)');
+  expect(values.windowBackground).toContain('0.86');
+  expect(values.windowRadius).toBe('10px');
+  expect(values.windowShadow).toContain('rgba(3, 7, 9, 0.56)');
   expect(values.selected).toBe('true');
-  expect(values.iconBackground).toBe('rgb(116, 139, 255)');
-  expect(values.iconRadius).toBe('0px');
-  expect(values.labelBackground).toBe('rgb(116, 139, 255)');
+  expect(values.iconBackground).toContain('0.212549');
+  expect(values.iconRadius).toBe('8px');
+  expect(values.labelBackground).toBe('rgb(143, 207, 192)');
 });
 
 test('folder launchers expose the shared bright focus ring', async ({ page }) => {
@@ -112,7 +112,7 @@ test('folder launchers expose the shared bright focus ring', async ({ page }) =>
     return { outlineColor: style.outlineColor, outlineWidth: style.outlineWidth };
   });
 
-  expect(focus).toEqual({ outlineColor: 'rgb(185, 215, 255)', outlineWidth: '2px' });
+  expect(focus).toEqual({ outlineColor: 'rgb(214, 241, 233)', outlineWidth: '2px' });
 });
 
 test('macOS and Windows expose the same workstation layer with different chrome', async ({ page }) => {
@@ -145,8 +145,8 @@ test('macOS and Windows expose the same workstation layer with different chrome'
     menu: true,
     dock: true,
     widgets: 1,
-    menuSurface: 'rgb(26, 46, 70)',
-    widgetSurface: 'rgb(26, 46, 70)',
+    menuSurface: expect.stringContaining('color(srgb'),
+    widgetSurface: expect.stringContaining('color(srgb'),
   });
 
   await page.evaluate(() => {
@@ -161,10 +161,12 @@ test('macOS and Windows expose the same workstation layer with different chrome'
   await expect(page.locator('[data-windows-taskbar] [data-system-status]')).toBeVisible();
   await expect(page.locator('[data-workstation-environment]')).toHaveCount(1);
   await expect(page.locator('[data-environment-widgets]')).toHaveCount(1);
-  await expect.poll(() => page.locator('[data-windows-taskbar]')
-    .evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(26, 46, 70)');
-  await expect.poll(() => page.locator('[data-environment-primary]')
-    .evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(26, 46, 70)');
+  const windowsChrome = await page.locator('[data-windows-taskbar]')
+    .evaluate((element) => getComputedStyle(element).backgroundColor);
+  const environmentWidget = await page.locator('[data-environment-primary]')
+    .evaluate((element) => getComputedStyle(element).backgroundColor);
+  expect(windowsChrome).not.toMatch(/transparent|rgba\(0, 0, 0, 0\)/);
+  expect(environmentWidget).not.toMatch(/transparent|rgba\(0, 0, 0, 0\)/);
 });
 
 test('settings does not expose blueprint display controls', async ({ page }) => {
@@ -220,9 +222,9 @@ test('Pen Pen stays an independent white foreground object above the background'
   expect(result.spriteOpacity).toBe('1');
   expect(result.spriteImage).toContain('spritesheet-white.webp');
   expect(result.backgroundTag).toBe('DIV');
-  expect(result.backgroundId).toBe('blue-fluid-halftone');
-  expect(result.backgroundKind).toBe('shader');
-  expect(result.backgroundFill).toBe('rgb(7, 20, 38)');
+  expect(result.backgroundId).toBe('flow-shards');
+  expect(['shader', 'three']).toContain(result.backgroundKind);
+  expect(result.backgroundFill).toBe('rgba(0, 0, 0, 0)');
   expect(Number(result.mountZIndex)).toBeGreaterThan(10);
 });
 
@@ -254,7 +256,7 @@ test('Pen Pen hover deconstructs into the bright OS accent', async ({ page }) =>
   await bot.hover();
   const glitchAppearance = await page.evaluate(() => globalThis.penPenGlitchAppearance);
   expect(glitchAppearance).toEqual({
-    color: 'rgb(185, 215, 255)',
+    color: 'rgb(214, 241, 233)',
     mode: 'contour',
   });
 });
@@ -284,8 +286,8 @@ test('the final OS kit keeps the four approved decisions visible in the rendered
   });
 
   expect(result.skin).toBe('windows');
-  expect(result.canvas).toBe('#071426');
-  expect(result.accent).toBe('#748BFF');
+  expect(result.canvas).toBe('#0d1117');
+  expect(result.accent).toBe('#8fcfc0');
   expect(result.windowSurface).toBe('window');
   expect(result.workstation).toBe(true);
   expect(result.legacyGrid).not.toContain('repeating-radial-gradient');

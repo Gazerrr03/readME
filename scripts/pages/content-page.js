@@ -265,7 +265,9 @@ function render() {
   const header = renderHeader({ vibe: presentation.vibe });
   disposeHeader = header.dispose;
   mount.replaceChildren(header.element, main);
-  if (article && !hasRendered) presentation.vibe?.open();
+  if (article && !hasRendered && window.matchMedia('(min-width: 761px)').matches) {
+    presentation.vibe?.open();
+  }
   hasRendered = true;
   documentRef.documentElement.lang = i18n.locale;
   const item = article ?? project;

@@ -1,0 +1,566 @@
+/* Final system surface pass. Keep this file last so the visual system can be
+ * tuned without disturbing the interaction-specific styles above. */
+
+:root {
+  --os-canvas: #0d1117;
+  --os-surface: #151b21;
+  --os-surface-raised: #20282f;
+  --os-surface-highlight: #3d4a52;
+  --os-accent: #8fcfc0;
+  --os-accent-bright: #d6f1e9;
+  --os-ink: #edf3f0;
+  --os-muted: #95a5a5;
+  --os-shadow: #06090b;
+  --os-focus-width: 2px;
+  --serif: "Helvetica Neue", "SF Pro Display", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --mono: "SFMono-Regular", "Roboto Mono", "Cascadia Code", "Liberation Mono", ui-monospace, monospace;
+}
+
+body {
+  background: var(--os-canvas);
+  font-family: var(--serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-boot-root] {
+  background: var(--os-canvas);
+  color: var(--os-ink);
+}
+
+[data-boot-panel] {
+  background: color-mix(in srgb, var(--os-surface) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--os-accent) 34%, var(--os-surface-highlight));
+  border-radius: 10px;
+  box-shadow: 0 24px 56px rgba(3, 7, 9, 0.42), 0 0 0 1px rgba(223, 245, 237, 0.04) inset;
+  backdrop-filter: blur(18px) saturate(0.84);
+}
+
+[data-boot-title] {
+  color: var(--os-ink);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+button,
+[data-app-icon],
+[data-folder-toggle],
+[data-environment-widgets] > button,
+[data-environment-deck] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-desktop-root] {
+  isolation: isolate;
+  background: var(--os-canvas);
+}
+
+[data-workstation-environment],
+[data-macos-environment] {
+  background: var(--os-canvas);
+  isolation: isolate;
+}
+
+[data-workstation-environment]::after,
+[data-macos-environment]::after {
+  background:
+    linear-gradient(180deg, rgba(6, 10, 12, 0.36), transparent 26%, transparent 72%, rgba(6, 10, 12, 0.5)),
+    repeating-linear-gradient(0deg, rgba(216, 241, 233, 0.018) 0 1px, transparent 1px 4px);
+  content: "";
+  inset: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+[data-environment-background] {
+  filter: saturate(1.16) brightness(1.12);
+}
+
+[data-desktop-root][data-has-visible-window='true'] [data-environment-background] {
+  filter: saturate(1.08) brightness(0.92);
+  opacity: 0.78;
+}
+
+[data-window-layer] {
+  z-index: 5;
+}
+
+[data-app-window] {
+  background: color-mix(in srgb, var(--os-surface) 86%, transparent);
+  border: 1px solid color-mix(in srgb, var(--os-accent-bright) 30%, var(--os-surface-highlight));
+  border-radius: 10px;
+  box-shadow:
+    0 24px 58px rgba(3, 7, 9, 0.46),
+    0 0 0 1px rgba(223, 245, 237, 0.035) inset;
+  overflow: hidden;
+  backdrop-filter: blur(18px) saturate(0.82);
+}
+
+[data-app-window][data-window-active='true'] {
+  box-shadow:
+    0 28px 72px rgba(3, 7, 9, 0.56),
+    0 0 0 1px rgba(223, 245, 237, 0.06) inset;
+}
+
+[data-app-window][data-window-active='false'] {
+  box-shadow: 0 16px 38px rgba(3, 7, 9, 0.36);
+}
+
+[data-window-titlebar] {
+  background: color-mix(in srgb, var(--os-surface-raised) 82%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--os-accent-bright) 18%, var(--os-surface-highlight));
+  flex-basis: 38px;
+  padding-left: 14px;
+  backdrop-filter: blur(16px);
+}
+
+[data-window-title] {
+  color: color-mix(in srgb, var(--os-ink) 84%, var(--os-accent));
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+[data-window-controls] button {
+  background: transparent;
+  border-left: 1px solid rgba(214, 241, 233, 0.08);
+  color: var(--os-muted);
+  min-width: 38px;
+}
+
+[data-window-controls] button:hover {
+  background: color-mix(in srgb, var(--os-accent) 16%, transparent);
+  color: var(--os-ink);
+}
+
+[data-window-content] {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.025), transparent 42%);
+}
+
+[data-app-icon],
+[data-folder-toggle] {
+  gap: 9px;
+}
+
+[data-icon] {
+  background: color-mix(in srgb, var(--os-surface-raised) 88%, transparent);
+  border: 1px solid rgba(214, 241, 233, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 10px 22px rgba(3, 7, 9, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.025) inset;
+  height: 48px;
+  width: 48px;
+}
+
+[data-icon] svg {
+  height: 30px;
+  opacity: 0.9;
+  width: 30px;
+}
+
+[data-app-label] {
+  background: transparent;
+  color: rgba(237, 243, 240, 0.8);
+  font-size: 10px;
+  letter-spacing: 0;
+  padding: 2px 5px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
+}
+
+[data-app-icon][data-selected='true'] [data-icon] {
+  background: color-mix(in srgb, var(--os-accent) 20%, var(--os-surface-raised));
+  border-color: var(--os-accent);
+  box-shadow: 0 10px 26px rgba(3, 7, 9, 0.34), 0 0 0 1px rgba(214, 241, 233, 0.1) inset;
+}
+
+[data-app-icon][data-selected='true'] [data-app-label] {
+  background: var(--os-accent);
+  color: #0b1415;
+  text-shadow: none;
+}
+
+[data-environment-widgets] {
+  gap: 8px;
+  left: 24px;
+  top: 24px;
+  z-index: 2;
+}
+
+[data-environment-widgets] > button,
+[data-environment-deck] {
+  background: color-mix(in srgb, var(--os-surface) 72%, transparent);
+  border: 1px solid rgba(214, 241, 233, 0.17);
+  border-radius: 8px;
+  box-shadow: 0 12px 26px rgba(3, 7, 9, 0.26), 0 0 0 1px rgba(255, 255, 255, 0.025) inset;
+  backdrop-filter: blur(14px) saturate(0.8);
+}
+
+[data-environment-widgets] > button:hover {
+  background: color-mix(in srgb, var(--os-accent) 14%, var(--os-surface));
+  border-color: color-mix(in srgb, var(--os-accent) 64%, var(--os-surface-highlight));
+  transform: none;
+}
+
+[data-environment-widgets] span {
+  color: var(--os-muted);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+[data-environment-widgets] strong {
+  color: var(--os-ink);
+}
+
+[data-environment-primary] [data-environment-reading-value] {
+  color: var(--os-accent-bright);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-environment-deck] {
+  padding: 10px 12px;
+}
+
+[data-deck-title] {
+  font-family: var(--serif);
+  font-weight: 600;
+}
+
+[data-windows-taskbar],
+[data-macos-menu] {
+  background: color-mix(in srgb, var(--os-surface-raised) 82%, transparent);
+  border-color: rgba(214, 241, 233, 0.16);
+  box-shadow: 0 -10px 28px rgba(3, 7, 9, 0.18);
+  backdrop-filter: blur(18px) saturate(0.82);
+}
+
+[data-macos-menu] {
+  height: 32px;
+  padding-inline: 18px;
+}
+
+[data-macos-mark] {
+  color: var(--os-accent);
+  font-size: 16px;
+}
+
+[data-system-title] {
+  color: rgba(237, 243, 240, 0.78);
+  font-family: var(--mono);
+  letter-spacing: 0;
+}
+
+[data-language-controls] button {
+  color: var(--os-muted);
+}
+
+[data-language-controls] button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--os-accent) 22%, transparent);
+  color: var(--os-accent-bright);
+}
+
+[data-network-status] {
+  border-left-color: rgba(214, 241, 233, 0.14);
+  color: var(--os-muted);
+}
+
+[data-macos-dock] {
+  background: color-mix(in srgb, var(--os-surface-raised) 76%, transparent);
+  border: 1px solid rgba(214, 241, 233, 0.2);
+  border-radius: 14px;
+  bottom: 20px;
+  box-shadow: 0 18px 40px rgba(3, 7, 9, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.035) inset;
+  min-height: 104px;
+  padding: 10px 14px;
+  backdrop-filter: blur(20px) saturate(0.8);
+}
+
+[data-windows-start] {
+  background: var(--os-accent);
+  border: 1px solid var(--os-accent-bright);
+  border-radius: 7px;
+  color: #0b1415;
+  height: 32px;
+}
+
+[data-running-app] {
+  background: rgba(255, 255, 255, 0.025);
+  border-color: rgba(214, 241, 233, 0.16);
+  border-radius: 6px;
+}
+
+[data-running-app][aria-pressed='true'] {
+  background: color-mix(in srgb, var(--os-accent) 22%, transparent);
+  color: var(--os-accent-bright);
+}
+
+[data-bot-standby]:hover [data-bot-sprite] {
+  filter: drop-shadow(0 8px 16px rgba(3, 7, 9, 0.45)) drop-shadow(0 0 8px color-mix(in srgb, var(--os-accent) 40%, transparent));
+}
+
+[data-desktop-mode='macos'] [data-window-titlebar] {
+  flex-basis: 38px;
+}
+
+[data-desktop-mode='macos'] [data-window-controls-mac] {
+  left: 13px;
+}
+
+[data-desktop-mode='macos'] [data-window-controls-mac] button {
+  box-shadow: inset 0 0 0 1px rgba(4, 8, 9, 0.18), 0 1px 3px rgba(3, 7, 9, 0.22);
+  height: 11px;
+  width: 11px;
+}
+
+[data-desktop-mode='windows'] [data-windows-taskbar] {
+  height: 48px;
+  padding-inline: 16px;
+}
+
+[data-desktop-mode='windows'] [data-windows-icons] {
+  left: 26px;
+  top: 230px;
+}
+
+[data-desktop-mode='windows'] [data-desktop-folders] {
+  right: 26px;
+  top: 26px;
+}
+
+[data-desktop-mode='macos'] [data-desktop-folders] {
+  right: 26px;
+  top: 62px;
+}
+
+[data-settings-nav] button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--os-accent) 22%, var(--os-surface));
+  color: var(--os-accent-bright);
+  box-shadow: inset 3px 0 0 var(--os-accent);
+}
+
+[data-settings-panel] h3 {
+  border-bottom: 1px solid var(--os-accent);
+  font-family: var(--serif);
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+[data-writing-kicker],
+[data-about-kicker],
+[data-contact-kicker] {
+  background: color-mix(in srgb, var(--os-accent) 18%, transparent);
+  color: var(--os-accent-bright);
+  border: 1px solid color-mix(in srgb, var(--os-accent) 42%, transparent);
+  padding: 6px 8px;
+}
+
+[data-projects-card][aria-current='true'] {
+  box-shadow: 0 12px 24px rgba(3, 7, 9, 0.36), 0 0 0 1px var(--os-accent) inset;
+}
+
+@media (max-width: 760px) {
+  [data-environment-widgets] {
+    left: 16px;
+    top: 16px;
+  }
+
+  [data-macos-menu] {
+    padding-inline: 10px;
+  }
+
+  [data-macos-dock] {
+    bottom: 10px;
+    border-radius: 12px;
+    min-height: 92px;
+    padding: 7px;
+  }
+
+  [data-desktop-mode='windows'] [data-desktop-folders],
+  [data-desktop-mode='macos'] [data-desktop-folders] {
+    left: 8px;
+    right: 8px;
+    top: 12px;
+  }
+
+  [data-desktop-mode='macos'] [data-desktop-folders] {
+    top: 48px;
+  }
+
+  [data-desktop-mode='windows'] [data-windows-taskbar] {
+    height: 48px;
+    padding-inline: 8px;
+  }
+
+  [data-desktop-mode='windows'] [data-windows-icons] {
+    top: 222px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-environment-background] { transition: none; }
+}
+
+/* Application interiors: one material language inside every window. */
+
+[data-window-content] {
+  background: color-mix(in srgb, var(--os-surface) 74%, transparent);
+}
+
+[data-app-window] button,
+[data-app-window] a[data-book-open-file],
+[data-app-window] select,
+[data-app-window] input,
+[data-app-window] textarea {
+  border-radius: 5px;
+}
+
+[data-settings-nav] { background: color-mix(in srgb, var(--os-canvas) 22%, transparent); }
+
+[data-settings-nav] button {
+  border-bottom-color: color-mix(in srgb, var(--os-surface-highlight) 70%, transparent);
+  color: var(--os-muted);
+  min-height: 44px;
+}
+
+[data-settings-nav] button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--os-accent) 14%, var(--os-surface));
+  box-shadow: inset 3px 0 0 var(--os-accent);
+  color: var(--os-accent-bright);
+}
+
+[data-settings-panel] h3 {
+  border-bottom: 1px solid var(--os-accent);
+  font-size: 28px;
+  letter-spacing: 0;
+}
+
+[data-settings-panel-kicker] {
+  background: color-mix(in srgb, var(--os-accent) 9%, var(--os-surface-raised));
+  border-left: 2px solid var(--os-accent);
+  color: var(--os-accent-bright);
+}
+
+[data-settings-field],
+[data-settings-meter],
+[data-about-experience] li,
+[data-about-work],
+[data-contact-row] { border-bottom-color: color-mix(in srgb, var(--os-surface-highlight) 72%, transparent); }
+
+[data-writing-header] { align-items: center; border-bottom: 1px solid var(--os-surface-highlight); padding-bottom: 13px; }
+
+[data-writing-list] a {
+  background: transparent;
+  border-bottom-color: color-mix(in srgb, var(--os-surface-highlight) 72%, transparent);
+  border-radius: 5px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 28px 86px minmax(0, 1fr) auto;
+  padding: 12px 10px;
+}
+
+[data-writing-list] a:hover {
+  background: color-mix(in srgb, var(--os-accent) 10%, var(--os-surface));
+  color: var(--os-ink);
+}
+
+[data-writing-list] a:focus-visible { outline-offset: -2px; }
+[data-writing-title] { font-size: 15px; }
+[data-writing-tag] { color: var(--os-accent); }
+
+[data-about-banner] {
+  border-radius: 7px;
+  box-shadow: 0 16px 34px rgba(3, 7, 9, 0.28);
+}
+
+[data-about-banner-canvas] { filter: saturate(0.55) contrast(0.94) brightness(0.82); }
+
+[data-about-banner-copy] {
+  background: linear-gradient(90deg, rgba(13, 17, 23, 0.72), rgba(13, 17, 23, 0.18));
+}
+
+[data-about-avatar-frame] {
+  border-radius: 7px;
+  box-shadow: 0 14px 28px rgba(3, 7, 9, 0.28);
+}
+
+[data-about-avatar-label] {
+  background: color-mix(in srgb, var(--os-accent) 22%, var(--os-surface));
+  color: var(--os-accent-bright);
+}
+
+[data-contact-footer] {
+  background: color-mix(in srgb, var(--os-accent) 16%, var(--os-surface-raised));
+  border: 1px solid color-mix(in srgb, var(--os-accent) 34%, transparent);
+  border-radius: 5px;
+  color: var(--os-accent-bright);
+}
+
+[data-photos-tabs] { gap: 7px; }
+[data-photos-tabs] button { border: 1px solid transparent; border-radius: 5px 5px 0 0; }
+[data-photos-tabs] button[aria-selected='true'] {
+  background: color-mix(in srgb, var(--os-accent) 16%, var(--os-surface));
+  border-color: color-mix(in srgb, var(--os-accent) 48%, var(--os-surface-highlight));
+  color: var(--os-accent-bright);
+}
+
+[data-folder-item-art],
+[data-photos-frame],
+[data-player-cover],
+[data-wallpaper-card],
+[data-book-reader-frame],
+[data-bookshelf-stage] {
+  border-radius: 7px;
+  box-shadow: 0 14px 28px rgba(3, 7, 9, 0.24);
+}
+
+[data-folder-item-art] {
+  background: color-mix(in srgb, var(--os-surface-raised) 78%, transparent);
+  transition: transform var(--ui-duration) var(--ease-out), border-color var(--ui-duration) var(--ease-out), background-color var(--ui-duration) var(--ease-out);
+}
+
+[data-folder-item][data-selected='true'] [data-folder-item-art],
+[data-folder-item]:focus-visible [data-folder-item-art] {
+  background: color-mix(in srgb, var(--os-accent) 14%, var(--os-surface-raised));
+  border-color: var(--os-accent);
+  color: var(--os-accent-bright);
+}
+
+[data-photos-frame] { background: color-mix(in srgb, var(--os-surface-raised) 44%, var(--os-surface)); }
+[data-player-cover] { background: color-mix(in srgb, var(--os-accent) 7%, var(--os-surface)); }
+
+[data-player-controls] button,
+[data-photos-nav] button,
+[data-book-reader-nav] button,
+[data-wallpaper-back],
+[data-wallpaper-apply] {
+  border-radius: 5px;
+}
+
+[data-player-controls] button[data-player-toggle] {
+  background: var(--os-accent);
+  border-color: var(--os-accent-bright);
+  color: var(--os-canvas);
+}
+
+[data-games-empty],
+[data-folder-empty] {
+  background: color-mix(in srgb, var(--os-surface-raised) 35%, transparent);
+  border-color: color-mix(in srgb, var(--os-accent) 30%, var(--os-surface-highlight));
+  border-radius: 7px;
+}
+
+[data-bookshelf-stage] { background: color-mix(in srgb, var(--os-surface) 88%, var(--os-accent)); }
+[data-bookshelf-canvas] { filter: saturate(0.62) brightness(0.84) contrast(0.96); }
+
+[data-bookshelf-inspector] {
+  background: color-mix(in srgb, var(--os-surface-raised) 86%, transparent);
+  border-left-color: var(--os-accent);
+  backdrop-filter: blur(14px);
+}
+
+@media (max-width: 760px) {
+  [data-writing-list] a { grid-template-columns: 24px 74px minmax(0, 1fr); }
+  [data-writing-tag] { display: none; }
+  [data-settings-app] { grid-template-columns: 140px minmax(0, 1fr); }
+  [data-settings-panel] { padding: 22px 18px; }
+}
