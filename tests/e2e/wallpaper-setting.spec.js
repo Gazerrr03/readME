@@ -369,7 +369,7 @@ test('copy fallback and downloads use the same normalized deterministic JSON', a
       glow: 64,
       shadow: 58,
       fog: 38,
-      backgroundColor: '#071426',
+      backgroundColor: '#1B1D1F',
       shardColor: '#8099A6',
     },
   });
