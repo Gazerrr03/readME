@@ -1,6 +1,11 @@
 const L = (en, zhCN, ja) => Object.freeze({ en, 'zh-CN': zhCN, ja });
 
 const bodyEn = Object.freeze([
+  "I did not get into the school I had been certain I would attend.",
+  "For a long time, I did not want to call it a rejection. The word felt too light, as if it described an ordinary result. What I saw in that result was also the fixation left by my failure in the gaokao, the time I had invested during my undergraduate years, and the guilt I felt toward the people around me. It felt as though a road I had been walking for years had suddenly been cut off. The road was still there, but its direction no longer felt as certain as before.",
+  "I knew how I was supposed to comfort myself. One result could not describe an entire person. Effort did not become meaningless simply because it failed to produce the result I expected. I could say all of that. Sometimes I even believed it. But at night, or whenever I came across advice about graduate school and careers online, I would still count the experience as a failure.",
+  "Online advice easily creates the impression that life has a few routes that have already been validated. At a certain age, you should have a certain result; you should attend a certain kind of school; you should build abilities in a certain order; then you should move on to the next stage. Most of these accounts describe only the routes that worked. Someone who leaves the route has a hard time seeing themselves in them. They begin to worry that this deviation will become an unrecoverable flaw at some more important moment in the future.",
+  "I have had that fear too. I doubted whether the things I had done were useful at all, and whether my effort was changing anything. Eventually I realized that the question I really wanted to ask was not whether this event counted as success or failure. It was this: who gets to decide what success and failure mean?",
   {
     "h": "Where You Stand to Look at a Mountain"
   },
@@ -48,19 +53,10 @@ const bodyEn = Object.freeze([
     "q": "Do not treat one result as the whole judgment."
   },
   {
-    "q": ""
-  },
-  {
     "q": "Use action to obtain feedback, then use reading and reflection to interpret it."
   },
   {
-    "q": ""
-  },
-  {
     "q": "Do not let the information I encountered most recently make the decision for me."
-  },
-  {
-    "q": ""
   },
   {
     "q": "Before adding more, confirm the goal, the value, and the stop condition."
@@ -91,6 +87,11 @@ const bodyEn = Object.freeze([
 ]);
 
 const bodyZh = Object.freeze([
+  "我没有去成那所原本以为一定能去的学校。",
+  "这件事发生之后，我很长时间都不太愿意用“落选”来称呼它。这个词太轻了，像是在说一次普通的结果；可我在结果里看到的，还有高考失利留下的执念，本科几年里投入的时间，以及我对身边人的那点愧疚。它像是把一条已经走了很久的路突然截断了。路还在，方向却不再像原来那么确定。",
+  "我知道应该怎么安慰自己。一次结果不能概括一个人，努力也不会因为没有换来预期的结果就全部失效。这些话我都说得出来。有时候我也确实相信它们。只是到了晚上，或者看到网上那些关于升学和职业的经验时，我还是会把这件事重新算成一次失败。",
+  "网上的经验很容易让人产生一种错觉：人生好像有几条已经被验证过的路线。什么时候该取得什么结果，应该去什么学校，怎样积累能力，下一步又该走到哪里。那些文章大多只讲走通的部分，于是偏离路线的人很难从中看见自己。他会开始担心，这次偏离是不是会在未来某个更重要的时刻，变成一处无法补救的败笔。",
+  "我也有过这种担心。我怀疑自己过去做的那些事到底有没有用，怀疑所谓的努力是否真的在改变什么。后来我发现，我真正想问的也许不是“这件事究竟算成功还是失败”，而是：一件事的成败，究竟由谁来决定？",
   {
     "h": "站在哪里看山"
   },
@@ -138,19 +139,10 @@ const bodyZh = Object.freeze([
     "q": "不把一次结果当成全部判断。"
   },
   {
-    "q": ""
-  },
-  {
     "q": "用行动获得反馈，再用阅读和复盘解释反馈。"
   },
   {
-    "q": ""
-  },
-  {
     "q": "不让最近接触的信息直接替我做决定。"
-  },
-  {
-    "q": ""
   },
   {
     "q": "继续增加之前，先确认目标、价值和停止条件。"
@@ -181,6 +173,11 @@ const bodyZh = Object.freeze([
 ]);
 
 const bodyJa = Object.freeze([
+  "私は、行けると信じていたあの学校に行けなかった。",
+  "その結果が出てから、しばらくのあいだ私はそれを「落選」と呼びたくなかった。その言葉は軽すぎて、普通の結果のように聞こえたからだ。私がそこに見ていたのは、高考に失敗した記憶から残った執着、大学の数年間に費やした時間、そして周囲の人たちに対する申し訳なさだった。長いあいだ歩いてきた道が、突然途中で切れたようだった。道そのものは残っている。でも、以前のように行き先を確信できなくなった。",
+  "自分を慰める言葉なら知っていた。一つの結果だけで人間のすべてが決まるわけではない。期待した結果が得られなかったからといって、努力のすべてが無意味になるわけでもない。そう言うことはできた。ときには、本当にそう思えた。それでも夜になると、あるいは進学や仕事についての経験談をネットで読むと、私はこの出来事をもう一度「失敗」として数え直していた。",
+  "ネット上の経験談は、人生にはすでに検証された道がいくつかあるような錯覚をつくる。何歳までにどんな結果を出すべきか、どんな学校に行くべきか、どの順番で能力を積み上げるべきか。その先には次の段階がある。多くの記事が語るのは、うまくいった道だけだ。そこから外れた人は、自分の姿を見つけにくい。そして、このずれがいつか、取り返しのつかない傷として現れるのではないかと不安になる。",
+  "私もそうだった。これまでやってきたことに本当に意味があったのか、努力は何かを変えていたのか、と疑った。やがて、私が本当に知りたかったのは、この出来事が成功だったのか失敗だったのかではないと気づいた。成功と失敗を決めるのは、いったい誰なのか。",
   {
     "h": "どこから山を見るか"
   },
@@ -228,19 +225,10 @@ const bodyJa = Object.freeze([
     "q": "一つの結果だけで、すべてを判断しない。"
   },
   {
-    "q": ""
-  },
-  {
     "q": "行動からフィードバックを得て、読書と振り返りによって解釈する。"
   },
   {
-    "q": ""
-  },
-  {
     "q": "直近で触れた情報に、判断を代行させない。"
-  },
-  {
-    "q": ""
   },
   {
     "q": "何かを追加する前に、目標、価値、停止条件を確かめる。"

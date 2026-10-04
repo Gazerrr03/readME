@@ -3,6 +3,16 @@
 Published: 2026-10-05
 Tag: NOTES
 
+I did not get into the school I had been certain I would attend.
+
+For a long time, I did not want to call it a rejection. The word felt too light, as if it described an ordinary result. What I saw in that result was also the fixation left by my failure in the gaokao, the time I had invested during my undergraduate years, and the guilt I felt toward the people around me. It felt as though a road I had been walking for years had suddenly been cut off. The road was still there, but its direction no longer felt as certain as before.
+
+I knew how I was supposed to comfort myself. One result could not describe an entire person. Effort did not become meaningless simply because it failed to produce the result I expected. I could say all of that. Sometimes I even believed it. But at night, or whenever I came across advice about graduate school and careers online, I would still count the experience as a failure.
+
+Online advice easily creates the impression that life has a few routes that have already been validated. At a certain age, you should have a certain result; you should attend a certain kind of school; you should build abilities in a certain order; then you should move on to the next stage. Most of these accounts describe only the routes that worked. Someone who leaves the route has a hard time seeing themselves in them. They begin to worry that this deviation will become an unrecoverable flaw at some more important moment in the future.
+
+I have had that fear too. I doubted whether the things I had done were useful at all, and whether my effort was changing anything. Eventually I realized that the question I really wanted to ask was not whether this event counted as success or failure. It was this: who gets to decide what success and failure mean?
+
 ## Where You Stand to Look at a Mountain
 
 Imagine someone opening a coffee shop in a neighborhood. What would count as success?
