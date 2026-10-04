@@ -47,15 +47,21 @@ const bodyEn = Object.freeze([
   {
     "q": "Do not treat one result as the whole judgment."
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "Use action to obtain feedback, then use reading and reflection to interpret it."
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "Do not let the information I encountered most recently make the decision for me."
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "Before adding more, confirm the goal, the value, and the stop condition."
   },
@@ -131,15 +137,21 @@ const bodyZh = Object.freeze([
   {
     "q": "不把一次结果当成全部判断。"
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "用行动获得反馈，再用阅读和复盘解释反馈。"
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "不让最近接触的信息直接替我做决定。"
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "继续增加之前，先确认目标、价值和停止条件。"
   },
@@ -165,9 +177,7 @@ const bodyZh = Object.freeze([
   "我用什么标准判断自己？",
   "这次行动，会把我带向哪里？",
   "这份提示词的下一版，就从《做对产品》开始。我会带着已经犯过的错误去读它，再带着新的理解回到行动里。如果新的行动又暴露出新的问题，就继续修改它。",
-  "我还没有完成对自己的设计。现在只是开始承认，这件事不能完全交给别人替我完成。",
-  "---",
-  "Field notes: 一篇关于失意、产品实践，以及如何把驱动 Agent 的方法反过来用于自我提升的个人随笔。"
+  "我还没有完成对自己的设计。现在只是开始承认，这件事不能完全交给别人替我完成。"
 ]);
 
 const bodyJa = Object.freeze([
@@ -217,15 +227,21 @@ const bodyJa = Object.freeze([
   {
     "q": "一つの結果だけで、すべてを判断しない。"
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "行動からフィードバックを得て、読書と振り返りによって解釈する。"
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "直近で触れた情報に、判断を代行させない。"
   },
-  ">",
+  {
+    "q": ""
+  },
   {
     "q": "何かを追加する前に、目標、価値、停止条件を確かめる。"
   },

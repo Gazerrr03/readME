@@ -75,15 +75,9 @@ The prompt can be short, like Asimov’s Three Laws of Robotics. I can start wit
 
 > Do not treat one result as the whole judgment.
 
->
-
 > Use action to obtain feedback, then use reading and reflection to interpret it.
 
->
-
 > Do not let the information I encountered most recently make the decision for me.
-
->
 
 > Before adding more, confirm the goal, the value, and the stop condition.
 
