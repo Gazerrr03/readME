@@ -9,8 +9,19 @@
     <description>Qizhi's writing archive, generated from the Portfolio OS article source.</description>
     <language>zh-CN</language>
     <atom:link href="https://gazerrr03.github.io/readME/feed.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Mon, 24 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 05 Oct 2026 00:00:00 GMT</lastBuildDate>
     <generator>Portfolio OS static generator</generator>
+    <item>
+      <title>为自己设计自己</title>
+      <link>https://gazerrr03.github.io/readME/writing/design-yourself/?lang=zh-CN</link>
+      <guid isPermaLink="true">https://gazerrr03.github.io/readME/writing/design-yourself/</guid>
+      <pubDate>Mon, 05 Oct 2026 00:00:00 GMT</pubDate>
+      <description>假设一个人在街区开了一家咖啡店。怎样才算成功？</description>
+      <category>NOTES</category>
+      <dc:language>zh-CN</dc:language>
+      <dcterms:created>2026-10-05T00:00:00Z</dcterms:created>
+      <dcterms:modified>2026-10-05T00:00:00Z</dcterms:modified>
+    </item>
     <item>
       <title>热情让我出发，错误让我看见边界，责任让我继续</title>
       <link>https://gazerrr03.github.io/readME/writing/passion-errors-responsibility/?lang=zh-CN</link>
