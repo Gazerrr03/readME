@@ -3,127 +3,127 @@
 Published: 2026-10-05
 Tag: NOTES
 
-## 站在哪里看山
+## Where You Stand to Look at a Mountain
 
-假设一个人在街区开了一家咖啡店。怎样才算成功？
+Imagine someone opening a coffee shop in a neighborhood. What would count as success?
 
-他可以想把它做成百年老字号，也可以趁着它成为爆款时赚够钱离开；可以把它经营成一个独立品牌，也可以只是希望自己拥有一间愿意每天走进去工作的店。甚至，他只要真的把这家店开起来，就已经觉得目标完成了。
+They might want to turn it into a hundred-year-old institution. They might make it a hit, earn enough money, and leave. They might build an independent brand. Or they might simply want a place they were willing to walk into and work in every day. Perhaps opening the shop at all would be enough.
 
-这些答案都说得通。店还是那家店，站在不同位置的人看见的却不是同一座山。苏轼说“横看成岭侧成峰，远近高低各不同”，大概就是这个意思。
+All of these answers make sense. The shop stays the same, but people standing in different places see different mountains. Su Shi wrote that, viewed from different sides, a mountain becomes a ridge or a peak; distance and height change what you see.
 
-我过去的问题，是把其中一个位置当成了唯一的位置。推免的结果、学校的名字、别人眼里那条看起来更稳妥的路，被我拼成了一把尺子。结果没有落在尺子规定的位置上，结论也就跟着出来了：失败，说明过去的努力不够有效。（虽然客观理性来讲这次的确是一个值得反思的机会，不只是结果本身，需要反思的是这个过程遇到的种种问题）
+My mistake was treating one of those positions as the only position. The result of my graduate-school application, the name of the school, and the route that looked safest to other people became a ruler. When the result did not fall where the ruler said it should, the conclusion followed automatically: failure, which meant that my effort had not been effective enough.
 
-我不想因为这次经历，就假装外部评价不重要。结果会带来真实的机会差别，学校也确实会影响一个人的起点。不喜欢一套标准，不代表它就不存在。只是我开始觉得，评价一个人的尺子不应该只有一把。至少，那把用来判断我是否正在变好的尺子，不能完全交给别人保管。
+I do not want to pretend that external evaluation is irrelevant. Results create real differences in opportunity, and a school can affect a person’s starting point. Disliking a standard does not make it disappear. But I have started to think that there should not be only one ruler for judging a person. At the very least, the ruler I use to ask whether I am becoming better should not be kept entirely by other people.
 
-这不是给自己设计一场永远不会输的游戏。它要求我先回答一个更困难的问题：我究竟想成为怎样的人？我愿意用什么来判断自己正在靠近他，还是正在离开他？
+That is not a way to design a game in which I can never lose. It asks me to answer a harder question first: what kind of person do I want to become? What will tell me that I am moving toward that person, or away from them?
 
-## 带着错误读一本书
+## Reading with My Mistakes
 
-今年暑假，我把很多时间花在了一个独立产品上。现在回头看，那段经历留下的并不只有“做过一个产品”这件事，还有一些很具体的错误。
+This summer, I spent much of my time on an independent product. Looking back, the experience left me with more than the fact that I had made a product. It left me with a number of very specific mistakes.
 
-我在 feature 设计上走得太远。很多想法和产品的核心 loop 关系并不紧密，我却没有及时把它们放到产品之外，也没有把它们做成可以随时拿掉的模块。每出现一个新点子，我都像是在给产品增加一项永久的承诺。
+I went too far in feature design. Many ideas had little to do with the product’s core loop, but I did not move them outside the product or make them removable modules. Every new idea felt like a permanent commitment.
 
-开会时也是这样。我把还没有想清楚的东西一股脑说出来，以为把所有可能性摊开，讨论就会更充分。结果是术语越来越多，真正需要做的判断越来越模糊，一场本来半小时可以结束的会议被拖得更长。
+I did the same thing in meetings. I poured out things I had not yet thought through, assuming that laying out every possibility would make the discussion more complete. Instead, the vocabulary grew, the actual decisions became less clear, and a meeting that could have ended in half an hour became longer.
 
-我还把别的产品和案例带回了自己的产品。这个产品的导航不错，那个产品的卡片好看，另一个产品的布局似乎更适合工作。我把它们记下来，再一个个放进 Flow Canvas。东西确实变多了，产品也越来越像一个普通的画布工具。到后来，我才意识到自己并没有找到更好的答案，只是在把别人已经做过的答案重新拼在一起。
+I also brought other products and case studies back into my own product. This product had good navigation; that one had attractive cards; another had a layout that seemed better for work. I wrote them down and placed them one by one into Flow Canvas. There was more in the product, but it began to look like an ordinary canvas tool. Eventually I realized that I had not found a better answer. I had been assembling answers other people had already given.
 
-Agent 让这种倾向变得更明显。有一次，为了快一点把功能拼起来，我同时开了六个窗口。那时我只计算了生成的速度，没有计算检查这些产出需要多少时间。窗口可以不断增加，负责 review 的人却还是我一个。最后，输出变多了，判断没有变快，其中不少内容还要由我重新整理。
+Agents made this tendency more obvious. Once, to assemble features more quickly, I opened six windows at the same time. I calculated the speed of generation, but not the time needed to check the outputs. The number of windows could keep growing; the person responsible for review was still just me. The output increased, but judgment did not become faster. I had to reorganize much of it myself.
 
-我当时很忙，也确实投入了很多时间。但忙碌和产品向前走并不是一回事。我消耗了时间、表达欲和 token，用户真正需要的东西却没有因此变得更清楚。
+I was busy, and I had put in real time. But being busy and moving a product forward are not the same thing. I spent time, expressive energy, and tokens, while the thing users actually needed did not become any clearer.
 
-这让我重新看待“经验”这件事。我以前相信，有了 AI，几乎什么都可以学会。现在看，这句话里有一个容易被忽略的前提：我说的“任何事情”，很多本来就可以通过培训和模仿掌握。AI 主要替我省下了看视频、找资料和尝试工具的时间，却没有替我完成判断。
+This made me reconsider what experience means. I used to believe that, with AI, almost anything could be learned. Now I see the premise I had overlooked: many of the things I called “anything” can already be learned through training and imitation. AI mainly saves me the time of watching videos, searching for material, and trying tools. It does not make the judgment for me.
 
-我也曾经高估经验的作用，以为做过足够多的事情，判断力就会自然出现。可未经整理的经验可能只是错误的存档。一次偶然有效的做法，下一次未必还有效；一个没有被解释清楚的失败，也很难真正帮助我改变。
+I also used to overestimate experience. I thought that if I did enough things, judgment would appear by itself. But unexamined experience may simply be an archive of mistakes. A method that works by accident may fail the next time. A failure that has not been explained cannot do much to change me.
 
-所以我准备开始读《做对产品》。我想带着暑假里的这些错误去读它，看看产品该怎样判断一个问题是否值得解决，feature 的边界应该怎样划，产品、设计和软件工程之间怎样合作，开发策略和产品哲学又该怎样互相支撑。
+So I am going to read The Right It. I want to read it with these mistakes from the summer in mind: how should a product decide whether a problem is worth solving? Where should the boundary of a feature be drawn? How should product, design, and software engineering work together? How should development strategy and product philosophy support each other?
 
-我不想把这本书读成另一套标准答案。更有用的读法，也许是拿书里的方法回头看自己的决定：当时我看漏了什么？我为什么会做出那个判断？这是因为缺少信息，还是因为根本没有把问题定义清楚？下一次应该改变行动，还是改变我用来评价行动的标准？
+I do not want to turn the book into another set of correct answers. A more useful way to read it may be to use its methods to look back at my own decisions. What did I miss? Why did I make that judgment? Was information missing, or had I failed to define the problem? Should I change the action next time, or the standard I use to judge the action?
 
-带着错误去读书，读到的就不只是别人的经验。那些已经发生的行动，会得到一次新的解释。
+When I read with my mistakes, I am not only reading someone else’s experience. The actions that have already happened get another explanation.
 
-## 知和行之间
+## Between Knowing and Doing
 
-我以前很容易把“知”和“行”分成前后两个阶段：先学，等准备好了再做；或者先做，做完之后再总结。但真正做产品时，它们很少这样整齐地排列。
+I used to divide knowing and doing into two stages: learn first and act when I was ready, or act first and summarize the experience afterward. But when you are actually making a product, they rarely line up so neatly.
 
-做一个低成本的原型，往往要先行动。没有接触用户之前，很多需求只能停留在猜测里。原型做出来，看到用户卡在什么地方，才知道接下来该问什么、该读什么。
+A low-cost prototype often requires action first. Before speaking to users, many needs remain guesses. Once the prototype exists, and you can see where users get stuck, you know what to ask, what to read, and what to change next.
 
-但一个会改变产品核心结构的 feature，不能只靠不断尝试来推进。它需要先把几个问题想清楚：服务的是谁，解决的是什么问题，什么算完成，哪些东西暂时不做。如果这些问题没有边界，行动越快，留下的负担可能越多。
+A feature that changes the product’s core structure cannot be pushed forward by endless trials alone. Some questions need to be settled first: who is it for, what problem does it solve, what counts as done, and what will stay out of this version? Without those boundaries, the faster you act, the more burden you may leave behind.
 
-所以真正困难的不是决定“先知还是先行”，而是判断当下缺的究竟是哪一种知，以及哪一种行能够帮助我得到它。
+The difficult part is not choosing between knowing first and doing first. It is recognizing what kind of knowing is missing now, and what kind of action can help you obtain it.
 
-我希望在研究生阶段获得的，正是这种判断能力。对我来说，它会比发一篇顶刊更深地影响之后的人生。论文可以证明我在某个问题上完成过一次研究，但知和行之间的往返，才决定我遇到下一个问题时能不能重新开始。
+This is the ability I most want to gain during graduate school. For me, it will shape the rest of my life more deeply than publishing a paper in a top journal. A paper can show that I completed one piece of research. The movement back and forth between knowing and doing determines whether I can begin again when I meet the next problem.
 
-我常常觉得自己的思考链条太短。我的思维跳跃，拿到一个问题之后，我能很快在脑中找到几个相关的散点，再把它们拼成一段听起来有逻辑的话。这种速度有时很有用，但它也让我过分依赖最近看过的内容、最近说过的话，以及最近一次检索到的答案。
+I often feel that my chain of thought is too short. My mind jumps. Given a question, I can quickly find several related points in my head and assemble them into something that sounds logical. That speed is sometimes useful, but it also makes me rely too much on what I read recently, what I said recently, and the answer from my most recent search.
 
-散点之间能连起来，并不说明它们已经组成了骨架。真正开口之前，我还需要停一下，问自己几件事：这句话是说给谁听的？我想让对方知道什么，或者做什么？对方需要怎样的表达？哪些内容现在不必说？我认为重要的东西，真的和这个问题有关吗？
+Connecting scattered points does not mean they have become a structure. Before I speak, I need to pause and ask: who am I saying this to? What do I want them to know or do? What kind of expression do they need? What can wait? Is the thing I find interesting actually relevant to this question?
 
-我在 Agent 身上见过同样的情况。一个 Agent 如果把上一项任务留下的内容直接带进下一项任务，它可能会把最近的记忆误认成当前最重要的事情。人也会这样。我们需要的不是把所有经历都留住，而是在判断之前，暂时把那些过于靠近、过于熟悉的东西放到一边。
+I have seen the same problem in Agents. If an Agent carries the leftovers of its previous task directly into the next one, it may mistake recent memory for the most important part of the current task. People do this too. We do not need to keep every experience active. Before making a judgment, we sometimes need to put aside what is too close and too familiar.
 
-## 把 Agent 的方法用回自己
+## Turning an Agent Method Back on Myself
 
-我曾经厌恶学校，是因为学校经常用一套固定的评价体系来处理复杂的人。成绩、排名、论文和录取结果都很方便比较，久而久之，我们甚至会主动用这几项指标解释自己。
+I used to resent school because it often handles complex people through a fixed evaluation system. Grades, rankings, papers, and admissions results are easy to compare. After a while, we start using those measures to explain ourselves.
 
-我现在想借鉴的，并不是把人当成 Agent，也不是把生活写成一份可以自动执行的脚本。真正值得借鉴的是，我在使用 Agent 时反复做的几件事：先把目标说清楚，给出行动边界，说明什么算完成，留下反馈的位置，再根据结果修改下一轮的提示词。
+What I want to borrow now is not the idea that a person is an Agent, or that life can be written as an automatically executable script. I want to borrow the things I repeatedly do when working with an Agent: state the goal clearly, define the boundary of action, say what counts as complete, leave room for feedback, and revise the next prompt according to the result.
 
-这些步骤之所以有用，是因为 Agent 不会自动知道我心里那个模糊的“做得更好”究竟是什么意思。目标写得含混，它就可能在错误的方向上高效工作；没有边界，它就会不断增加内容；没有停止条件，它就会把继续生成误认为完成任务。写 goal 的过程，实际上是在逼我把愿望变成一个可以检查的方向。
+These steps work because an Agent cannot automatically know what the vague phrase “do better” means in my head. If the goal is unclear, it may work efficiently in the wrong direction. Without boundaries, it keeps adding things. Without a stop condition, it mistakes continued generation for completion. Writing a goal forces me to turn a vague wish into a direction I can inspect.
 
-人也常常缺少这样的检查。我们知道自己想变好，却没有说清楚“好”是什么；遇到一个结果，就临时拿它来替自己下判断；读到一种新的成功经验，又立刻把它加入自己的标准。于是，评价体系一直在影响行动，却从来没有被认真写出来、看回去、改一遍。
+People often lack the same inspection. We know we want to improve, but we do not say what “better” means. We use a result that has just happened to judge ourselves. We read another person’s account of success and immediately add it to our own standards. The evaluation system keeps directing our actions, but we never write it down, look back at it, or revise it.
 
-所以我想把这套用来驱动 Agent 的方法反过来用在自己身上。系统提示词负责提醒我应该遵守什么原则，goal 负责说明当前这一阶段要把力气用到哪里，评价标准则用来检查行动是否真的在把我带向那里。三者不是三份独立的文档，而是一套帮助我持续校正自己的工具。
+So I want to turn the method used to guide an Agent back on myself. The system prompt reminds me what principles to follow. The goal tells me where to put my effort in the current stage. The evaluation standard checks whether my actions are actually taking me there. These are not three separate documents. They are one set of tools for continuously correcting my direction.
 
-这份提示词可以短一些，像阿西莫夫笔下的机器人三定律。先写几条真正会影响行动的规则，例如：
+The prompt can be short, like Asimov’s Three Laws of Robotics. I can start with a few rules that will genuinely affect my actions:
 
-> 不把一次结果当成全部判断。
-
->
-
-> 用行动获得反馈，再用阅读和复盘解释反馈。
+> Do not treat one result as the whole judgment.
 
 >
 
-> 不让最近接触的信息直接替我做决定。
+> Use action to obtain feedback, then use reading and reflection to interpret it.
 
 >
 
-> 继续增加之前，先确认目标、价值和停止条件。
+> Do not let the information I encountered most recently make the decision for me.
 
-这份提示词不会一次写完。也许以后突然某一天我会觉得：一个更好的自己还应该能够规范作息，能够及时回应别人交付的信任，能够在表达之前先替对方省下一点信息带宽。那时，我可以把新的理解加进去。
+>
 
-但我不想把它变成一份越来越长的规训清单。一个标准值得留下，是因为它会改变我的行动，并且让我更靠近自己想成为的人；如果它只是让我在纸面上显得更完整，或者让焦虑找到一个新的出口，就没有必要加入。
+> Before adding more, confirm the goal, the value, and the stop condition.
 
-日子过得太顺时，也需要小心。顺利很容易让人高估自己，把运气误认成能力。刚发生的经历通常带着最强的情绪，却不一定适合马上写进长期判断。我想先把经历放一放，把从中得到的经验留下来，再等新的知识和下一次行动去检验它。
+This prompt will not be finished in one sitting. One day I may decide that a better version of myself should also keep regular hours, respond more promptly to the trust others place in me, or save the other person some information bandwidth before I speak. I can add that understanding then.
 
-经历需要悬置，经验需要归档，评价体系也应该允许更新。它要能容纳新的发现，又不能每次都被羞耻、焦虑或一时的兴奋改写。
+But I do not want the prompt to become an ever-growing list of rules. A standard deserves to stay because it changes my actions and brings me closer to the person I want to become. If it only makes me look more complete on paper, or gives my anxiety a new outlet, it does not need to be added.
 
-## 选择哪些声音进入自己
+A smooth period requires caution too. Good fortune can make people overestimate themselves and mistake luck for ability. Fresh experiences carry the strongest emotions, but they are not always ready to become long-term judgments. I want to set the experience down for a while, keep the lesson that came from it, and let new knowledge and another action test it.
 
-我以前把信息过载理解成“信息太多”。现在觉得，更麻烦的是人会慢慢失去一个权力：决定什么信息在什么时候进入自己的判断。
+Experiences need to be suspended; lessons need to be archived; an evaluation system needs to remain revisable. It should hold new discoveries without being rewritten every time by shame, anxiety, or a moment of excitement.
 
-网上有很多看起来只有一个方向的路。它们告诉你什么年龄应该拿到什么结果，什么学校对应什么未来，怎样的选择才算理性，哪些偏离会变成一生的遗憾。这些经验不一定错误，但它们不应该不经筛选就获得评价我的资格。
+## Choosing Which Voices Enter
 
-我需要的不是一个收集所有信息的地方，而是一道入口。我得知道哪些声音值得听，哪些只是在重复别人走过的路；也得知道什么时候应该离开屏幕，回到自己的行动里。
+I used to understand information overload as “too much information.” Now I think the deeper problem is that a person slowly loses the ability to decide what information enters their judgment, and when.
 
-我仍然希望自己有一天能成为一个可以改变规则的人。现在这句话对我来说还很大，所以我只能先把它说得具体一些：我希望自己逐渐拥有足够可靠的判断，不再只是网上经验主义的囚徒；我希望能够参与决定什么值得被评价，什么值得继续，什么应该放下。
+The internet is full of roads that appear to run in only one direction. They tell you what result you should have at a certain age, what future belongs to a certain school, what choice counts as rational, and which deviations will become a lifelong regret. These experiences are not necessarily wrong, but they should not receive the authority to judge me without being examined first.
 
-这还不是我已经拥有的能力，只是我愿意长期练习的方向。
+I do not need a place that collects every piece of information. I need an entrance. I need to know which voices are worth hearing, which are only repeating a route someone else has taken, and when to leave the screen and return to my own actions.
 
-## 还没有写完的提示词
+I still hope that one day I can become someone capable of changing the rules. That sentence is still too large for me, so I can only make it more concrete for now: I want to develop judgment reliable enough that I am no longer a prisoner of online empiricism. I want to help decide what deserves evaluation, what deserves continuation, and what should be put down.
 
-我还不能说自己已经接受了那次推免结果。它有时仍然会被我理解成失败，仍然会勾起高考失利留下的记忆，也仍然会让我怀疑过去的努力究竟有没有用。
+This is not an ability I already possess. It is a direction I am willing to practice for a long time.
 
-但我开始明白，接受结果并不是唯一的任务。我还需要回头看看，那个替我解释结果的系统是怎样工作的。
+## The Prompt Is Not Finished
 
-我想给自己写一份系统提示词。它不需要很长，也不会一次完成。下一次我又被结果、经验和信息推着向前时，它至少可以让我停下来问三个问题：
+I cannot say that I have accepted the graduate-school result. At times I still read it as a failure. It still brings back the memory of failing the gaokao, and it still makes me wonder whether my past efforts were useful at all.
 
-我正在成为谁？
+But I am beginning to understand that accepting the result is not the only task. I also need to look back at the system that interpreted the result for me.
 
-我用什么标准判断自己？
+I want to write myself a system prompt. It does not need to be long, and it will not be completed in one attempt. The next time results, experience, and information push me forward, it can at least make me stop and ask three questions:
 
-这次行动，会把我带向哪里？
+Who am I becoming?
 
-这份提示词的下一版，就从《做对产品》开始。我会带着已经犯过的错误去读它，再带着新的理解回到行动里。如果新的行动又暴露出新的问题，就继续修改它。
+What standard am I using to judge myself?
 
-我还没有完成对自己的设计。现在只是开始承认，这件事不能完全交给别人替我完成。
+Where will this action take me?
+
+The next version of this prompt begins with reading The Right It. I will read it with the mistakes I have already made, return to action with a new understanding, and revise the prompt when the next action exposes a new problem.
+
+I have not finished designing myself. I am only beginning to admit that I cannot leave the whole task to other people.
 
 ---
 
