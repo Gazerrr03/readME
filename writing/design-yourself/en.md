@@ -29,27 +29,19 @@ That is not a way to design a game in which I can never lose. It asks me to answ
 
 ## Reading with My Mistakes
 
-This summer, I spent much of my time on an independent product. Looking back, the experience left me with more than the fact that I had made a product. It left me with a number of very specific mistakes.
+This summer, while working on an independent product, I drew up a detailed development plan. I had listed requirements, features, and tasks, but I had not really worked out which deserved to come first. Ideas with little connection to the product’s main purpose made their way into the plan too. As the list grew, deciding what to leave out became harder.
 
-I went too far in feature design. Many ideas had little to do with the product’s core loop, but I did not move them outside the product or make them removable modules. Every new idea felt like a permanent commitment.
+Looking back, I was easily drawn to a feature but much less good at judging its value. If I saw a good design in another product, I wanted to bring it into mine. If I imagined a possible use, I thought it justified adding a feature. I did not give the same attention to asking when a user would need it, or what difficulty they would face without it.
 
-I did the same thing in meetings. I poured out things I had not yet thought through, assuming that laying out every possibility would make the discussion more complete. Instead, the vocabulary grew, the actual decisions became less clear, and a meeting that could have ended in half an hour became longer.
+These gaps in judgment had concrete consequences during development. Once an untested idea entered the plan, the team had to spend time understanding, designing, and implementing it. It could also create ongoing maintenance work. By the time we realized it had little to do with the most pressing problem, removing it was no longer easy. I had done a lot of work without having a good enough reason for doing that work first.
 
-I also brought other products and case studies back into my own product. This product had good navigation; that one had attractive cards; another had a layout that seemed better for work. I wrote them down and placed them one by one into Flow Canvas. There was more in the product, but it began to look like an ordinary canvas tool. Eventually I realized that I had not found a better answer. I had been assembling answers other people had already given.
+We later began changing our approach. We first discussed which needs were worth investing in for a particular release, then each person took responsibility for defining, developing, and validating one of them. This gave me more specific questions to ask: could a feature help users do something they had previously struggled to do? Would its absence cause them to stop using the product? These questions deserved more attention than “this feature looks good.” Still, knowing what to ask did not mean I knew how to find reliable answers.
 
-Agents made this tendency more obvious. Once, to assemble features more quickly, I opened six windows at the same time. I calculated the speed of generation, but not the time needed to check the outputs. The number of windows could keep growing; the person responsible for review was still just me. The output increased, but judgment did not become faster. I had to reorganize much of it myself.
+That is why I want to read The Right It with these experiences in mind. I want to revisit the features I once argued for. What made me believe they were valuable? Which reasons came from users, and which were only my assumptions? If I were starting again, could I first run a smaller experiment to find out whether users needed the feature, before committing to development?
 
-I was busy, and I had put in real time. But being busy and moving a product forward are not the same thing. I spent time, expressive energy, and tokens, while the thing users actually needed did not become any clearer.
+For me, reading with my mistakes means returning to decisions I made, hesitated over, or got wrong. When I encounter a method in the book, I can connect it to a particular discussion or feature and ask whether it actually explains the problem we faced. It may not fit my circumstances, but comparing the two can show me what is still missing from my judgment.
 
-This made me reconsider what experience means. I used to believe that, with AI, almost anything could be learned. Now I see the premise I had overlooked: many of the things I called “anything” can already be learned through training and imitation. AI mainly saves me the time of watching videos, searching for material, and trying tools. It does not make the judgment for me.
-
-I also used to overestimate experience. I thought that if I did enough things, judgment would appear by itself. But unexamined experience may simply be an archive of mistakes. A method that works by accident may fail the next time. A failure that has not been explained cannot do much to change me.
-
-So I am going to read The Right It. I want to read it with these mistakes from the summer in mind: how should a product decide whether a problem is worth solving? Where should the boundary of a feature be drawn? How should product, design, and software engineering work together? How should development strategy and product philosophy support each other?
-
-I do not want to turn the book into another set of correct answers. A more useful way to read it may be to use its methods to look back at my own decisions. What did I miss? Why did I make that judgment? Was information missing, or had I failed to define the problem? Should I change the action next time, or the standard I use to judge the action?
-
-When I read with my mistakes, I am not only reading someone else’s experience. The actions that have already happened get another explanation.
+I used to think that, with AI, I could learn almost anything. It has certainly helped me learn tools and turn ideas into working things more quickly. But judging whether a finished feature has value requires looking at how users use it and what feedback they give. I encountered these questions in my work over the summer. Now I want reading to help me turn those scattered observations into methods I can use the next time I have to make a choice.
 
 ## Between Knowing and Doing
 

@@ -18,17 +18,13 @@ const bodyEn = Object.freeze([
   {
     "h": "Reading with My Mistakes"
   },
-  "This summer, I spent much of my time on an independent product. Looking back, the experience left me with more than the fact that I had made a product. It left me with a number of very specific mistakes.",
-  "I went too far in feature design. Many ideas had little to do with the product’s core loop, but I did not move them outside the product or make them removable modules. Every new idea felt like a permanent commitment.",
-  "I did the same thing in meetings. I poured out things I had not yet thought through, assuming that laying out every possibility would make the discussion more complete. Instead, the vocabulary grew, the actual decisions became less clear, and a meeting that could have ended in half an hour became longer.",
-  "I also brought other products and case studies back into my own product. This product had good navigation; that one had attractive cards; another had a layout that seemed better for work. I wrote them down and placed them one by one into Flow Canvas. There was more in the product, but it began to look like an ordinary canvas tool. Eventually I realized that I had not found a better answer. I had been assembling answers other people had already given.",
-  "Agents made this tendency more obvious. Once, to assemble features more quickly, I opened six windows at the same time. I calculated the speed of generation, but not the time needed to check the outputs. The number of windows could keep growing; the person responsible for review was still just me. The output increased, but judgment did not become faster. I had to reorganize much of it myself.",
-  "I was busy, and I had put in real time. But being busy and moving a product forward are not the same thing. I spent time, expressive energy, and tokens, while the thing users actually needed did not become any clearer.",
-  "This made me reconsider what experience means. I used to believe that, with AI, almost anything could be learned. Now I see the premise I had overlooked: many of the things I called “anything” can already be learned through training and imitation. AI mainly saves me the time of watching videos, searching for material, and trying tools. It does not make the judgment for me.",
-  "I also used to overestimate experience. I thought that if I did enough things, judgment would appear by itself. But unexamined experience may simply be an archive of mistakes. A method that works by accident may fail the next time. A failure that has not been explained cannot do much to change me.",
-  "So I am going to read The Right It. I want to read it with these mistakes from the summer in mind: how should a product decide whether a problem is worth solving? Where should the boundary of a feature be drawn? How should product, design, and software engineering work together? How should development strategy and product philosophy support each other?",
-  "I do not want to turn the book into another set of correct answers. A more useful way to read it may be to use its methods to look back at my own decisions. What did I miss? Why did I make that judgment? Was information missing, or had I failed to define the problem? Should I change the action next time, or the standard I use to judge the action?",
-  "When I read with my mistakes, I am not only reading someone else’s experience. The actions that have already happened get another explanation.",
+  "This summer, while working on an independent product, I drew up a detailed development plan. I had listed requirements, features, and tasks, but I had not really worked out which deserved to come first. Ideas with little connection to the product’s main purpose made their way into the plan too. As the list grew, deciding what to leave out became harder.",
+  "Looking back, I was easily drawn to a feature but much less good at judging its value. If I saw a good design in another product, I wanted to bring it into mine. If I imagined a possible use, I thought it justified adding a feature. I did not give the same attention to asking when a user would need it, or what difficulty they would face without it.",
+  "These gaps in judgment had concrete consequences during development. Once an untested idea entered the plan, the team had to spend time understanding, designing, and implementing it. It could also create ongoing maintenance work. By the time we realized it had little to do with the most pressing problem, removing it was no longer easy. I had done a lot of work without having a good enough reason for doing that work first.",
+  "We later began changing our approach. We first discussed which needs were worth investing in for a particular release, then each person took responsibility for defining, developing, and validating one of them. This gave me more specific questions to ask: could a feature help users do something they had previously struggled to do? Would its absence cause them to stop using the product? These questions deserved more attention than “this feature looks good.” Still, knowing what to ask did not mean I knew how to find reliable answers.",
+  "That is why I want to read The Right It with these experiences in mind. I want to revisit the features I once argued for. What made me believe they were valuable? Which reasons came from users, and which were only my assumptions? If I were starting again, could I first run a smaller experiment to find out whether users needed the feature, before committing to development?",
+  "For me, reading with my mistakes means returning to decisions I made, hesitated over, or got wrong. When I encounter a method in the book, I can connect it to a particular discussion or feature and ask whether it actually explains the problem we faced. It may not fit my circumstances, but comparing the two can show me what is still missing from my judgment.",
+  "I used to think that, with AI, I could learn almost anything. It has certainly helped me learn tools and turn ideas into working things more quickly. But judging whether a finished feature has value requires looking at how users use it and what feedback they give. I encountered these questions in my work over the summer. Now I want reading to help me turn those scattered observations into methods I can use the next time I have to make a choice.",
   {
     "h": "Between Knowing and Doing"
   },
@@ -104,17 +100,13 @@ const bodyZh = Object.freeze([
   {
     "h": "带着错误读一本书"
   },
-  "今年暑假，我把很多时间花在了一个独立产品上。现在回头看，那段经历留下的并不只有“做过一个产品”这件事，还有一些很具体的错误。",
-  "我在 feature 设计上走得太远。很多想法和产品的核心 loop 关系并不紧密，我却没有及时把它们放到产品之外，也没有把它们做成可以随时拿掉的模块。每出现一个新点子，我都像是在给产品增加一项永久的承诺。",
-  "开会时也是这样。我把还没有想清楚的东西一股脑说出来，以为把所有可能性摊开，讨论就会更充分。结果是术语越来越多，真正需要做的判断越来越模糊，一场本来半小时可以结束的会议被拖得更长。",
-  "我还把别的产品和案例带回了自己的产品。这个产品的导航不错，那个产品的卡片好看，另一个产品的布局似乎更适合工作。我把它们记下来，再一个个放进 Flow Canvas。东西确实变多了，产品也越来越像一个普通的画布工具。到后来，我才意识到自己并没有找到更好的答案，只是在把别人已经做过的答案重新拼在一起。",
-  "Agent 让这种倾向变得更明显。有一次，为了快一点把功能拼起来，我同时开了六个窗口。那时我只计算了生成的速度，没有计算检查这些产出需要多少时间。窗口可以不断增加，负责 review 的人却还是我一个。最后，输出变多了，判断没有变快，其中不少内容还要由我重新整理。",
-  "我当时很忙，也确实投入了很多时间。但忙碌和产品向前走并不是一回事。我消耗了时间、表达欲和 token，用户真正需要的东西却没有因此变得更清楚。",
-  "这让我重新看待“经验”这件事。我以前相信，有了 AI，几乎什么都可以学会。现在看，这句话里有一个容易被忽略的前提：我说的“任何事情”，很多本来就可以通过培训和模仿掌握。AI 主要替我省下了看视频、找资料和尝试工具的时间，却没有替我完成判断。",
-  "我也曾经高估经验的作用，以为做过足够多的事情，判断力就会自然出现。可未经整理的经验可能只是错误的存档。一次偶然有效的做法，下一次未必还有效；一个没有被解释清楚的失败，也很难真正帮助我改变。",
-  "所以我准备开始读《做对产品》。我想带着暑假里的这些错误去读它，看看产品该怎样判断一个问题是否值得解决，feature 的边界应该怎样划，产品、设计和软件工程之间怎样合作，开发策略和产品哲学又该怎样互相支撑。",
-  "我不想把这本书读成另一套标准答案。更有用的读法，也许是拿书里的方法回头看自己的决定：当时我看漏了什么？我为什么会做出那个判断？这是因为缺少信息，还是因为根本没有把问题定义清楚？下一次应该改变行动，还是改变我用来评价行动的标准？",
-  "带着错误去读书，读到的就不只是别人的经验。那些已经发生的行动，会得到一次新的解释。",
+  "今年暑假做独立产品时，我列过很详细的开发计划：需求、功能、任务都有了，但哪些值得先做，我其实没有想清楚。很多和产品核心用途关系不大的想法也被放进了计划。事情越列越多，取舍反而越来越难。",
+  "回头看，我当时很容易被一个功能吸引，却不太会判断它的价值。看到别的产品里有一个不错的设计，就想把它带回自己的产品；想到一种可能的用法，就觉得值得为它增加一个功能。至于用户在什么情况下需要它，没有它会遇到什么困难，我并没有同样认真地追问。",
+  "这些问题会在开发里变得具体。一个未经验证的想法进入计划之后，就需要团队花时间理解、设计和实现，还可能留下后续的维护成本。等到发现它和当前最重要的问题关系不大时，已经很难轻轻松松地把它拿掉。我做了不少事，却没有充分的理由说明，为什么应该先做这些。",
+  "后来我们开始调整做法，先讨论一个版本里哪些需求最值得投入，再由每个人负责其中一项需求的定义、开发和验证。这让我有了一个更具体的判断方向：一个功能能否帮助用户完成原本难以完成的事？它的缺失会不会让用户放弃使用？这些问题至少比“这个功能看起来不错”更值得花时间讨论。不过，有了问题，并不代表我已经知道怎样找到可靠的答案。",
+  "所以我想带着这些经历去读《做对产品》。我想回头检查自己曾经坚持过的功能：当时认为它有价值，依据究竟是什么？哪些依据来自用户，哪些只是我的设想？如果重新做一次，能不能先用更小的尝试确认用户是否需要它，再决定要不要投入开发？",
+  "这里的“带着错误去读”，对我来说，是把那些做过、犹豫过、判断错过的决定重新拿出来。读到一个方法时，我能想到它对应哪一次讨论、哪一项功能，也能追问它是否真的解释了当时的问题。它未必适用于我的处境，但这种对照能让我看见，自己的判断还缺少什么。",
+  "我以前觉得，有了 AI，几乎什么都能学会。它确实让我更快地学会使用工具，把想法做出来。但一个功能做出来之后有没有价值，需要从用户的使用和反馈里判断。我在暑假的实践中碰到了这些问题，现在想借助阅读，把零散的体会整理成下一次做取舍时用得上的方法。",
   {
     "h": "知和行之间"
   },
@@ -190,17 +182,13 @@ const bodyJa = Object.freeze([
   {
     "h": "間違いを抱えて本を読む"
   },
-  "この夏、私は多くの時間を一つの独立プロダクトに使った。振り返ってみると、残ったのは「プロダクトをつくった」という事実だけではない。いくつもの具体的な間違いも残った。",
-  "feature の設計で、私は広げすぎた。プロダクトの core loop とほとんど関係のないアイデアも、外に出さず、取り外せるモジュールにもせず、抱え込んだ。新しいアイデアが出るたびに、プロダクトに永久の約束を追加しているようだった。",
-  "会議でも同じだった。まだ考え切れていないことまで一度に話した。可能性をすべて並べれば、議論はより充実すると思っていた。実際には、言葉だけが増え、決めるべきことはかえって見えなくなった。三十分で終わるはずの会議も長引いた。",
-  "他のプロダクトや事例も、自分のプロダクトに持ち込んだ。このプロダクトのナビゲーションはよい。あのプロダクトのカードはきれいだ。別のプロダクトのレイアウトは仕事に向いていそうだ。そうしたものを書き留め、一つずつ Flow Canvas に入れた。確かに要素は増えた。でもプロダクトは、どこにでもあるキャンバスツールに近づいていった。あとになって、私はよりよい答えを見つけたのではなく、他人がすでに出した答えを組み直していただけだと気づいた。",
-  "Agent を使うと、この傾向はさらに目立った。あるとき、機能を早く組み上げるために、六つのウィンドウを同時に開いた。私は生成の速さだけを計算し、出力を確認する時間を計算していなかった。ウィンドウはいくらでも増やせるが、review をする人は一人の私のままだった。出力は増えたが、判断は速くならなかった。最後には、その多くを自分で整理し直した。",
-  "私は忙しかったし、時間も本当に使った。でも、忙しいこととプロダクトが前に進むことは同じではない。時間と表現欲と token を消費しても、ユーザーが本当に必要としているものは、少しも明確にならなかった。",
-  "この経験から、私は「経験」の見方を変え始めた。AI があれば、ほとんど何でも学べると思っていた。けれど、その「何でも」の多くは、もともと訓練や模倣によって身につけられるものだった。AI が主に省いてくれるのは、動画を見たり、資料を探したり、ツールを試したりする時間だ。判断そのものを代わりにしてくれるわけではない。",
-  "私は経験の力も過大評価していた。十分な数のことを経験すれば、判断力は自然に育つと思っていた。けれど、検討されない経験は、間違いを保存しただけの記録にもなる。たまたまうまくいった方法が、次も通用するとは限らない。説明されていない失敗は、私を変える力を持たない。",
-  "だから私は、これから『The Right It』を読む。夏に犯した間違いを抱えたまま読むつもりだ。プロダクトは、解く価値のある問題かどうかをどう判断するのか。feature の境界はどこに引くのか。プロダクト、デザイン、ソフトウェアエンジニアリングはどう協力するのか。開発戦略とプロダクトの哲学は、どう支え合うのか。",
-  "この本を、別の正解集にしたくはない。もっと役に立つ読み方は、本の方法を使って自分の判断を振り返ることだと思う。あのとき何を見落としていたのか。なぜその判断をしたのか。情報が足りなかったのか、それとも問題の定義自体ができていなかったのか。次に変えるべきなのは行動なのか、それとも行動を評価する基準なのか。",
-  "間違いを抱えて読むと、他人の経験を読むだけでは終わらない。すでに起きた行動に、もう一度説明を与えられる。",
+  "この夏、独立プロダクトを開発していたとき、私は細かな開発計画を立てた。要件も機能もタスクも並べていたが、何から取り組むべきかは、十分に考えられていなかった。プロダクトの主な用途とはあまり関係のないアイデアも、計画に入っていた。やることが増えるほど、何を優先し、何を見送るかを決めるのが難しくなった。",
+  "振り返ると、私は機能の魅力にはすぐ引かれる一方で、その価値を判断するのは苦手だった。他のプロダクトでよい設計を見かければ、自分たちのプロダクトにも取り入れたくなった。使い方を一つ思いつけば、そのために機能を追加する価値があると思った。ユーザーがどんな場面で必要とするのか、それがなければ何に困るのかは、同じようには掘り下げていなかった。",
+  "こうした判断の不足は、開発に入ると具体的な負担になった。未検証のアイデアでも、計画に入れば、チームは理解し、設計し、実装するために時間を使う。その後の保守作業が生じることもある。いま最も重要な問題とはあまり関係がないと気づくころには、簡単に取り除けなくなっていた。私は多くの仕事をしたが、なぜその仕事を先にするべきだったのか、十分な理由を説明できなかった。",
+  "その後、私たちは進め方を変え始めた。まず、そのバージョンでどのニーズに力を注ぐべきかを話し合い、一人ひとりが一つのニーズの定義から開発、検証までを担当するようにした。そこで、判断のための問いも具体的になった。この機能は、ユーザーがそれまで難しいと感じていたことをできるようにするだろうか。この機能がなければ、ユーザーは使うのをやめてしまうだろうか。少なくとも「この機能はよさそうだ」より、時間をかけて話し合う価値がある。ただ、問いを持てたからといって、信頼できる答えの見つけ方までわかったわけではなかった。",
+  "だから、こうした経験を踏まえて『The Right It』を読みたい。以前、自分が必要だと主張した機能を、もう一度検討したい。その価値を信じた根拠は何だったのか。どの根拠がユーザーから得られたもので、どれが自分の想定にすぎなかったのか。やり直すなら、開発に取り組む前に、もっと小さな試みでユーザーが必要としているかを確かめられないだろうか。",
+  "私にとって「間違いを抱えて読む」とは、実際に下した判断、迷った判断、誤った判断を、もう一度取り出すことだ。本で一つの方法に出会ったとき、あの議論やあの機能に結びつけて考え、その方法が当時の問題を本当に説明しているかを問い直せる。自分の状況には当てはまらないかもしれない。それでも、照らし合わせることで、自分の判断に何が足りなかったかが見えてくる。",
+  "以前は、AI があればほとんど何でも学べると思っていた。確かに、ツールを覚え、アイデアを形にするまでの時間は短くなった。でも、完成した機能に価値があるかどうかは、ユーザーの使い方とフィードバックから判断する必要がある。夏の実践で、私はこうした問題にぶつかった。いまは読書を通じて、断片的な気づきを、次に取捨選択するときに使える方法へ整理したい。",
   {
     "h": "知ることと行うことのあいだ"
   },
